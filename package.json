@@ -1,0 +1,38 @@
+{
+  "name": "dsh-live-voice",
+  "version": "0.0.1-developing",
+  "description": "Local-first voice conversations for DSH, with local speech recognition and synthesis and optional external providers. Under development.",
+  "keywords": [
+    "dsh",
+    "local-first",
+    "local-voice",
+    "voice-conversation",
+    "speech-to-text",
+    "text-to-speech",
+    "speech-recognition",
+    "speech-synthesis",
+    "stt",
+    "tts",
+    "turn-taking",
+    "voice-interruption"
+  ],
+  "author": {
+    "name": "wads.dev",
+    "url": "https://www.npmjs.com/org/wads.dev"
+  },
+  "license": "GPL-3.0-only",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "HISTORY.md",
+    "AGENTS.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "tag": "developing"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorwads/dsh-live-voice.git"
+  }
+}

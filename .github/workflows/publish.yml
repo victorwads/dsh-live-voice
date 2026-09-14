@@ -1,0 +1,94 @@
+name: Publish to npm
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: npm
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install OIDC-capable npm
+        run: npm install --global npm@11.10.1
+
+      # No npm ci yet: this documentation-only package has no dependencies or lockfile.
+      - name: Validate release metadata
+        id: release
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const p = JSON.parse(fs.readFileSync("package.json", "utf8"));
+          if (p.name !== "dsh-live-voice") throw new Error("Unexpected package name");
+          if (!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/.test(p.version)) throw new Error("Invalid version");
+          const repository = `git+https://github.com/${process.env.GITHUB_REPOSITORY}.git`;
+          if (p.repository?.url !== repository) throw new Error("Update repository.url to match the GitHub repository before publishing");
+          const tag = p.version.includes("-") ? "developing" : "latest";
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `tag=${tag}\nversion=${p.version}\ngit_tag=v${p.version}\n`);
+          NODE
+
+      - name: Reject existing version tags and npm versions
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.git_tag }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          refs=$(git ls-remote --tags origin "refs/tags/$RELEASE_TAG" "refs/tags/$VERSION")
+          if [[ -n "$refs" ]]; then
+            echo "::error::A tag for this version already exists. Bump package.json."
+            exit 1
+          fi
+          node <<'NODE'
+          (async () => {
+            const r = await fetch("https://registry.npmjs.org/dsh-live-voice/" + encodeURIComponent(process.env.VERSION), {signal: AbortSignal.timeout(30000)});
+            if (r.ok) throw new Error("Version already published on npm; bump package.json");
+            if (r.status !== 404) throw new Error("Registry check failed: " + r.status);
+          })().catch(error => { console.error(error); process.exitCode = 1; });
+          NODE
+
+      - name: Validate package contents
+        env:
+          DIST_TAG: ${{ steps.release.outputs.tag }}
+        run: npm publish --dry-run --access public --tag "$DIST_TAG" --registry=https://registry.npmjs.org/
+
+      # Atomic ref creation rejects duplicates, including races after validation.
+      - name: Create version tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.git_tag }}
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f "ref=refs/tags/$RELEASE_TAG" -f "sha=$GITHUB_SHA"
+
+      - name: Publish using OIDC
+        env:
+          DIST_TAG: ${{ steps.release.outputs.tag }}
+        run: npm publish --provenance --access public --tag "$DIST_TAG" --registry=https://registry.npmjs.org/
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.git_tag }}
+          DIST_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          flags=()
+          if [[ "$DIST_TAG" == "developing" ]]; then
+            flags+=(--prerelease --latest=false)
+          fi
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --title "$RELEASE_TAG" --generate-notes "${flags[@]}"
