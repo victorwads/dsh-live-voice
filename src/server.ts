@@ -1,0 +1,117 @@
+// @ts-nocheck
+import { SayEngine } from './engines/speaking/say.ts';
+import { WhisperHttpHost, createWhisperConfigStore, validateWhisperConfig } from './engines/recognition/whisper-http-host.ts';
+
+export const name = 'dsh-live-voice';
+export const inject = ['connection'];
+export const SAY_CHANNEL = '/api/dsh-live-voice';
+const ok = value => ({ ok: true, value });
+const fail = (code, message) => ({ ok: false, error: { code, message, details: {} } });
+const identity = value => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,128}$/.test(value);
+
+/** One local speaker owner. IDs isolate control races, not authenticated users:
+ * Connection owns browser authentication; its RPC handler exposes no user identity.
+ */
+export function createSayHost({ engine = new SayEngine() } = {}) {
+  let active = null;
+  let disposed = false;
+  async function handle(endpoint, payload, signal) {
+    if (disposed) return fail('disposed', 'Speech service is closed.');
+    if (signal?.aborted) return fail('cancelled', 'Speech was cancelled.');
+    try {
+      if (endpoint === 'capabilities') return ok(await engine.getCapabilities());
+      if (!['speak', 'stop', 'pause', 'resume'].includes(endpoint)) return fail('not-found', 'Unknown speech endpoint.');
+      if (!payload || !identity(payload.clientId) || !identity(payload.operationId)) {
+        return fail('invalid-request', 'Valid client and operation IDs are required.');
+      }
+      const owns = active?.clientId === payload.clientId && active?.operationId === payload.operationId;
+      if (endpoint !== 'speak') {
+        if (!owns) return ok({ applied: false });
+        const operation = active;
+        if (endpoint === 'stop') {
+          operation.abort.abort();
+          // Await this operation, never call a global stop after an await:
+          // a new request could already own the speaker by then.
+          await operation.done;
+          return ok({ applied: true });
+        }
+        return ok({ applied: Boolean(engine[endpoint]()) });
+      }
+      if (typeof payload.text !== 'string' || !payload.text.trim() || payload.text.length > 100000
+          || payload.text.includes('\0')) return fail('invalid-request', 'Speech text must contain 1–100000 characters without NUL.');
+      if (payload.voice !== undefined && (typeof payload.voice !== 'string' || !payload.voice.trim()
+          || payload.voice.length > 200 || payload.voice.includes('\0'))) return fail('invalid-request', 'Invalid voice.');
+      if (!Number.isFinite(payload.rate) || payload.rate < 18 || payload.rate > 1750) return fail('invalid-request', 'Invalid speech rate.');
+      if (active && active.clientId !== payload.clientId) return fail('busy', 'Another voice client owns the host speaker.');
+      if (owns) return fail('duplicate-operation', 'The speech operation is already active.');
+      active?.abort.abort();
+      const operation = { clientId: payload.clientId, operationId: payload.operationId, abort: new AbortController(), done: null };
+      active = operation;
+      const cancel = () => operation.abort.abort();
+      signal?.addEventListener('abort', cancel, { once: true });
+      if (signal?.aborted) cancel();
+      // Keep the authenticated RPC open until process close and file cleanup.
+      // DSH aborts its signal when the browser connection closes prematurely.
+      operation.done = Promise.resolve().then(() => engine.speak(payload.text, {
+        voice: payload.voice, rate: payload.rate, signal: operation.abort.signal,
+      })).then(() => ok({ completed: true }), error => error?.name === 'AbortError'
+        ? fail('cancelled', 'Speech was cancelled.') : fail('speech-failed', 'Local speech failed.'));
+      try { return await operation.done; }
+      finally {
+        signal?.removeEventListener('abort', cancel);
+        if (active === operation) active = null;
+      }
+    } catch { return fail('speech-failed', 'Local speech service failed.'); }
+  }
+  async function dispose() {
+    disposed = true;
+    active?.abort.abort();
+    await engine.stop();
+    active = null;
+  }
+  return { handle, dispose };
+}
+
+export function apply(ctx, { whisperStore = createWhisperConfigStore(), whisperFetch = globalThis.fetch } = {}) {
+  const host = createSayHost();
+  const whisper = new WhisperHttpHost({store:whisperStore,fetchImpl:whisperFetch});
+  for (const endpoint of ['config','test']) {
+    const dispose=ctx.connection.fetch.register({path:SAY_CHANNEL+'/whisper/'+endpoint,methods:endpoint==='config'?['GET','PUT']:['POST'],requestBody:'buffered',fetch:async request=>{
+      try {
+        if(request.method==='GET')return Response.json(ok(await whisper.getConfig()));
+        let config;
+        try {config=validateWhisperConfig(await request.json());}catch(error){return Response.json(fail('invalid-config',error.message),{status:400});}
+        const value=endpoint==='test'?await whisper.capability(request.signal,config):await whisper.replaceConfig(config);
+        return Response.json(ok(value));
+      }catch(error){return Response.json(fail('config-failed',error.message||'Whisper settings could not be saved.'),{status:500});}
+    }});
+    ctx.effect(()=>()=>dispose(),'dsh-live-voice: remove Whisper '+endpoint+' route');
+  }
+  ctx.effect(()=>()=>whisper.dispose(),'dsh-live-voice: cancel Whisper requests');
+  const whisperCapability = ctx.connection.fetch.register({path:SAY_CHANNEL+'/whisper/capabilities',methods:['GET'],requestBody:'buffered',fetch:async request=>Response.json(ok(await whisper.capability(request.signal)))});
+  const whisperTranscribe = ctx.connection.fetch.register({path:SAY_CHANNEL+'/whisper/transcribe',methods:['POST'],requestBody:'buffered',fetch:async request=>{
+    try {
+      const clientId=request.headers.get('x-dlv-client-id'),operationId=request.headers.get('x-dlv-operation-id');
+      if(!identity(clientId)||!identity(operationId))return Response.json(fail('invalid-request','Valid client and operation IDs are required.'),{status:400});
+      if(request.headers.get('content-type')?.split(';')[0]!=='audio/wav') return Response.json(fail('invalid-audio','A mono 16 kHz PCM WAV recording is required.'),{status:400});
+      const length=Number(request.headers.get('content-length')||0);if(length>whisper.maxBytes)return Response.json(fail('audio-too-large','The recording exceeds the configured Whisper limit.'),{status:413});
+      const value=await whisper.transcribe(await request.arrayBuffer(),{lang:request.headers.get('x-dlv-language')||'auto',signal:request.signal});return Response.json(ok(value));
+    } catch(error) {if(error?.name==='AbortError')return Response.json(fail('cancelled','Whisper transcription was cancelled.'),{status:499});return Response.json(fail('transcription-failed',error?.message||'Whisper transcription failed.'),{status:502});}
+  }});
+  ctx.effect(()=>async()=>{await whisperCapability();await whisperTranscribe();},'dsh-live-voice: remove Whisper routes');
+  // Existing /api carrier preserves DSH authentication and disconnect signals.
+  for (const endpoint of ['capabilities', 'speak', 'stop', 'pause', 'resume']) {
+    const dispose = ctx.connection.fetch.register({
+      path: `${SAY_CHANNEL}/${endpoint}`, methods: ['POST'], requestBody: 'buffered',
+      fetch: async request => {
+        let body;
+        try { body = await request.json(); } catch { return new Response('Invalid JSON', {status:400}); }
+        if (body?.type !== 'client-request' || typeof body.rpcId !== 'string' || body.rpcId.length > 128 || body.method !== `dsh-live-voice/${endpoint}`) return new Response('Invalid RPC envelope', {status:400});
+        const result = await host.handle(endpoint, body.payload, request.signal);
+        return Response.json({type:'server-response',rpcId:body.rpcId,result});
+      },
+    });
+    ctx.effect(() => () => dispose(), `dsh-live-voice: remove ${endpoint} route`);
+  }
+  ctx.effect(() => () => host.dispose(), 'dsh-live-voice: stop host speech');
+}

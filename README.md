@@ -1,28 +1,92 @@
 # DSH Live Voice
 
-[![npm version](https://img.shields.io/npm/v/dsh-live-voice/developing?logo=npm&label=npm)](https://www.npmjs.com/package/dsh-live-voice)
+[![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm)](https://www.npmjs.com/package/dsh-live-voice)
+[![license](https://img.shields.io/badge/license-GPL--3.0--only-blue)](LICENSE)
 
-**Local-first voice conversations for DSH.**
+**Local-first speech recognition, voice output, and continuous voice conversations for DSH.**
 
-Designed to run speech recognition (speech-to-text, STT) and speech synthesis (text-to-speech, TTS) on your own machine, with optional external providers. The goal is a single plugin that coordinates listening and speaking, rather than two independent voice tools competing for the microphone and speakers.
+DSH Live Voice coordinates the microphone, composer, assistant messages, and speech output in one plugin — without letting listening and speaking compete with each other.
 
-### Why this project exists and Acknowledgments
+## Why this project exists and Acknowledgments
 
 Listening and speaking should work together, so you can interrupt and be heard without the assistant’s voice getting in the way. [Read the story behind the project](HISTORY.md).
 
 A heartfelt thank you to [GooDAnDReaDY](https://github.com/GooDAnDReaDY) for [dsh-voice](https://github.com/GooDAnDReaDY/dsh-voice) and [Alan2Z](https://github.com/Alan2Z) for [dsh-speak](https://github.com/Alan2Z/dsh-speak). Your projects solved my voice needs in DSH for a while, and I am grateful for the work you shared. Eventually, I reached a point where I needed one codebase to coordinate both listening and speaking. [Read the full story](HISTORY.md).
 
-## Features and Plans
+## Features
 
-See [the feature plan and proposed architecture](PLAN.md) for conversation modes, interruption and resumption, engine selection, and the implementation approach.
+| | Capability |
+|---|---|
+| 🎙️ | Voice typing directly into the DSH composer |
+| 💬 | Continuous voice conversations with automatic assistant speech |
+| 🧠 | Browser SpeechRecognition or local loopback whisper.cpp |
+| 🔊 | Browser speech synthesis or native macOS `say` |
+| ⏱️ | Manual or automatic sending after configurable silence |
+| 🫁 | Stable-silence delay prevents breathing pauses from starting assistant speech |
+| 🎧 | Open-microphone mode for headphones |
+| 🔒 | Gated microphone mode for speakers |
+| ✋ | Pause, resume, stop, and manual interruption controls |
+| 🔈 | Play individual assistant messages on demand |
+| 🏠 | Whisper audio reaches the local server only through the authenticated DSH host |
 
-Version `0.0.1-developing` is a documentation-only development placeholder. The experience described here is a goal, not an implemented feature.. yet... wait for next days...
+## Conversation flow
+
+The assistant never starts automatic playback while you are speaking. If a response is already waiting — including another assistant message — it waits until you finish and the configured continuous-silence delay has passed.
+
+### Speakers — gated listening (default)
+
+Listening and playback take turns so the assistant does not hear its own voice.
+
+```mermaid
+sequenceDiagram
+    participant Interface
+    actor You
+    actor Assistant
+
+    Note over Interface,Assistant: Waiting for you to speak…
+    activate You
+    You->>Assistant: Start speaking
+    Assistant-->>You: Listen while you are speaking
+    Note over Interface,Assistant: You stopped speaking
+    opt Manual sending
+        You->>Interface: Review your recognized message
+        Interface-->>You: Send when you are ready
+    end
+    opt Automatic sending
+        Note over You,Assistant: Send after the silence countdown
+    end
+    deactivate You
+    You->>Assistant: Deliver your message
+    Assistant-->>You: Response ready — wait for continuous silence
+    Assistant-->>You: Stop listening
+    activate Assistant
+    Assistant->>You: Speak the response aloud
+    deactivate Assistant
+    Note over Interface,Assistant: Listening again — waiting for you to speak…
+```
+
+### Headphones — open microphone
+
+The microphone remains open during playback, allowing your voice to pause the assistant.
 
 
-## Licensing
+### Other conversation settings
 
-[GNU GPL version 3 only](LICENSE) (`GPL-3.0-only`). Commercial use and redistribution are allowed subject to the GPL, including its corresponding-source requirements when distributing covered software. Third-party engines and models may have separate licenses.
+- **Sending mode:** review and send manually by default, or send automatically after a configurable silence countdown.
+- **Assistant response delay:** choose how long you must remain silent before automatic playback starts; speaking again restarts the wait.
+- **Automatic assistant speech:** turn automatic playback of new assistant messages on or off.
+- **Sent-message interruption:** sending another message does not stop current audio by default, but you can enable that behavior.
+- **Manual playback:** play any individual assistant message on demand without waiting for the automatic-playback delay.
 
-## Keywords
+## Local-first architecture
 
-`dsh`, `local-first`, `local-voice`, `voice-conversation`, `speech-to-text`, `text-to-speech`, `speech-recognition`, `speech-synthesis`, `stt`, `tts`, `turn-taking`, `voice-interruption`
+- **Recognition:** Browser SpeechRecognition or loopback whisper.cpp HTTP.
+- **Speech output:** browser/device audio or native macOS `say`.
+- **Whisper transport:** complete WAV utterances through authenticated same-origin DSH routes.
+- **Privacy:** raw audio and transcripts are not logged by default.
+
+Speech processing can run locally, but the DSH language model may still be remote.
+
+## License
+
+[GPL-3.0-only](LICENSE). Commercial use and redistribution are allowed subject to the GPL. Third-party speech engines and models may have separate licenses.

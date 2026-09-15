@@ -1,7 +1,15 @@
 {
   "name": "dsh-live-voice",
-  "version": "0.0.1-developing",
-  "description": "Local-first voice conversations for DSH, with local speech recognition and synthesis and optional external providers. Under development.",
+  "version": "0.0.1-alpha.1",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --test .test-dist/*.test.js",
+    "build": "npm run typecheck && node --experimental-strip-types scripts/build.ts",
+    "dev": "node --experimental-strip-types scripts/build.ts --watch",
+    "prepack": "npm run build"
+  },
+  "description": "Local-first voice conversations for DSH, with local speech recognition and synthesis and optional external providers.",
   "keywords": [
     "dsh",
     "local-first",
@@ -22,17 +30,53 @@
   },
   "license": "GPL-3.0-only",
   "files": [
+    "src/",
+    "lib/",
+    "cordis.patch.yml",
     "README.md",
-    "LICENSE",
+    "PLAN.md",
+    "DEVELOPMENT.md",
     "HISTORY.md",
-    "AGENTS.md"
+    "scripts/",
+    "LICENSE"
   ],
   "publishConfig": {
     "access": "public",
-    "tag": "developing"
+    "tag": "alpha"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/victorwads/dsh-live-voice.git"
+  },
+  "devDependencies": {
+    "@types/node": "^26.5.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "esbuild": "^0.28.2",
+    "jsdom": "^30.0.1",
+    "playwright-core": "^1.63.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "typescript": "^7.0.2"
+  },
+  "main": "./lib/server.js",
+  "exports": {
+    ".": "./lib/server.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-chat",
+        "@deepseek-ai/dsh-client-connection",
+        "@deepseek-ai/dsh-client-ui-settings"
+      ]
+    }
   }
 }

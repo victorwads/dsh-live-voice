@@ -1,0 +1,18 @@
+// @ts-nocheck
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import vm from 'node:vm';
+test('built bundle registers independently in the DSH lazy module loader',async()=>{
+ let registration;
+ const context={window:{__ModuleLoader__:{load:r=>{registration=r;}}}};
+ vm.runInNewContext(await readFile(new URL('../lib/client.js',import.meta.url),'utf8'),context);
+ assert.equal(registration.id,'dsh-live-voice');
+ const plugin=registration.factory(id=>{assert.equal(id,'react');return {createElement(){}};});
+ assert.equal(typeof plugin.apply,'function');
+ assert.deepEqual([...plugin.inject],['slots','connection','uiConversation']);
+ const slots=[];const effects=[];
+ plugin.apply({slots:{inject(name,fn){fn();},register(meta,component){slots.push({meta,component});}},effect:fn=>effects.push(fn)});
+ assert.deepEqual(slots.map(s=>s.meta.name),['settings.section','conversation.input.right','conversation.input.dock','conversation.chat.assistant-actions']);
+ assert.equal(effects.length,2);
+});

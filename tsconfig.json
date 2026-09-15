@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "strict": false,
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false,
+    "useUnknownInCatchVariables": false,
+    "noImplicitOverride": false,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "allowJs": false,
+    "noEmit": true,
+    "types": [
+      "node",
+      "react",
+      "react-dom"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "scripts/**/*.ts"
+  ],
+  "exclude": [
+    "lib",
+    "node_modules",
+    ".test-dist"
+  ]
+}

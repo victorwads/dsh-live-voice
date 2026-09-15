@@ -3,7 +3,7 @@
 ## Project identity and current stage
 
 - Project: **DSH Live Voice**; npm package: `dsh-live-voice`.
-- Current version: `0.0.1-developing`. This repository is a documentation-only development placeholder, not a functioning DSH plugin.
+- Current version: `0.0.1-developing`. The published artifact is a documentation placeholder; the local working tree now contains an initial plugin under active validation. See PLAN.md for progress and remaining checks.
 - Read `README.md`, `HISTORY.md`, and `package.json` before making project changes.
 - Write repository documentation, code comments, and public package metadata in English. Keep the requested filename `HISTORY.md`.
 
@@ -44,6 +44,6 @@
 - Do not invent author or repository URLs.
 - Use explicit `--tag developing` for this prerelease. Never silently promote it to `latest`.
 - `npm publish --dry-run --tag developing` validates packaging without publishing; it does not reserve a name or prove registry authorization.
-- No automated test suite or runnable plugin exists yet. Report validation honestly; do not describe a package dry run as a runtime test.
+- Run npm test (includes a client build). Fake-engine and DOM integration tests do not prove real microphone/browser compatibility; report physical-device and authenticated-runtime checks separately. Never describe a packaging dry run as a runtime test.
 - Commit, push, actual npm publication, and secondary package creation require explicit maintainer authorization.
 - The maintainer supplied `git@github.com:victorwads/dsh-live-voice.git` and authorized the first commit and push to `main`. npm publication requires separate authorization.
