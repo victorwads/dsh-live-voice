@@ -31,10 +31,12 @@ test('Qwen local ASR and TTS selections survive normalization', () => {
     engine: 'qwen-http',
     recognitionEngine: 'qwen-http',
     recognitionLang: 'pt-BR',
+    voice: 'aiden',
   });
   assert.equal(settings.engine, 'qwen-http');
   assert.equal(settings.recognitionEngine, 'qwen-http');
   assert.equal(settings.recognitionLang, 'pt-BR');
+  assert.equal(settings.voice, 'aiden');
 });
 
 test('valid local options survive normalization', () => {

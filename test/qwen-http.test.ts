@@ -31,9 +31,11 @@ test('Qwen host permits only loopback and maps pt-BR onto the unified API', asyn
   assert.deepEqual(await host.transcribe(wav, { lang: 'pt-BR' }), { text: 'Olá do Qwen' });
   const form = requests[2].options.body;
   assert.equal(form.get('language'), 'portuguese');
-  const speech = await host.synthesize('Olá', { lang: 'pt-BR' });
+  const speech = await host.synthesize('Olá', { lang: 'pt-BR', voice: 'aiden' });
   assert.equal(speech.byteLength, 44);
-  assert.equal(JSON.parse(requests[3].options.body).language, 'portuguese');
+  const speechRequest = JSON.parse(requests[3].options.body);
+  assert.equal(speechRequest.voice, 'aiden');
+  assert.equal(speechRequest.language, 'portuguese');
   host.dispose();
 });
 
@@ -66,6 +68,7 @@ test('Qwen host adapts OminiX model status and JSON/base64 transcription', async
 test('Qwen browser speaking engine waits for WAV playback and supports pause', async () => {
   let audio;
   const revoked = [];
+  const requests = [];
   class FakeAudio extends EventTarget {
     constructor(url) {
       super();
@@ -84,13 +87,16 @@ test('Qwen browser speaking engine waits for WAV playback and supports pause', a
   }
   const globals = {
     crypto,
-    fetch: async () =>
-      new Response(new Uint8Array(44), { headers: { 'content-type': 'audio/wav' } }),
+    fetch: async (_url, options) => {
+      requests.push(JSON.parse(options.body));
+      return new Response(new Uint8Array(44), { headers: { 'content-type': 'audio/wav' } });
+    },
     Audio: FakeAudio,
     URL: { createObjectURL: () => 'blob:qwen', revokeObjectURL: (value) => revoked.push(value) },
   };
   const engine = new QwenHttpSpeakingEngine({ globals, lang: 'pt-BR' });
-  await engine.speak('Teste', { rate: 1.2 });
+  await engine.speak('Teste', { rate: 1.2, voice: 'aiden' });
   assert.equal(audio.playbackRate, 1.2);
+  assert.equal(requests[0].voice, 'aiden');
   assert.deepEqual(revoked, ['blob:qwen']);
 });

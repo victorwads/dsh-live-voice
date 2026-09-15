@@ -3,6 +3,7 @@ import { readFile, mkdir, writeFile, rename, rm } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
+import { defaultQwenVoice, isQwenVoice } from '../core/settings.ts';
 import { validateMonoPcm16Wav } from './recognition/whisper-http-host.ts';
 
 const LOOPBACK = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
@@ -212,9 +213,10 @@ export class QwenHttpHost {
       },
     );
   }
-  async synthesize(text, { lang = 'pt-BR', signal } = {}) {
+  async synthesize(text, { lang = 'pt-BR', signal, voice = defaultQwenVoice } = {}) {
     if (typeof text !== 'string' || !text.trim() || text.length > 100000 || text.includes('\0'))
       throw new Error('Speech text must contain 1–100000 characters without NUL.');
+    if (!isQwenVoice(voice)) throw new Error('Unsupported Qwen voice.');
     return this.request(
       'v1/audio/speech',
       {
@@ -223,6 +225,7 @@ export class QwenHttpHost {
         body: JSON.stringify({
           model: 'qwen3-tts',
           input: text,
+          voice,
           language: language(lang) || 'portuguese',
           response_format: 'wav',
         }),

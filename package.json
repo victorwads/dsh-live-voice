@@ -1,6 +1,6 @@
 {
   "name": "dsh-live-voice",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -60,7 +60,7 @@
   ],
   "publishConfig": {
     "access": "public",
-    "tag": "alpha"
+    "tag": "latest"
   },
   "repository": {
     "type": "git",

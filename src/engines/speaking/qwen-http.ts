@@ -30,7 +30,7 @@ export class QwenHttpSpeakingEngine {
       };
     }
   }
-  async speak(text, { rate = 1, signal, lang = this.lang } = {}) {
+  async speak(text, { rate = 1, signal, lang = this.lang, voice = 'aiden' } = {}) {
     if (typeof text !== 'string') throw new TypeError('Speech text must be a string.');
     if (!Number.isFinite(rate) || rate < 0.1 || rate > 3)
       throw new RangeError('Speech rate must be between 0.1 and 3.');
@@ -47,7 +47,7 @@ export class QwenHttpSpeakingEngine {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ text, lang }),
+        body: JSON.stringify({ text, lang, voice }),
         signal: operation.abort.signal,
       });
       if (!response.ok) {

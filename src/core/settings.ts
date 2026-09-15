@@ -17,6 +17,19 @@ export const voiceDetectionPresets = Object.freeze({
   }),
 });
 export const usesPluginVoiceDetection = (engine) => ['whisper-http', 'qwen-http'].includes(engine);
+export const qwenVoices = Object.freeze([
+  Object.freeze({ value: 'aiden', label: 'Aiden — male, American English' }),
+  Object.freeze({ value: 'ryan', label: 'Ryan — male, English' }),
+  Object.freeze({ value: 'uncle_fu', label: 'Uncle Fu — male, Chinese' }),
+  Object.freeze({ value: 'dylan', label: 'Dylan — male, Beijing Chinese' }),
+  Object.freeze({ value: 'eric', label: 'Eric — male, Sichuan Chinese' }),
+  Object.freeze({ value: 'vivian', label: 'Vivian — female, Chinese' }),
+  Object.freeze({ value: 'serena', label: 'Serena — female, Chinese' }),
+  Object.freeze({ value: 'ono_anna', label: 'Ono Anna — female, Japanese' }),
+  Object.freeze({ value: 'sohee', label: 'Sohee — female, Korean' }),
+]);
+export const defaultQwenVoice = qwenVoices[0].value;
+export const isQwenVoice = (value) => qwenVoices.some((voice) => voice.value === value);
 export const defaultSettings = Object.freeze({
   engine: 'browser',
   recognitionEngine: 'browser',

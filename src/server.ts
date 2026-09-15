@@ -311,6 +311,7 @@ export function apply(
         const body = await request.json();
         const bytes = await qwen.synthesize(body?.text, {
           lang: body?.lang || 'pt-BR',
+          voice: body?.voice,
           signal: request.signal,
         });
         return new Response(bytes, {

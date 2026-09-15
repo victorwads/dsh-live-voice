@@ -123,9 +123,9 @@ for (const staleSnapshot of [false, true])
       });
       await act(async () => render());
       const button = [...document.querySelectorAll('button')].find(
-        (b) => b.getAttribute('aria-label') === 'Voice typing',
+        (b) => b.getAttribute('aria-label') === 'Start voice conversation',
       );
-      assert.ok(button, 'dictation button mounted');
+      assert.ok(button, 'voice conversation button mounted');
       await act(async () => button.click());
       assert.ok(native, 'real coordinator starts recognition adapter');
       const emit = (text, isFinal = false) => {

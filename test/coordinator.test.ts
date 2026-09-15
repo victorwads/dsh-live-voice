@@ -382,6 +382,21 @@ test('disabled automatic assistant announcements consume text without queueing s
   await f.coordinator.dispose();
 });
 
+test('turning off automatic assistant speech discards delayed queued phrases', async () => {
+  const f = fixture({ assistantSpeechDelaySeconds: 1 });
+  await f.coordinator.startConversation();
+  const callbacks = f.sessions.at(-1);
+  callbacks.onActivity(true);
+  f.coordinator.observeMessage('queued', 'Do not speak later.', { complete: true });
+  assert.equal(f.coordinator.queue.length, 1);
+  f.coordinator.updateSettings({ announceAssistantMessages: false });
+  assert.equal(f.coordinator.queue.length, 0);
+  callbacks.onActivity(false);
+  await new Promise((resolve) => setTimeout(resolve, 1100));
+  assert.deepEqual(f.spoken, []);
+  await f.coordinator.dispose();
+});
+
 test('automatic sending waits after a final phrase and remains cancellable', async () => {
   const submitted = [];
   const f = fixture({ sendingMode: 'automatic', autoSendDelaySeconds: 2 });

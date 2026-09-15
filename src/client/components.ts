@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { createWhisperSettings } from './whisper-settings.ts';
 import { createQwenSettings } from './qwen-settings.ts';
-import { usesPluginVoiceDetection, voiceDetectionPresets } from '../core/settings.ts';
+import { qwenVoices, usesPluginVoiceDetection, voiceDetectionPresets } from '../core/settings.ts';
 
 // UI only: the controller owns capture, recognition, playback and policy.
 export function createComponents(React) {
@@ -25,26 +25,37 @@ export function createComponents(React) {
     };
     const paths = {
       mic: 'M9 5a3 3 0 0 1 6 0v7a3 3 0 0 1-6 0V5M6 10v2a6 6 0 0 0 12 0v-2M12 18v4M8 22h8',
-      conversation: 'M3 10v4M7 6v12M11 3v18M15 7v10M19 5v14M23 10v4',
       speaker: 'M3 9h4l6-5v16l-6-5H3V9M17 8a6 6 0 0 1 0 8M20 5a10 10 0 0 1 0 14',
       close: 'M6 6l12 12M18 6L6 18',
       stop: 'M6 6h12v12H6z',
       pause: 'M8 5v14M16 5v14',
       play: 'M7 4l13 8-13 8z',
+      send: 'M3 11.5L21 3l-8.5 18-2-7.5L3 11.5zm7.5 2L21 3',
+      speakerOff: 'M3 9h4l6-5v16l-6-5H3V9M17 9l5 6M22 9l-5 6',
     };
     return h('svg', common, h('path', { d: paths[name] || paths.mic }));
   }
-  function Button({ label, icon, className = 'dlv-pill-button', ...props }) {
+  function Button({
+    label,
+    icon,
+    visibleLabel,
+    title = label,
+    className = 'dlv-pill-button',
+    ...props
+  }) {
     return h(
       'button',
       {
         ...props,
         type: 'button',
         className: 'dlv-icon-button ' + className,
-        title: label,
+        title,
         'aria-label': label,
       },
       h(Icon, { name: icon }),
+      visibleLabel
+        ? h('span', { className: 'dlv-toggle-state', 'aria-hidden': true }, visibleLabel)
+        : null,
     );
   }
   // Keep rejection handling local without swallowing controller-published errors.
@@ -101,17 +112,6 @@ export function createComponents(React) {
       h(Button, {
         className: 'dlv-mic',
         icon: 'mic',
-        label: pending
-          ? 'Checking microphone availability'
-          : unavailable
-            ? reason || 'Speech recognition unavailable'
-            : 'Voice typing',
-        disabled: pending,
-        onClick: () => (unavailable ? invoke('explainRecognition') : invoke('startDictation')),
-      }),
-      h(Button, {
-        className: 'dlv-mic',
-        icon: 'conversation',
         label: pending
           ? 'Checking microphone availability'
           : unavailable
@@ -249,6 +249,34 @@ export function createComponents(React) {
           : null,
         h(Waveform, { controller, enabled: Boolean(state.listening) }),
         h('span', { className: 'dlv-status', role: 'status', 'aria-live': 'polite' }, status),
+        h(Button, {
+          className: 'dlv-live-toggle',
+          label: 'Automatic sending',
+          title: `Automatic sending: ${state.settings.sendingMode === 'automatic' ? 'on' : 'off'}`,
+          icon: 'send',
+          visibleLabel: state.settings.sendingMode === 'automatic' ? 'ON' : 'OFF',
+          role: 'switch',
+          'aria-checked': state.settings.sendingMode === 'automatic',
+          onClick: () =>
+            invoke('updateSettings', {
+              sendingMode: state.settings.sendingMode === 'automatic' ? 'manual' : 'automatic',
+            }),
+        }),
+        h(Button, {
+          className: 'dlv-live-toggle',
+          label: 'Automatic assistant speech',
+          title: `Automatic assistant speech: ${
+            state.settings.announceAssistantMessages !== false ? 'on' : 'off'
+          }`,
+          icon: state.settings.announceAssistantMessages !== false ? 'speaker' : 'speakerOff',
+          visibleLabel: state.settings.announceAssistantMessages !== false ? 'ON' : 'OFF',
+          role: 'switch',
+          'aria-checked': state.settings.announceAssistantMessages !== false,
+          onClick: () =>
+            invoke('updateSettings', {
+              announceAssistantMessages: state.settings.announceAssistantMessages === false,
+            }),
+        }),
         remaining
           ? h(Button, {
               label: 'Cancel automatic send',
@@ -409,9 +437,19 @@ export function createComponents(React) {
                 )
               : null,
           settings.engine === 'qwen-http'
-            ? subcard('Qwen server connection', [
-                h(QwenSettings, { key: 'qwen-output-settings', controller }),
-              ])
+            ? h(
+                React.Fragment,
+                null,
+                field('Qwen voice', 'voice', qwenVoices),
+                h(
+                  'small',
+                  null,
+                  `Aiden is used by default. These preset voices are not native Brazilian Portuguese voices.`,
+                ),
+                subcard('Qwen server connection', [
+                  h(QwenSettings, { key: 'qwen-output-settings', controller }),
+                ]),
+              )
             : null,
           h(
             'label',

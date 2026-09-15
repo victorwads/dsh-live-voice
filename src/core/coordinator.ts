@@ -103,6 +103,11 @@ export class VoiceCoordinator {
     });
     this.patch({ settings, error: null });
     if (settings.sendingMode !== 'automatic') this.cancelAutoSend();
+    if (Object.hasOwn(next, 'announceAssistantMessages') && !settings.announceAssistantMessages) {
+      this.queue = [];
+      this.assistantSpeechNotBefore = 0;
+      this._cancelAssistantSpeechTimer();
+    }
     if (Object.hasOwn(next, 'assistantSpeechDelaySeconds') && this.assistantSpeechNotBefore > 0) {
       this.assistantSpeechNotBefore = Date.now() + settings.assistantSpeechDelaySeconds * 1000;
       this._cancelAssistantSpeechTimer();

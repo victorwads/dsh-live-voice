@@ -45,13 +45,16 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     },
     getSnapshot: () => state,
     meter: { level: () => 0 },
-    startDictation: () => calls.push('dictate'),
     startConversation: () => calls.push('conversation'),
     endConversation: () => calls.push('end'),
     stopSpeech: () => calls.push('stop'),
     resumeSpeech: () => calls.push('resume'),
     speak: (text) => calls.push(['speak', text]),
-    updateSettings: (value) => calls.push(['settings', value]),
+    updateSettings: (value) => {
+      calls.push(['settings', value]);
+      state = { ...state, settings: { ...state.settings, ...value } };
+      callbacks.forEach((cb) => cb());
+    },
     clearError: () => calls.push('clear'),
   };
   const { MicrophoneButtons, RecordingBar, SettingsPanel } = createComponents(React);
@@ -69,8 +72,16 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
         ),
       ),
     );
-    await act(async () => click('Voice typing'));
-    assert.deepEqual(calls, ['dictate']);
+    const microphoneButtons = document.querySelectorAll('.dlv-mic');
+    assert.equal(microphoneButtons.length, 1, 'only the conversation launcher is shown');
+    assert.equal(microphoneButtons[0].getAttribute('aria-label'), 'Start voice conversation');
+    assert.equal(
+      microphoneButtons[0].querySelector('path').getAttribute('d'),
+      'M9 5a3 3 0 0 1 6 0v7a3 3 0 0 1-6 0V5M6 10v2a6 6 0 0 0 12 0v-2M12 18v4M8 22h8',
+      'conversation launcher uses the microphone icon',
+    );
+    await act(async () => click('Start voice conversation'));
+    assert.deepEqual(calls, ['conversation']);
     assert.equal(document.querySelector('[aria-label="Voice controls"]'), null);
     assert.equal(document.querySelector('option[value=say]').disabled, true);
     const cards = [...document.querySelectorAll('.dlv-settings-card')];
@@ -167,6 +178,24 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       callbacks.forEach((cb) => cb());
     });
     assert.equal(document.querySelector('[role=status]').textContent, 'Recognizing speech…');
+    const autoSendToggle = document.querySelector('[aria-label="Automatic sending"]');
+    const assistantSpeechToggle = document.querySelector(
+      '[aria-label="Automatic assistant speech"]',
+    );
+    assert.equal(autoSendToggle.classList.contains('dlv-live-toggle'), true);
+    assert.equal(autoSendToggle.getAttribute('role'), 'switch');
+    assert.equal(autoSendToggle.getAttribute('aria-checked'), 'false');
+    assert.equal(autoSendToggle.textContent, 'OFF');
+    assert.equal(assistantSpeechToggle.getAttribute('aria-checked'), 'true');
+    assert.equal(assistantSpeechToggle.textContent, 'ON');
+    await act(async () => autoSendToggle.click());
+    assert.deepEqual(calls.at(-1), ['settings', { sendingMode: 'automatic' }]);
+    assert.equal(autoSendToggle.getAttribute('aria-checked'), 'true');
+    assert.equal(autoSendToggle.textContent, 'ON');
+    await act(async () => assistantSpeechToggle.click());
+    assert.deepEqual(calls.at(-1), ['settings', { announceAssistantMessages: false }]);
+    assert.equal(assistantSpeechToggle.getAttribute('aria-checked'), 'false');
+    assert.equal(assistantSpeechToggle.textContent, 'OFF');
     await act(async () => {
       state = { ...state, speaking: true, paused: true };
       callbacks.forEach((cb) => cb());
@@ -176,7 +205,18 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     await act(async () => click('End voice conversation'));
     assert.deepEqual(
       calls.map((item) => (Array.isArray(item) ? item[0] : item)),
-      ['dictate', 'settings', 'speak', 'settings', 'settings', 'resume', 'stop', 'end'],
+      [
+        'conversation',
+        'settings',
+        'speak',
+        'settings',
+        'settings',
+        'settings',
+        'settings',
+        'resume',
+        'stop',
+        'end',
+      ],
     );
     await act(async () => click('Close voice settings'));
     assert.equal(calls.at(-1), 'close');
@@ -205,6 +245,68 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
   } finally {
     await act(async () => root.unmount());
     assert.equal(callbacks.size, 0);
+    dom.window.close();
+    Object.assign(globalThis, previous);
+    delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+  }
+});
+
+test('Qwen speech output exposes and persists the selected preset voice', async () => {
+  const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost' });
+  const previous = {
+    window: globalThis.window,
+    document: globalThis.document,
+    fetch: globalThis.fetch,
+  };
+  globalThis.window = dom.window;
+  globalThis.document = dom.window.document;
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  globalThis.fetch = async () =>
+    Response.json({
+      ok: true,
+      value: { baseUrl: 'http://127.0.0.1:8080/', timeoutMs: 300000 },
+    });
+  const callbacks = new Set();
+  const calls = [];
+  const state = {
+    settings: {
+      engine: 'qwen-http',
+      recognitionEngine: 'browser',
+      voice: 'aiden',
+      lang: 'pt-BR',
+      mode: 'speaker',
+      rate: 1,
+    },
+    capabilities: { 'qwen-http': { supported: true } },
+  };
+  const controller = {
+    subscribe: (callback) => {
+      callbacks.add(callback);
+      return () => callbacks.delete(callback);
+    },
+    getSnapshot: () => state,
+    updateSettings: (value) => calls.push(value),
+    endConversation: () => {},
+    refreshCapabilities: () => {},
+  };
+  const { SettingsPanel } = createComponents(React);
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await act(async () => root.render(React.createElement(SettingsPanel, { controller })));
+    const label = [...document.querySelectorAll('label')].find((candidate) =>
+      candidate.textContent.startsWith('Qwen voice'),
+    );
+    assert.ok(label);
+    const select = label.querySelector('select');
+    assert.equal(select.value, 'aiden');
+    assert.equal(select.querySelectorAll('option').length, 9);
+    await act(async () => {
+      select.value = 'ryan';
+      select.dispatchEvent(new window.Event('change', { bubbles: true }));
+    });
+    assert.deepEqual(calls.at(-1), { voice: 'ryan' });
+  } finally {
+    await act(async () => root.unmount());
     dom.window.close();
     Object.assign(globalThis, previous);
     delete globalThis.IS_REACT_ACT_ENVIRONMENT;
