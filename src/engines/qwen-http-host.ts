@@ -6,22 +6,16 @@ import { randomUUID } from 'node:crypto';
 import { defaultQwenVoice, isQwenVoice } from '../core/settings.ts';
 import { validateMonoPcm16Wav } from './recognition/whisper-http-host.ts';
 
-const LOOPBACK = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
 const clean = (value) => String(value ?? '').trim();
 export function resolveQwenBaseUrl(
   value = process.env.DSH_LIVE_VOICE_QWEN_URL || 'http://127.0.0.1:8080/',
 ) {
   const url = new URL(value);
-  if (
-    url.protocol !== 'http:' ||
-    !LOOPBACK.has(url.hostname) ||
-    url.username ||
-    url.password ||
-    url.hash
-  )
-    throw new Error('Qwen API URL must be an unauthenticated loopback http URL.');
+  if (!['http:', 'https:'].includes(url.protocol))
+    throw new Error('Qwen API URL must use HTTP or HTTPS.');
   url.pathname = url.pathname.replace(/\/*$/, '/');
   url.search = '';
+  url.hash = '';
   return url;
 }
 export function validateQwenConfig(value) {

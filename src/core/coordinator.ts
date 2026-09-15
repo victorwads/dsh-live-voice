@@ -317,8 +317,18 @@ export class VoiceCoordinator {
         !this.disposed &&
         this.snapshot.settings.sendingMode === 'automatic' &&
         expected === this.composer.getDraft()
-      )
-        this.composer.submit();
+      ) {
+        try {
+          this.composer.submit();
+          // Web Speech keeps a cumulative native result list for the lifetime of
+          // one recognition instance. Start a fresh instance at the turn boundary
+          // so the sent utterance cannot prefix the next one.
+          this.transcript.reset();
+          this.recognition.reset?.();
+        } catch (error) {
+          this.patch({ error: message(error) });
+        }
+      }
     }, delay);
   }
   cancelAutoSend() {

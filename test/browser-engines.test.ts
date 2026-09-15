@@ -292,6 +292,38 @@ test('recognition configures local continuous interim recognition, deduplicates 
   assert.equal(getEventListeners(controller.signal, 'abort').length, 0);
 });
 
+test('recognition reset starts a fresh native result list and ignores the old instance', async () => {
+  const fake = recognition(),
+    results = [],
+    activity = [];
+  const engine = new BrowserRecognitionEngine({
+    globals: fake.globals,
+    onResult: (value) => results.push(value),
+    onActivity: (value) => activity.push(value),
+  });
+  await engine.start();
+  const old = fake.current();
+  old.emit('speechstart');
+  old.emit('result', { results: [result('sent phrase', true)] });
+  const staleResult = old.onresult;
+
+  assert.equal(engine.reset(), true);
+  assert.equal(old.aborted, true);
+  detached(old);
+  const fresh = fake.current();
+  assert.notEqual(fresh, old);
+  assert.equal(fresh.started, true);
+  staleResult({ results: [result('sent phrase', true), result('stale continuation')] });
+  fresh.emit('result', { results: [result('new phrase')] });
+
+  assert.deepEqual(results, [
+    { interim: '', final: 'sent phrase' },
+    { interim: 'new phrase', final: '' },
+  ]);
+  assert.deepEqual(activity, [true, false]);
+  await engine.stop();
+});
+
 test('recognition stop promptly cancels pending checks and later checks cannot resurrect capture', async () => {
   let release;
   const fake = recognition({

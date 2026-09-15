@@ -113,7 +113,7 @@ export function createQwenSettings(React) {
       h(
         'p',
         null,
-        'Host-wide settings for the resident Qwen3 ASR + TTS server. Only unauthenticated loopback HTTP is allowed; the browser reaches it through authenticated DSH routes.',
+        'Host-wide settings for the Qwen3 ASR + TTS server. Enter any HTTP or HTTPS base URL reachable from the DSH host. The browser accesses it through authenticated DSH routes.',
       ),
       field('Qwen API base URL', 'baseUrl'),
       field('Request timeout (ms)', 'timeoutMs', 'number'),

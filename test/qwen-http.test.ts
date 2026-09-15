@@ -9,12 +9,22 @@ import {
 import { encodeMonoPcm16Wav } from '../src/engines/recognition/whisper-http.ts';
 import { QwenHttpSpeakingEngine } from '../src/engines/speaking/qwen-http.ts';
 
-test('Qwen host permits only loopback and maps pt-BR onto the unified API', async () => {
-  assert.throws(() => resolveQwenBaseUrl('https://example.com'), /loopback/);
-  assert.deepEqual(validateQwenConfig({ baseUrl: 'http://localhost:8080', timeoutMs: 300000 }), {
-    baseUrl: 'http://localhost:8080/',
-    timeoutMs: 300000,
-  });
+test('Qwen host permits arbitrary HTTP and HTTPS base URLs', () => {
+  const accepted = [
+    ['http://localhost:8080', 'http://localhost:8080/'],
+    ['http://192.168.15.4:8080', 'http://192.168.15.4:8080/'],
+    ['https://qwen.example.com/api', 'https://qwen.example.com/api/'],
+    [
+      'https://user:secret@example.com/api?token=abc#section',
+      'https://user:secret@example.com/api/',
+    ],
+  ];
+  for (const [input, expected] of accepted)
+    assert.equal(validateQwenConfig({ baseUrl: input, timeoutMs: 300000 }).baseUrl, expected);
+  assert.throws(() => resolveQwenBaseUrl('file:///tmp/qwen.sock'), /HTTP or HTTPS/);
+});
+
+test('Qwen host maps pt-BR onto the unified API', async () => {
   const requests = [];
   const wav = encodeMonoPcm16Wav(new Float32Array(16000).fill(0.1), 16000);
   const host = new QwenHttpHost({

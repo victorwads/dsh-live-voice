@@ -100,7 +100,7 @@ Speech processing can run locally, but the DSH language model may still be remot
 
 ## Qwen3 HTTP engine
 
-When a compatible Qwen3 speech API is already running on the DSH host, choose **Qwen3 ASR — local MLX server** under Speech recognition and **Qwen3 TTS — local MLX server** under Speech output. Configure its loopback base URL in **DSH Settings → Live Voice**. The plugin supports the OminiX-API contract and standard OpenAI-style speech endpoints at `GET /health`, `POST /v1/audio/transcriptions`, and `POST /v1/audio/speech`; it does not install, start, stop, or manage that external service or its model weights.
+When a compatible Qwen3 speech API is already running on the DSH host, choose **Qwen3 ASR — local MLX server** under Speech recognition and **Qwen3 TTS — local MLX server** under Speech output. Configure its base URL in **DSH Settings → Live Voice**. The Qwen server may use any HTTP or HTTPS base URL reachable from the DSH host. The plugin supports the OminiX-API contract and standard OpenAI-style speech endpoints at `GET /health`, `POST /v1/audio/transcriptions`, and `POST /v1/audio/speech`; it does not install, start, stop, or manage that external service or its model weights.
 
 ## License
 

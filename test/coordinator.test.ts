@@ -30,6 +30,10 @@ function fixture(settings = {}) {
     async stop() {
       log.push('input:stop');
     },
+    reset() {
+      log.push('input:reset');
+      return true;
+    },
   };
   const meter = {
     async capability() {
@@ -419,6 +423,19 @@ test('automatic sending uses DSH submit only when the draft is still unchanged',
   f.sessions[0].onResult({ final: 'hello' });
   await new Promise((resolve) => setTimeout(resolve, 2100));
   assert.deepEqual(submitted, ['typed hello']);
+  await f.coordinator.dispose();
+});
+
+test('successful automatic send resets recognition before the next utterance', async () => {
+  const submitted = [];
+  const f = fixture({ sendingMode: 'automatic', autoSendDelaySeconds: 2 });
+  f.coordinator.composer.submit = () => submitted.push(f.draft());
+  await f.coordinator.startDictation();
+  f.sessions[0].onResult({ final: 'hello' });
+  await new Promise((resolve) => setTimeout(resolve, 2100));
+
+  assert.deepEqual(submitted, ['typed hello']);
+  assert.equal(f.log.filter((entry) => entry === 'input:reset').length, 1);
   await f.coordinator.dispose();
 });
 

@@ -19,6 +19,7 @@ const notify = (callback, value) => {
  * not when permission is granted. Native asynchronous errors go to onError(Error).
  * onResult({interim,final}) contains the current interim string and NEW final text only.
  * onActivity(boolean) reports speech activity, not microphone permission/readiness.
+ * reset() replaces active native capture so its cumulative result list starts empty.
  * stop() aborts capture, discards pending results, removes handlers and cancels restarts.
  * Consecutive no-progress restarts are bounded; speech or nonempty results reset the budget.
  * Native start acceptance alone is not progress. Restart delay backs off up to 30 seconds.
@@ -270,6 +271,28 @@ export class BrowserRecognitionEngine {
       );
     };
     recognition.start();
+  }
+
+  reset() {
+    const session = this.session;
+    const recognition = session?.recognition;
+    if (!session || !recognition) return false;
+    this._detach(recognition);
+    session.recognition = null;
+    try {
+      recognition.abort();
+    } catch {
+      /* Browser already ended capture. */
+    }
+    this._activity(session, false);
+    if (this.session !== session || session.signal?.aborted) return false;
+    try {
+      this._begin(session);
+      return true;
+    } catch (error) {
+      this._fail(session, error);
+      return false;
+    }
   }
 
   async stop() {
