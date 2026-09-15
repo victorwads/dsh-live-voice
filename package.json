@@ -8,6 +8,8 @@
     "build": "npm run typecheck && node --experimental-strip-types scripts/build.ts",
     "check:dist": "node scripts/check-dist.mjs",
     "dev": "node --experimental-strip-types scripts/build.ts --watch",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
     "setup:hooks": "git config core.hooksPath .githooks",
     "prepack": "npm run build"
   },
@@ -30,6 +32,10 @@
     "tts",
     "whisper",
     "whisper-cpp",
+    "qwen3-asr",
+    "qwen3-tts",
+    "mlx",
+    "apple-silicon",
     "web-speech-api",
     "macos-say",
     "turn-taking",
@@ -67,6 +73,7 @@
     "esbuild": "^0.28.2",
     "jsdom": "^30.0.1",
     "playwright-core": "^1.63.0",
+    "prettier": "3.9.6",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "typescript": "^7.0.2"

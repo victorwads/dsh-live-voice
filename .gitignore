@@ -10,3 +10,8 @@ artifacts/
 .test-dist/
 .npm-cache/
 .DS_Store
+
+# Local speech runtimes, model weights, logs, and generated audio. These files
+# are machine-specific and can be many gigabytes; only the setup scripts and
+# documentation belong in Git.
+.local-voice/

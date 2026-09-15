@@ -2,6 +2,10 @@
 
 This document describes the product plan and local implementation progress. The published npm version is a documentation placeholder; the working tree now contains an initial plugin undergoing integration validation. Features below describe intended behavior unless verified in the progress section.
 
+## Qwen3 local engine
+
+Qwen3 is available as independent recognition and speaking selections backed by a separately managed HTTP process on the DSH host. Runtime installation, weights, and service lifecycle stay outside the repository. The authenticated host bridge accepts only a loopback base URL, validates bounded mono PCM16 WAV before ASR forwarding, maps `pt-BR` to Portuguese, forwards TTS text without logging it, and returns WAV audio for browser playback. Browser cancellation aborts pending host/model requests and stale synthesized audio cannot begin playback after cancellation. Automated plugin coverage includes configuration normalization, loopback validation, HTTP payloads, WAV transport, browser playback, and route cleanup. Native model and endpoint acceptance must be reported separately from these tests.
+
 ## TypeScript migration
 
 The implementation, tests, and developer scripts now use `.ts` source files. `tsconfig.json` centralizes compiler settings and `npm run typecheck` is part of the build path. The build generates a bundled browser client (`lib/client.js`), an ESM host bundle (`lib/server.js`), and temporary transpiled test artifacts that are ignored by Git. This is a source-language migration; the DSH runtime still receives JavaScript bundles. The compiler setup is transitional: current converted legacy files use `@ts-nocheck`, so this is not yet a claim that every implementation boundary has complete static typing.

@@ -30,8 +30,8 @@ A heartfelt thank you to [GooDAnDReaDY](https://github.com/GooDAnDReaDY) for [ds
 |---|---|
 | 🎙️ | Voice typing directly into the DSH composer |
 | 💬 | Continuous voice conversations with automatic assistant speech |
-| 🧠 | Browser SpeechRecognition or local loopback whisper.cpp |
-| 🔊 | Browser speech synthesis or native macOS `say` |
+| 🧠 | Browser SpeechRecognition, local loopback whisper.cpp, or Qwen3-ASR on Apple MLX |
+| 🔊 | Browser speech synthesis, native macOS `say`, or Qwen3-TTS on Apple MLX |
 | ⏱️ | Manual or automatic sending after configurable silence |
 | 🫁 | Stable-silence delay prevents breathing pauses from starting assistant speech |
 | 🎧 | Open-microphone mode for headphones |
@@ -91,12 +91,16 @@ The microphone remains open during playback, allowing your voice to pause the as
 
 ## Local-first architecture
 
-- **Recognition:** Browser SpeechRecognition or loopback whisper.cpp HTTP.
-- **Speech output:** browser/device audio or native macOS `say`.
+- **Recognition:** Browser SpeechRecognition, loopback whisper.cpp HTTP, or Qwen3-ASR through a host-local Apple MLX server.
+- **Speech output:** browser/device audio, native macOS `say`, or host-local Qwen3-TTS with WAV playback in the browser.
 - **Whisper transport:** complete WAV utterances through authenticated same-origin DSH routes.
 - **Privacy:** raw audio and transcripts are not logged by default.
 
 Speech processing can run locally, but the DSH language model may still be remote.
+
+## Qwen3 HTTP engine
+
+When a compatible Qwen3 speech API is already running on the DSH host, choose **Qwen3 ASR — local MLX server** under Speech recognition and **Qwen3 TTS — local MLX server** under Speech output. Configure its loopback base URL in **DSH Settings → Live Voice**. The plugin supports the OminiX-API contract and standard OpenAI-style speech endpoints at `GET /health`, `POST /v1/audio/transcriptions`, and `POST /v1/audio/speech`; it does not install, start, stop, or manage that external service or its model weights.
 
 ## License
 

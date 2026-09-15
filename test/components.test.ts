@@ -1,57 +1,212 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import React, {act} from 'react';
-import {createRoot} from 'react-dom/client';
-import {JSDOM} from 'jsdom';
-import {createComponents} from '../src/client/components.ts';
-test('mounted voice UI exposes controls, distinct states, and capability failures', async()=>{
- const dom=new JSDOM('<div id="root"></div>',{url:'http://localhost'});
- const previous={window:globalThis.window,document:globalThis.document};
- globalThis.window=dom.window; globalThis.document=dom.window.document; globalThis.IS_REACT_ACT_ENVIRONMENT=true;
- dom.window.HTMLCanvasElement.prototype.getContext=()=>null;
- const callbacks=new Set(); const calls=[];
- let state={conversation:false,listening:false,recognizing:false,starting:false,speaking:false,paused:false,settings:{engine:'browser',recognitionEngine:'browser',recognitionProcessLocally:true,recognitionAutoInstall:true,voiceDetectionPreset:'natural',lang:'pt-BR',mode:'speaker',rate:1},capabilities:{browser:{supported:true,pause:true,resume:true},say:{supported:false},recognition:{supported:true},capture:{supported:true,permission:'granted'}}};
- const controller={subscribe:cb=>{callbacks.add(cb);return()=>callbacks.delete(cb);},getSnapshot:()=>state,meter:{level:()=>0},startDictation:()=>calls.push('dictate'),startConversation:()=>calls.push('conversation'),endConversation:()=>calls.push('end'),stopSpeech:()=>calls.push('stop'),resumeSpeech:()=>calls.push('resume'),speak:text=>calls.push(['speak',text]),updateSettings:value=>calls.push(['settings',value]),clearError:()=>calls.push('clear')};
- const {MicrophoneButtons,RecordingBar,SettingsPanel}=createComponents(React);
- const root=createRoot(document.getElementById('root'));
- const click=label=>document.querySelector('[aria-label="'+label+'"]').click();
- try {
-  await act(async()=>root.render(React.createElement(React.Fragment,null,React.createElement(MicrophoneButtons,{controller}),React.createElement(RecordingBar,{controller}),React.createElement(SettingsPanel,{controller,onClose:()=>calls.push('close')}))));
-  await act(async()=>click('Voice typing')); assert.deepEqual(calls,['dictate']);
-  assert.equal(document.querySelector('[aria-label="Voice controls"]'),null);
-  assert.equal(document.querySelector('option[value=say]').disabled,true);
-  const cards=[...document.querySelectorAll('.dlv-settings-card')];assert.deepEqual(cards.map(card=>card.querySelector(':scope > summary').textContent),['Speech output','Speech recognition','Conversation']);
-  assert.equal(cards.every(card=>card.open===false),true,'all root settings cards start collapsed');
-  const conversation=cards[2];assert.match(conversation.textContent,/Automatically speak new assistant messages/);assert.match(conversation.textContent,/Stop assistant speech when I send a message/);assert.match(conversation.textContent,/does not stop the assistant audio/);assert.match(conversation.textContent,/Assistant response delay/);assert.match(conversation.textContent,/continuous silence/);assert.match(conversation.textContent,/Sending mode/);assert.match(conversation.textContent,/Gated listening releases the microphone/);
-  assert.equal([...document.querySelectorAll('.dlv-settings label')].some(label=>label.textContent.includes('Recognition engine')),true);
-  assert.equal(document.querySelector('option[value=whisper-http]').textContent,'Whisper HTTP — DSH host');
-  assert.equal(document.querySelector('[aria-label="Silence detection settings"]'),null,'browser provider controls its own segmentation');
-  const checks=[...document.querySelectorAll('input[type=checkbox]')];
-  assert.equal(checks.length,4);assert.equal(checks.filter(input=>input.checked).length,3);assert.equal(checks.find(input=>input.parentElement.textContent.includes('Stop assistant speech when I send a message')).checked,false);
-  await act(async()=>checks[0].click());
-  assert.deepEqual(calls.at(-1),['settings',{recognitionProcessLocally:false}]);
-  assert.equal([...document.querySelectorAll('button')].find(b=>b.textContent==='Test selected speech output').disabled,false);
-  await act(async()=>[...document.querySelectorAll('button')].find(b=>b.textContent==='Test selected speech output').click());
-  assert.equal(calls.at(-1)[0],'speak');
-  await act(async()=>{state={...state,settings:{...state.settings,recognitionEngine:'whisper-http'}};callbacks.forEach(cb=>cb());});
-  const language=[...document.querySelectorAll('label')].find(label=>label.textContent.includes('Recognition language')).querySelector('select');assert.equal(language.querySelector('option[value=auto]').textContent,'Automatic — detect language');
-  await act(async()=>{language.value='auto';language.dispatchEvent(new window.Event('change',{bubbles:true}));});assert.deepEqual(calls.at(-1),['settings',{recognitionLang:'auto'}]);
-  const connection=[...document.querySelectorAll('.dlv-settings-subcard > summary')].find(summary=>summary.textContent==='Connection settings');assert.ok(connection);assert.equal(connection.parentElement.querySelector('fieldset'),null,'connection fields are not wrapped in another card');
-  const detection=document.querySelector('[aria-label="Silence detection settings"]');assert.ok(detection);assert.equal(detection.querySelectorAll('input[type=radio]').length,3);
-  const long=[...detection.querySelectorAll('input[type=radio]')].find(input=>input.value==='long');await act(async()=>long.click());assert.deepEqual(calls.at(-1),['settings',{voiceDetectionPreset:'long'}]);
-  await act(async()=>{state={...state,conversation:true,listening:true,recognizing:true};callbacks.forEach(cb=>cb());});
-  assert.equal(document.querySelector('[role=status]').textContent,'Recognizing speech…');
-  await act(async()=>{state={...state,speaking:true,paused:true};callbacks.forEach(cb=>cb());});
-  await act(async()=>click('Resume speech')); await act(async()=>click('Stop all speech')); await act(async()=>click('End voice conversation'));
-  assert.deepEqual(calls.map(item=>Array.isArray(item)?item[0]:item),['dictate','settings','speak','settings','settings','resume','stop','end']);
-  await act(async()=>click('Close voice settings'));assert.equal(calls.at(-1),'close');
-  await act(async()=>root.render(React.createElement(MicrophoneButtons,{controller})));
-  controller.explainRecognition=()=>{throw new Error('Missing local language pack');};
-  await act(async()=>{state={...state,conversation:false,listening:false,recognizing:false,capabilities:{browser:{supported:true,pause:true,resume:true},recognition:{supported:false},capture:{supported:true}}};callbacks.forEach(cb=>cb());});
-  await act(async()=>click('Speech recognition unavailable'));
-  assert.match(document.querySelector('[role=alert]').textContent,/Missing local language pack/);
-  await act(async()=>click('Dismiss voice error'));
-  assert.equal(document.querySelector('[role=alert]'),null);
- } finally {await act(async()=>root.unmount());assert.equal(callbacks.size,0);dom.window.close();Object.assign(globalThis,previous);delete globalThis.IS_REACT_ACT_ENVIRONMENT;}
+import React, { act } from 'react';
+import { createRoot } from 'react-dom/client';
+import { JSDOM } from 'jsdom';
+import { createComponents } from '../src/client/components.ts';
+test('mounted voice UI exposes controls, distinct states, and capability failures', async () => {
+  const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost' });
+  const previous = { window: globalThis.window, document: globalThis.document };
+  globalThis.window = dom.window;
+  globalThis.document = dom.window.document;
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  dom.window.HTMLCanvasElement.prototype.getContext = () => null;
+  const callbacks = new Set();
+  const calls = [];
+  let state = {
+    conversation: false,
+    listening: false,
+    recognizing: false,
+    starting: false,
+    speaking: false,
+    paused: false,
+    settings: {
+      engine: 'browser',
+      recognitionEngine: 'browser',
+      recognitionProcessLocally: true,
+      recognitionAutoInstall: true,
+      voiceDetectionPreset: 'natural',
+      lang: 'pt-BR',
+      mode: 'speaker',
+      rate: 1,
+    },
+    capabilities: {
+      browser: { supported: true, pause: true, resume: true },
+      say: { supported: false },
+      recognition: { supported: true },
+      capture: { supported: true, permission: 'granted' },
+    },
+  };
+  const controller = {
+    subscribe: (cb) => {
+      callbacks.add(cb);
+      return () => callbacks.delete(cb);
+    },
+    getSnapshot: () => state,
+    meter: { level: () => 0 },
+    startDictation: () => calls.push('dictate'),
+    startConversation: () => calls.push('conversation'),
+    endConversation: () => calls.push('end'),
+    stopSpeech: () => calls.push('stop'),
+    resumeSpeech: () => calls.push('resume'),
+    speak: (text) => calls.push(['speak', text]),
+    updateSettings: (value) => calls.push(['settings', value]),
+    clearError: () => calls.push('clear'),
+  };
+  const { MicrophoneButtons, RecordingBar, SettingsPanel } = createComponents(React);
+  const root = createRoot(document.getElementById('root'));
+  const click = (label) => document.querySelector('[aria-label="' + label + '"]').click();
+  try {
+    await act(async () =>
+      root.render(
+        React.createElement(
+          React.Fragment,
+          null,
+          React.createElement(MicrophoneButtons, { controller }),
+          React.createElement(RecordingBar, { controller }),
+          React.createElement(SettingsPanel, { controller, onClose: () => calls.push('close') }),
+        ),
+      ),
+    );
+    await act(async () => click('Voice typing'));
+    assert.deepEqual(calls, ['dictate']);
+    assert.equal(document.querySelector('[aria-label="Voice controls"]'), null);
+    assert.equal(document.querySelector('option[value=say]').disabled, true);
+    const cards = [...document.querySelectorAll('.dlv-settings-card')];
+    assert.deepEqual(
+      cards.map((card) => card.querySelector(':scope > summary').textContent),
+      ['Speech output', 'Speech recognition', 'Conversation'],
+    );
+    assert.equal(
+      cards.every((card) => card.open === false),
+      true,
+      'all root settings cards start collapsed',
+    );
+    const conversation = cards[2];
+    assert.match(conversation.textContent, /Automatically speak new assistant messages/);
+    assert.match(conversation.textContent, /Stop assistant speech when I send a message/);
+    assert.match(conversation.textContent, /does not stop the assistant audio/);
+    assert.match(conversation.textContent, /Assistant response delay/);
+    assert.match(conversation.textContent, /continuous silence/);
+    assert.match(conversation.textContent, /Sending mode/);
+    assert.match(conversation.textContent, /Gated listening releases the microphone/);
+    assert.equal(
+      [...document.querySelectorAll('.dlv-settings label')].some((label) =>
+        label.textContent.includes('Recognition engine'),
+      ),
+      true,
+    );
+    assert.equal(
+      document.querySelector('option[value=whisper-http]').textContent,
+      'Whisper HTTP — DSH host',
+    );
+    assert.equal(
+      document.querySelector('[aria-label="Silence detection settings"]'),
+      null,
+      'browser provider controls its own segmentation',
+    );
+    const checks = [...document.querySelectorAll('input[type=checkbox]')];
+    assert.equal(checks.length, 4);
+    assert.equal(checks.filter((input) => input.checked).length, 3);
+    assert.equal(
+      checks.find((input) =>
+        input.parentElement.textContent.includes('Stop assistant speech when I send a message'),
+      ).checked,
+      false,
+    );
+    await act(async () => checks[0].click());
+    assert.deepEqual(calls.at(-1), ['settings', { recognitionProcessLocally: false }]);
+    assert.equal(
+      [...document.querySelectorAll('button')].find(
+        (b) => b.textContent === 'Test selected speech output',
+      ).disabled,
+      false,
+    );
+    await act(async () =>
+      [...document.querySelectorAll('button')]
+        .find((b) => b.textContent === 'Test selected speech output')
+        .click(),
+    );
+    assert.equal(calls.at(-1)[0], 'speak');
+    await act(async () => {
+      state = { ...state, settings: { ...state.settings, recognitionEngine: 'whisper-http' } };
+      callbacks.forEach((cb) => cb());
+    });
+    const language = [...document.querySelectorAll('label')]
+      .find((label) => label.textContent.includes('Recognition language'))
+      .querySelector('select');
+    assert.equal(
+      language.querySelector('option[value=auto]').textContent,
+      'Automatic — detect language',
+    );
+    await act(async () => {
+      language.value = 'auto';
+      language.dispatchEvent(new window.Event('change', { bubbles: true }));
+    });
+    assert.deepEqual(calls.at(-1), ['settings', { recognitionLang: 'auto' }]);
+    const connection = [...document.querySelectorAll('.dlv-settings-subcard > summary')].find(
+      (summary) => summary.textContent === 'Connection settings',
+    );
+    assert.ok(connection);
+    assert.equal(
+      connection.parentElement.querySelector('fieldset'),
+      null,
+      'connection fields are not wrapped in another card',
+    );
+    const detection = document.querySelector('[aria-label="Silence detection settings"]');
+    assert.ok(detection);
+    assert.equal(detection.querySelectorAll('input[type=radio]').length, 3);
+    const long = [...detection.querySelectorAll('input[type=radio]')].find(
+      (input) => input.value === 'long',
+    );
+    await act(async () => long.click());
+    assert.deepEqual(calls.at(-1), ['settings', { voiceDetectionPreset: 'long' }]);
+    await act(async () => {
+      state = { ...state, conversation: true, listening: true, recognizing: true };
+      callbacks.forEach((cb) => cb());
+    });
+    assert.equal(document.querySelector('[role=status]').textContent, 'Recognizing speech…');
+    await act(async () => {
+      state = { ...state, speaking: true, paused: true };
+      callbacks.forEach((cb) => cb());
+    });
+    await act(async () => click('Resume speech'));
+    await act(async () => click('Stop all speech'));
+    await act(async () => click('End voice conversation'));
+    assert.deepEqual(
+      calls.map((item) => (Array.isArray(item) ? item[0] : item)),
+      ['dictate', 'settings', 'speak', 'settings', 'settings', 'resume', 'stop', 'end'],
+    );
+    await act(async () => click('Close voice settings'));
+    assert.equal(calls.at(-1), 'close');
+    await act(async () => root.render(React.createElement(MicrophoneButtons, { controller })));
+    controller.explainRecognition = () => {
+      throw new Error('Missing local language pack');
+    };
+    await act(async () => {
+      state = {
+        ...state,
+        conversation: false,
+        listening: false,
+        recognizing: false,
+        capabilities: {
+          browser: { supported: true, pause: true, resume: true },
+          recognition: { supported: false },
+          capture: { supported: true },
+        },
+      };
+      callbacks.forEach((cb) => cb());
+    });
+    await act(async () => click('Speech recognition unavailable'));
+    assert.match(document.querySelector('[role=alert]').textContent, /Missing local language pack/);
+    await act(async () => click('Dismiss voice error'));
+    assert.equal(document.querySelector('[role=alert]'), null);
+  } finally {
+    await act(async () => root.unmount());
+    assert.equal(callbacks.size, 0);
+    dom.window.close();
+    Object.assign(globalThis, previous);
+    delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+  }
 });

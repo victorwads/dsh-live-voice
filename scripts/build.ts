@@ -3,12 +3,48 @@ import { build, context, type BuildOptions } from 'esbuild';
 import { rm, mkdir } from 'node:fs/promises';
 
 const client: BuildOptions = {
-  entryPoints: ['src/client/index.ts'], outfile: 'lib/client.js', bundle: true,
-  format: 'cjs', platform: 'browser', target: ['es2022'], external: ['react'],
-  banner: {js: 'window.__ModuleLoader__.load({id:"dsh-live-voice",factory:(require)=>{var module={exports:{}};var exports=module.exports;'},
-  footer: {js: 'return module.exports;}});'}, logLevel: 'info',
+  entryPoints: ['src/client/index.ts'],
+  outfile: 'lib/client.js',
+  bundle: true,
+  format: 'cjs',
+  platform: 'browser',
+  target: ['es2022'],
+  external: ['react'],
+  banner: {
+    js: 'window.__ModuleLoader__.load({id:"dsh-live-voice",factory:(require)=>{var module={exports:{}};var exports=module.exports;',
+  },
+  footer: { js: 'return module.exports;}});' },
+  logLevel: 'info',
 };
-const host: BuildOptions = {entryPoints:['src/server.ts'],outfile:'lib/server.js',bundle:true,format:'esm',platform:'node',target:['node22'],packages:'external',logLevel:'info'};
-const tests: BuildOptions = {entryPoints:['test/*.test.ts'],outdir:'.test-dist',outbase:'test',bundle:true,format:'esm',platform:'node',target:['node22'],packages:'external',logLevel:'silent'};
-const watch=process.argv.includes('--watch');
-if(watch){const clientContext=await context(client);await clientContext.watch();const hostContext=await context(host);await hostContext.watch();}else {await rm('.test-dist',{recursive:true,force:true});await mkdir('.test-dist',{recursive:true});await Promise.all([build(client),build(host),build(tests)]);}
+const host: BuildOptions = {
+  entryPoints: ['src/server.ts'],
+  outfile: 'lib/server.js',
+  bundle: true,
+  format: 'esm',
+  platform: 'node',
+  target: ['node22'],
+  packages: 'external',
+  logLevel: 'info',
+};
+const tests: BuildOptions = {
+  entryPoints: ['test/*.test.ts'],
+  outdir: '.test-dist',
+  outbase: 'test',
+  bundle: true,
+  format: 'esm',
+  platform: 'node',
+  target: ['node22'],
+  packages: 'external',
+  logLevel: 'silent',
+};
+const watch = process.argv.includes('--watch');
+if (watch) {
+  const clientContext = await context(client);
+  await clientContext.watch();
+  const hostContext = await context(host);
+  await hostContext.watch();
+} else {
+  await rm('.test-dist', { recursive: true, force: true });
+  await mkdir('.test-dist', { recursive: true });
+  await Promise.all([build(client), build(host), build(tests)]);
+}

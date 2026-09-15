@@ -1,8 +1,13 @@
 // @ts-nocheck
 /** Own only the current hypothesis; never restore an old snapshot over user edits. */
 export class TranscriptDraft {
-  constructor() { this.reset(); }
-  reset() { this.owned = null; this.edited = false; }
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.owned = null;
+    this.edited = false;
+  }
   update(current, hypothesis, final = false) {
     if (this.edited) {
       if (final) this.edited = false;
@@ -16,7 +21,11 @@ export class TranscriptDraft {
       if (current === before + text + after) {
         base = before + after;
         at = start;
-      } else if (text && current.indexOf(text) >= 0 && current.indexOf(text) === current.lastIndexOf(text)) {
+      } else if (
+        text &&
+        current.indexOf(text) >= 0 &&
+        current.indexOf(text) === current.lastIndexOf(text)
+      ) {
         // Edits outside our unchanged, uniquely identifiable hypothesis are safe.
         at = current.indexOf(text);
         base = current.slice(0, at) + current.slice(at + text.length);
@@ -30,10 +39,10 @@ export class TranscriptDraft {
     }
     const before = base.slice(0, at);
     const after = base.slice(at);
-    const separator = hypothesis && before && !/\s$/.test(before) ? " " : "";
+    const separator = hypothesis && before && !/\s$/.test(before) ? ' ' : '';
     const text = separator + hypothesis;
     const result = before + text + after;
-    this.owned = final ? null : {start: at, text, before, after};
+    this.owned = final ? null : { start: at, text, before, after };
     return result;
   }
 }

@@ -9,6 +9,12 @@ npm run build
 
 Implementation, test, and build-script source is TypeScript (`.ts`). `npm run typecheck` compiles the TypeScript project; `npm test` typechecks, builds the browser and host bundles, transpiles the TypeScript tests, then runs them. Tests exercise engines, coordination, transcript edits, RPC, configuration, and UI contracts, but do not record the microphone. `npm run dev` watches the browser and host bundles only; it is not a replacement DSH server.
 
+## Qwen3 HTTP engine contract
+
+The plugin can connect to a separately managed Qwen3 speech service on an unauthenticated loopback HTTP base URL. The service lifecycle and weights are deliberately outside this repository. It must expose `GET /health`, `POST /v1/audio/transcriptions`, and `POST /v1/audio/speech`. Standard OpenAI multipart transcription and OminiX-API's JSON/base64 transcription contract are detected automatically. Host configuration is stored at `~/.dsh/dsh-live-voice-qwen.json` with owner-only permissions and rejects non-loopback URLs.
+
+The plugin's browser never calls the speech service directly. It sends WAV/text through authenticated same-origin DSH routes; the host validates input and then calls loopback. Qwen TTS returns a WAV that is played on the browser device. Qwen STT is utterance-based: the plugin's VAD uses Natural (1500 ms) by default, sends mono 16 kHz PCM16 WAV, and maps `pt-BR` to Portuguese.
+
 ## Repository checks
 
 Enable the repository's versioned Git hooks once per checkout:

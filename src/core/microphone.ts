@@ -13,34 +13,79 @@ export class MicrophoneMeter {
   }
 
   async capability() {
-    const secure = this.g.isSecureContext === true || ['localhost','127.0.0.1','::1'].includes(this.g.location?.hostname);
-    if (!secure) return {supported:false,permission:'unavailable',reason:'Microphone capture requires a secure or loopback page.'};
-    if (typeof this.g.navigator?.mediaDevices?.getUserMedia !== 'function') return {supported:false,permission:'unavailable',reason:'This browser does not expose microphone capture.'};
+    const secure =
+      this.g.isSecureContext === true ||
+      ['localhost', '127.0.0.1', '::1'].includes(this.g.location?.hostname);
+    if (!secure)
+      return {
+        supported: false,
+        permission: 'unavailable',
+        reason: 'Microphone capture requires a secure or loopback page.',
+      };
+    if (typeof this.g.navigator?.mediaDevices?.getUserMedia !== 'function')
+      return {
+        supported: false,
+        permission: 'unavailable',
+        reason: 'This browser does not expose microphone capture.',
+      };
     const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
-    if (typeof AudioContext !== 'function') return {supported:false,permission:'unavailable',reason:'This browser does not expose Web Audio for the live waveform.'};
-    let permission='prompt';
+    if (typeof AudioContext !== 'function')
+      return {
+        supported: false,
+        permission: 'unavailable',
+        reason: 'This browser does not expose Web Audio for the live waveform.',
+      };
+    let permission = 'prompt';
     try {
-      const status=await this.g.navigator.permissions?.query?.({name:'microphone'});
-      if (['granted','denied','prompt'].includes(status?.state)) permission=status.state;
-    } catch { /* Permission is discovered only when capture is requested. */ }
-    return permission==='denied' ? {supported:false,permission,reason:'Microphone permission is denied. Allow it in browser settings, then refresh availability.'} : {supported:true,permission};
+      const status = await this.g.navigator.permissions?.query?.({ name: 'microphone' });
+      if (['granted', 'denied', 'prompt'].includes(status?.state)) permission = status.state;
+    } catch {
+      /* Permission is discovered only when capture is requested. */
+    }
+    return permission === 'denied'
+      ? {
+          supported: false,
+          permission,
+          reason:
+            'Microphone permission is denied. Allow it in browser settings, then refresh availability.',
+        }
+      : { supported: true, permission };
   }
 
   async start({ signal } = {}) {
     this.stop();
     if (signal?.aborted) return false;
-    const job = { signal, stream: null, context: null, source: null, analyser: null, samples: null };
-    const cancelled = new Promise(resolve => { job.cancelled = resolve; });
-    job.cancel = () => { if (this.current === job) this.stop(); };
+    const job = {
+      signal,
+      stream: null,
+      context: null,
+      source: null,
+      analyser: null,
+      samples: null,
+    };
+    const cancelled = new Promise((resolve) => {
+      job.cancelled = resolve;
+    });
+    job.cancel = () => {
+      if (this.current === job) this.stop();
+    };
     this.current = job;
     signal?.addEventListener('abort', job.cancel, { once: true });
-    if (signal?.aborted) { job.cancel(); return false; }
+    if (signal?.aborted) {
+      job.cancel();
+      return false;
+    }
     const valid = () => this.current === job;
     const capture = async () => {
       try {
-        const stream = await this.g.navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+        const stream = await this.g.navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+        });
         job.stream = stream;
-        if (!valid()) { this._dispose(job); return false; }
+        if (!valid()) {
+          this._dispose(job);
+          return false;
+        }
         this.stream = stream;
         const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
         job.context = new AudioContext();
@@ -57,7 +102,10 @@ export class MicrophoneMeter {
         return valid();
       } catch (error) {
         // A rejected obsolete resume/getUserMedia must never release newer capture.
-        if (!valid()) { this._dispose(job); return false; }
+        if (!valid()) {
+          this._dispose(job);
+          return false;
+        }
         this.current = null;
         this._clear();
         this._dispose(job);
@@ -70,27 +118,46 @@ export class MicrophoneMeter {
   level() {
     if (!this.analyser || !this.samples) return 0;
     this.analyser.getFloatTimeDomainData(this.samples);
-    return Math.min(1, Math.sqrt(this.samples.reduce((s, x) => s + x*x, 0) / this.samples.length) * 5);
+    return Math.min(
+      1,
+      Math.sqrt(this.samples.reduce((s, x) => s + x * x, 0) / this.samples.length) * 5,
+    );
   }
 
-  _clear() { this.stream = this.context = this.source = this.analyser = this.samples = null; }
+  _clear() {
+    this.stream = this.context = this.source = this.analyser = this.samples = null;
+  }
 
   _dispose(job) {
     job.signal?.removeEventListener('abort', job.cancel);
-    const stream = job.stream, source = job.source, context = job.context;
+    const stream = job.stream,
+      source = job.source,
+      context = job.context;
     job.stream = job.source = job.context = job.analyser = job.samples = null;
     if (stream) {
       for (const track of stream.getTracks()) {
-        try { track.stop(); } catch { /* Continue releasing remaining tracks. */ }
+        try {
+          track.stop();
+        } catch {
+          /* Continue releasing remaining tracks. */
+        }
       }
     }
-    try { source?.disconnect(); } catch { /* Already disconnected. */ }
+    try {
+      source?.disconnect();
+    } catch {
+      /* Already disconnected. */
+    }
     try {
       if (context && context.state !== 'closed') Promise.resolve(context.close()).catch(() => {});
-    } catch { /* Closing an obsolete context must not block future capture. */ }
+    } catch {
+      /* Closing an obsolete context must not block future capture. */
+    }
   }
 
-  async release() { return this.stop(); }
+  async release() {
+    return this.stop();
+  }
 
   async stop() {
     ++this.epoch;

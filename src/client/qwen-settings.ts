@@ -1,8 +1,8 @@
 // @ts-nocheck
-const BASE = '/api/dsh-live-voice/whisper';
+const BASE = '/api/dsh-live-voice/qwen';
 const UNLOADED =
-  'Whisper settings routes are not loaded. A normal DSH server restart is required to load updated plugin routes; refreshing this page alone is not enough.';
-export async function whisperSettingsRequest(
+  'Qwen settings routes are not loaded. A normal DSH server restart is required to load updated plugin routes; refreshing this page alone is not enough.';
+export async function qwenSettingsRequest(
   path,
   { method = 'GET', config, signal } = {},
   fetchImpl = globalThis.fetch,
@@ -15,7 +15,7 @@ export async function whisperSettingsRequest(
     body: config ? JSON.stringify(config) : undefined,
   });
   if (response.status === 401 || response.status === 403)
-    throw new Error('Sign in to DSH to manage Whisper settings.');
+    throw new Error('Sign in to DSH to manage Qwen settings.');
   if (response.status === 404 || response.status === 405) throw new Error(UNLOADED);
   let body;
   try {
@@ -25,16 +25,15 @@ export async function whisperSettingsRequest(
   }
   if (typeof body?.ok !== 'boolean') throw new Error(UNLOADED);
   if (!response.ok || !body.ok)
-    throw new Error(body.error?.message || 'Whisper settings request failed.');
+    throw new Error(body.error?.message || 'Qwen settings request failed.');
   return body.value;
 }
-export function createWhisperSettings(React) {
+export function createQwenSettings(React) {
   const h = React.createElement;
-  return function WhisperSettings({ controller }) {
+  return function QwenSettings({ controller }) {
     const [draft, setDraft] = React.useState({
-      url: 'http://127.0.0.1:8080/inference',
-      healthUrl: '/health',
-      timeoutMs: 30000,
+      baseUrl: 'http://127.0.0.1:8080/',
+      timeoutMs: 300000,
     });
     const [busy, setBusy] = React.useState(true),
       [loaded, setLoaded] = React.useState(false),
@@ -50,33 +49,33 @@ export function createWhisperSettings(React) {
       setMessage('');
       try {
         if (action === 'load') {
-          const value = await whisperSettingsRequest('/config', { signal: abort.signal });
+          const value = await qwenSettingsRequest('/config', { signal: abort.signal });
           if (!abort.signal.aborted) {
             setDraft(value);
             setLoaded(true);
           }
         } else if (action === 'save') {
           await controller.endConversation?.();
-          const value = await whisperSettingsRequest('/config', {
+          const value = await qwenSettingsRequest('/config', {
             method: 'PUT',
             config: { ...draft, timeoutMs: Number(draft.timeoutMs) },
             signal: abort.signal,
           });
           if (!abort.signal.aborted) {
             setDraft(value);
-            setMessage('Saved on the DSH host. Active host transcription requests were cancelled.');
+            setMessage('Saved on the DSH host. Active Qwen requests were cancelled.');
             await controller.refreshCapabilities?.();
           }
         } else {
-          const value = await whisperSettingsRequest('/test', {
+          const value = await qwenSettingsRequest('/test', {
             method: 'POST',
             config: { ...draft, timeoutMs: Number(draft.timeoutMs) },
             signal: abort.signal,
           });
           if (!abort.signal.aborted) {
-            if (!value.supported) throw new Error(value.reason || 'Whisper health check failed.');
+            if (!value.supported) throw new Error(value.reason || 'Qwen health check failed.');
             setMessage(
-              'Connection successful. Health endpoint responded; transcription was not tested. Unsaved edits have not been applied.',
+              'Connection successful. Both Qwen ASR and TTS are loaded. Unsaved edits have not been applied.',
             );
           }
         }
@@ -90,8 +89,8 @@ export function createWhisperSettings(React) {
       void run('load');
       return () => active.current?.abort();
     }, []);
-    function field(label, key, type = 'text') {
-      return h(
+    const field = (label, key, type = 'text') =>
+      h(
         'label',
         null,
         label,
@@ -100,7 +99,7 @@ export function createWhisperSettings(React) {
           value: draft[key],
           disabled: busy || !loaded,
           autoComplete: 'off',
-          ...(type === 'number' ? { min: 100, max: 300000, step: 1 } : {}),
+          ...(type === 'number' ? { min: 1000, max: 600000, step: 1 } : {}),
           onChange: (event) => {
             setDraft({ ...draft, [key]: event.target.value });
             setMessage('Unsaved changes');
@@ -108,17 +107,15 @@ export function createWhisperSettings(React) {
           },
         }),
       );
-    }
     return h(
       React.Fragment,
       null,
       h(
         'p',
         null,
-        'Host-wide settings. Only unauthenticated loopback HTTP URLs (localhost, 127.0.0.1, [::1]) are allowed. Loopback means the DSH host, not this browser. All health checks and audio requests run through the authenticated backend.',
+        'Host-wide settings for the resident Qwen3 ASR + TTS server. Only unauthenticated loopback HTTP is allowed; the browser reaches it through authenticated DSH routes.',
       ),
-      field('Endpoint URL', 'url'),
-      field('Health URL or path', 'healthUrl'),
+      field('Qwen API base URL', 'baseUrl'),
       field('Request timeout (ms)', 'timeoutMs', 'number'),
       h(
         'div',
@@ -126,12 +123,12 @@ export function createWhisperSettings(React) {
         h(
           'button',
           { type: 'button', disabled: busy || !loaded, onClick: () => run('save') },
-          'Save Whisper settings',
+          'Save Qwen settings',
         ),
         h(
           'button',
           { type: 'button', disabled: busy || !loaded, onClick: () => run('test') },
-          'Test connection',
+          'Test Qwen server',
         ),
         h(
           'button',
