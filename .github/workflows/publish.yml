@@ -31,7 +31,12 @@ jobs:
       - name: Install OIDC-capable npm
         run: npm install --global npm@11.10.1
 
-      # No npm ci yet: this documentation-only package has no dependencies or lockfile.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run automated tests
+        run: npm test
+
       - name: Validate release metadata
         id: release
         run: |
@@ -42,7 +47,10 @@ jobs:
           if (!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/.test(p.version)) throw new Error("Invalid version");
           const repository = `git+https://github.com/${process.env.GITHUB_REPOSITORY}.git`;
           if (p.repository?.url !== repository) throw new Error("Update repository.url to match the GitHub repository before publishing");
-          const tag = p.version.includes("-") ? "developing" : "latest";
+          const prerelease = p.version.split("-", 2)[1];
+          const tag = prerelease ? prerelease.split(".", 1)[0] : "latest";
+          if (!/^[a-z][a-z0-9._-]*$/.test(tag)) throw new Error("Invalid npm dist-tag");
+          if (p.publishConfig?.tag && p.publishConfig.tag !== tag) throw new Error("publishConfig.tag does not match the version prerelease channel");
           fs.appendFileSync(process.env.GITHUB_OUTPUT, `tag=${tag}\nversion=${p.version}\ngit_tag=v${p.version}\n`);
           NODE
 
@@ -86,9 +94,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.git_tag }}
           DIST_TAG: ${{ steps.release.outputs.tag }}
+          VERSION: ${{ steps.release.outputs.version }}
         run: |
           flags=()
-          if [[ "$DIST_TAG" == "developing" ]]; then
+          if [[ "$VERSION" == *-* ]]; then
             flags+=(--prerelease --latest=false)
           fi
           gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --title "$RELEASE_TAG" --generate-notes "${flags[@]}"

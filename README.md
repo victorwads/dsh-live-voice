@@ -1,6 +1,6 @@
 # DSH Live Voice
 
-[![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm)](https://www.npmjs.com/package/dsh-live-voice)
+[![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
 [![license](https://img.shields.io/badge/license-GPL--3.0--only-blue)](LICENSE)
 
 **Local-first speech recognition, voice output, and continuous voice conversations for DSH.**
@@ -40,29 +40,29 @@ Listening and playback take turns so the assistant does not hear its own voice.
 ```mermaid
 sequenceDiagram
     participant Interface
-    actor You
-    actor Assistant
+    actor Você
+    actor Assistente
 
-    Note over Interface,Assistant: Waiting for you to speak…
-    activate You
-    You->>Assistant: Start speaking
-    Assistant-->>You: Listen while you are speaking
-    Note over Interface,Assistant: You stopped speaking
-    opt Manual sending
-        You->>Interface: Review your recognized message
-        Interface-->>You: Send when you are ready
+    Note over Interface,Assistente: Aguardando você falar…
+    activate Você
+    Você->>Assistente: Começa a falar
+    Assistente-->>Você: Escuta enquanto você fala
+    Note over Interface,Assistente: Você parou de falar
+    opt Envio manual
+        Você->>Interface: Revisa a mensagem reconhecida
+        Interface-->>Você: Envia quando estiver pronto
     end
-    opt Automatic sending
-        Note over You,Assistant: Send after the silence countdown
+    opt Envio automático
+        Note over Você,Assistente: Envia após a contagem de silêncio
     end
-    deactivate You
-    You->>Assistant: Deliver your message
-    Assistant-->>You: Response ready — wait for continuous silence
-    Assistant-->>You: Stop listening
-    activate Assistant
-    Assistant->>You: Speak the response aloud
-    deactivate Assistant
-    Note over Interface,Assistant: Listening again — waiting for you to speak…
+    deactivate Você
+    Você->>Assistente: Entrega sua mensagem
+    Assistente-->>Você: Resposta pronta — aguarda silêncio contínuo
+    Assistente-->>Você: Para de escutar
+    activate Assistente
+    Assistente->>Você: Fala a resposta em voz alta
+    deactivate Assistente
+    Note over Interface,Assistente: Escutando novamente — aguardando você falar…
 ```
 
 ### Headphones — open microphone
@@ -90,3 +90,7 @@ Speech processing can run locally, but the DSH language model may still be remot
 ## License
 
 [GPL-3.0-only](LICENSE). Commercial use and redistribution are allowed subject to the GPL. Third-party speech engines and models may have separate licenses.
+
+## Keywords
+
+`dsh`, `local-first`, `local-voice`, `voice-conversation`, `speech-to-text`, `text-to-speech`, `speech-recognition`, `speech-synthesis`, `stt`, `tts`, `turn-taking`, `voice-interruption`
