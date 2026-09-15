@@ -1,11 +1,22 @@
 # DSH Live Voice
 
 [![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
+[![dsh.pub registry status](https://dsh.pub/api/badges/victorwads/dsh-live-voice.svg)](https://dsh.pub/en/plugins/dsh-live-voice/)
 [![license](https://img.shields.io/badge/license-GPL--3.0--only-blue)](LICENSE)
 
 **Local-first speech recognition, voice output, and continuous voice conversations for DSH.**
 
 DSH Live Voice coordinates the microphone, composer, assistant messages, and speech output in one plugin — without letting listening and speaking compete with each other.
+
+## Install
+
+Install the public repository through dsh.pub into your DSH web profile:
+
+```sh
+npx dshpub add victorwads/dsh-live-voice --profile web
+```
+
+The installer resolves the public repository to an exact commit before adding the bundle. Open **DSH Settings → Live Voice** after the next normal DSH startup.
 
 ## Why this project exists and Acknowledgments
 
@@ -93,4 +104,4 @@ Speech processing can run locally, but the DSH language model may still be remot
 
 ## Keywords
 
-`dsh`, `local-first`, `local-voice`, `voice-conversation`, `speech-to-text`, `text-to-speech`, `speech-recognition`, `speech-synthesis`, `stt`, `tts`, `turn-taking`, `voice-interruption`
+`dsh`, `dsh-plugin`, `deepseek-harness`, `local-first`, `local-voice`, `voice-assistant`, `voice-conversation`, `continuous-conversation`, `voice-dictation`, `speech-to-text`, `text-to-speech`, `speech-recognition`, `speech-synthesis`, `stt`, `tts`, `whisper`, `whisper-cpp`, `web-speech-api`, `macos-say`, `turn-taking`, `voice-interruption`, `silence-detection`

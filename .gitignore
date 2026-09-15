@@ -1,5 +1,9 @@
 node_modules/
-lib/
+# dsh.pub installs from a pinned GitHub commit and validates these runtime
+# entries without executing the source build.
+lib/*
+!lib/client.js
+!lib/server.js
 *.tgz
 coverage/
 artifacts/

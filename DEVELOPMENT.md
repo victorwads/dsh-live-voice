@@ -9,6 +9,16 @@ npm run build
 
 Implementation, test, and build-script source is TypeScript (`.ts`). `npm run typecheck` compiles the TypeScript project; `npm test` typechecks, builds the browser and host bundles, transpiles the TypeScript tests, then runs them. Tests exercise engines, coordination, transcript edits, RPC, configuration, and UI contracts, but do not record the microphone. `npm run dev` watches the browser and host bundles only; it is not a replacement DSH server.
 
+## Repository checks
+
+Enable the repository's versioned Git hooks once per checkout:
+
+```sh
+npm run setup:hooks
+```
+
+The pre-push hook runs `npm run check:dist`. It rebuilds `lib/client.js` and `lib/server.js`, requires both files to be tracked, and blocks the push when the committed runtime bundles do not match the current source. The same guard runs in GitHub Actions on every push and pull request, so drift is still reported when a local hook is missing or bypassed. Configure the CI job as a required branch check if direct pushes must be rejected rather than reported after they arrive.
+
 ## Current local installation
 
 Install through the official CLI only:
