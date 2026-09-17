@@ -51,6 +51,8 @@ export class VoiceCoordinator {
     };
     this.autoSendTimer = null;
     this.autoSendDraft = null;
+    this.interruptionTimer = null;
+    this.interruptionPausedSpeech = false;
     this.assistantSpeechTimer = null;
     this.assistantSpeechNotBefore = 0;
     this.recognition.lang = this.snapshot.settings.recognitionLang;
@@ -246,7 +248,7 @@ export class VoiceCoordinator {
               this.assistantSpeechNotBefore =
                 Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
             this.patch({ recognizing: active });
-            if (active && this.snapshot.settings.mode === 'headphones') void this.pauseSpeech();
+            this._handleSpeechInterruption(active);
             if (!active) this._drain();
           },
           onError: (error) => {
@@ -281,12 +283,45 @@ export class VoiceCoordinator {
       }
     });
   }
+  _handleSpeechInterruption(active) {
+    if (this.snapshot.settings.mode !== 'headphones') return;
+    if (active) {
+      if (this.interruptionTimer !== null || !this.snapshot.speaking || this.snapshot.paused)
+        return;
+      this.interruptionTimer = setTimeout(() => {
+        this.interruptionTimer = null;
+        if (this.snapshot.recognizing && this.snapshot.speaking && !this.snapshot.paused) {
+          this.interruptionPausedSpeech = true;
+          void this.pauseSpeech().then(() => {
+            if (
+              this.interruptionPausedSpeech &&
+              !this.snapshot.recognizing &&
+              this.snapshot.paused
+            ) {
+              this.interruptionPausedSpeech = false;
+              void this.resumeSpeech();
+            }
+          });
+        }
+      }, this.snapshot.settings.assistantSpeechDelaySeconds * 1000);
+      return;
+    }
+    if (this.interruptionTimer !== null) clearTimeout(this.interruptionTimer);
+    this.interruptionTimer = null;
+    if (this.interruptionPausedSpeech && this.snapshot.paused) {
+      this.interruptionPausedSpeech = false;
+      void this.resumeSpeech();
+    }
+  }
+
   onResult({ final = '', interim = '' }) {
     if (this.disposed || (!this.snapshot.listening && !this.snapshot.starting)) return;
-    if (this.snapshot.speaking && !this.snapshot.paused) {
-      if (this.snapshot.settings.mode === 'speaker') return;
-      if (final || interim) void this.pauseSpeech();
-    }
+    if (
+      this.snapshot.speaking &&
+      !this.snapshot.paused &&
+      this.snapshot.settings.mode === 'speaker'
+    )
+      return;
     // A native event can contain a final result without an interim result. Do not
     // run a second empty hypothesis update: it would replace the just-committed
     // result with a stale composer snapshot before the editor publishes it.
@@ -385,6 +420,9 @@ export class VoiceCoordinator {
     this.queue = [];
   }
   async stopSpeech(resumeListening = true) {
+    if (this.interruptionTimer !== null) clearTimeout(this.interruptionTimer);
+    this.interruptionTimer = null;
+    this.interruptionPausedSpeech = false;
     const epoch = ++this.speechEpoch;
     ++this.controlEpoch;
     this._suppressPending();

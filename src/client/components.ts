@@ -31,6 +31,7 @@ export function createComponents(React) {
       pause: 'M8 5v14M16 5v14',
       play: 'M7 4l13 8-13 8z',
       send: 'M3 11.5L21 3l-8.5 18-2-7.5L3 11.5zm7.5 2L21 3',
+      queue: 'M5 6h14M5 12h10M5 18h6M18 15v6M15 18h6',
       speakerOff: 'M3 9h4l6-5v16l-6-5H3V9M17 9l5 6M22 9l-5 6',
     };
     return h('svg', common, h('path', { d: paths[name] || paths.mic }));
@@ -259,7 +260,7 @@ export function createComponents(React) {
                 ? 'queue'
                 : 'off'
           }`,
-          icon: 'send',
+          icon: state.settings.sendingMode === 'queue' ? 'queue' : 'send',
           visibleLabel:
             state.settings.sendingMode === 'steer'
               ? 'SEND'
@@ -268,6 +269,7 @@ export function createComponents(React) {
                 : 'OFF',
           'aria-label': `Automatic delivery: ${state.settings.sendingMode || 'manual'}`,
           'aria-pressed': ['queue', 'steer'].includes(state.settings.sendingMode),
+          'data-mode': state.settings.sendingMode || 'manual',
           onClick: () =>
             invoke('updateSettings', {
               sendingMode: !['queue', 'steer'].includes(state.settings.sendingMode)

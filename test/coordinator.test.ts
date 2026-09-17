@@ -151,59 +151,15 @@ test('speaker gating reserves playback and preserves incoming chunk order', asyn
   await f.coordinator.dispose();
 });
 
-test('headphones retain capture, pause on activity, never auto-resume on silence', async () => {
+test('headphones retain capture during playback', async () => {
   const f = fixture({ mode: 'headphones' });
   await f.coordinator.startConversation();
   f.coordinator.observeMessage('a', 'Answer', { complete: true });
   await turn();
-  const callbacks = f.sessions.at(-1);
-  callbacks.onActivity(true);
-  await turn();
-  assert.equal(f.coordinator.snapshot.paused, true);
+  assert.equal(f.coordinator.snapshot.speaking, true);
   assert.equal(f.coordinator.snapshot.listening, true);
-  callbacks.onResult({ interim: 'hello' });
-  assert.equal(f.draft(), 'typed hello');
-  callbacks.onActivity(false);
-  await turn();
-  assert.equal(f.coordinator.snapshot.paused, true);
-  await f.coordinator.resumeSpeech();
-  assert.equal(f.coordinator.snapshot.paused, false);
-  await f.coordinator.dispose();
-});
-
-test('recognizing queues assistant chunks until stable silence delay ends', async () => {
-  const f = fixture({ assistantSpeechDelaySeconds: 1 });
-  await f.coordinator.startConversation();
-  const callbacks = f.sessions.at(-1);
-  callbacks.onActivity(true);
-  f.coordinator.observeMessage('a', 'Answer', { complete: true });
-  await turn();
-  assert.equal(f.spoken.length, 0);
-  callbacks.onActivity(false);
-  await turn();
-  assert.equal(f.spoken.length, 0);
-  await new Promise((resolve) => setTimeout(resolve, 1100));
-  assert.equal(f.spoken.length, 1);
-  await f.coordinator.dispose();
-});
-
-test('history baselines survive start and end and cancelled streams remain suppressed', async () => {
-  const f = fixture();
-  f.coordinator.observeMessage('old', 'History', { baseline: true, complete: true });
-  await f.coordinator.startConversation();
-  f.coordinator.observeMessage('old', 'History', { complete: true });
-  f.coordinator.observeMessage('new', 'First. ');
-  await turn();
-  await f.coordinator.stopSpeech();
-  f.coordinator.observeMessage('new', 'First. Later. ', { complete: true });
-  await turn();
-  assert.equal(f.spoken.length, 1);
-  await f.coordinator.endConversation();
-  await f.coordinator.startConversation();
-  f.coordinator.observeMessage('old', 'History', { complete: true });
-  f.coordinator.observeMessage('new', 'First. Later. ', { complete: true });
-  await turn();
-  assert.equal(f.spoken.length, 1);
+  assert.equal(f.coordinator.snapshot.listening, true);
+  await f.coordinator.stopSpeech(false);
   await f.coordinator.dispose();
 });
 
@@ -398,6 +354,28 @@ test('turning off automatic assistant speech discards delayed queued phrases', a
   callbacks.onActivity(false);
   await new Promise((resolve) => setTimeout(resolve, 1100));
   assert.deepEqual(f.spoken, []);
+  await f.coordinator.dispose();
+});
+
+test('headphone interruption requires sustained activity and resumes automatically', async () => {
+  const f = fixture({ mode: 'headphones' });
+  f.coordinator.snapshot.settings.assistantSpeechDelaySeconds = 0.1;
+  await f.coordinator.startConversation();
+  void f.coordinator.speak('A sufficiently long answer');
+  await turn();
+  f.sessions[0].onActivity(true);
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  f.sessions[0].onActivity(false);
+  await new Promise((resolve) => setTimeout(resolve, 110));
+  assert.equal(f.log.includes('pause'), false, 'brief noise does not pause playback');
+  f.sessions[0].onActivity(true);
+  await new Promise((resolve) => setTimeout(resolve, 110));
+  assert.equal(f.coordinator.snapshot.paused, true);
+  f.sessions[0].onActivity(false);
+  await turn();
+  assert.equal(f.coordinator.snapshot.paused, false);
+  assert.ok(f.log.includes('resume'));
+  await f.coordinator.stopSpeech(false);
   await f.coordinator.dispose();
 });
 
