@@ -344,6 +344,35 @@ export function createComponents(React) {
     const [invoke, error, clearError] = useActions(controller);
     const settings = state.settings || {};
     const capabilities = state.capabilities || {};
+    const [audioDevices, setAudioDevices] = React.useState([]);
+    React.useEffect(() => {
+      let active = true;
+      const refresh = async () => {
+        try {
+          const devices = await globalThis.navigator?.mediaDevices?.enumerateDevices?.();
+          if (active) setAudioDevices(Array.from(devices || []));
+        } catch {
+          if (active) setAudioDevices([]);
+        }
+      };
+      void refresh();
+      globalThis.navigator?.mediaDevices?.addEventListener?.('devicechange', refresh);
+      return () => {
+        active = false;
+        globalThis.navigator?.mediaDevices?.removeEventListener?.('devicechange', refresh);
+      };
+    }, []);
+    const deviceOptions = (kind, fallback) => [
+      { value: '', label: 'System default' },
+      ...audioDevices
+        .filter(
+          (device) => device.kind === kind && device.deviceId && device.deviceId !== 'default',
+        )
+        .map((device, index) => ({
+          value: device.deviceId,
+          label: device.label || `${fallback} ${index + 1}`,
+        })),
+    ];
     const field = (label, key, options) =>
       h(
         'label',
@@ -415,14 +444,26 @@ export function createComponents(React) {
               disabled: capabilities.browser?.supported === false,
             },
           ]),
+          settings.engine !== 'say'
+            ? field('Output device', 'outputDeviceId', deviceOptions('audiooutput', 'Audio output'))
+            : h('small', null, 'macOS say uses the output selected on the DSH host.'),
           settings.engine === 'browser'
-            ? field('Local browser voice', 'voice', [
-                { value: '', label: 'Automatic local voice' },
-                ...(capabilities.browser?.voices || []).map((voice) => ({
-                  value: voice.voiceURI || voice.name,
-                  label: `${voice.name} — ${voice.lang || 'unknown language'}`,
-                })),
-              ])
+            ? h(
+                React.Fragment,
+                null,
+                h(
+                  'small',
+                  null,
+                  'Browser speech synthesis may ignore the selected output device; this browser API normally follows the system default.',
+                ),
+                field('Local browser voice', 'voice', [
+                  { value: '', label: 'Automatic local voice' },
+                  ...(capabilities.browser?.voices || []).map((voice) => ({
+                    value: voice.voiceURI || voice.name,
+                    label: `${voice.name} — ${voice.lang || 'unknown language'}`,
+                  })),
+                ]),
+              )
             : settings.engine === 'say'
               ? h(
                   'label',
@@ -504,6 +545,14 @@ export function createComponents(React) {
               h('option', { value: 'whisper-http' }, 'Whisper HTTP — DSH host'),
             ),
           ),
+          field('Input device', 'inputDeviceId', deviceOptions('audioinput', 'Microphone')),
+          settings.recognitionEngine === 'browser'
+            ? h(
+                'small',
+                null,
+                'Browser SpeechRecognition may use the browser or system default microphone instead of this selection.',
+              )
+            : null,
           field('Recognition language', 'recognitionLang', [
             ...(settings.recognitionEngine !== 'browser'
               ? [{ value: 'auto', label: 'Automatic — detect language' }]

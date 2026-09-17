@@ -55,7 +55,23 @@ test('valid local options survive normalization', () => {
     mode: 'headphones',
     lang: 'en-US',
     voice: 'Samantha',
+    inputDeviceId: 'microphone-1',
+    outputDeviceId: 'speaker-1',
     rate: 1.4,
   };
   assert.deepEqual(normalizeSettings(options), options);
+});
+
+test('audio device preferences default to the system devices and reject malformed values', () => {
+  assert.equal(defaultSettings.inputDeviceId, '');
+  assert.equal(defaultSettings.outputDeviceId, '');
+  assert.deepEqual(
+    {
+      inputDeviceId: normalizeSettings({ inputDeviceId: 'mic-2' }).inputDeviceId,
+      outputDeviceId: normalizeSettings({ outputDeviceId: 'speaker-2' }).outputDeviceId,
+    },
+    { inputDeviceId: 'mic-2', outputDeviceId: 'speaker-2' },
+  );
+  assert.equal(normalizeSettings({ inputDeviceId: 'bad\0device' }).inputDeviceId, '');
+  assert.equal(normalizeSettings({ outputDeviceId: 42 }).outputDeviceId, '');
 });

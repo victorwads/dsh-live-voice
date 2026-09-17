@@ -45,6 +45,8 @@ export const defaultSettings = Object.freeze({
   lang: 'pt-BR',
   recognitionLang: 'pt-BR',
   voice: '',
+  inputDeviceId: '',
+  outputDeviceId: '',
   rate: 1,
 });
 /** Persisted browser preferences are untrusted and may belong to an older version. */
@@ -107,6 +109,18 @@ export function normalizeSettings(value) {
     voice:
       typeof source.voice === 'string' && source.voice.length <= 200 && !source.voice.includes('\0')
         ? source.voice
+        : '',
+    inputDeviceId:
+      typeof source.inputDeviceId === 'string' &&
+      source.inputDeviceId.length <= 500 &&
+      !source.inputDeviceId.includes('\0')
+        ? source.inputDeviceId
+        : '',
+    outputDeviceId:
+      typeof source.outputDeviceId === 'string' &&
+      source.outputDeviceId.length <= 500 &&
+      !source.outputDeviceId.includes('\0')
+        ? source.outputDeviceId
         : '',
     rate: Number.isFinite(source.rate) && source.rate >= 0.1 && source.rate <= 3 ? source.rate : 1,
   };

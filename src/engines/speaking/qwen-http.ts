@@ -30,7 +30,10 @@ export class QwenHttpSpeakingEngine {
       };
     }
   }
-  async speak(text, { rate = 1, signal, lang = this.lang, voice = 'aiden' } = {}) {
+  async speak(
+    text,
+    { rate = 1, signal, lang = this.lang, voice = 'aiden', outputDeviceId = '' } = {},
+  ) {
     if (typeof text !== 'string') throw new TypeError('Speech text must be a string.');
     if (!Number.isFinite(rate) || rate < 0.1 || rate > 3)
       throw new RangeError('Speech rate must be between 0.1 and 3.');
@@ -62,6 +65,8 @@ export class QwenHttpSpeakingEngine {
       operation.url = this.g.URL.createObjectURL(blob);
       const audio = (operation.audio = new this.g.Audio(operation.url));
       audio.playbackRate = rate;
+      if (outputDeviceId && typeof audio.setSinkId === 'function')
+        await audio.setSinkId(outputDeviceId);
       await new Promise((resolve, reject) => {
         const done = () => {
             cleanup();

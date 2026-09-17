@@ -53,6 +53,7 @@ export class VoiceCoordinator {
     this.assistantSpeechTimer = null;
     this.assistantSpeechNotBefore = 0;
     this.recognition.lang = this.snapshot.settings.recognitionLang;
+    this.meter.deviceId = this.snapshot.settings.inputDeviceId;
     this.getSnapshot = () => this.snapshot;
     this.subscribe = (listener) => {
       if (this.disposed) return () => {};
@@ -95,6 +96,7 @@ export class VoiceCoordinator {
   updateSettings(next) {
     if (this.disposed) return;
     const settings = normalizeSettings({ ...this.snapshot.settings, ...next });
+    this.meter.deviceId = settings.inputDeviceId;
     Object.assign(this.recognition, {
       lang: settings.recognitionLang,
       processLocally: settings.recognitionProcessLocally,
@@ -472,6 +474,7 @@ export class VoiceCoordinator {
       await engine.speak(text, {
         voice: this.snapshot.settings.voice || undefined,
         rate: this.snapshot.settings.rate,
+        outputDeviceId: this.snapshot.settings.outputDeviceId,
       });
     } catch (error) {
       if (epoch === this.speechEpoch) {

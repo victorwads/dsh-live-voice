@@ -7,6 +7,7 @@
 export class MicrophoneMeter {
   constructor(globals = globalThis) {
     this.g = globals;
+    this.deviceId = '';
     this.epoch = 0;
     this.current = null;
     this.stream = this.context = this.source = this.analyser = this.samples = null;
@@ -79,7 +80,12 @@ export class MicrophoneMeter {
     const capture = async () => {
       try {
         const stream = await this.g.navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+          audio: {
+            ...(this.deviceId ? { deviceId: { exact: this.deviceId } } : {}),
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
         });
         job.stream = stream;
         if (!valid()) {
