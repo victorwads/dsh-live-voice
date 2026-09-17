@@ -89,9 +89,9 @@ export function apply(ctx) {
       meter,
       composer: {
         getDraft: () => entry.draft,
-        submit: () => {
+        submit: (mode = 'queue') => {
           const owner = [...entry.composers.values()].at(-1);
-          owner?.actions.submit?.();
+          owner?.actions.submit?.(mode);
         },
         setDraft: (text) => {
           if (disposed || entry.closed) return;

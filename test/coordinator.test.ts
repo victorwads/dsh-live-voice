@@ -403,7 +403,7 @@ test('turning off automatic assistant speech discards delayed queued phrases', a
 
 test('automatic sending waits after a final phrase and remains cancellable', async () => {
   const submitted = [];
-  const f = fixture({ sendingMode: 'automatic', autoSendDelaySeconds: 2 });
+  const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 2 });
   f.coordinator.composer.submit = () => submitted.push(f.draft());
   await f.coordinator.startDictation();
   f.sessions[0].onResult({ final: 'hello' });
@@ -417,7 +417,7 @@ test('automatic sending waits after a final phrase and remains cancellable', asy
 
 test('automatic sending uses DSH submit only when the draft is still unchanged', async () => {
   const submitted = [];
-  const f = fixture({ sendingMode: 'automatic', autoSendDelaySeconds: 2 });
+  const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 2 });
   f.coordinator.composer.submit = () => submitted.push(f.draft());
   await f.coordinator.startDictation();
   f.sessions[0].onResult({ final: 'hello' });
@@ -428,7 +428,7 @@ test('automatic sending uses DSH submit only when the draft is still unchanged',
 
 test('successful automatic send resets recognition before the next utterance', async () => {
   const submitted = [];
-  const f = fixture({ sendingMode: 'automatic', autoSendDelaySeconds: 2 });
+  const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 2 });
   f.coordinator.composer.submit = () => submitted.push(f.draft());
   await f.coordinator.startDictation();
   f.sessions[0].onResult({ final: 'hello' });
@@ -439,9 +439,20 @@ test('successful automatic send resets recognition before the next utterance', a
   await f.coordinator.dispose();
 });
 
+test('steer delivery passes the direct mode to the DSH composer', async () => {
+  const submitted = [];
+  const f = fixture({ sendingMode: 'steer', autoSendDelaySeconds: 2 });
+  f.coordinator.composer.submit = (mode) => submitted.push([f.draft(), mode]);
+  await f.coordinator.startDictation();
+  f.sessions[0].onResult({ final: 'interrupt now' });
+  await new Promise((resolve) => setTimeout(resolve, 2100));
+  assert.deepEqual(submitted, [['typed interrupt now', 'steer']]);
+  await f.coordinator.dispose();
+});
+
 test('new speech activity cancels a pending automatic send', async () => {
   const submitted = [];
-  const f = fixture({ sendingMode: 'automatic', autoSendDelaySeconds: 2 });
+  const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 2 });
   f.coordinator.composer.submit = () => submitted.push(f.draft());
   await f.coordinator.startDictation();
   f.sessions[0].onResult({ final: 'hello' });

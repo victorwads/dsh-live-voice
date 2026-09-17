@@ -104,7 +104,7 @@ export class VoiceCoordinator {
       voiceDetectionPreset: settings.voiceDetectionPreset,
     });
     this.patch({ settings, error: null });
-    if (settings.sendingMode !== 'automatic') this.cancelAutoSend();
+    if (settings.sendingMode === 'manual') this.cancelAutoSend();
     if (Object.hasOwn(next, 'announceAssistantMessages') && !settings.announceAssistantMessages) {
       this.queue = [];
       this.assistantSpeechNotBefore = 0;
@@ -292,7 +292,7 @@ export class VoiceCoordinator {
     if (final) {
       const next = this.transcript.update(this.composer.getDraft(), final, true);
       this.composer.setDraft(next);
-      if (this.snapshot.settings.sendingMode === 'automatic') this.scheduleAutoSend(next);
+      if (this.snapshot.settings.sendingMode !== 'manual') this.scheduleAutoSend(next);
     }
     if (interim) {
       this.cancelAutoSend();
@@ -317,11 +317,11 @@ export class VoiceCoordinator {
       this.patch({ autoSendAt: null });
       if (
         !this.disposed &&
-        this.snapshot.settings.sendingMode === 'automatic' &&
+        this.snapshot.settings.sendingMode !== 'manual' &&
         expected === this.composer.getDraft()
       ) {
         try {
-          this.composer.submit();
+          this.composer.submit(this.snapshot.settings.sendingMode === 'steer' ? 'steer' : 'queue');
           // Web Speech keeps a cumulative native result list for the lifetime of
           // one recognition instance. Start a fresh instance at the turn boundary
           // so the sent utterance cannot prefix the next one.

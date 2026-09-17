@@ -178,20 +178,22 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       callbacks.forEach((cb) => cb());
     });
     assert.equal(document.querySelector('[role=status]').textContent, 'Recognizing speech…');
-    const autoSendToggle = document.querySelector('[aria-label="Automatic sending"]');
+    const autoSendToggle = document.querySelector('[aria-label="Automatic delivery mode"]');
     const assistantSpeechToggle = document.querySelector(
       '[aria-label="Automatic assistant speech"]',
     );
     assert.equal(autoSendToggle.classList.contains('dlv-live-toggle'), true);
-    assert.equal(autoSendToggle.getAttribute('role'), 'switch');
-    assert.equal(autoSendToggle.getAttribute('aria-checked'), 'false');
+    assert.equal(autoSendToggle.getAttribute('aria-pressed'), 'false');
     assert.equal(autoSendToggle.textContent, 'OFF');
     assert.equal(assistantSpeechToggle.getAttribute('aria-checked'), 'true');
     assert.equal(assistantSpeechToggle.textContent, 'ON');
     await act(async () => autoSendToggle.click());
-    assert.deepEqual(calls.at(-1), ['settings', { sendingMode: 'automatic' }]);
-    assert.equal(autoSendToggle.getAttribute('aria-checked'), 'true');
-    assert.equal(autoSendToggle.textContent, 'ON');
+    assert.deepEqual(calls.at(-1), ['settings', { sendingMode: 'queue' }]);
+    assert.equal(autoSendToggle.getAttribute('aria-pressed'), 'true');
+    assert.equal(autoSendToggle.textContent, 'QUEUE');
+    await act(async () => autoSendToggle.click());
+    assert.deepEqual(calls.at(-1), ['settings', { sendingMode: 'steer' }]);
+    assert.equal(autoSendToggle.textContent, 'SEND');
     await act(async () => assistantSpeechToggle.click());
     assert.deepEqual(calls.at(-1), ['settings', { announceAssistantMessages: false }]);
     assert.equal(assistantSpeechToggle.getAttribute('aria-checked'), 'false');
@@ -209,6 +211,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
         'conversation',
         'settings',
         'speak',
+        'settings',
         'settings',
         'settings',
         'settings',

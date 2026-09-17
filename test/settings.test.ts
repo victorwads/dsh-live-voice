@@ -49,7 +49,7 @@ test('valid local options survive normalization', () => {
     announceAssistantMessages: false,
     interruptSpeechOnUserMessage: true,
     recognitionLang: 'en-US',
-    sendingMode: 'automatic',
+    sendingMode: 'steer',
     autoSendDelaySeconds: 5,
     assistantSpeechDelaySeconds: 5,
     mode: 'headphones',
@@ -60,6 +60,12 @@ test('valid local options survive normalization', () => {
     rate: 1.4,
   };
   assert.deepEqual(normalizeSettings(options), options);
+});
+
+test('legacy automatic sending migrates to queue and tri-state modes survive normalization', () => {
+  assert.equal(normalizeSettings({ sendingMode: 'automatic' }).sendingMode, 'queue');
+  assert.equal(normalizeSettings({ sendingMode: 'queue' }).sendingMode, 'queue');
+  assert.equal(normalizeSettings({ sendingMode: 'steer' }).sendingMode, 'steer');
 });
 
 test('audio device preferences default to the system devices and reject malformed values', () => {

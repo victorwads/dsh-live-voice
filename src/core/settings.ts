@@ -78,9 +78,12 @@ export function normalizeSettings(value) {
       typeof source.interruptSpeechOnUserMessage === 'boolean'
         ? source.interruptSpeechOnUserMessage
         : defaultSettings.interruptSpeechOnUserMessage,
-    sendingMode: ['manual', 'automatic'].includes(source.sendingMode)
-      ? source.sendingMode
-      : defaultSettings.sendingMode,
+    sendingMode:
+      source.sendingMode === 'automatic'
+        ? 'queue'
+        : ['manual', 'queue', 'steer'].includes(source.sendingMode)
+          ? source.sendingMode
+          : defaultSettings.sendingMode,
     autoSendDelaySeconds:
       Number.isInteger(source.autoSendDelaySeconds) &&
       source.autoSendDelaySeconds >= 2 &&

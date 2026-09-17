@@ -251,15 +251,31 @@ export function createComponents(React) {
         h('span', { className: 'dlv-status', role: 'status', 'aria-live': 'polite' }, status),
         h(Button, {
           className: 'dlv-live-toggle',
-          label: 'Automatic sending',
-          title: `Automatic sending: ${state.settings.sendingMode === 'automatic' ? 'on' : 'off'}`,
+          label: 'Automatic delivery mode',
+          title: `Automatic delivery: ${
+            state.settings.sendingMode === 'steer'
+              ? 'send to the running agent'
+              : state.settings.sendingMode === 'queue'
+                ? 'queue'
+                : 'off'
+          }`,
           icon: 'send',
-          visibleLabel: state.settings.sendingMode === 'automatic' ? 'ON' : 'OFF',
-          role: 'switch',
-          'aria-checked': state.settings.sendingMode === 'automatic',
+          visibleLabel:
+            state.settings.sendingMode === 'steer'
+              ? 'SEND'
+              : state.settings.sendingMode === 'queue'
+                ? 'QUEUE'
+                : 'OFF',
+          'aria-label': `Automatic delivery: ${state.settings.sendingMode || 'manual'}`,
+          'aria-pressed': ['queue', 'steer'].includes(state.settings.sendingMode),
           onClick: () =>
             invoke('updateSettings', {
-              sendingMode: state.settings.sendingMode === 'automatic' ? 'manual' : 'automatic',
+              sendingMode:
+                !['queue', 'steer'].includes(state.settings.sendingMode)
+                  ? 'queue'
+                  : state.settings.sendingMode === 'queue'
+                    ? 'steer'
+                    : 'manual',
             }),
         }),
         h(Button, {
@@ -736,10 +752,11 @@ export function createComponents(React) {
             ),
           ),
           field('Sending mode', 'sendingMode', [
-            { value: 'manual', label: 'Manual — review and send' },
-            { value: 'automatic', label: 'Automatic — send after silence' },
+            { value: 'manual', label: 'Off — review and send manually' },
+            { value: 'queue', label: 'Queue — automatically add after silence' },
+            { value: 'steer', label: 'Steer — automatically send to the running agent' },
           ]),
-          settings.sendingMode === 'automatic'
+          settings.sendingMode !== 'manual'
             ? h(
                 'label',
                 { key: 'delay' },
