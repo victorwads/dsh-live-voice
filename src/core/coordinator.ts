@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { TranscriptDraft } from './transcript.ts';
 import { normalizeSettings } from './settings.ts';
+import { filterSpeechOutput, hasMinimumWords, hasUnclosedCodeFence } from './filters.ts';
 
 const message = (error) => error?.message || String(error);
 function cancellable(promise, signal) {
@@ -290,6 +291,15 @@ export class VoiceCoordinator {
     // run a second empty hypothesis update: it would replace the just-committed
     // result with a stale composer snapshot before the editor publishes it.
     if (final) {
+      if (
+        this.snapshot.settings.recognitionFilterEnabled &&
+        !hasMinimumWords(final, this.snapshot.settings.recognitionMinimumWords)
+      ) {
+        this.composer.setDraft(this.transcript.update(this.composer.getDraft(), '', true));
+        this.transcript.reset();
+        this.patch({ recognizing: false });
+        return;
+      }
       const next = this.transcript.update(this.composer.getDraft(), final, true);
       this.composer.setDraft(next);
       if (this.snapshot.settings.sendingMode !== 'manual') this.scheduleAutoSend(next);
@@ -549,7 +559,17 @@ export class VoiceCoordinator {
           remaining.lastIndexOf('\n'),
         ) + 1;
     if (boundary <= 0) return;
-    const chunk = remaining.slice(0, boundary).trim();
+    if (
+      this.snapshot.settings.outputCodeFilterEnabled &&
+      hasUnclosedCodeFence(remaining.slice(0, boundary)) &&
+      !complete
+    )
+      return;
+    const chunk = filterSpeechOutput(remaining.slice(0, boundary).trim(), {
+      filterCodeBlocks: this.snapshot.settings.outputCodeFilterEnabled,
+      codeBlockMaxLines: this.snapshot.settings.outputCodeMaxLines,
+      codeBlockNotice: this.snapshot.settings.outputCodeNotice,
+    }).trim();
     this.consumed.set(id, offset + boundary);
     if (chunk) {
       this.queue.push({ text: chunk, id });

@@ -47,6 +47,11 @@ export const defaultSettings = Object.freeze({
   voice: '',
   inputDeviceId: '',
   outputDeviceId: '',
+  recognitionFilterEnabled: true,
+  recognitionMinimumWords: 2,
+  outputCodeFilterEnabled: true,
+  outputCodeMaxLines: 5,
+  outputCodeNotice: 'Look the code on out conversation',
   rate: 1,
 });
 /** Persisted browser preferences are untrusted and may belong to an older version. */
@@ -125,6 +130,33 @@ export function normalizeSettings(value) {
       !source.outputDeviceId.includes('\0')
         ? source.outputDeviceId
         : '',
+    recognitionFilterEnabled:
+      typeof source.recognitionFilterEnabled === 'boolean'
+        ? source.recognitionFilterEnabled
+        : defaultSettings.recognitionFilterEnabled,
+    recognitionMinimumWords:
+      Number.isInteger(source.recognitionMinimumWords) &&
+      source.recognitionMinimumWords >= 1 &&
+      source.recognitionMinimumWords <= 20
+        ? source.recognitionMinimumWords
+        : defaultSettings.recognitionMinimumWords,
+    outputCodeFilterEnabled:
+      typeof source.outputCodeFilterEnabled === 'boolean'
+        ? source.outputCodeFilterEnabled
+        : defaultSettings.outputCodeFilterEnabled,
+    outputCodeMaxLines:
+      Number.isInteger(source.outputCodeMaxLines) &&
+      source.outputCodeMaxLines >= 0 &&
+      source.outputCodeMaxLines <= 100
+        ? source.outputCodeMaxLines
+        : defaultSettings.outputCodeMaxLines,
+    outputCodeNotice:
+      typeof source.outputCodeNotice === 'string' &&
+      source.outputCodeNotice.trim() &&
+      source.outputCodeNotice.length <= 300 &&
+      !source.outputCodeNotice.includes('\0')
+        ? source.outputCodeNotice.trim()
+        : defaultSettings.outputCodeNotice,
     rate: Number.isFinite(source.rate) && source.rate >= 0.1 && source.rate <= 3 ? source.rate : 1,
   };
 }

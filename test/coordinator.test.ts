@@ -406,7 +406,7 @@ test('automatic sending waits after a final phrase and remains cancellable', asy
   const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 2 });
   f.coordinator.composer.submit = () => submitted.push(f.draft());
   await f.coordinator.startDictation();
-  f.sessions[0].onResult({ final: 'hello' });
+  f.sessions[0].onResult({ final: 'hello world' });
   assert.ok(f.coordinator.snapshot.autoSendAt);
   f.coordinator.cancelAutoSend();
   assert.equal(f.coordinator.snapshot.autoSendAt, null);
@@ -420,9 +420,9 @@ test('automatic sending uses DSH submit only when the draft is still unchanged',
   const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 2 });
   f.coordinator.composer.submit = () => submitted.push(f.draft());
   await f.coordinator.startDictation();
-  f.sessions[0].onResult({ final: 'hello' });
+  f.sessions[0].onResult({ final: 'hello world' });
   await new Promise((resolve) => setTimeout(resolve, 2100));
-  assert.deepEqual(submitted, ['typed hello']);
+  assert.deepEqual(submitted, ['typed hello world']);
   await f.coordinator.dispose();
 });
 
@@ -431,10 +431,10 @@ test('successful automatic send resets recognition before the next utterance', a
   const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 2 });
   f.coordinator.composer.submit = () => submitted.push(f.draft());
   await f.coordinator.startDictation();
-  f.sessions[0].onResult({ final: 'hello' });
+  f.sessions[0].onResult({ final: 'hello world' });
   await new Promise((resolve) => setTimeout(resolve, 2100));
 
-  assert.deepEqual(submitted, ['typed hello']);
+  assert.deepEqual(submitted, ['typed hello world']);
   assert.equal(f.log.filter((entry) => entry === 'input:reset').length, 1);
   await f.coordinator.dispose();
 });
@@ -455,7 +455,7 @@ test('new speech activity cancels a pending automatic send', async () => {
   const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 2 });
   f.coordinator.composer.submit = () => submitted.push(f.draft());
   await f.coordinator.startDictation();
-  f.sessions[0].onResult({ final: 'hello' });
+  f.sessions[0].onResult({ final: 'hello world' });
   assert.ok(f.coordinator.snapshot.autoSendAt);
   f.sessions[0].onActivity(true);
   assert.equal(f.coordinator.snapshot.autoSendAt, null);

@@ -118,15 +118,18 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       'browser provider controls its own segmentation',
     );
     const checks = [...document.querySelectorAll('input[type=checkbox]')];
-    assert.equal(checks.length, 4);
-    assert.equal(checks.filter((input) => input.checked).length, 3);
+    assert.equal(checks.length, 6);
+    assert.equal(checks.filter((input) => input.checked).length, 5);
     assert.equal(
       checks.find((input) =>
         input.parentElement.textContent.includes('Stop assistant speech when I send a message'),
       ).checked,
       false,
     );
-    await act(async () => checks[0].click());
+    const localRecognition = checks.find((input) =>
+      input.parentElement.textContent.includes('Process recognition locally'),
+    );
+    await act(async () => localRecognition.click());
     assert.deepEqual(calls.at(-1), ['settings', { recognitionProcessLocally: false }]);
     assert.equal(
       [...document.querySelectorAll('button')].find(

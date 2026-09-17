@@ -57,6 +57,11 @@ test('valid local options survive normalization', () => {
     voice: 'Samantha',
     inputDeviceId: 'microphone-1',
     outputDeviceId: 'speaker-1',
+    recognitionFilterEnabled: false,
+    recognitionMinimumWords: 4,
+    outputCodeFilterEnabled: false,
+    outputCodeMaxLines: 9,
+    outputCodeNotice: 'See the code above',
     rate: 1.4,
   };
   assert.deepEqual(normalizeSettings(options), options);
@@ -66,6 +71,22 @@ test('legacy automatic sending migrates to queue and tri-state modes survive nor
   assert.equal(normalizeSettings({ sendingMode: 'automatic' }).sendingMode, 'queue');
   assert.equal(normalizeSettings({ sendingMode: 'queue' }).sendingMode, 'queue');
   assert.equal(normalizeSettings({ sendingMode: 'steer' }).sendingMode, 'steer');
+});
+
+test('filter settings use safe defaults and reject malformed values', () => {
+  assert.equal(defaultSettings.recognitionFilterEnabled, true);
+  assert.equal(defaultSettings.recognitionMinimumWords, 2);
+  assert.equal(defaultSettings.outputCodeFilterEnabled, true);
+  assert.equal(defaultSettings.outputCodeMaxLines, 5);
+  assert.equal(defaultSettings.outputCodeNotice, 'Look the code on out conversation');
+  const invalid = normalizeSettings({
+    recognitionMinimumWords: 0,
+    outputCodeMaxLines: 101,
+    outputCodeNotice: '',
+  });
+  assert.equal(invalid.recognitionMinimumWords, 2);
+  assert.equal(invalid.outputCodeMaxLines, 5);
+  assert.equal(invalid.outputCodeNotice, defaultSettings.outputCodeNotice);
 });
 
 test('audio device preferences default to the system devices and reject malformed values', () => {

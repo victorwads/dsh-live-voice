@@ -270,12 +270,11 @@ export function createComponents(React) {
           'aria-pressed': ['queue', 'steer'].includes(state.settings.sendingMode),
           onClick: () =>
             invoke('updateSettings', {
-              sendingMode:
-                !['queue', 'steer'].includes(state.settings.sendingMode)
-                  ? 'queue'
-                  : state.settings.sendingMode === 'queue'
-                    ? 'steer'
-                    : 'manual',
+              sendingMode: !['queue', 'steer'].includes(state.settings.sendingMode)
+                ? 'queue'
+                : state.settings.sendingMode === 'queue'
+                  ? 'steer'
+                  : 'manual',
             }),
         }),
         h(Button, {
@@ -480,19 +479,7 @@ export function createComponents(React) {
                   })),
                 ]),
               )
-            : settings.engine === 'say'
-              ? h(
-                  'label',
-                  null,
-                  'macOS say voice (empty uses system default)',
-                  h('input', {
-                    type: 'text',
-                    value: settings.voice || '',
-                    onChange: (event) => invoke('updateSettings', { voice: event.target.value }),
-                    autoComplete: 'off',
-                  }),
-                )
-              : null,
+            : null,
           settings.engine === 'qwen-http'
             ? h(
                 React.Fragment,
@@ -508,6 +495,49 @@ export function createComponents(React) {
                 ]),
               )
             : null,
+          subcard('Filtering', [
+            h(
+              'label',
+              { key: 'output-code-filter', className: 'dlv-check' },
+              h('input', {
+                type: 'checkbox',
+                checked: settings.outputCodeFilterEnabled !== false,
+                onChange: (event) =>
+                  invoke('updateSettings', { outputCodeFilterEnabled: event.target.checked }),
+              }),
+              ' Filter Markdown code blocks before speaking',
+            ),
+            h(
+              'label',
+              { key: 'output-code-lines' },
+              'Read code blocks up to this many lines',
+              h('input', {
+                type: 'number',
+                min: 0,
+                max: 100,
+                value: settings.outputCodeMaxLines ?? 5,
+                disabled: settings.outputCodeFilterEnabled === false,
+                onChange: (event) => {
+                  const value = Number(event.target.value);
+                  if (Number.isInteger(value) && value >= 0 && value <= 100)
+                    invoke('updateSettings', { outputCodeMaxLines: value });
+                },
+              }),
+            ),
+            h(
+              'label',
+              { key: 'output-code-notice' },
+              'Replacement phrase for larger code blocks',
+              h('input', {
+                type: 'text',
+                maxLength: 300,
+                value: settings.outputCodeNotice || 'Look the code on out conversation',
+                disabled: settings.outputCodeFilterEnabled === false,
+                onChange: (event) =>
+                  invoke('updateSettings', { outputCodeNotice: event.target.value }),
+              }),
+            ),
+          ]),
           h(
             'label',
             null,
@@ -627,6 +657,41 @@ export function createComponents(React) {
               ])
             : null,
           h('p', null, 'Provider settings change with the selected recognition engine.'),
+          subcard('Filtering', [
+            h(
+              'label',
+              { key: 'recognition-filter', className: 'dlv-check' },
+              h('input', {
+                type: 'checkbox',
+                checked: settings.recognitionFilterEnabled !== false,
+                onChange: (event) =>
+                  invoke('updateSettings', { recognitionFilterEnabled: event.target.checked }),
+              }),
+              ' Ignore short final transcription chunks',
+            ),
+            h(
+              'label',
+              { key: 'recognition-minimum-words' },
+              'Minimum words per final chunk',
+              h('input', {
+                type: 'number',
+                min: 1,
+                max: 20,
+                value: settings.recognitionMinimumWords ?? 2,
+                disabled: settings.recognitionFilterEnabled === false,
+                onChange: (event) => {
+                  const value = Number(event.target.value);
+                  if (Number.isInteger(value) && value >= 1 && value <= 20)
+                    invoke('updateSettings', { recognitionMinimumWords: value });
+                },
+              }),
+              h(
+                'small',
+                null,
+                'Final chunks with fewer words are ignored before they reach the composer or automatic delivery.',
+              ),
+            ),
+          ]),
           usesPluginVoiceDetection(settings.recognitionEngine)
             ? h(
                 'details',
