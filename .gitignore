@@ -15,3 +15,5 @@ artifacts/
 # are machine-specific and can be many gigabytes; only the setup scripts and
 # documentation belong in Git.
 .local-voice/
+.playwright-mcp
+*.png
