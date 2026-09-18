@@ -357,18 +357,26 @@ test('turning off automatic assistant speech discards delayed queued phrases', a
   await f.coordinator.dispose();
 });
 
-test('headphone interruption requires sustained activity and resumes automatically', async () => {
-  const f = fixture({ mode: 'headphones' });
+test('headphone interruption requires qualifying transcript and sustained activity', async () => {
+  const f = fixture({ mode: 'headphones', recognitionMinimumWords: 2 });
   f.coordinator.snapshot.settings.assistantSpeechDelaySeconds = 0.1;
   await f.coordinator.startConversation();
   void f.coordinator.speak('A sufficiently long answer');
   await turn();
+
   f.sessions[0].onActivity(true);
-  await new Promise((resolve) => setTimeout(resolve, 5));
-  f.sessions[0].onActivity(false);
   await new Promise((resolve) => setTimeout(resolve, 110));
-  assert.equal(f.log.includes('pause'), false, 'brief noise does not pause playback');
+  assert.equal(f.log.includes('pause'), false, 'activity without transcript does not pause playback');
+  f.sessions[0].onActivity(false);
+
   f.sessions[0].onActivity(true);
+  f.sessions[0].onResult({ interim: 'noise' });
+  await new Promise((resolve) => setTimeout(resolve, 110));
+  assert.equal(f.log.includes('pause'), false, 'transcript rejected by the word filter does not pause');
+  f.sessions[0].onActivity(false);
+
+  f.sessions[0].onActivity(true);
+  f.sessions[0].onResult({ interim: 'please stop' });
   await new Promise((resolve) => setTimeout(resolve, 110));
   assert.equal(f.coordinator.snapshot.paused, true);
   f.sessions[0].onActivity(false);

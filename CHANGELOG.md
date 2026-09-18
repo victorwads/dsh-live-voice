@@ -2,6 +2,35 @@
 
 All notable changes to DSH Live Voice are documented in this file.
 
+## [0.2.0] - Unreleased
+
+### Release Changes
+
+This release expands conversation control, audio routing, speech filtering, and settings organization.
+
+### Features
+
+- Add audio input and output device preferences.
+- Add a three-state delivery mode for manual review, queued delivery, and immediate steering.
+- Add configurable speech-input filtering, including minimum-word filtering for final recognition results.
+- Add configurable speech-output filtering to omit code blocks from spoken responses.
+- Add exact voice commands for ending a conversation, muting or resuming listening, stopping speech, clearing input, and sending or queuing recognized text.
+- Add tabbed Live Voice settings to organize speech, conversation, commands, and advanced options.
+
+### Changes
+
+- Improve the Live Voice controls and settings interface for the new delivery, device, filtering, and command options.
+- Expand coordinator, settings, component, and filter test coverage.
+- Update compiled client and server bundles for the new functionality.
+- Include this changelog in the published package.
+
+### Bug Fixes
+
+- Require a recognized transcript that passes the configured minimum-word filter before headphone-mode microphone activity may pause assistant speech.
+- Debounce headphone-mode interruptions to reduce false pauses from short recognition events.
+- Automatically resume speech when an interruption candidate ends without becoming valid user speech.
+- Preserve manual pause behavior separately from automatic interruption handling.
+
 ## [0.1.0] - 2026-09-15
 
 ### Bug Fixes
@@ -34,6 +63,7 @@ All notable changes to DSH Live Voice are documented in this file.
 - Support browser speech synthesis and native macOS `say` output.
 - Add Live Voice controls, Whisper settings, build and browser-preview scripts, and an initial test suite.
 
+[0.2.0]: https://github.com/victorwads/dsh-live-voice/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/victorwads/dsh-live-voice/compare/v0.0.2...v0.1.0
 [0.0.2]: https://github.com/victorwads/dsh-live-voice/compare/v0.0.1-alpha.1...v0.0.2
 [0.0.1-alpha.1]: https://github.com/victorwads/dsh-live-voice/tree/v0.0.1-alpha.1

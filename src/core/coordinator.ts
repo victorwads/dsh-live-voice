@@ -58,6 +58,7 @@ export class VoiceCoordinator {
     this.autoSendTimer = null;
     this.autoSendDraft = null;
     this.interruptionTimer = null;
+    this.interruptionTranscriptConfirmed = false;
     this.interruptionPausedSpeech = false;
     this.assistantSpeechTimer = null;
     this.assistantSpeechNotBefore = 0;
@@ -304,6 +305,14 @@ export class VoiceCoordinator {
       }
     });
   }
+  _interruptionTranscriptQualifies(text) {
+    if (!String(text || '').trim()) return false;
+    return (
+      !this.snapshot.settings.recognitionFilterEnabled ||
+      hasMinimumWords(text, this.snapshot.settings.recognitionMinimumWords)
+    );
+  }
+
   _handleSpeechInterruption(active) {
     if (this.snapshot.settings.mode !== 'headphones') return;
     if (active) {
@@ -311,7 +320,12 @@ export class VoiceCoordinator {
         return;
       this.interruptionTimer = setTimeout(() => {
         this.interruptionTimer = null;
-        if (this.snapshot.recognizing && this.snapshot.speaking && !this.snapshot.paused) {
+        if (
+          this.interruptionTranscriptConfirmed &&
+          this.snapshot.recognizing &&
+          this.snapshot.speaking &&
+          !this.snapshot.paused
+        ) {
           this.interruptionPausedSpeech = true;
           void this.pauseSpeech().then(() => {
             if (
@@ -329,6 +343,7 @@ export class VoiceCoordinator {
     }
     if (this.interruptionTimer !== null) clearTimeout(this.interruptionTimer);
     this.interruptionTimer = null;
+    this.interruptionTranscriptConfirmed = false;
     if (this.interruptionPausedSpeech && this.snapshot.paused) {
       this.interruptionPausedSpeech = false;
       void this.resumeSpeech();
@@ -343,6 +358,14 @@ export class VoiceCoordinator {
       this.snapshot.settings.mode === 'speaker'
     )
       return;
+    if (
+      this.snapshot.settings.mode === 'headphones' &&
+      this.snapshot.speaking &&
+      this._interruptionTranscriptQualifies(final || interim)
+    ) {
+      this.interruptionTranscriptConfirmed = true;
+      this._handleSpeechInterruption(true);
+    }
     // A native event can contain a final result without an interim result. Do not
     // run a second empty hypothesis update: it would replace the just-committed
     // result with a stale composer snapshot before the editor publishes it.
@@ -484,6 +507,7 @@ export class VoiceCoordinator {
   async stopSpeech(resumeListening = true) {
     if (this.interruptionTimer !== null) clearTimeout(this.interruptionTimer);
     this.interruptionTimer = null;
+    this.interruptionTranscriptConfirmed = false;
     this.interruptionPausedSpeech = false;
     const epoch = ++this.speechEpoch;
     ++this.controlEpoch;
