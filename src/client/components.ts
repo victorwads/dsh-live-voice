@@ -25,6 +25,8 @@ export function createComponents(React) {
     };
     const paths = {
       mic: 'M9 5a3 3 0 0 1 6 0v7a3 3 0 0 1-6 0V5M6 10v2a6 6 0 0 0 12 0v-2M12 18v4M8 22h8',
+      micOff:
+        'M9 9v3a3 3 0 0 0 5.12 2.12M15 9V5a3 3 0 0 0-5.64-1.42M6 10v2a6 6 0 0 0 9.5 4.88M18 10v2a6 6 0 0 1-.5 2.4M12 18v4M8 22h8M3 3l18 18',
       speaker: 'M3 9h4l6-5v16l-6-5H3V9M17 8a6 6 0 0 1 0 8M20 5a10 10 0 0 1 0 14',
       close: 'M6 6l12 12M18 6L6 18',
       stop: 'M6 6h12v12H6z',
@@ -310,9 +312,14 @@ export function createComponents(React) {
           : null,
         capture
           ? h(Button, {
-              label: 'Stop listening',
-              icon: 'stop',
-              onClick: () => invoke('stopListening'),
+              className: 'dlv-live-toggle dlv-mic-state',
+              label: state.muted ? 'Resume listening' : 'Ignore composer input',
+              title: `Microphone input: ${state.muted ? 'ignoring' : 'listening'}`,
+              icon: state.muted ? 'micOff' : 'mic',
+              visibleLabel: state.muted ? 'IGNORING' : 'LISTENING',
+              'aria-pressed': Boolean(state.muted),
+              'data-muted': state.muted ? 'true' : 'false',
+              onClick: () => invoke(state.muted ? 'resumeListeningInput' : 'muteListening'),
             })
           : null,
         state.speaking && !state.paused && state.capabilities[state.settings.engine]?.pause
@@ -361,6 +368,30 @@ export function createComponents(React) {
     const [invoke, error, clearError] = useActions(controller);
     const settings = state.settings || {};
     const capabilities = state.capabilities || {};
+    const tabsId = React.useId();
+    const tabs = [
+      { id: 'conversation', label: 'Conversation' },
+      { id: 'speech', label: 'Speech' },
+      { id: 'recognition', label: 'Speech recognition' },
+    ];
+    const tabRefs = React.useRef([]);
+    const [activeTab, setActiveTab] = React.useState('conversation');
+    const activateTab = (index) => {
+      const tab = tabs[index];
+      if (!tab) return;
+      setActiveTab(tab.id);
+      tabRefs.current[index]?.focus();
+    };
+    const handleTabKeyDown = (event, index) => {
+      let nextIndex;
+      if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
+      else if (event.key === 'ArrowLeft') nextIndex = (index - 1 + tabs.length) % tabs.length;
+      else if (event.key === 'Home') nextIndex = 0;
+      else if (event.key === 'End') nextIndex = tabs.length - 1;
+      else return;
+      event.preventDefault();
+      activateTab(nextIndex);
+    };
     const [audioDevices, setAudioDevices] = React.useState([]);
     React.useEffect(() => {
       let active = true;
@@ -416,12 +447,17 @@ export function createComponents(React) {
           ),
         ),
       );
-    const card = (title, children, open = false) =>
+    const panel = (id, children) =>
       h(
-        'details',
-        { className: 'dlv-settings-card', open },
-        h('summary', null, title),
-        h('div', { className: 'dlv-settings-card-body' }, ...children),
+        'div',
+        {
+          id: `${tabsId}-panel-${id}`,
+          className: 'dlv-settings-panel',
+          role: 'tabpanel',
+          'aria-labelledby': `${tabsId}-tab-${id}`,
+          hidden: activeTab !== id,
+        },
+        ...children,
       );
     const subcard = (title, children, open = false) =>
       h(
@@ -438,9 +474,41 @@ export function createComponents(React) {
         ? h(Button, { label: 'Close voice settings', icon: 'close', onClick: onClose })
         : null,
       h(
-        'details',
-        { className: 'dlv-settings-card' },
-        h('summary', null, 'Speech output'),
+        'div',
+        { className: 'dlv-settings-tabs', role: 'tablist', 'aria-label': 'Live Voice settings' },
+        tabs.map((tab, index) => {
+          const selected = activeTab === tab.id;
+          return h(
+            'button',
+            {
+              key: tab.id,
+              ref: (element) => {
+                tabRefs.current[index] = element;
+              },
+              id: `${tabsId}-tab-${tab.id}`,
+              type: 'button',
+              role: 'tab',
+              className: 'dlv-settings-tab',
+              'aria-selected': selected,
+              'aria-controls': `${tabsId}-panel-${tab.id}`,
+              'data-active': selected ? 'true' : undefined,
+              tabIndex: selected ? 0 : -1,
+              onClick: () => setActiveTab(tab.id),
+              onKeyDown: (event) => handleTabKeyDown(event, index),
+            },
+            tab.label,
+          );
+        }),
+      ),
+      h(
+        'div',
+        {
+          id: `${tabsId}-panel-speech`,
+          className: 'dlv-settings-panel',
+          role: 'tabpanel',
+          'aria-labelledby': `${tabsId}-tab-speech`,
+          hidden: activeTab !== 'speech',
+        },
         h(
           'div',
           { className: 'dlv-settings-card-body' },
@@ -563,12 +631,52 @@ export function createComponents(React) {
             null,
             'Qwen synthesis runs on the DSH host and the generated WAV plays in this browser. macOS say plays on the host; Browser speech plays on this device.',
           ),
+          ...['qwen-http', 'say', 'browser']
+            .filter((id) => capabilities[id]?.supported === false)
+            .map((id) =>
+              h(
+                'p',
+                { key: id, role: 'status' },
+                `${id === 'qwen-http' ? 'Qwen3 local' : id === 'say' ? 'macOS say' : 'Browser speech'}: ${capabilities[id].reason}`,
+              ),
+            ),
+          h(
+            'div',
+            { className: 'dlv-settings-actions' },
+            h(
+              'button',
+              {
+                type: 'button',
+                disabled: capabilities[settings.engine]?.supported !== true || state.speaking,
+                onClick: () =>
+                  invoke('speak', 'DSH Live Voice. The selected speech output is working.'),
+              },
+              state.speaking ? 'Testing speech…' : 'Test selected speech output',
+            ),
+            state.speaking || state.paused
+              ? h(
+                  'button',
+                  { type: 'button', onClick: () => invoke('stopSpeech') },
+                  'Stop speech test',
+                )
+              : null,
+            h(
+              'button',
+              { type: 'button', onClick: () => invoke('refreshCapabilities') },
+              'Refresh available engines',
+            ),
+          ),
         ),
       ),
       h(
-        'details',
-        { className: 'dlv-settings-card' },
-        h('summary', null, 'Speech recognition'),
+        'div',
+        {
+          id: `${tabsId}-panel-recognition`,
+          className: 'dlv-settings-panel',
+          role: 'tabpanel',
+          'aria-labelledby': `${tabsId}-tab-recognition`,
+          hidden: activeTab !== 'recognition',
+        },
         h(
           'div',
           { className: 'dlv-settings-card-body' },
@@ -659,6 +767,50 @@ export function createComponents(React) {
               ])
             : null,
           h('p', null, 'Provider settings change with the selected recognition engine.'),
+          subcard('Voice commands', [
+            h(
+              'label',
+              { key: 'voice-commands-enabled', className: 'dlv-check' },
+              h('input', {
+                type: 'checkbox',
+                checked: settings.voiceCommandsEnabled !== false,
+                onChange: (event) =>
+                  invoke('updateSettings', { voiceCommandsEnabled: event.target.checked }),
+              }),
+              ' Enable exact voice commands',
+            ),
+            h(
+              'small',
+              { key: 'voice-command-help' },
+              'Separate phrases with commas. Matching ignores capitalization, accents, punctuation, and extra spaces. The entire final chunk must match.',
+            ),
+            ...[
+              ['Send to running agent', 'voiceCommandSend', 'send, send message'],
+              ['Put in queue', 'voiceCommandQueue', 'queue, queue message'],
+              ['End conversation', 'voiceCommandEnd', 'end, end conversation'],
+              ['Mute composer input', 'voiceCommandMute', 'mute, stop listening'],
+              ['Resume composer input', 'voiceCommandResume', 'resume, start listening'],
+              [
+                'Stop assistant speech',
+                'voiceCommandStopSpeaking',
+                'stop talking, stop speaking, shut up',
+              ],
+              ['Clear composer', 'voiceCommandClear', 'clear all, clear message'],
+            ].map(([label, key, fallback]) =>
+              h(
+                'label',
+                { key },
+                label,
+                h('textarea', {
+                  rows: 2,
+                  maxLength: 1000,
+                  defaultValue: settings[key] || fallback,
+                  disabled: settings.voiceCommandsEnabled === false,
+                  onBlur: (event) => invoke('updateSettings', { [key]: event.target.value }),
+                }),
+              ),
+            ),
+          ]),
           subcard('Filtering', [
             h(
               'label',
@@ -694,6 +846,18 @@ export function createComponents(React) {
               ),
             ),
           ]),
+          capabilities.capture?.supported === false
+            ? h('p', { role: 'status' }, `Microphone: ${capabilities.capture.reason}`)
+            : capabilities.capture?.permission === 'prompt'
+              ? h(
+                  'p',
+                  { role: 'status' },
+                  'Microphone permission will be requested only when you start dictation or a voice conversation.',
+                )
+              : null,
+          capabilities.recognition?.supported === false
+            ? h('p', { role: 'status' }, capabilities.recognition.reason)
+            : null,
           usesPluginVoiceDetection(settings.recognitionEngine)
             ? h(
                 'details',
@@ -747,157 +911,110 @@ export function createComponents(React) {
             : null,
         ),
       ),
-      card(
-        'Conversation',
-        [
+      panel('conversation', [
+        h(
+          'label',
+          { key: 'announce', className: 'dlv-check' },
+          h('input', {
+            type: 'checkbox',
+            checked: settings.announceAssistantMessages !== false,
+            onChange: (event) =>
+              invoke('updateSettings', { announceAssistantMessages: event.target.checked }),
+          }),
+          ' Automatically speak new assistant messages',
+        ),
+        h(
+          'p',
+          { key: 'policy' },
+          'During a voice conversation, assistant phrases are announced automatically. Playback waits while you are speaking.',
+        ),
+        h(
+          'label',
+          { key: 'interrupt-message', className: 'dlv-check' },
+          h('input', {
+            type: 'checkbox',
+            checked: settings.interruptSpeechOnUserMessage === true,
+            onChange: (event) =>
+              invoke('updateSettings', { interruptSpeechOnUserMessage: event.target.checked }),
+          }),
+          ' Stop assistant speech when I send a message',
+        ),
+        h(
+          'p',
+          { key: 'interrupt-message-description', className: 'dlv-setting-description' },
+          settings.interruptSpeechOnUserMessage
+            ? 'Sending or steering a new user message stops current or paused assistant speech.'
+            : 'Sending another message does not stop the assistant audio you are already hearing.',
+        ),
+        field('Listening mode', 'mode', [
+          { value: 'speaker', label: 'Speakers — gated listening' },
+          { value: 'headphones', label: 'Headphones — open microphone' },
+        ]),
+        h(
+          'p',
+          { key: 'mode-description', className: 'dlv-setting-description' },
+          settings.mode === 'headphones'
+            ? 'Open microphone keeps listening while responses play. When your speech is detected, playback pauses and resumes only when you choose.'
+            : 'Gated listening releases the microphone while responses play, preventing speaker audio from being recognized. Use Take microphone to interrupt.',
+        ),
+        h(
+          'label',
+          { key: 'speech-delay' },
+          'Assistant response delay',
           h(
-            'label',
-            { key: 'announce', className: 'dlv-check' },
-            h('input', {
-              type: 'checkbox',
-              checked: settings.announceAssistantMessages !== false,
+            'select',
+            {
+              value: String(settings.assistantSpeechDelaySeconds || 3),
               onChange: (event) =>
-                invoke('updateSettings', { announceAssistantMessages: event.target.checked }),
-            }),
-            ' Automatically speak new assistant messages',
-          ),
-          h(
-            'p',
-            { key: 'policy' },
-            'During a voice conversation, assistant phrases are announced automatically. Playback waits while you are speaking.',
-          ),
-          h(
-            'label',
-            { key: 'interrupt-message', className: 'dlv-check' },
-            h('input', {
-              type: 'checkbox',
-              checked: settings.interruptSpeechOnUserMessage === true,
-              onChange: (event) =>
-                invoke('updateSettings', { interruptSpeechOnUserMessage: event.target.checked }),
-            }),
-            ' Stop assistant speech when I send a message',
-          ),
-          h(
-            'p',
-            { key: 'interrupt-message-description', className: 'dlv-setting-description' },
-            settings.interruptSpeechOnUserMessage
-              ? 'Sending or steering a new user message stops current or paused assistant speech.'
-              : 'Sending another message does not stop the assistant audio you are already hearing.',
-          ),
-          field('Listening mode', 'mode', [
-            { value: 'speaker', label: 'Speakers — gated listening' },
-            { value: 'headphones', label: 'Headphones — open microphone' },
-          ]),
-          h(
-            'p',
-            { key: 'mode-description', className: 'dlv-setting-description' },
-            settings.mode === 'headphones'
-              ? 'Open microphone keeps listening while responses play. When your speech is detected, playback pauses and resumes only when you choose.'
-              : 'Gated listening releases the microphone while responses play, preventing speaker audio from being recognized. Use Take microphone to interrupt.',
-          ),
-          h(
-            'label',
-            { key: 'speech-delay' },
-            'Assistant response delay',
-            h(
-              'select',
-              {
-                value: String(settings.assistantSpeechDelaySeconds || 3),
-                onChange: (event) =>
-                  invoke('updateSettings', {
-                    assistantSpeechDelaySeconds: Number(event.target.value),
-                  }),
-              },
-              [1, 2, 3, 4, 5, 6, 8, 10].map((seconds) =>
-                h('option', { key: seconds, value: String(seconds) }, seconds + ' seconds'),
-              ),
-            ),
-            h(
-              'small',
-              null,
-              'After you stop speaking, automatic assistant playback waits for this much continuous silence. Speaking again restarts the wait.',
+                invoke('updateSettings', {
+                  assistantSpeechDelaySeconds: Number(event.target.value),
+                }),
+            },
+            [1, 2, 3, 4, 5, 6, 8, 10].map((seconds) =>
+              h('option', { key: seconds, value: String(seconds) }, seconds + ' seconds'),
             ),
           ),
-          field('Sending mode', 'sendingMode', [
-            { value: 'manual', label: 'Off — review and send manually' },
-            { value: 'queue', label: 'Queue — automatically add after silence' },
-            { value: 'steer', label: 'Steer — automatically send to the running agent' },
-          ]),
-          settings.sendingMode !== 'manual'
-            ? h(
-                'label',
-                { key: 'delay' },
-                'Send after silence',
-                h(
-                  'select',
-                  {
-                    value: String(settings.autoSendDelaySeconds || 4),
-                    onChange: (event) =>
-                      invoke('updateSettings', {
-                        autoSendDelaySeconds: Number(event.target.value),
-                      }),
-                  },
-                  [2, 3, 4, 5, 6, 8, 10].map((seconds) =>
-                    h('option', { key: seconds, value: String(seconds) }, seconds + ' seconds'),
-                  ),
-                ),
-                h(
-                  'small',
-                  null,
-                  'Countdown starts after a final recognized phrase. New speech or edits cancel it.',
-                ),
-              )
-            : h(
-                'p',
-                { key: 'manual', className: 'dlv-setting-description' },
-                'Recognized text stays in the composer until you use the normal DSH Send control.',
-              ),
-        ],
-        false,
-      ),
-      capabilities.capture?.supported === false
-        ? h('p', { role: 'status' }, `Microphone: ${capabilities.capture.reason}`)
-        : capabilities.capture?.permission === 'prompt'
+          h(
+            'small',
+            null,
+            'After you stop speaking, automatic assistant playback waits for this much continuous silence. Speaking again restarts the wait.',
+          ),
+        ),
+        field('Sending mode', 'sendingMode', [
+          { value: 'manual', label: 'Off — review and send manually' },
+          { value: 'queue', label: 'Queue — automatically add after silence' },
+          { value: 'steer', label: 'Steer — automatically send to the running agent' },
+        ]),
+        settings.sendingMode !== 'manual'
           ? h(
-              'p',
-              { role: 'status' },
-              'Microphone permission will be requested only when you start dictation or a voice conversation.',
+              'label',
+              { key: 'delay' },
+              'Send after silence',
+              h(
+                'select',
+                {
+                  value: String(settings.autoSendDelaySeconds || 4),
+                  onChange: (event) =>
+                    invoke('updateSettings', {
+                      autoSendDelaySeconds: Number(event.target.value),
+                    }),
+                },
+                [2, 3, 4, 5, 6, 8, 10].map((seconds) =>
+                  h('option', { key: seconds, value: String(seconds) }, seconds + ' seconds'),
+                ),
+              ),
+              h(
+                'small',
+                null,
+                'Countdown starts after a final recognized phrase. New speech or edits cancel it.',
+              ),
             )
-          : null,
-      capabilities.recognition?.supported === false
-        ? h('p', { role: 'status' }, capabilities.recognition.reason)
-        : null,
-      ...['qwen-http', 'say', 'browser']
-        .filter((id) => capabilities[id]?.supported === false)
-        .map((id) =>
-          h(
-            'p',
-            { key: id, role: 'status' },
-            `${id === 'qwen-http' ? 'Qwen3 local' : id === 'say' ? 'macOS say' : 'Browser speech'}: ${capabilities[id].reason}`,
-          ),
-        ),
-      h(
-        'div',
-        { className: 'dlv-settings-actions' },
-        h(
-          'button',
-          {
-            type: 'button',
-            disabled: capabilities[settings.engine]?.supported !== true || state.speaking,
-            onClick: () =>
-              invoke('speak', 'DSH Live Voice. The selected speech output is working.'),
-          },
-          state.speaking ? 'Testing speech…' : 'Test selected speech output',
-        ),
-        state.speaking || state.paused
-          ? h('button', { type: 'button', onClick: () => invoke('stopSpeech') }, 'Stop speech test')
-          : null,
-        h(
-          'button',
-          { type: 'button', onClick: () => invoke('refreshCapabilities') },
-          'Refresh available engines',
-        ),
-      ),
+          : h(
+              'p',
+              { key: 'manual', className: 'dlv-setting-description' },
+              'Recognized text stays in the composer until you use the normal DSH Send control.',
+            ),
+      ]),
       h(ErrorText, {
         error: error || state.error,
         onDismiss: () => {

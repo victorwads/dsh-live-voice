@@ -1,7 +1,12 @@
 // @ts-nocheck
 import { TranscriptDraft } from './transcript.ts';
 import { normalizeSettings } from './settings.ts';
-import { filterSpeechOutput, hasMinimumWords, hasUnclosedCodeFence } from './filters.ts';
+import {
+  filterSpeechOutput,
+  hasMinimumWords,
+  hasUnclosedCodeFence,
+  matchVoiceCommand,
+} from './filters.ts';
 
 const message = (error) => error?.message || String(error);
 function cancellable(promise, signal) {
@@ -40,6 +45,7 @@ export class VoiceCoordinator {
       conversation: false,
       listening: false,
       recognizing: false,
+      muted: false,
       speaking: false,
       paused: false,
       starting: false,
@@ -173,6 +179,21 @@ export class VoiceCoordinator {
   }
   startConversation() {
     return this.startListening(true);
+  }
+  muteListening() {
+    if (!this.snapshot.settings.voiceCommandsEnabled) return this.stopListening();
+    this.cancelAutoSend();
+    this.composer.setDraft(this.transcript.update(this.composer.getDraft(), '', true));
+    this.transcript.reset();
+    this.patch({ muted: true, recognizing: false });
+  }
+  resumeListeningInput() {
+    if (this.snapshot.listening || this.snapshot.starting) {
+      this.transcript.reset();
+      this.patch({ muted: false, recognizing: false });
+      return;
+    }
+    return this.startListening(this.snapshot.conversation);
   }
   startListening(conversation = this.snapshot.conversation) {
     if (this.disposed) return Promise.resolve();
@@ -326,6 +347,47 @@ export class VoiceCoordinator {
     // run a second empty hypothesis update: it would replace the just-committed
     // result with a stale composer snapshot before the editor publishes it.
     if (final) {
+      const command =
+        this.snapshot.settings.voiceCommandsEnabled &&
+        matchVoiceCommand(final, {
+          send: this.snapshot.settings.voiceCommandSend,
+          queue: this.snapshot.settings.voiceCommandQueue,
+          end: this.snapshot.settings.voiceCommandEnd,
+          mute: this.snapshot.settings.voiceCommandMute,
+          resume: this.snapshot.settings.voiceCommandResume,
+          stopSpeaking: this.snapshot.settings.voiceCommandStopSpeaking,
+          clear: this.snapshot.settings.voiceCommandClear,
+        });
+      if (command) {
+        this.composer.setDraft(this.transcript.update(this.composer.getDraft(), '', true));
+        this.transcript.reset();
+        this.cancelAutoSend();
+        this.patch({ recognizing: false });
+        if (command === 'end') void this.endConversation();
+        else if (command === 'mute') this.muteListening();
+        else if (command === 'resume') this.resumeListeningInput();
+        else if (command === 'stopSpeaking') {
+          this.updateSettings({ announceAssistantMessages: false });
+          void this.stopSpeech();
+        } else if (command === 'clear') {
+          this.cancelAutoSend();
+          this.transcript.reset();
+          this.composer.setDraft('');
+        } else if (this.snapshot.muted) return;
+        else {
+          const sendingMode = command === 'send' ? 'steer' : 'queue';
+          this.updateSettings({ sendingMode });
+          if (this.composer.getDraft().trim() && typeof this.composer.submit === 'function')
+            this.composer.submit(sendingMode);
+        }
+        return;
+      }
+      if (this.snapshot.muted) {
+        this.composer.setDraft(this.transcript.update(this.composer.getDraft(), '', true));
+        this.transcript.reset();
+        this.patch({ recognizing: false });
+        return;
+      }
       if (
         this.snapshot.settings.recognitionFilterEnabled &&
         !hasMinimumWords(final, this.snapshot.settings.recognitionMinimumWords)

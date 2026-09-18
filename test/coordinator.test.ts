@@ -379,6 +379,79 @@ test('headphone interruption requires sustained activity and resumes automatical
   await f.coordinator.dispose();
 });
 
+test('voice commands run before the minimum-word filter and never enter the composer', async () => {
+  const f = fixture({ recognitionMinimumWords: 2 });
+  const submitted = [];
+  f.coordinator.composer.submit = (mode) => submitted.push(mode);
+  await f.coordinator.startConversation();
+  f.sessions[0].onResult({ final: 'SEND!!!' });
+  assert.deepEqual(submitted, ['steer']);
+  assert.equal(f.coordinator.snapshot.settings.sendingMode, 'steer');
+  assert.equal(f.draft(), 'typed');
+  f.sessions[0].onResult({ final: 'queue.' });
+  assert.deepEqual(submitted, ['steer', 'queue']);
+  assert.equal(f.coordinator.snapshot.settings.sendingMode, 'queue');
+  assert.equal(f.draft(), 'typed');
+  f.sessions[0].onResult({ final: 'END' });
+  await turn();
+  assert.equal(f.coordinator.snapshot.conversation, false);
+  assert.equal(f.draft(), 'typed');
+  await f.coordinator.dispose();
+});
+
+test('clear command removes all composer text and cancels pending automatic delivery', async () => {
+  const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 2 });
+  await f.coordinator.startConversation();
+  f.coordinator.composer.submit = () => {};
+  f.sessions[0].onResult({ final: 'some useful words' });
+  assert.ok(f.coordinator.snapshot.autoSendAt);
+  f.sessions[0].onResult({ final: 'clear all!' });
+  assert.equal(f.draft(), '');
+  assert.equal(f.coordinator.snapshot.autoSendAt, null);
+  await f.coordinator.dispose();
+});
+
+test('stop-speaking command disables automatic speech and stops playback', async () => {
+  const f = fixture({ mode: 'headphones' });
+  await f.coordinator.startConversation();
+  void f.coordinator.speak('A long spoken response');
+  await turn();
+  f.sessions[0].onResult({ final: 'shut up!' });
+  await turn();
+  assert.equal(f.coordinator.snapshot.settings.announceAssistantMessages, false);
+  assert.equal(f.coordinator.snapshot.speaking, false);
+  assert.equal(f.coordinator.snapshot.listening, true);
+  await f.coordinator.dispose();
+});
+
+test('soft mute keeps recognition active, ignores dictation, and accepts resume command', async () => {
+  const f = fixture({
+    voiceCommandMute: 'mute, ignore me',
+    voiceCommandResume: 'resume, listen again',
+  });
+  await f.coordinator.startConversation();
+  f.sessions[0].onResult({ final: 'ignore me' });
+  assert.equal(f.coordinator.snapshot.muted, true);
+  assert.equal(f.coordinator.snapshot.listening, true);
+  f.sessions[0].onResult({ final: 'this must be ignored' });
+  assert.equal(f.draft(), 'typed');
+  f.sessions[0].onResult({ final: 'listen again' });
+  assert.equal(f.coordinator.snapshot.muted, false);
+  f.sessions[0].onResult({ final: 'normal dictation' });
+  assert.equal(f.draft(), 'typed normal dictation');
+  await f.coordinator.dispose();
+});
+
+test('disabled voice commands continue through normal recognition filtering', async () => {
+  const f = fixture({ voiceCommandsEnabled: false, recognitionMinimumWords: 2 });
+  await f.coordinator.startConversation();
+  f.sessions[0].onResult({ final: 'send' });
+  assert.equal(f.draft(), 'typed');
+  f.sessions[0].onResult({ final: 'send message' });
+  assert.equal(f.draft(), 'typed send message');
+  await f.coordinator.dispose();
+});
+
 test('automatic sending waits after a final phrase and remains cancellable', async () => {
   const submitted = [];
   const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 2 });

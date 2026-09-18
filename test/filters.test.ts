@@ -1,7 +1,19 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { filterSpeechOutput, hasMinimumWords, hasUnclosedCodeFence } from '../src/core/filters.ts';
+import {
+  filterSpeechOutput,
+  hasMinimumWords,
+  hasUnclosedCodeFence,
+  matchVoiceCommand,
+  normalizeVoiceCommand,
+} from '../src/core/filters.ts';
+
+test('voice commands match the whole normalized chunk', () => {
+  assert.equal(normalizeVoiceCommand('  ÉND, conversation!!! '), 'end conversation');
+  assert.equal(matchVoiceCommand('Énd, conversation!', { end: 'end, end conversation' }), 'end');
+  assert.equal(matchVoiceCommand('please end conversation', { end: 'end conversation' }), null);
+});
 
 test('recognition word filter counts words rather than characters', () => {
   assert.equal(hasMinimumWords('hum', 2), false);

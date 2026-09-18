@@ -49,11 +49,29 @@ export const defaultSettings = Object.freeze({
   outputDeviceId: '',
   recognitionFilterEnabled: true,
   recognitionMinimumWords: 2,
+  voiceCommandsEnabled: true,
+  voiceCommandSend: 'send, send message',
+  voiceCommandQueue: 'queue, queue message',
+  voiceCommandEnd: 'end, end conversation',
+  voiceCommandMute: 'mute, stop listening',
+  voiceCommandResume: 'resume, start listening',
+  voiceCommandStopSpeaking: 'stop talking, stop speaking, shut up',
+  voiceCommandClear: 'clear all, clear message',
   outputCodeFilterEnabled: true,
   outputCodeMaxLines: 5,
   outputCodeNotice: 'Look the code on out conversation',
   rate: 1,
 });
+const normalizeCommandPhrases = (value, fallback) =>
+  typeof value === 'string' && value.length <= 1000 && !value.includes('\0')
+    ? value
+        .split(/[,\r\n]+/)
+        .map((phrase) => phrase.trim())
+        .filter(Boolean)
+        .slice(0, 20)
+        .join(', ')
+    : fallback;
+
 /** Persisted browser preferences are untrusted and may belong to an older version. */
 export function normalizeSettings(value) {
   const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
@@ -140,6 +158,38 @@ export function normalizeSettings(value) {
       source.recognitionMinimumWords <= 20
         ? source.recognitionMinimumWords
         : defaultSettings.recognitionMinimumWords,
+    voiceCommandsEnabled:
+      typeof source.voiceCommandsEnabled === 'boolean'
+        ? source.voiceCommandsEnabled
+        : defaultSettings.voiceCommandsEnabled,
+    voiceCommandSend: normalizeCommandPhrases(
+      source.voiceCommandSend,
+      defaultSettings.voiceCommandSend,
+    ),
+    voiceCommandQueue: normalizeCommandPhrases(
+      source.voiceCommandQueue,
+      defaultSettings.voiceCommandQueue,
+    ),
+    voiceCommandEnd: normalizeCommandPhrases(
+      source.voiceCommandEnd,
+      defaultSettings.voiceCommandEnd,
+    ),
+    voiceCommandMute: normalizeCommandPhrases(
+      source.voiceCommandMute,
+      defaultSettings.voiceCommandMute,
+    ),
+    voiceCommandResume: normalizeCommandPhrases(
+      source.voiceCommandResume,
+      defaultSettings.voiceCommandResume,
+    ),
+    voiceCommandStopSpeaking: normalizeCommandPhrases(
+      source.voiceCommandStopSpeaking,
+      defaultSettings.voiceCommandStopSpeaking,
+    ),
+    voiceCommandClear: normalizeCommandPhrases(
+      source.voiceCommandClear,
+      defaultSettings.voiceCommandClear,
+    ),
     outputCodeFilterEnabled:
       typeof source.outputCodeFilterEnabled === 'boolean'
         ? source.outputCodeFilterEnabled

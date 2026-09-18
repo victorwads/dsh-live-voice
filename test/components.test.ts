@@ -84,17 +84,25 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.deepEqual(calls, ['conversation']);
     assert.equal(document.querySelector('[aria-label="Voice controls"]'), null);
     assert.equal(document.querySelector('option[value=say]').disabled, true);
-    const cards = [...document.querySelectorAll('.dlv-settings-card')];
+    const tabs = [...document.querySelectorAll('[role=tab]')];
     assert.deepEqual(
-      cards.map((card) => card.querySelector(':scope > summary').textContent),
-      ['Speech output', 'Speech recognition', 'Conversation'],
+      tabs.map((tab) => tab.textContent),
+      ['Conversation', 'Speech', 'Speech recognition'],
     );
-    assert.equal(
-      cards.every((card) => card.open === false),
-      true,
-      'all root settings cards start collapsed',
+    assert.deepEqual(
+      tabs.map((tab) => tab.getAttribute('aria-selected')),
+      ['true', 'false', 'false'],
+      'Conversation is the initial settings tab',
     );
-    const conversation = cards[2];
+    const panels = [...document.querySelectorAll('[role=tabpanel]')];
+    assert.equal(panels.length, 3);
+    assert.deepEqual(
+      panels.map((panel) => panel.hidden),
+      [true, true, false],
+      'only the Conversation panel is visible initially',
+    );
+    const conversation = panels.find((panel) => panel.id.endsWith('-panel-conversation'));
+    assert.equal(conversation.hidden, false);
     assert.match(conversation.textContent, /Automatically speak new assistant messages/);
     assert.match(conversation.textContent, /Stop assistant speech when I send a message/);
     assert.match(conversation.textContent, /does not stop the assistant audio/);
@@ -102,6 +110,20 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.match(conversation.textContent, /continuous silence/);
     assert.match(conversation.textContent, /Sending mode/);
     assert.match(conversation.textContent, /Gated listening releases the microphone/);
+    await act(async () =>
+      tabs[0].dispatchEvent(
+        new window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }),
+      ),
+    );
+    assert.equal(tabs[1].getAttribute('aria-selected'), 'true');
+    assert.equal(document.getElementById(tabs[1].getAttribute('aria-controls')).hidden, false);
+    const speechPanel = document.getElementById(tabs[1].getAttribute('aria-controls'));
+    assert.ok(speechPanel.textContent.includes('Test selected speech output'));
+    assert.ok(speechPanel.textContent.includes('Refresh available engines'));
+    assert.equal(conversation.textContent.includes('Test selected speech output'), false);
+    await act(async () => tabs[2].click());
+    assert.equal(tabs[2].getAttribute('aria-selected'), 'true');
+    assert.equal(document.getElementById(tabs[2].getAttribute('aria-controls')).hidden, false);
     assert.equal(
       [...document.querySelectorAll('.dlv-settings label')].some((label) =>
         label.textContent.includes('Recognition engine'),
@@ -118,8 +140,8 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       'browser provider controls its own segmentation',
     );
     const checks = [...document.querySelectorAll('input[type=checkbox]')];
-    assert.equal(checks.length, 6);
-    assert.equal(checks.filter((input) => input.checked).length, 5);
+    assert.equal(checks.length, 7);
+    assert.equal(checks.filter((input) => input.checked).length, 6);
     assert.equal(
       checks.find((input) =>
         input.parentElement.textContent.includes('Stop assistant speech when I send a message'),
@@ -190,6 +212,13 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.equal(autoSendToggle.textContent, 'OFF');
     assert.equal(assistantSpeechToggle.getAttribute('aria-checked'), 'true');
     assert.equal(assistantSpeechToggle.textContent, 'ON');
+    const muteMicrophone = document.querySelector('[aria-label="Ignore composer input"]');
+    assert.ok(muteMicrophone);
+    assert.equal(
+      muteMicrophone.querySelector('path').getAttribute('d'),
+      'M9 5a3 3 0 0 1 6 0v7a3 3 0 0 1-6 0V5M6 10v2a6 6 0 0 0 12 0v-2M12 18v4M8 22h8',
+      'listening state uses the open microphone icon',
+    );
     await act(async () => autoSendToggle.click());
     assert.deepEqual(calls.at(-1), ['settings', { sendingMode: 'queue' }]);
     assert.equal(autoSendToggle.getAttribute('aria-pressed'), 'true');
