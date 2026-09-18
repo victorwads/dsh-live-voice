@@ -12,7 +12,7 @@ export class VoiceOwnership {
     const acquired = this.tail.then(async () => {
       if (this.closed || epoch !== this.epoch || owner.disposed) return;
       await Promise.all(
-        owners.filter((other) => other !== owner).map((other) => other.endConversation()),
+        owners.filter((other) => other !== owner).map((other) => other.endConversation(true)),
       );
       if (this.closed || epoch !== this.epoch || owner.disposed) return;
       outcome = Promise.resolve(action());

@@ -429,6 +429,31 @@ test('new user messages continue speech by default and optional interruption ign
   assert.equal(stops, 1);
 });
 
+test('voice conversation mode follows the composer across chat switches until explicitly ended', async (t) => {
+  const f = await fixture(t);
+  await f.render(h(f.Buttons, { ...f.props('a'), key: 'a' }));
+  const a = f.controllers[0];
+  await a.startConversation();
+  a.patch({ conversation: true, listening: true });
+
+  await f.render(h(f.Buttons, { ...f.props('b'), key: 'b' }));
+  const b = f.controllers.at(-1);
+  assert.notEqual(b, a);
+  assert.ok(
+    f.calls.some(([name, controller]) => name === 'conversation' && controller === b),
+    'the next composer resumes voice conversation mode',
+  );
+
+  await b.endConversation();
+  await f.render(h(f.Buttons, { ...f.props('c'), key: 'c' }));
+  const c = f.controllers.at(-1);
+  assert.equal(
+    f.calls.some(([name, controller]) => name === 'conversation' && controller === c),
+    false,
+    'an explicit end keeps the following composer out of voice mode',
+  );
+});
+
 test('pagehide and plugin disposal invalidate pending starts and stale controllers', async (t) => {
   const f = await fixture(t);
   await f.render(h(f.Buttons, f.props('a')));

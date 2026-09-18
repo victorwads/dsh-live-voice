@@ -21,6 +21,10 @@ export function apply(ctx) {
   const controllers = new Map();
   const retiring = new Set();
   let disposed = false;
+  // Voice conversation mode belongs to the plugin, not to a mounted composer.
+  // A route change may replace every conversation slot, but the next committed
+  // composer should inherit the user's explicit choice to remain in voice mode.
+  let voiceModeActive = false;
   const ownership = new VoiceOwnership();
   const recognitionFor = (settings, meter) =>
     settings.recognitionEngine === 'qwen-http'
@@ -160,6 +164,7 @@ export function apply(ctx) {
       const original = controller[method].bind(controller);
       controller[method] = (...args) => {
         entry.request++;
+        if (method === 'endConversation' && args[0] !== true) voiceModeActive = false;
         return original(...args);
       };
     }
@@ -168,6 +173,7 @@ export function apply(ctx) {
       controller[method] = (...args) => {
         if (disposed || entry.closed || !entry.refs) return Promise.resolve();
         if (method !== 'speak' && !entry.composers.size) return Promise.resolve();
+        if (method === 'startConversation') voiceModeActive = true;
         const request = ++entry.request;
         return ownership.run(
           controller,
@@ -218,19 +224,17 @@ export function apply(ctx) {
       return () => {
         entry.composers.delete(token.current);
         // Message-action mounts may outlive the composer; never retain its actions.
-        if (!entry.composers.size) {
-          entry.request++;
-          queueMicrotask(() => {
-            if (!entry.closed && !entry.composers.size)
-              run(entry.controller, entry.controller.endConversation());
-          });
-        }
+        // Do not interpret a route-driven composer unmount as the user's request
+        // to leave voice mode. Retirement still releases the old controller; the
+        // next committed composer resumes the conversation automatically.
       };
     }, [entry]);
     React.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed) return;
       if (!input || typeof props.inputActions?.setDraft !== 'function') return;
       entry.composers.set(token.current, { actions: props.inputActions });
+      if (voiceModeActive && !entry.controller.getSnapshot().conversation)
+        run(entry.controller, entry.controller.startConversation());
     }, [entry, input, props.inputActions]);
     React.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed || !input) return;

@@ -722,6 +722,6 @@ export class VoiceCoordinator {
     this._cancelAssistantSpeechTimer();
     this.disposed = true;
     this.listeners.clear();
-    await this.endConversation();
+    await this.endConversation(true);
   }
 }

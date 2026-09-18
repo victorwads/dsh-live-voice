@@ -28,6 +28,8 @@ This release expands conversation control, audio routing, speech filtering, and 
 
 ### Bug Fixes
 
+- Keep voice conversation mode active across chat navigation. When the current composer is replaced, the newly mounted chat automatically resumes voice mode; only an explicit End voice conversation action disables it. Composer drafts remain isolated per conversation, while internal controller disposal and hardware handoffs no longer count as user-requested conversation termination.
+- Add lifecycle regression coverage for switching chats while voice mode is active and for preserving an explicit end across subsequent chats.
 - Require at least one recognized word before headphone-mode microphone activity may pause assistant speech; audio activity alone no longer pauses playback.
 - Debounce headphone-mode interruptions to reduce false pauses from short recognition events.
 - Automatically resume speech when an interruption candidate ends without becoming valid user speech.
