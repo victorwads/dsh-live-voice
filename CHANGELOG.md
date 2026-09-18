@@ -10,6 +10,7 @@ This release expands conversation control, audio routing, speech filtering, and 
 
 ### Features
 
+- Narrate newly pending DSH structured questions when voice conversation mode is active, reading each question prompt once through the selected speech engine.
 - Add audio input and output device preferences.
 - Add a three-state delivery mode for manual review, queued delivery, and immediate steering.
 - Add configurable speech-input filtering, including minimum-word filtering for final recognition results.

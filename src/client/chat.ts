@@ -25,6 +25,15 @@ export function assistantMessages(snapshot) {
     })
     .sort((a, b) => a.turn - b.turn || a.step - b.step);
 }
+/** Build speech text for one pending structured question request. */
+export function pendingQuestionSpeech(interaction) {
+  if (!interaction || interaction.kind !== 'question' || !Array.isArray(interaction.questions)) return '';
+  return interaction.questions
+    .map((item) => (typeof item?.question === 'string' ? item.question.trim() : ''))
+    .filter(Boolean)
+    .join(' ');
+}
+
 export function latestUserSequence(snapshot) {
   return Math.max(
     -1,

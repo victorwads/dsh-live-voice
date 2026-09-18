@@ -12,9 +12,9 @@ import { QwenHttpRecognitionEngine } from '../engines/recognition/qwen-http.ts';
 import { QwenHttpSpeakingEngine } from '../engines/speaking/qwen-http.ts';
 import { createComponents } from './components.ts';
 import { styles } from './styles.ts';
-import { assistantMessages, addressedTurn, latestUserSequence } from './chat.ts';
+import { assistantMessages, addressedTurn, latestUserSequence, pendingQuestionSpeech } from './chat.ts';
 
-export const inject = ['slots', 'connection', 'uiConversation'];
+export const inject = ['slots', 'connection', 'uiConversation', 'uiSession'];
 export function apply(ctx) {
   const e = React.createElement;
   const { MicrophoneButtons, RecordingBar, SpeakButton, SettingsPanel } = createComponents(React);
@@ -53,6 +53,8 @@ export function apply(ctx) {
     entry.composers.clear();
     entry.unsubscribe?.();
     entry.unsubscribe = null;
+    entry.unsubscribePendingQuestion?.();
+    entry.unsubscribePendingQuestion = null;
     entry.chatListeners.clear();
     if (controllers.get(entry.key) === entry) controllers.delete(entry.key);
     // Keep teardown in the hardware handoff barrier, not in the session registry.
@@ -144,6 +146,22 @@ export function apply(ctx) {
       refresh();
       for (const listener of entry.chatListeners) listener();
     });
+    const pendingInteractions = ctx.uiSession.pendingInteractions;
+    const refreshPendingQuestion = (baseline = false) => {
+      if (disposed || entry.closed) return;
+      const interaction = pendingInteractions.getSnapshot().get(sessionId);
+      const key = interaction?.kind === 'question' ? interaction.key : null;
+      if (baseline) {
+        entry.pendingQuestionKey = key;
+        return;
+      }
+      if (!key || key === entry.pendingQuestionKey) return;
+      entry.pendingQuestionKey = key;
+      const text = pendingQuestionSpeech(interaction);
+      if (text && controller.getSnapshot().conversation) run(controller, controller.speak(text, key));
+    };
+    refreshPendingQuestion(true);
+    entry.unsubscribePendingQuestion = pendingInteractions.subscribe(refreshPendingQuestion);
     const update = controller.updateSettings.bind(controller);
     controller.updateSettings = (next) => {
       if (disposed || entry.closed) return;

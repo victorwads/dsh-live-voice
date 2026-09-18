@@ -58,6 +58,9 @@ for (const staleSnapshot of [false, true])
         },
         effect: (fn) => cleanup.push(fn()),
         connection: { rpc: async () => ({ supported: false }) },
+        uiSession: {
+          pendingInteractions: { getSnapshot: () => new Map(), subscribe: () => () => {} },
+        },
         uiConversation: {
           binding: () => ({
             target: () => ({ getSnapshot: () => chat, subscribe: () => () => {} }),

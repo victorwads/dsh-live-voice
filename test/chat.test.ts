@@ -1,7 +1,21 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { assistantMessages, addressedTurn, latestUserSequence } from '../src/client/chat.ts';
+import { assistantMessages, addressedTurn, latestUserSequence, pendingQuestionSpeech } from '../src/client/chat.ts';
+test('pending question speech reads question prompts only', () => {
+  assert.equal(
+    pendingQuestionSpeech({
+      kind: 'question',
+      questions: [
+        { id: 'one', question: 'Which engine?', options: [{ label: 'Browser' }] },
+        { id: 'two', question: 'Which language?', header: 'Language' },
+      ],
+    }),
+    'Which engine? Which language?',
+  );
+  assert.equal(pendingQuestionSpeech({ kind: 'plan-review', questions: [] }), '');
+});
+
 test('user sequence ignores assistant rows and recognizes steering', () => {
   assert.equal(
     latestUserSequence({

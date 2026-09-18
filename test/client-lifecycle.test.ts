@@ -60,8 +60,8 @@ async function fixture(t) {
   t.mock.method(VoiceCoordinator.prototype, 'startConversation', async function () {
     calls.push(['conversation', this]);
   });
-  t.mock.method(VoiceCoordinator.prototype, 'speak', async function () {
-    calls.push(['speak', this]);
+  t.mock.method(VoiceCoordinator.prototype, 'speak', async function (...args) {
+    calls.push(['speak', this, ...args]);
   });
   t.mock.method(VoiceCoordinator.prototype, 'stopListening', async function () {
     calls.push(['stop', this]);
@@ -77,6 +77,15 @@ async function fixture(t) {
     await holds.get(this)?.promise;
   });
   const stores = new Map();
+  const pending = new Map();
+  const pendingListeners = new Set();
+  const pendingInteractions = {
+    getSnapshot: () => pending,
+    subscribe(listener) {
+      pendingListeners.add(listener);
+      return () => pendingListeners.delete(listener);
+    },
+  };
   const slots = new Map();
   const cleanup = [];
   function store(id) {
@@ -116,6 +125,7 @@ async function fixture(t) {
         throw Error('unexpected RPC');
       },
     },
+    uiSession: { pendingInteractions },
     uiConversation: {
       binding: (id) => ({
         target: (name) => {
@@ -168,6 +178,12 @@ async function fixture(t) {
     calls,
     holds,
     store,
+    publishPending(id, interaction) {
+      if (interaction) pending.set(id, interaction);
+      else pending.delete(id);
+      for (const listener of pendingListeners) listener();
+    },
+    pendingListeners,
     close,
   };
 }
@@ -467,4 +483,37 @@ test('pagehide and plugin disposal invalidate pending starts and stale controlle
   await c.speak('stale');
   assert.equal(f.calls.filter(([name]) => name === 'conversation' || name === 'speak').length, 0);
   assert.equal(f.store('a').listeners.size, 0);
+});
+
+test('new pending questions are spoken once only while voice conversation mode is active', async (t) => {
+  const f = await fixture(t);
+  await f.render(h(f.Buttons, f.props('a')));
+  const controller = f.controllers[0];
+  controller.patch({ conversation: true });
+  const question = {
+    kind: 'question',
+    key: 'question:1',
+    questions: [{ id: 'engine', question: 'Which speech engine should I use?' }],
+  };
+  await act(async () => f.publishPending('a', question));
+  await act(async () => f.publishPending('a', question));
+  const spoken = f.calls.filter(([name]) => name === 'speak');
+  assert.equal(spoken.length, 1);
+  assert.equal(spoken[0][2], 'Which speech engine should I use?');
+  assert.equal(spoken[0][3], 'question:1');
+  await f.render(null);
+  assert.equal(f.pendingListeners.size, 0);
+});
+
+test('pending questions stay silent outside voice conversation mode', async (t) => {
+  const f = await fixture(t);
+  await f.render(h(f.Buttons, f.props('a')));
+  await act(async () =>
+    f.publishPending('a', {
+      kind: 'question',
+      key: 'question:quiet',
+      questions: [{ id: 'one', question: 'Should remain silent?' }],
+    }),
+  );
+  assert.equal(f.calls.filter(([name]) => name === 'speak').length, 0);
 });

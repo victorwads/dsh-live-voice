@@ -21,7 +21,7 @@ test('built bundle registers independently in the DSH lazy module loader', async
     return { createElement() {} };
   });
   assert.equal(typeof plugin.apply, 'function');
-  assert.deepEqual([...plugin.inject], ['slots', 'connection', 'uiConversation']);
+  assert.deepEqual([...plugin.inject], ['slots', 'connection', 'uiConversation', 'uiSession']);
   const slots = [];
   const effects = [];
   plugin.apply({
