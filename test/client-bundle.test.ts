@@ -17,8 +17,9 @@ test('built bundle registers independently in the DSH lazy module loader', async
   vm.runInNewContext(await readFile(new URL('../lib/client.js', import.meta.url), 'utf8'), context);
   assert.equal(registration.id, 'dsh-live-voice');
   const plugin = registration.factory((id) => {
-    assert.equal(id, 'react');
-    return { createElement() {} };
+    if (id === 'react') return { createElement() {} };
+    if (id === 'react-dom') return { createPortal() {} };
+    assert.fail('unexpected module: ' + id);
   });
   assert.equal(typeof plugin.apply, 'function');
   assert.deepEqual([...plugin.inject], ['slots', 'connection', 'uiConversation', 'uiSession']);
@@ -41,6 +42,7 @@ test('built bundle registers independently in the DSH lazy module loader', async
       'settings.section',
       'conversation.input.right',
       'conversation.input.dock',
+      'conversation.session.header.utilities',
       'conversation.chat.assistant-actions',
     ],
   );

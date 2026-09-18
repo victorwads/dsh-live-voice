@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { VoiceCoordinator } from '../core/coordinator.ts';
 import { VoiceOwnership } from '../core/ownership.ts';
 import { normalizeSettings } from '../core/settings.ts';
@@ -55,6 +56,8 @@ export function apply(ctx) {
     entry.unsubscribe = null;
     entry.unsubscribePendingQuestion?.();
     entry.unsubscribePendingQuestion = null;
+    entry.questionCapture = null;
+    entry.controller.patch({ answeringQuestion: false });
     entry.chatListeners.clear();
     if (controllers.get(entry.key) === entry) controllers.delete(entry.key);
     // Keep teardown in the hardware handoff barrier, not in the session registry.
@@ -98,6 +101,29 @@ export function apply(ctx) {
         submit: (mode = 'queue') => {
           const owner = [...entry.composers.values()].at(-1);
           owner?.actions.submit?.(mode);
+        },
+        handleQuestionResult: ({ final, interim }) => {
+          const capture = entry.questionCapture;
+          if (!capture || capture.answering || (!final && !interim)) return false;
+          if (final?.trim()) {
+            capture.answering = true;
+            capture.answers.push({
+              id: capture.interaction.questions[capture.index].id,
+              selected: [],
+              custom: final.trim(),
+            });
+            capture.index++;
+            if (capture.index < capture.interaction.questions.length) {
+              capture.answering = false;
+              const text = pendingQuestionSpeech(capture.interaction, capture.index);
+              if (text) run(entry.controller, entry.controller.speak(text, capture.interaction.key));
+            } else {
+              entry.questionCapture = null;
+              entry.controller.patch({ answeringQuestion: false });
+              run(entry.controller, capture.interaction.answer({ answers: capture.answers }));
+            }
+          }
+          return true;
         },
         setDraft: (text) => {
           if (disposed || entry.closed) return;
@@ -151,6 +177,10 @@ export function apply(ctx) {
       if (disposed || entry.closed) return;
       const interaction = pendingInteractions.getSnapshot().get(sessionId);
       const key = interaction?.kind === 'question' ? interaction.key : null;
+      if (!key || (entry.questionCapture && entry.questionCapture.interaction.key !== key)) {
+        entry.questionCapture = null;
+        controller.patch({ answeringQuestion: false });
+      }
       if (baseline) {
         entry.pendingQuestionKey = key;
         return;
@@ -158,7 +188,11 @@ export function apply(ctx) {
       if (!key || key === entry.pendingQuestionKey) return;
       entry.pendingQuestionKey = key;
       const text = pendingQuestionSpeech(interaction);
-      if (text && controller.getSnapshot().conversation) run(controller, controller.speak(text, key));
+      if (text && controller.getSnapshot().conversation) {
+        entry.questionCapture = { interaction, index: 0, answers: [], answering: false };
+        controller.patch({ answeringQuestion: true });
+        run(controller, controller.speak(text, key));
+      }
     };
     refreshPendingQuestion(true);
     entry.unsubscribePendingQuestion = pendingInteractions.subscribe(refreshPendingQuestion);
@@ -356,6 +390,49 @@ export function apply(ctx) {
     useComposer(entry, props);
     return entry ? e(RecordingBar, { controller: entry.controller }) : null;
   }
+  function QuestionStatusView({ entry }) {
+    const snapshot = React.useSyncExternalStore(
+      entry.controller.subscribe,
+      entry.controller.getSnapshot,
+    );
+    const [overlayStyle, setOverlayStyle] = React.useState();
+    React.useLayoutEffect(() => {
+      if (!snapshot.answeringQuestion) return;
+      const seat = document.querySelector('[data-composer-seat]');
+      if (!seat) return;
+      const update = () => {
+        const rect = seat.getBoundingClientRect();
+        setOverlayStyle({
+          left: rect.left + rect.width / 2,
+          width: Math.min(720, Math.max(0, rect.width - 32)),
+        });
+      };
+      update();
+      const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(update) : null;
+      observer?.observe(seat);
+      window.addEventListener('resize', update);
+      return () => {
+        observer?.disconnect();
+        window.removeEventListener('resize', update);
+      };
+    }, [snapshot.answeringQuestion]);
+    const target = typeof document === 'undefined' ? null : document.body;
+    return snapshot.answeringQuestion && target && overlayStyle
+      ? createPortal(
+          e(RecordingBar, {
+            controller: entry.controller,
+            questionOnly: true,
+            overlay: true,
+            overlayStyle,
+          }),
+          target,
+        )
+      : null;
+  }
+  function QuestionStatus(props) {
+    const entry = useEntry(props.sessionId, 'question-status');
+    return entry ? e(QuestionStatusView, { entry }) : null;
+  }
   function ActionView({ entry, messageId }) {
     const snapshot = React.useSyncExternalStore(
       entry.controller.subscribe,
@@ -391,6 +468,7 @@ export function apply(ctx) {
   for (const [name, id, order, component] of [
     ['conversation.input.right', 'live-voice-controls', 6, Buttons],
     ['conversation.input.dock', 'live-voice-status', -100, Dock],
+    ['conversation.session.header.utilities', 'live-voice-question-status', 100, QuestionStatus],
     ['conversation.chat.assistant-actions', 'live-voice-speak', 5, Action],
   ])
     ctx.slots.inject(name, () =>

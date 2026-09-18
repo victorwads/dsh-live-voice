@@ -517,3 +517,42 @@ test('pending questions stay silent outside voice conversation mode', async (t) 
   );
   assert.equal(f.calls.filter(([name]) => name === 'speak').length, 0);
 });
+
+test('spoken finals answer pending questions as custom text without touching the chat draft', async (t) => {
+  const f = await fixture(t);
+  const writes = [];
+  await f.render(h(f.Buttons, f.props('a', { setDraft: (text) => writes.push(text) })));
+  const controller = f.controllers[0];
+  controller.patch({ conversation: true, listening: true });
+  const replies = [];
+  await act(async () =>
+    f.publishPending('a', {
+      kind: 'question',
+      key: 'question:hands-free',
+      questions: [
+        { id: 'first', question: 'Which engine?' },
+        { id: 'second', question: 'Which voice?' },
+      ],
+      answer: async (reply) => replies.push(reply),
+    }),
+  );
+  controller.onResult({ interim: 'Nave', final: '' });
+  controller.onResult({ interim: '', final: 'Navegador' });
+  await act(async () => {});
+  controller.patch({ listening: true });
+  controller.onResult({ interim: '', final: 'Voz local' });
+  await act(async () => {});
+  assert.deepEqual(replies, [
+    {
+      answers: [
+        { id: 'first', selected: [], custom: 'Navegador' },
+        { id: 'second', selected: [], custom: 'Voz local' },
+      ],
+    },
+  ]);
+  assert.deepEqual(writes, []);
+  assert.deepEqual(
+    f.calls.filter(([name]) => name === 'speak').map((call) => call[2]),
+    ['Which engine?', 'Which voice?'],
+  );
+});

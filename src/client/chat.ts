@@ -25,13 +25,11 @@ export function assistantMessages(snapshot) {
     })
     .sort((a, b) => a.turn - b.turn || a.step - b.step);
 }
-/** Build speech text for one pending structured question request. */
-export function pendingQuestionSpeech(interaction) {
+/** Read one prompt from a pending structured question request. */
+export function pendingQuestionSpeech(interaction, index = 0) {
   if (!interaction || interaction.kind !== 'question' || !Array.isArray(interaction.questions)) return '';
-  return interaction.questions
-    .map((item) => (typeof item?.question === 'string' ? item.question.trim() : ''))
-    .filter(Boolean)
-    .join(' ');
+  const question = interaction.questions[index]?.question;
+  return typeof question === 'string' ? question.trim() : '';
 }
 
 export function latestUserSequence(snapshot) {

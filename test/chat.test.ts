@@ -11,7 +11,7 @@ test('pending question speech reads question prompts only', () => {
         { id: 'two', question: 'Which language?', header: 'Language' },
       ],
     }),
-    'Which engine? Which language?',
+    'Which engine?',
   );
   assert.equal(pendingQuestionSpeech({ kind: 'plan-review', questions: [] }), '');
 });

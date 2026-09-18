@@ -9,7 +9,7 @@ const client: BuildOptions = {
   format: 'cjs',
   platform: 'browser',
   target: ['es2022'],
-  external: ['react'],
+  external: ['react', 'react-dom'],
   banner: {
     js: 'window.__ModuleLoader__.load({id:"dsh-live-voice",factory:(require)=>{var module={exports:{}};var exports=module.exports;',
   },

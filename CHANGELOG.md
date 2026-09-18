@@ -10,7 +10,7 @@ This release expands conversation control, audio routing, speech filtering, and 
 
 ### Features
 
-- Narrate newly pending DSH structured questions when voice conversation mode is active, reading each question prompt once through the selected speech engine.
+- Add hands-free DSH structured questions in voice conversation mode: narrate each prompt, capture the next spoken response as a custom answer, submit it automatically, and keep the Live Voice status bar visible over the question panel.
 - Add audio input and output device preferences.
 - Add a three-state delivery mode for manual review, queued delivery, and immediate steering.
 - Add configurable speech-input filtering, including minimum-word filtering for final recognition results.

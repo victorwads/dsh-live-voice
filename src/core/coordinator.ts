@@ -52,6 +52,7 @@ export class VoiceCoordinator {
       starting: false,
       error: null,
       activeMessageId: null,
+      answeringQuestion: false,
       autoSendAt: null,
       speechSegmentsRemaining: 0,
       capabilities: {},
@@ -368,6 +369,15 @@ export class VoiceCoordinator {
     ) {
       this.interruptionTranscriptConfirmed = true;
       this._handleSpeechInterruption(true);
+    }
+    // Pending structured questions own recognition while waiting for a hands-free
+    // answer. Keep their interim and final text out of the normal chat composer.
+    if (typeof this.composer.handleQuestionResult === 'function' &&
+        this.composer.handleQuestionResult({ final, interim })) {
+      this.cancelAutoSend();
+      this.transcript.reset();
+      this.patch({ recognizing: !!interim });
+      return;
     }
     // A native event can contain a final result without an interim result. Do not
     // run a second empty hypothesis update: it would replace the just-committed

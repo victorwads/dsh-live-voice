@@ -192,7 +192,7 @@ export function createComponents(React) {
     }, [controller, enabled]);
     return h('canvas', { ref, className: 'dlv-wave', 'aria-hidden': true });
   }
-  function RecordingBar({ controller }) {
+  function RecordingBar({ controller, questionOnly = false, overlay = false, overlayStyle }) {
     const state = useController(controller);
     const [now, setNow] = React.useState(Date.now());
     React.useEffect(() => {
@@ -203,6 +203,7 @@ export function createComponents(React) {
     }, [state.autoSendAt]);
     const [invoke, error, clearError] = useActions(controller);
     const capture = state.starting || state.listening || state.recognizing;
+    if (questionOnly && !state.answeringQuestion) return null;
     if (
       !state.conversation &&
       !capture &&
@@ -215,9 +216,13 @@ export function createComponents(React) {
     const remaining = state.autoSendAt
       ? Math.max(1, Math.ceil((state.autoSendAt - now) / 1000))
       : null;
-    const status = remaining
-      ? `Sending in ${remaining}…`
-      : state.starting
+    const status = state.answeringQuestion && state.recognizing
+      ? 'Recognizing answer…'
+      : state.answeringQuestion && state.listening
+        ? 'Listening for your answer…'
+        : remaining
+          ? `Sending in ${remaining}…`
+          : state.starting
         ? 'Starting microphone…'
         : state.paused
           ? 'Speech paused'
@@ -232,7 +237,10 @@ export function createComponents(React) {
                   : 'Voice ready';
     return h(
       'div',
-      { className: 'dlv-bar-wrap' },
+      {
+        className: overlay ? 'dlv-bar-wrap dlv-question-overlay' : 'dlv-bar-wrap',
+        style: overlay ? overlayStyle : undefined,
+      },
       h(
         'div',
         { className: 'dlv-pill', role: 'group', 'aria-label': 'Voice controls' },
