@@ -4,9 +4,9 @@
 [![dsh.pub registry status](https://dsh.pub/api/badges/victorwads/dsh-live-voice.svg)](https://dsh.pub/en/plugins/dsh-live-voice/)
 [![license](https://img.shields.io/badge/license-GPL--3.0--only-blue)](LICENSE)
 
-**Local-first speech recognition, voice output, and continuous voice conversations for DSH.**
+**Local-first, hands-free voice conversations for DSH — speak, listen, answer prompts, and keep working without touching the computer.**
 
-DSH Live Voice coordinates the microphone, composer, assistant messages, and speech output in one plugin — without letting listening and speaking compete with each other.
+DSH Live Voice coordinates the microphone, composer, assistant messages, structured questions, and speech output in one plugin — without letting listening and speaking compete with each other. Once voice conversation mode is running, DSH can narrate responses and questions, capture your spoken answers, and continue the conversation while your hands stay free.
 
 ## Install
 
@@ -29,7 +29,10 @@ A heartfelt thank you to [GooDAnDReaDY](https://github.com/GooDAnDReaDY) for [ds
 | | Capability |
 |---|---|
 | 🎙️ | Voice typing directly into the DSH composer |
-| 💬 | Continuous voice conversations with automatic assistant speech |
+| 👐 | Hands-free conversations: speak, hear responses, and continue without touching the computer |
+| ❓ | Spoken DSH structured questions with automatic capture and submission of your answer |
+| 💬 | Continuous voice conversations that stay active while you navigate between chats |
+| 🗣️ | Configurable voice commands for sending, queueing, clearing, muting, resuming, stopping speech, and ending a conversation |
 | 🧠 | Browser SpeechRecognition, local loopback whisper.cpp, or Qwen3-ASR on Apple MLX |
 | 🔊 | Browser speech synthesis, native macOS `say`, or Qwen3-TTS on Apple MLX |
 | ⏱️ | Manual or automatic sending after configurable silence |
@@ -39,6 +42,18 @@ A heartfelt thank you to [GooDAnDReaDY](https://github.com/GooDAnDReaDY) for [ds
 | ✋ | Pause, resume, stop, and manual interruption controls |
 | 🔈 | Play individual assistant messages on demand |
 | 🏠 | Whisper audio reaches the local server only through the authenticated DSH host |
+
+## Hands-free experience
+
+Start voice conversation mode and choose an automatic delivery mode to keep a conversation moving without returning to the keyboard. DSH Live Voice can:
+
+1. Listen for your next message and deliver it after the configured silence period.
+2. Read assistant responses aloud as they arrive.
+3. Narrate DSH structured questions, listen for your next spoken response, and submit it as a custom answer.
+4. Keep voice conversation mode active when you move between chats until you explicitly end it.
+5. Accept configurable spoken commands for common conversation controls.
+
+The hands-free experience coordinates speech input and output locally when you select local engines. The DSH language model itself may still be remote.
 
 ## Conversation flow
 
@@ -108,4 +123,4 @@ When a compatible Qwen3 speech API is already running on the DSH host, choose **
 
 ## Keywords
 
-`dsh`, `dsh-plugin`, `deepseek-harness`, `local-first`, `local-voice`, `voice-assistant`, `voice-conversation`, `continuous-conversation`, `voice-dictation`, `speech-to-text`, `text-to-speech`, `speech-recognition`, `speech-synthesis`, `stt`, `tts`, `whisper`, `whisper-cpp`, `web-speech-api`, `macos-say`, `turn-taking`, `voice-interruption`, `silence-detection`
+`dsh`, `dsh-plugin`, `deepseek-harness`, `local-first`, `local-voice`, `hands-free`, `hands-free-ai`, `hands-free-assistant`, `voice-control`, `voice-commands`, `voice-assistant`, `voice-conversation`, `conversational-ai`, `continuous-conversation`, `voice-dictation`, `spoken-prompts`, `speech-to-text`, `text-to-speech`, `speech-recognition`, `speech-synthesis`, `stt`, `tts`, `whisper`, `whisper-cpp`, `qwen3-asr`, `qwen3-tts`, `mlx`, `apple-silicon`, `web-speech-api`, `macos-say`, `turn-taking`, `voice-interruption`, `silence-detection`
