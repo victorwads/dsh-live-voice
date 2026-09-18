@@ -32,6 +32,15 @@ export function hasMinimumWords(text, minimum = 2) {
   return words(text).length >= minimum;
 }
 
+export function splitSpeechOutput(text, options = {}) {
+  const filtered = filterSpeechOutput(text, options).trim();
+  if (!filtered) return [];
+  return filtered
+    .split(/\r?\n+/u)
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+}
+
 export function hasUnclosedCodeFence(text) {
   return (String(text || '').match(/```/g) || []).length % 2 === 1;
 }

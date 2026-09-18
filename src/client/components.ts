@@ -282,13 +282,18 @@ export function createComponents(React) {
             }),
         }),
         h(Button, {
-          className: 'dlv-live-toggle',
+          className: `dlv-live-toggle${state.speechSegmentsRemaining > 0 ? ' dlv-live-toggle-expanded' : ''}`,
           label: 'Automatic assistant speech',
           title: `Automatic assistant speech: ${
             state.settings.announceAssistantMessages !== false ? 'on' : 'off'
-          }`,
+          }${state.speechSegmentsRemaining > 0 ? ` — ${state.speechSegmentsRemaining} speech segment${state.speechSegmentsRemaining === 1 ? '' : 's'} remaining` : ''}`,
           icon: state.settings.announceAssistantMessages !== false ? 'speaker' : 'speakerOff',
-          visibleLabel: state.settings.announceAssistantMessages !== false ? 'ON' : 'OFF',
+          visibleLabel:
+            state.settings.announceAssistantMessages === false
+              ? 'OFF'
+              : state.speechSegmentsRemaining > 0
+                ? String(state.speechSegmentsRemaining)
+                : 'ON',
           role: 'switch',
           'aria-checked': state.settings.announceAssistantMessages !== false,
           onClick: () =>

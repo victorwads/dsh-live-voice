@@ -14,19 +14,21 @@ This release expands conversation control, audio routing, speech filtering, and 
 - Add a three-state delivery mode for manual review, queued delivery, and immediate steering.
 - Add configurable speech-input filtering, including minimum-word filtering for final recognition results.
 - Add configurable speech-output filtering to omit code blocks from spoken responses.
-- Add exact voice commands for ending a conversation, muting or resuming listening, stopping speech, clearing input, and sending or queuing recognized text.
+- Add exact voice commands for ending a conversation, muting or resuming listening, stopping speech, clearing input, and sending or queuing recognized text. Commands support multiple comma-separated phrases and normalize punctuation, case, and accents only while matching.
+- Add a remaining-speech segment count to the automatic speech control; it remains expanded while speech is queued.
+- Use the same newline-only segmentation and queue for automatic streaming speech and manual Speak actions.
 - Add tabbed Live Voice settings to organize speech, conversation, commands, and advanced options.
 
 ### Changes
 
-- Improve the Live Voice controls and settings interface for the new delivery, device, filtering, and command options.
+- Improve the Live Voice controls and settings interface for delivery, device, filtering, command, microphone-input, and speech-queue states.
 - Expand coordinator, settings, component, and filter test coverage.
 - Update compiled client and server bundles for the new functionality.
 - Include this changelog in the published package.
 
 ### Bug Fixes
 
-- Require a recognized transcript that passes the configured minimum-word filter before headphone-mode microphone activity may pause assistant speech.
+- Require at least one recognized word before headphone-mode microphone activity may pause assistant speech; audio activity alone no longer pauses playback.
 - Debounce headphone-mode interruptions to reduce false pauses from short recognition events.
 - Automatically resume speech when an interruption candidate ends without becoming valid user speech.
 - Preserve manual pause behavior separately from automatic interruption handling.

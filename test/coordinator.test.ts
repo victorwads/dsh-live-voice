@@ -129,9 +129,10 @@ test('end conversation does not wait for hung capability discovery', async () =>
 test('speaker gating reserves playback and preserves incoming chunk order', async () => {
   const f = fixture();
   await f.coordinator.startConversation();
-  f.coordinator.observeMessage('a', 'First. ');
+  f.coordinator.observeMessage('a', 'First.\n');
   assert.equal(f.coordinator.snapshot.speaking, true);
-  f.coordinator.observeMessage('a', 'First. Second. ');
+  f.coordinator.observeMessage('a', 'First.\nSecond.\n');
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 2);
   await turn();
   assert.deepEqual(
     f.spoken.map((item) => item.text),
@@ -141,12 +142,14 @@ test('speaker gating reserves playback and preserves incoming chunk order', asyn
   assert.ok(f.log.lastIndexOf('input:stop') < f.log.indexOf('speak:First.'));
   f.spoken[0].resolve();
   await turn();
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 1);
   assert.deepEqual(
     f.spoken.map((item) => item.text),
     ['First.', 'Second.'],
   );
   f.spoken[1].resolve();
   await turn();
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 0);
   assert.equal(f.coordinator.snapshot.listening, true);
   await f.coordinator.dispose();
 });
@@ -216,6 +219,31 @@ test('late recognition start and callbacks cannot survive disposal', async () =>
   await f.coordinator.startConversation();
   await f.coordinator.speak('never');
   assert.equal(f.spoken.length, 0);
+});
+
+test('manual speech uses the same segmented queue and counter as streaming speech', async () => {
+  const f = fixture({ mode: 'headphones' });
+  await f.coordinator.startConversation();
+  void f.coordinator.speak('First sentence.\nSecond sentence!\nThird line.');
+  await turn();
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 3);
+  assert.deepEqual(
+    f.spoken.map((item) => item.text),
+    ['First sentence.'],
+  );
+  f.spoken[0].resolve();
+  await turn();
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 2);
+  assert.deepEqual(
+    f.spoken.map((item) => item.text),
+    ['First sentence.', 'Second sentence!'],
+  );
+  f.spoken[1].resolve();
+  await turn();
+  f.spoken[2].resolve();
+  await turn();
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 0);
+  await f.coordinator.dispose();
 });
 
 test('concurrent manual speech requests cannot start obsolete text', async () => {
@@ -366,17 +394,21 @@ test('headphone interruption requires qualifying transcript and sustained activi
 
   f.sessions[0].onActivity(true);
   await new Promise((resolve) => setTimeout(resolve, 110));
-  assert.equal(f.log.includes('pause'), false, 'activity without transcript does not pause playback');
+  assert.equal(
+    f.log.includes('pause'),
+    false,
+    'activity without transcript does not pause playback',
+  );
   f.sessions[0].onActivity(false);
 
   f.sessions[0].onActivity(true);
-  f.sessions[0].onResult({ interim: 'noise' });
+  f.sessions[0].onResult({ interim: '' });
   await new Promise((resolve) => setTimeout(resolve, 110));
-  assert.equal(f.log.includes('pause'), false, 'transcript rejected by the word filter does not pause');
+  assert.equal(f.log.includes('pause'), false, 'empty recognition does not pause playback');
   f.sessions[0].onActivity(false);
 
   f.sessions[0].onActivity(true);
-  f.sessions[0].onResult({ interim: 'please stop' });
+  f.sessions[0].onResult({ interim: 'hello' });
   await new Promise((resolve) => setTimeout(resolve, 110));
   assert.equal(f.coordinator.snapshot.paused, true);
   f.sessions[0].onActivity(false);

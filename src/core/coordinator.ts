@@ -6,6 +6,7 @@ import {
   hasMinimumWords,
   hasUnclosedCodeFence,
   matchVoiceCommand,
+  splitSpeechOutput,
 } from './filters.ts';
 
 const message = (error) => error?.message || String(error);
@@ -52,6 +53,7 @@ export class VoiceCoordinator {
       error: null,
       activeMessageId: null,
       autoSendAt: null,
+      speechSegmentsRemaining: 0,
       capabilities: {},
       settings: normalizeSettings(settings),
     };
@@ -306,17 +308,18 @@ export class VoiceCoordinator {
     });
   }
   _interruptionTranscriptQualifies(text) {
-    if (!String(text || '').trim()) return false;
-    return (
-      !this.snapshot.settings.recognitionFilterEnabled ||
-      hasMinimumWords(text, this.snapshot.settings.recognitionMinimumWords)
-    );
+    return hasMinimumWords(text, 1);
   }
 
   _handleSpeechInterruption(active) {
     if (this.snapshot.settings.mode !== 'headphones') return;
     if (active) {
-      if (this.interruptionTimer !== null || !this.snapshot.speaking || this.snapshot.paused)
+      if (
+        !this.interruptionTranscriptConfirmed ||
+        this.interruptionTimer !== null ||
+        !this.snapshot.speaking ||
+        this.snapshot.paused
+      )
         return;
       this.interruptionTimer = setTimeout(() => {
         this.interruptionTimer = null;
@@ -498,6 +501,12 @@ export class VoiceCoordinator {
     this.patch({ conversation: false });
     await Promise.all([this.stopListening(), this.stopSpeech(false)]);
   }
+  _syncSpeechSegments() {
+    const speechSegmentsRemaining = this.queue.length + (this.snapshot.speaking ? 1 : 0);
+    if (speechSegmentsRemaining !== this.snapshot.speechSegmentsRemaining)
+      this.patch({ speechSegmentsRemaining });
+  }
+
   _suppressPending() {
     for (const id of this.unfinished) this.suppressed.add(id);
     if (this.snapshot.activeMessageId !== null) this.suppressed.add(this.snapshot.activeMessageId);
@@ -513,6 +522,7 @@ export class VoiceCoordinator {
     ++this.controlEpoch;
     this._suppressPending();
     this.patch({ speaking: false, paused: false, activeMessageId: null });
+    this._syncSpeechSegments();
     const stopped = this.speechBarrier.then(async () => {
       const results = await Promise.allSettled(
         Object.values(this.engines).map((engine) => Promise.resolve().then(() => engine.stop())),
@@ -577,13 +587,23 @@ export class VoiceCoordinator {
     const stopped = this.stopSpeech(false);
     const epoch = this.speechEpoch;
     await stopped;
-    if (!this.disposed && epoch === this.speechEpoch && !this.speechStopError)
-      return this.play(text, messageId);
+    if (this.disposed || epoch !== this.speechEpoch || this.speechStopError) return;
+    const segments = splitSpeechOutput(text, {
+      filterCodeBlocks: this.snapshot.settings.outputCodeFilterEnabled,
+      codeBlockMaxLines: this.snapshot.settings.outputCodeMaxLines,
+      codeBlockNotice: this.snapshot.settings.outputCodeNotice,
+    });
+    const first = segments.shift();
+    if (!first) return;
+    this.queue.push(...segments.map((segment) => ({ text: segment, id: messageId, manual: true })));
+    this._syncSpeechSegments();
+    return this.play(first, messageId, true);
   }
-  async play(text, messageId) {
+  async play(text, messageId, manual = false) {
     if (this.disposed || !text.trim()) return;
     if (this.snapshot.speaking) {
-      this.queue.push({ text, id: messageId });
+      this.queue.push({ text, id: messageId, manual });
+      this._syncSpeechSegments();
       return;
     }
     const epoch = ++this.speechEpoch;
@@ -595,6 +615,7 @@ export class VoiceCoordinator {
     }
     // Reserve playback synchronously so incoming stream chunks cannot overtake gating.
     this.patch({ speaking: true, paused: false, activeMessageId: messageId, error: null });
+    this._syncSpeechSegments();
     let failed = false;
     try {
       await this.speechBarrier;
@@ -619,6 +640,7 @@ export class VoiceCoordinator {
     } finally {
       if (epoch === this.speechEpoch && !this.disposed) {
         this.patch({ speaking: false, paused: false, activeMessageId: null });
+        this._syncSpeechSegments();
         if (!failed && this.queue.length) this._drain();
         else if (this.snapshot.conversation && !this.snapshot.listening && !this.snapshot.starting)
           await this._startInput(true);
@@ -632,8 +654,8 @@ export class VoiceCoordinator {
   _drain() {
     if (
       this.disposed ||
-      !this.snapshot.conversation ||
-      !this.snapshot.settings.announceAssistantMessages ||
+      (!this.snapshot.conversation && !this.queue[0]?.manual) ||
+      (!this.snapshot.settings.announceAssistantMessages && !this.queue[0]?.manual) ||
       this.snapshot.speaking ||
       this.snapshot.recognizing ||
       this.snapshot.starting ||
@@ -652,7 +674,7 @@ export class VoiceCoordinator {
     this._cancelAssistantSpeechTimer();
     this.assistantSpeechNotBefore = 0;
     const next = this.queue.shift();
-    void this.play(next.text, next.id);
+    void this.play(next.text, next.id, next.manual === true);
   }
   /** Baselines survive conversation toggles; cancelled message IDs remain suppressed. */
   observeMessage(id, text, { complete = false, baseline = false } = {}) {
@@ -674,14 +696,7 @@ export class VoiceCoordinator {
       return;
     }
     const remaining = text.slice(offset);
-    const boundary = complete
-      ? remaining.length
-      : Math.max(
-          remaining.lastIndexOf('. '),
-          remaining.lastIndexOf('? '),
-          remaining.lastIndexOf('! '),
-          remaining.lastIndexOf('\n'),
-        ) + 1;
+    const boundary = complete ? remaining.length : remaining.lastIndexOf('\n') + 1;
     if (boundary <= 0) return;
     if (
       this.snapshot.settings.outputCodeFilterEnabled &&
@@ -697,6 +712,7 @@ export class VoiceCoordinator {
     this.consumed.set(id, offset + boundary);
     if (chunk) {
       this.queue.push({ text: chunk, id });
+      this._syncSpeechSegments();
       this._drain();
     }
   }

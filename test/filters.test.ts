@@ -7,6 +7,7 @@ import {
   hasUnclosedCodeFence,
   matchVoiceCommand,
   normalizeVoiceCommand,
+  splitSpeechOutput,
 } from '../src/core/filters.ts';
 
 test('voice commands match the whole normalized chunk', () => {
@@ -19,6 +20,13 @@ test('recognition word filter counts words rather than characters', () => {
   assert.equal(hasMinimumWords('hum', 2), false);
   assert.equal(hasMinimumWords('end conversation', 2), true);
   assert.equal(hasMinimumWords('olá, mundo!', 2), true);
+});
+
+test('speech segmentation uses only line breaks, never punctuation', () => {
+  assert.deepEqual(splitSpeechOutput('One sentence. Another? Still same!'), [
+    'One sentence. Another? Still same!',
+  ]);
+  assert.deepEqual(splitSpeechOutput('First.\nSecond?\nThird!'), ['First.', 'Second?', 'Third!']);
 });
 
 test('speech output reads short code and replaces code longer than its line limit', () => {
