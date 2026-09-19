@@ -15,7 +15,7 @@ function deferred() {
   });
   return { promise, resolve };
 }
-async function fixture(t) {
+async function fixture(t, { pendingStore = true } = {}) {
   const dom = new JSDOM(
     '<!doctype html><html><head></head><body><div id="root"></div></body></html>',
     { url: 'http://localhost' },
@@ -125,7 +125,7 @@ async function fixture(t) {
         throw Error('unexpected RPC');
       },
     },
-    uiSession: { pendingInteractions },
+    uiSession: pendingStore ? { pendingInteractions } : {},
     uiConversation: {
       binding: (id) => ({
         target: (name) => {
@@ -483,6 +483,13 @@ test('pagehide and plugin disposal invalidate pending starts and stale controlle
   await c.speak('stale');
   assert.equal(f.calls.filter(([name]) => name === 'conversation' || name === 'speak').length, 0);
   assert.equal(f.store('a').listeners.size, 0);
+});
+
+test('voice controls mount when DSH omits the legacy pending-interaction store', async (t) => {
+  const f = await fixture(t, { pendingStore: false });
+  await f.render(h(f.Buttons, f.props('a')));
+  assert.equal(f.controllers.length, 1);
+  assert.equal(f.pendingListeners.size, 0);
 });
 
 test('new pending questions are spoken once only while voice conversation mode is active', async (t) => {

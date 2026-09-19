@@ -2,6 +2,23 @@
 
 All notable changes to DSH Live Voice are documented in this file.
 
+## [0.2.1] - Unreleased
+
+### Documentation
+
+- Reframe the README around the local-first, hands-free experience, including continuous conversations, spoken structured questions, voice commands, and behavior across chat navigation.
+- Expand package and README discovery keywords for hands-free voice, conversational AI, spoken prompts, Qwen3 speech engines, and Apple Silicon.
+
+### Changes
+
+- Update existing development dependencies.
+
+### Bug Fixes
+
+- Persist microphone enabled or muted state as a global preference and propagate settings changes to every active voice controller. New controllers now inherit the saved microphone state, and capability information is refreshed after synchronized settings changes.
+- Keep microphone, conversation, and Speak controls available when DSH omits the legacy `uiSession.pendingInteractions` store. Structured-question voice handling remains inactive when that optional store is unavailable.
+- Add regression coverage for global microphone-state normalization and for mounting voice controls without the legacy pending-interaction store.
+
 ## [0.2.0] - Unreleased
 
 ### Release Changes
@@ -68,7 +85,8 @@ This release expands conversation control, audio routing, speech filtering, and 
 - Support browser speech synthesis and native macOS `say` output.
 - Add Live Voice controls, Whisper settings, build and browser-preview scripts, and an initial test suite.
 
-[0.2.0]: https://github.com/victorwads/dsh-live-voice/compare/v0.1.0...HEAD
+[0.2.1]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/victorwads/dsh-live-voice/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/victorwads/dsh-live-voice/compare/v0.0.2...v0.1.0
 [0.0.2]: https://github.com/victorwads/dsh-live-voice/compare/v0.0.1-alpha.1...v0.0.2
 [0.0.1-alpha.1]: https://github.com/victorwads/dsh-live-voice/tree/v0.0.1-alpha.1

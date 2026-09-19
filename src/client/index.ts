@@ -172,9 +172,11 @@ export function apply(ctx) {
       refresh();
       for (const listener of entry.chatListeners) listener();
     });
+    // DSH 0.1.6 may omit this legacy store. Keep the remaining voice controls
+    // available while structured-question integration is unavailable.
     const pendingInteractions = ctx.uiSession.pendingInteractions;
     const refreshPendingQuestion = (baseline = false) => {
-      if (disposed || entry.closed) return;
+      if (disposed || entry.closed || !pendingInteractions) return;
       const interaction = pendingInteractions.getSnapshot().get(sessionId);
       const key = interaction?.kind === 'question' ? interaction.key : null;
       if (!key || (entry.questionCapture && entry.questionCapture.interaction.key !== key)) {
@@ -194,8 +196,10 @@ export function apply(ctx) {
         run(controller, controller.speak(text, key));
       }
     };
-    refreshPendingQuestion(true);
-    entry.unsubscribePendingQuestion = pendingInteractions.subscribe(refreshPendingQuestion);
+    if (pendingInteractions) {
+      refreshPendingQuestion(true);
+      entry.unsubscribePendingQuestion = pendingInteractions.subscribe(refreshPendingQuestion);
+    }
     const update = controller.updateSettings.bind(controller);
     entry.applySettings = (next) => {
       update(next);
