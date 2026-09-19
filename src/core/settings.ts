@@ -36,6 +36,7 @@ export const defaultSettings = Object.freeze({
   recognitionProcessLocally: true,
   recognitionAutoInstall: true,
   voiceDetectionPreset: 'natural',
+  microphoneEnabled: true,
   announceAssistantMessages: true,
   interruptSpeechOnUserMessage: false,
   sendingMode: 'manual',
@@ -93,6 +94,10 @@ export function normalizeSettings(value) {
     voiceDetectionPreset: Object.hasOwn(voiceDetectionPresets, source.voiceDetectionPreset)
       ? source.voiceDetectionPreset
       : defaultSettings.voiceDetectionPreset,
+    microphoneEnabled:
+      typeof source.microphoneEnabled === 'boolean'
+        ? source.microphoneEnabled
+        : defaultSettings.microphoneEnabled,
     announceAssistantMessages:
       typeof source.announceAssistantMessages === 'boolean'
         ? source.announceAssistantMessages

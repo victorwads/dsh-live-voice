@@ -46,7 +46,7 @@ export class VoiceCoordinator {
       conversation: false,
       listening: false,
       recognizing: false,
-      muted: false,
+      muted: normalizeSettings(settings).microphoneEnabled === false,
       speaking: false,
       paused: false,
       starting: false,
@@ -116,7 +116,12 @@ export class VoiceCoordinator {
       autoInstallLocalPack: settings.recognitionAutoInstall,
       voiceDetectionPreset: settings.voiceDetectionPreset,
     });
-    this.patch({ settings, error: null });
+    this.patch({
+      settings,
+      muted: settings.microphoneEnabled === false,
+      recognizing: settings.microphoneEnabled === false ? false : this.snapshot.recognizing,
+      error: null,
+    });
     if (settings.sendingMode === 'manual') this.cancelAutoSend();
     if (Object.hasOwn(next, 'announceAssistantMessages') && !settings.announceAssistantMessages) {
       this.queue = [];
@@ -185,16 +190,17 @@ export class VoiceCoordinator {
     return this.startListening(true);
   }
   muteListening() {
-    if (!this.snapshot.settings.voiceCommandsEnabled) return this.stopListening();
     this.cancelAutoSend();
     this.composer.setDraft(this.transcript.update(this.composer.getDraft(), '', true));
     this.transcript.reset();
-    this.patch({ muted: true, recognizing: false });
+    this.updateSettings({ microphoneEnabled: false });
+    if (!this.snapshot.settings.voiceCommandsEnabled) return this.stopListening();
   }
   resumeListeningInput() {
+    this.transcript.reset();
+    this.updateSettings({ microphoneEnabled: true });
     if (this.snapshot.listening || this.snapshot.starting) {
-      this.transcript.reset();
-      this.patch({ muted: false, recognizing: false });
+      this.patch({ recognizing: false });
       return;
     }
     return this.startListening(this.snapshot.conversation);

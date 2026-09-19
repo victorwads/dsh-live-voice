@@ -46,6 +46,7 @@ test('valid local options survive normalization', () => {
     recognitionProcessLocally: false,
     recognitionAutoInstall: false,
     voiceDetectionPreset: 'short',
+    microphoneEnabled: false,
     announceAssistantMessages: false,
     interruptSpeechOnUserMessage: true,
     recognitionLang: 'en-US',
@@ -95,6 +96,14 @@ test('filter settings use safe defaults and reject malformed values', () => {
   assert.equal(invalid.recognitionMinimumWords, 2);
   assert.equal(invalid.outputCodeMaxLines, 5);
   assert.equal(invalid.outputCodeNotice, defaultSettings.outputCodeNotice);
+});
+
+
+
+test('microphone preference is global-state compatible and safely normalized', () => {
+  assert.equal(defaultSettings.microphoneEnabled, true);
+  assert.equal(normalizeSettings({ microphoneEnabled: false }).microphoneEnabled, false);
+  assert.equal(normalizeSettings({ microphoneEnabled: 'no' }).microphoneEnabled, true);
 });
 
 test('audio device preferences default to the system devices and reject malformed values', () => {

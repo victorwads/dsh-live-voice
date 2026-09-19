@@ -197,18 +197,22 @@ export function apply(ctx) {
     refreshPendingQuestion(true);
     entry.unsubscribePendingQuestion = pendingInteractions.subscribe(refreshPendingQuestion);
     const update = controller.updateSettings.bind(controller);
-    controller.updateSettings = (next) => {
-      if (disposed || entry.closed) return;
+    entry.applySettings = (next) => {
       update(next);
       engineBrowser.lang = controller.getSnapshot().settings.lang;
       engineQwen.lang = controller.getSnapshot().settings.lang;
-      try {
-        localStorage.setItem(
-          'dsh-live-voice.settings',
-          JSON.stringify(controller.getSnapshot().settings),
-        );
-      } catch {}
       run(controller, controller.refreshCapabilities());
+    };
+    controller.updateSettings = (next) => {
+      if (disposed || entry.closed) return;
+      entry.applySettings(next);
+      const settings = controller.getSnapshot().settings;
+      try {
+        localStorage.setItem('dsh-live-voice.settings', JSON.stringify(settings));
+      } catch {}
+      for (const other of controllers.values()) {
+        if (other !== entry && !other.closed) other.applySettings(settings);
+      }
     };
     // Cancel only this entry's queued acquisition. Global cancellation here would
     // invalidate a newer session while its predecessor is being unmounted.
@@ -364,7 +368,7 @@ export function apply(ctx) {
             entry.controller.getSnapshot().settings.recognitionEngine !== settings.recognitionEngine
           )
             entry.controller.replaceRecognition(recognitionFor(settings, entry.controller.meter));
-          entry.controller.updateSettings(settings);
+          entry.applySettings(settings);
           run(entry.controller, entry.controller.refreshCapabilities());
         }
       };
