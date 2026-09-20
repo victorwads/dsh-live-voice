@@ -13,7 +13,7 @@
     "setup:hooks": "git config core.hooksPath .githooks",
     "prepack": "npm run build"
   },
-  "description": "Local-first voice conversations for DSH, with local speech recognition and synthesis and optional external providers.",
+  "description": "Local-first hands-free AI voice assistant plugin for DeepSeek Harness (DSH), with speech-to-text, text-to-speech, voice commands, and local speech engines.",
   "keywords": [
     "dsh",
     "dsh-plugin",
