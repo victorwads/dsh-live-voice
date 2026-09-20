@@ -216,25 +216,26 @@ export function createComponents(React) {
     const remaining = state.autoSendAt
       ? Math.max(1, Math.ceil((state.autoSendAt - now) / 1000))
       : null;
-    const status = state.answeringQuestion && state.recognizing
-      ? 'Recognizing answer…'
-      : state.answeringQuestion && state.listening
-        ? 'Listening for your answer…'
-        : remaining
-          ? `Sending in ${remaining}…`
-          : state.starting
-        ? 'Starting microphone…'
-        : state.paused
-          ? 'Speech paused'
-          : state.speaking
-            ? 'Speaking'
-            : state.recognizing
-              ? 'Recognizing speech…'
-              : state.listening
-                ? 'Listening — waiting for speech'
-                : state.conversation
-                  ? 'Conversation idle'
-                  : 'Voice ready';
+    const status =
+      state.answeringQuestion && state.recognizing
+        ? 'Recognizing answer…'
+        : state.answeringQuestion && state.listening
+          ? 'Listening for your answer…'
+          : remaining
+            ? `Sending in ${remaining}…`
+            : state.starting
+              ? 'Starting microphone…'
+              : state.paused
+                ? 'Speech paused'
+                : state.speaking
+                  ? 'Speaking'
+                  : state.recognizing
+                    ? 'Recognizing speech…'
+                    : state.listening
+                      ? 'Listening — waiting for speech'
+                      : state.conversation
+                        ? 'Conversation idle'
+                        : 'Voice ready';
     return h(
       'div',
       {
@@ -885,6 +886,28 @@ export function createComponents(React) {
                     'Controls how long a pause must last before captured speech is sent for recognition.',
                   ),
                   h(
+                    'label',
+                    { className: 'dlv-setting-field' },
+                    'Maximum continuous speech (seconds)',
+                    h('input', {
+                      type: 'number',
+                      min: 10,
+                      max: 300,
+                      step: 1,
+                      value: settings.recognitionMaxUtteranceSeconds ?? 60,
+                      onChange: (event) => {
+                        const value = Number(event.target.value);
+                        if (Number.isInteger(value) && value >= 10 && value <= 300)
+                          invoke('updateSettings', { recognitionMaxUtteranceSeconds: value });
+                      },
+                    }),
+                    h(
+                      'small',
+                      null,
+                      'If speech never pauses, start a new transcription chunk after this duration. Default: 60 seconds.',
+                    ),
+                  ),
+                  h(
                     'div',
                     {
                       className: 'dlv-preset-group',
@@ -958,6 +981,22 @@ export function createComponents(React) {
           settings.interruptSpeechOnUserMessage
             ? 'Sending or steering a new user message stops current or paused assistant speech.'
             : 'Sending another message does not stop the assistant audio you are already hearing.',
+        ),
+        h(
+          'label',
+          { key: 'hold-to-talk', className: 'dlv-check' },
+          h('input', {
+            type: 'checkbox',
+            checked: settings.holdToTalkEnabled !== false,
+            onChange: (event) =>
+              invoke('updateSettings', { holdToTalkEnabled: event.target.checked }),
+          }),
+          ' Hold Control to talk',
+        ),
+        h(
+          'p',
+          { key: 'hold-to-talk-description', className: 'dlv-setting-description' },
+          'While a composer is open, hold Control anywhere on the page to capture speech. Release it to flush queued transcription, wait the configured send delay, queue the message, and close voice capture. Press Escape while holding to cancel.',
         ),
         field('Listening mode', 'mode', [
           { value: 'speaker', label: 'Speakers — gated listening' },

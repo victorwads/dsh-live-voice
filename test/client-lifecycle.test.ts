@@ -57,6 +57,12 @@ async function fixture(t, { pendingStore = true } = {}) {
   t.mock.method(VoiceCoordinator.prototype, 'startDictation', async function () {
     calls.push(['start', this]);
   });
+  t.mock.method(VoiceCoordinator.prototype, 'startHoldToTalk', async function () {
+    calls.push(['hold-start', this]);
+  });
+  t.mock.method(VoiceCoordinator.prototype, 'releaseHoldToTalk', async function () {
+    calls.push(['hold-release', this]);
+  });
   t.mock.method(VoiceCoordinator.prototype, 'startConversation', async function () {
     calls.push(['conversation', this]);
   });
@@ -301,6 +307,53 @@ test('composer detach is immediate while action owner survives, updates use late
   assert.equal(c.disposed, false);
   await c.startDictation();
   assert.equal(f.calls.filter(([name]) => name === 'start').length, 0);
+});
+
+test('holding Control globally starts one temporary capture and release finishes it', async (t) => {
+  const f = await fixture(t);
+  await f.render(h(f.Buttons, f.props('a')));
+  const key = (type) =>
+    document.dispatchEvent(
+      new window.KeyboardEvent(type, {
+        key: 'Control',
+        code: 'ControlLeft',
+        ctrlKey: type === 'keydown',
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+  await act(async () => {
+    key('keydown');
+    key('keydown');
+  });
+  assert.equal(f.calls.filter(([name]) => name === 'hold-start').length, 1);
+  await act(async () => key('keyup'));
+  assert.equal(f.calls.filter(([name]) => name === 'hold-release').length, 1);
+  f.controllers[0].updateSettings({ holdToTalkEnabled: false });
+  await act(async () => {
+    key('keydown');
+    key('keyup');
+  });
+  assert.equal(f.calls.filter(([name]) => name === 'hold-start').length, 1);
+});
+
+test('hold-Control is ignored when more than one composer session is mounted', async (t) => {
+  const f = await fixture(t);
+  await f.render([
+    h(f.Buttons, { ...f.props('a'), key: 'one' }),
+    h(f.Buttons, { ...f.props('b'), key: 'two' }),
+  ]);
+  await act(async () => {
+    document.dispatchEvent(
+      new window.KeyboardEvent('keydown', {
+        key: 'Control',
+        code: 'ControlLeft',
+        ctrlKey: true,
+        bubbles: true,
+      }),
+    );
+  });
+  assert.equal(f.calls.filter(([name]) => name === 'hold-start').length, 0);
 });
 
 test('one keyboard handler across duplicate mounts; ambiguous sessions are ignored', async (t) => {

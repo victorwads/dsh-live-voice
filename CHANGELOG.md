@@ -4,12 +4,24 @@ All notable changes to DSH Live Voice are documented in this file.
 
 ## [0.2.2] - 2026-09-19
 
+### Features
+
+- Add an optional global hold-Control push-to-talk gesture that works while a composer is mounted even when regular voice mode is off. Releasing Control flushes queued transcription, waits the configured automatic-send delay, queues the completed draft once, and closes capture; Escape cancels the gesture.
+
+### Changes
+
+- Increase the maximum continuous-speech transcription chunk from 20 to 60 seconds by default for Whisper HTTP and Qwen HTTP recognition. Add a Speech recognition setting that lets users configure the limit from 10 to 300 seconds; uninterrupted speech is split and sent for transcription only after the selected duration.
+
 ### Bug Fixes
 
 - Serialize Whisper HTTP and Qwen HTTP transcription segments through a per-session FIFO queue, preserving capture order while the microphone continues recording.
 - Defer the automatic-send countdown while transcription segments are queued or a request is active.
 - Discard queued segments and abort the active request when recognition stops, and clear the coordinator’s pending-transcription count.
 - Add regression tests for serialized requests, ordered results, cancellation of queued work, and automatic-send gating until the transcription queue drains.
+
+### Compatibility
+
+- Record that the latest DSH version tested with this plugin is **0.1.6-alpha.2**.
 
 ## [0.2.1] - 2026-09-19
 

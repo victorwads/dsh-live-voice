@@ -61,6 +61,7 @@ export class VoiceCoordinator {
     };
     this.autoSendTimer = null;
     this.autoSendDraft = null;
+    this.holdToTalkRelease = false;
     this.interruptionTimer = null;
     this.interruptionTranscriptConfirmed = false;
     this.interruptionPausedSpeech = false;
@@ -187,6 +188,27 @@ export class VoiceCoordinator {
   startDictation() {
     return this.startListening(false);
   }
+  startHoldToTalk() {
+    this.holdToTalkRelease = false;
+    return this.startListening(false);
+  }
+  async releaseHoldToTalk() {
+    if (this.disposed || (!this.snapshot.listening && !this.snapshot.starting)) return;
+    this.holdToTalkRelease = true;
+    if (this.snapshot.starting) return;
+    await this.recognition.finish?.();
+    if (this.snapshot.pendingTranscriptions === 0) this._finishHoldToTalk();
+  }
+  _finishHoldToTalk() {
+    if (!this.holdToTalkRelease) return;
+    this.holdToTalkRelease = false;
+    const draft = this.composer.getDraft();
+    if (!draft.trim()) {
+      void this.stopListening();
+      return;
+    }
+    this.scheduleAutoSend(draft, { force: true, stopAfter: true });
+  }
   startConversation() {
     return this.startListening(true);
   }
@@ -275,6 +297,7 @@ export class VoiceCoordinator {
             const count = Number.isSafeInteger(pending) && pending >= 0 ? pending : 0;
             this.patch({ pendingTranscriptions: count });
             if (count > 0) this.cancelAutoSend();
+            else if (this.holdToTalkRelease) this._finishHoldToTalk();
             else this.maybeScheduleAutoSend();
           },
           onActivity: (active) => {
@@ -302,6 +325,7 @@ export class VoiceCoordinator {
           return;
         }
         this.patch({ listening: true, starting: false });
+        if (this.holdToTalkRelease) void this.releaseHoldToTalk();
         this._drain();
       } catch (error) {
         try {
@@ -472,7 +496,7 @@ export class VoiceCoordinator {
       return;
     this.scheduleAutoSend(draft);
   }
-  scheduleAutoSend(draft) {
+  scheduleAutoSend(draft, { force = false, stopAfter = false } = {}) {
     this.cancelAutoSend();
     if (!draft.trim() || typeof this.composer.submit !== 'function') return;
     const delay = this.snapshot.settings.autoSendDelaySeconds * 1000;
@@ -485,16 +509,19 @@ export class VoiceCoordinator {
       this.patch({ autoSendAt: null });
       if (
         !this.disposed &&
-        this.snapshot.settings.sendingMode !== 'manual' &&
+        (force || this.snapshot.settings.sendingMode !== 'manual') &&
         expected === this.composer.getDraft()
       ) {
         try {
-          this.composer.submit(this.snapshot.settings.sendingMode === 'steer' ? 'steer' : 'queue');
+          this.composer.submit(
+            this.snapshot.settings.sendingMode === 'steer' && !force ? 'steer' : 'queue',
+          );
           // Web Speech keeps a cumulative native result list for the lifetime of
           // one recognition instance. Start a fresh instance at the turn boundary
           // so the sent utterance cannot prefix the next one.
           this.transcript.reset();
           this.recognition.reset?.();
+          if (stopAfter) void this.stopListening();
         } catch (error) {
           this.patch({ error: message(error) });
         }
@@ -511,6 +538,7 @@ export class VoiceCoordinator {
     if (this.autoSendDraft !== null && draft !== this.autoSendDraft) this.cancelAutoSend();
   }
   stopListening() {
+    this.holdToTalkRelease = false;
     this.cancelAutoSend();
     ++this.epoch;
     this.inputController?.abort();

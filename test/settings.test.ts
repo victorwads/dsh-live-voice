@@ -46,7 +46,9 @@ test('valid local options survive normalization', () => {
     recognitionProcessLocally: false,
     recognitionAutoInstall: false,
     voiceDetectionPreset: 'short',
+    recognitionMaxUtteranceSeconds: 120,
     microphoneEnabled: false,
+    holdToTalkEnabled: true,
     announceAssistantMessages: false,
     interruptSpeechOnUserMessage: true,
     recognitionLang: 'en-US',
@@ -82,6 +84,19 @@ test('legacy automatic sending migrates to queue and tri-state modes survive nor
   assert.equal(normalizeSettings({ sendingMode: 'steer' }).sendingMode, 'steer');
 });
 
+test('continuous-speech chunk duration defaults to 60 seconds and accepts safe overrides', () => {
+  assert.equal(defaultSettings.recognitionMaxUtteranceSeconds, 60);
+  assert.equal(
+    normalizeSettings({ recognitionMaxUtteranceSeconds: 120 }).recognitionMaxUtteranceSeconds,
+    120,
+  );
+  for (const value of [9, 301, 60.5, '60'])
+    assert.equal(
+      normalizeSettings({ recognitionMaxUtteranceSeconds: value }).recognitionMaxUtteranceSeconds,
+      60,
+    );
+});
+
 test('filter settings use safe defaults and reject malformed values', () => {
   assert.equal(defaultSettings.recognitionFilterEnabled, true);
   assert.equal(defaultSettings.recognitionMinimumWords, 2);
@@ -98,10 +113,11 @@ test('filter settings use safe defaults and reject malformed values', () => {
   assert.equal(invalid.outputCodeNotice, defaultSettings.outputCodeNotice);
 });
 
-
-
 test('microphone preference is global-state compatible and safely normalized', () => {
   assert.equal(defaultSettings.microphoneEnabled, true);
+  assert.equal(defaultSettings.holdToTalkEnabled, true);
+  assert.equal(normalizeSettings({ holdToTalkEnabled: false }).holdToTalkEnabled, false);
+  assert.equal(normalizeSettings({ holdToTalkEnabled: 'no' }).holdToTalkEnabled, true);
   assert.equal(normalizeSettings({ microphoneEnabled: false }).microphoneEnabled, false);
   assert.equal(normalizeSettings({ microphoneEnabled: 'no' }).microphoneEnabled, true);
 });

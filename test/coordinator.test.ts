@@ -601,3 +601,22 @@ test('automatic sending waits until every queued transcription completes', async
   f.coordinator.cancelAutoSend();
   await f.coordinator.dispose();
 });
+
+test('hold-to-talk release waits for queued transcription before forced delayed delivery', async () => {
+  const f = fixture({ sendingMode: 'manual', autoSendDelaySeconds: 2 });
+  const scheduled = [];
+  f.coordinator.scheduleAutoSend = (draft, options) => scheduled.push({ draft, options });
+  f.recognition.finish = async () => f.log.push('input:finish');
+  await f.coordinator.startHoldToTalk();
+  const callbacks = f.sessions[0];
+  callbacks.onProcessingChange({ pending: 1 });
+  callbacks.onResult({ final: 'held phrase' });
+  await f.coordinator.releaseHoldToTalk();
+  assert.deepEqual(scheduled, [], 'delivery waits while a transcription remains pending');
+  callbacks.onProcessingChange({ pending: 0 });
+  assert.deepEqual(scheduled, [
+    { draft: 'typed held phrase', options: { force: true, stopAfter: true } },
+  ]);
+  assert.ok(f.log.includes('input:finish'));
+  await f.coordinator.dispose();
+});

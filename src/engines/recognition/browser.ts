@@ -141,6 +141,9 @@ export class BrowserRecognitionEngine {
       timer: null,
       recognition: null,
       speaking: false,
+      finishing: false,
+      finishPromise: null,
+      resolveFinish: null,
     };
     this.session = session;
     const cancelled = new Promise((resolve, reject) => {
@@ -244,6 +247,12 @@ export class BrowserRecognitionEngine {
       session.recognition = null;
       this._activity(session, false);
       if (this.session !== session) return;
+      if (session.finishing) {
+        this.session = null;
+        session.signal?.removeEventListener('abort', session.cancel);
+        session.resolveFinish?.();
+        return;
+      }
       if (session.restarts >= this.maxRestarts) {
         this._fail(
           session,
@@ -271,6 +280,34 @@ export class BrowserRecognitionEngine {
       );
     };
     recognition.start();
+  }
+
+  finish() {
+    const session = this.session;
+    if (!session) return Promise.resolve();
+    if (session.finishPromise) return session.finishPromise;
+    session.finishing = true;
+    session.finishPromise = new Promise((resolve) => {
+      session.resolveFinish = resolve;
+    });
+    if (session.timer !== null) {
+      (this.globals.clearTimeout ?? globalThis.clearTimeout)(session.timer);
+      session.timer = null;
+      this.session = null;
+      session.resolveFinish();
+      return session.finishPromise;
+    }
+    try {
+      session.recognition?.stop();
+      if (!session.recognition) {
+        this.session = null;
+        session.resolveFinish();
+      }
+    } catch {
+      this.session = null;
+      session.resolveFinish();
+    }
+    return session.finishPromise;
   }
 
   reset() {
@@ -310,5 +347,6 @@ export class BrowserRecognitionEngine {
       /* Browser already ended capture. */
     }
     this._activity(session, false);
+    session.resolveFinish?.();
   }
 }

@@ -39,12 +39,18 @@ export function encodeMonoPcm16Wav(samples, inputRate) {
   return buffer;
 }
 export class WhisperHttpRecognitionEngine {
-  constructor({ globals = globalThis, meter, voiceDetectionPreset = 'natural' } = {}) {
+  constructor({
+    globals = globalThis,
+    meter,
+    voiceDetectionPreset = 'natural',
+    maxUtteranceSeconds = 60,
+  } = {}) {
     this.g = globals;
     this.meter = meter;
     this.session = null;
     this.lang = 'pt-BR';
     this.voiceDetectionPreset = voiceDetectionPreset;
+    this.maxUtteranceSeconds = maxUtteranceSeconds;
     this.route = ROUTE;
   }
   get segmentation() {
@@ -197,13 +203,23 @@ export class WhisperHttpRecognitionEngine {
       if (
         (session.voiced &&
           session.silence > context.sampleRate * (this.segmentation.silenceMs / 1000)) ||
-        session.samples > context.sampleRate * 20
+        session.samples > context.sampleRate * this.maxUtteranceSeconds
       )
         enqueue();
     };
     source.connect(processor);
+    session.finish = enqueue;
     session.abort = () => this.stop();
     signal?.addEventListener('abort', session.abort, { once: true });
+  }
+  finish() {
+    const session = this.session;
+    if (!session) return;
+    session.processor.onaudioprocess = null;
+    try {
+      this.meter?.source?.disconnect(session.processor);
+    } catch {}
+    session.finish?.();
   }
   async stop() {
     const session = this.session;

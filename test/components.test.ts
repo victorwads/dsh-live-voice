@@ -27,6 +27,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       recognitionProcessLocally: true,
       recognitionAutoInstall: true,
       voiceDetectionPreset: 'natural',
+      recognitionMaxUtteranceSeconds: 60,
       lang: 'pt-BR',
       mode: 'speaker',
       rate: 1,
@@ -140,8 +141,8 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       'browser provider controls its own segmentation',
     );
     const checks = [...document.querySelectorAll('input[type=checkbox]')];
-    assert.equal(checks.length, 7);
-    assert.equal(checks.filter((input) => input.checked).length, 6);
+    assert.equal(checks.length, 8);
+    assert.equal(checks.filter((input) => input.checked).length, 7);
     assert.equal(
       checks.find((input) =>
         input.parentElement.textContent.includes('Stop assistant speech when I send a message'),
@@ -192,6 +193,12 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     );
     const detection = document.querySelector('[aria-label="Silence detection settings"]');
     assert.ok(detection);
+    const maxUtterance = [...detection.querySelectorAll('label')]
+      .find((label) => label.textContent.includes('Maximum continuous speech'))
+      .querySelector('input');
+    assert.equal(maxUtterance.value, '60');
+    assert.equal(maxUtterance.min, '10');
+    assert.equal(maxUtterance.max, '300');
     assert.equal(detection.querySelectorAll('input[type=radio]').length, 3);
     const long = [...detection.querySelectorAll('input[type=radio]')].find(
       (input) => input.value === 'long',

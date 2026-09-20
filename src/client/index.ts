@@ -13,7 +13,12 @@ import { QwenHttpRecognitionEngine } from '../engines/recognition/qwen-http.ts';
 import { QwenHttpSpeakingEngine } from '../engines/speaking/qwen-http.ts';
 import { createComponents } from './components.ts';
 import { styles } from './styles.ts';
-import { assistantMessages, addressedTurn, latestUserSequence, pendingQuestionSpeech } from './chat.ts';
+import {
+  assistantMessages,
+  addressedTurn,
+  latestUserSequence,
+  pendingQuestionSpeech,
+} from './chat.ts';
 
 export const inject = ['slots', 'connection', 'uiConversation', 'uiSession'];
 export function apply(ctx) {
@@ -27,16 +32,27 @@ export function apply(ctx) {
   // composer should inherit the user's explicit choice to remain in voice mode.
   let voiceModeActive = false;
   const ownership = new VoiceOwnership();
+  const recognitionSettingKeys = new Set([
+    'recognitionEngine',
+    'recognitionProcessLocally',
+    'recognitionAutoInstall',
+    'voiceDetectionPreset',
+    'recognitionMaxUtteranceSeconds',
+  ]);
+  const changesRecognition = (next) =>
+    Object.keys(next).some((key) => recognitionSettingKeys.has(key));
   const recognitionFor = (settings, meter) =>
     settings.recognitionEngine === 'qwen-http'
       ? new QwenHttpRecognitionEngine({
           meter,
           voiceDetectionPreset: settings.voiceDetectionPreset,
+          maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds,
         })
       : settings.recognitionEngine === 'whisper-http'
         ? new WhisperHttpRecognitionEngine({
             meter,
             voiceDetectionPreset: settings.voiceDetectionPreset,
+            maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds,
           })
         : new BrowserRecognitionEngine({
             processLocally: settings.recognitionProcessLocally,
@@ -116,7 +132,8 @@ export function apply(ctx) {
             if (capture.index < capture.interaction.questions.length) {
               capture.answering = false;
               const text = pendingQuestionSpeech(capture.interaction, capture.index);
-              if (text) run(entry.controller, entry.controller.speak(text, capture.interaction.key));
+              if (text)
+                run(entry.controller, entry.controller.speak(text, capture.interaction.key));
             } else {
               entry.questionCapture = null;
               entry.controller.patch({ answeringQuestion: false });
@@ -228,7 +245,7 @@ export function apply(ctx) {
         return original(...args);
       };
     }
-    for (const method of ['startDictation', 'startConversation', 'speak']) {
+    for (const method of ['startDictation', 'startHoldToTalk', 'startConversation', 'speak']) {
       const original = controller[method].bind(controller);
       controller[method] = (...args) => {
         if (disposed || entry.closed || !entry.refs) return Promise.resolve();
@@ -351,13 +368,11 @@ export function apply(ctx) {
       let settingsRevision = 0;
       c.updateSettings = async (next) => {
         const revision = ++settingsRevision;
-        const previousEngine = c.getSnapshot().settings.recognitionEngine;
         update(next);
         browser.lang = c.getSnapshot().settings.lang;
         qwen.lang = c.getSnapshot().settings.lang;
         const settings = c.getSnapshot().settings;
-        if (previousEngine !== settings.recognitionEngine)
-          c.replaceRecognition(recognitionFor(settings, c.meter));
+        if (changesRecognition(next)) c.replaceRecognition(recognitionFor(settings, c.meter));
         localStorage.setItem('dsh-live-voice.settings', JSON.stringify(settings));
         run(c, c.refreshCapabilities());
         const active = [...controllers.values()];
@@ -368,9 +383,7 @@ export function apply(ctx) {
         if (revision !== settingsRevision || disposed || c.disposed) return;
         for (const entry of controllers.values()) {
           if (entry.closed) continue;
-          if (
-            entry.controller.getSnapshot().settings.recognitionEngine !== settings.recognitionEngine
-          )
+          if (changesRecognition(next))
             entry.controller.replaceRecognition(recognitionFor(settings, entry.controller.meter));
           entry.applySettings(settings);
           run(entry.controller, entry.controller.refreshCapabilities());
@@ -488,28 +501,49 @@ export function apply(ctx) {
       for (const entry of controllers.values())
         run(entry.controller, entry.controller.endConversation());
     };
-    const onKey = (event) => {
-      if (
-        disposed ||
-        event.defaultPrevented ||
-        !event.ctrlKey ||
-        !event.shiftKey ||
-        event.code !== 'Space' ||
-        event.repeat
-      )
-        return;
+    let holdToTalk = null;
+    const candidate = () => {
       const candidates = [...controllers.values()].filter(
         (entry) => entry.buttons > 0 && entry.composers.size > 0,
       );
-      if (candidates.length !== 1) return;
-      event.preventDefault();
-      const c = candidates[0].controller;
-      run(
-        c,
-        c.getSnapshot().listening || c.getSnapshot().starting
-          ? c.stopListening()
-          : c.startDictation(),
-      );
+      return candidates.length === 1 ? candidates[0] : null;
+    };
+    const releaseHoldToTalk = () => {
+      const entry = holdToTalk;
+      holdToTalk = null;
+      if (!entry || entry.closed) return;
+      run(entry.controller, entry.controller.releaseHoldToTalk());
+    };
+    const onKeyDown = (event) => {
+      if (disposed || event.defaultPrevented || event.repeat) return;
+      if (event.key === 'Escape' && holdToTalk) {
+        const entry = holdToTalk;
+        holdToTalk = null;
+        event.preventDefault();
+        run(entry.controller, entry.controller.cancelDictation());
+        return;
+      }
+      if (event.ctrlKey && event.shiftKey && event.code === 'Space') {
+        const entry = candidate();
+        if (!entry) return;
+        event.preventDefault();
+        const c = entry.controller;
+        run(
+          c,
+          c.getSnapshot().listening || c.getSnapshot().starting
+            ? c.stopListening()
+            : c.startDictation(),
+        );
+        return;
+      }
+      if (event.key !== 'Control' || event.altKey || event.metaKey || event.shiftKey) return;
+      const entry = candidate();
+      if (!entry || !entry.controller.getSnapshot().settings.holdToTalkEnabled) return;
+      holdToTalk = entry;
+      run(entry.controller, entry.controller.startHoldToTalk());
+    };
+    const onKeyUp = (event) => {
+      if (event.key === 'Control') releaseHoldToTalk();
     };
     const refreshCapabilities = () => {
       for (const entry of controllers.values())
@@ -522,7 +556,9 @@ export function apply(ctx) {
     window.speechSynthesis?.addEventListener?.('voiceschanged', refreshCapabilities);
     navigator.mediaDevices?.addEventListener?.('devicechange', refreshCapabilities);
     document.addEventListener('visibilitychange', visibilityChanged);
-    document.addEventListener('keydown', onKey);
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+    window.addEventListener('blur', releaseHoldToTalk);
     window.addEventListener('pagehide', stop);
     return () => {
       disposed = true;
@@ -530,7 +566,9 @@ export function apply(ctx) {
       window.speechSynthesis?.removeEventListener?.('voiceschanged', refreshCapabilities);
       navigator.mediaDevices?.removeEventListener?.('devicechange', refreshCapabilities);
       document.removeEventListener('visibilitychange', visibilityChanged);
-      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('blur', releaseHoldToTalk);
       window.removeEventListener('pagehide', stop);
       for (const entry of controllers.values()) retire(entry);
     };

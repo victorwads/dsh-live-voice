@@ -36,7 +36,9 @@ export const defaultSettings = Object.freeze({
   recognitionProcessLocally: true,
   recognitionAutoInstall: true,
   voiceDetectionPreset: 'natural',
+  recognitionMaxUtteranceSeconds: 60,
   microphoneEnabled: true,
+  holdToTalkEnabled: true,
   announceAssistantMessages: true,
   interruptSpeechOnUserMessage: false,
   sendingMode: 'manual',
@@ -94,10 +96,20 @@ export function normalizeSettings(value) {
     voiceDetectionPreset: Object.hasOwn(voiceDetectionPresets, source.voiceDetectionPreset)
       ? source.voiceDetectionPreset
       : defaultSettings.voiceDetectionPreset,
+    recognitionMaxUtteranceSeconds:
+      Number.isInteger(source.recognitionMaxUtteranceSeconds) &&
+      source.recognitionMaxUtteranceSeconds >= 10 &&
+      source.recognitionMaxUtteranceSeconds <= 300
+        ? source.recognitionMaxUtteranceSeconds
+        : defaultSettings.recognitionMaxUtteranceSeconds,
     microphoneEnabled:
       typeof source.microphoneEnabled === 'boolean'
         ? source.microphoneEnabled
         : defaultSettings.microphoneEnabled,
+    holdToTalkEnabled:
+      typeof source.holdToTalkEnabled === 'boolean'
+        ? source.holdToTalkEnabled
+        : defaultSettings.holdToTalkEnabled,
     announceAssistantMessages:
       typeof source.announceAssistantMessages === 'boolean'
         ? source.announceAssistantMessages

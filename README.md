@@ -8,6 +8,14 @@
 
 DSH Live Voice coordinates the microphone, composer, assistant messages, structured questions, and speech output in one plugin — without letting listening and speaking compete with each other. Once voice conversation mode is running, DSH can narrate responses and questions, capture your spoken answers, and continue the conversation while your hands stay free.
 
+[![DSH tested](https://img.shields.io/badge/DSH%20tested-0.1.6--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/v0.1.6-alpha.2)
+
+## Built for daily use, maintained with you
+
+I use DSH Live Voice for at least eight hours a day. For me, it is the best voice plugin for DSH — and I am committed to making it better through real, everyday use.
+
+Have a bug to report, a feature you need, or a pull request to share? [Open an issue](https://github.com/victorwads/dsh-live-voice/issues) or [send a PR](https://github.com/victorwads/dsh-live-voice/pulls). I aim to respond quickly, review contributions promptly, and turn useful suggestions into features. Not every request will be implemented, but I welcome the conversation and will consider what you bring.
+
 ## Install
 
 Install the public repository through dsh.pub into your DSH web profile:
@@ -26,22 +34,23 @@ A heartfelt thank you to [GooDAnDReaDY](https://github.com/GooDAnDReaDY) for [ds
 
 ## Features
 
-| | Capability |
-|---|---|
-| 🎙️ | Voice typing directly into the DSH composer |
-| 👐 | Hands-free conversations: speak, hear responses, and continue without touching the computer |
-| ❓ | Spoken DSH structured questions with automatic capture and submission of your answer |
-| 💬 | Continuous voice conversations that stay active while you navigate between chats |
-| 🗣️ | Configurable voice commands for sending, queueing, clearing, muting, resuming, stopping speech, and ending a conversation |
-| 🧠 | Browser SpeechRecognition, local loopback whisper.cpp, or Qwen3-ASR on Apple MLX |
-| 🔊 | Browser speech synthesis, native macOS `say`, or Qwen3-TTS on Apple MLX |
-| ⏱️ | Manual or automatic sending after configurable silence |
-| 🫁 | Stable-silence delay prevents breathing pauses from starting assistant speech |
-| 🎧 | Open-microphone mode for headphones |
-| 🔒 | Gated microphone mode for speakers |
-| ✋ | Pause, resume, stop, and manual interruption controls |
-| 🔈 | Play individual assistant messages on demand |
-| 🏠 | Whisper audio reaches the local server only through the authenticated DSH host |
+|     | Capability                                                                                                                |
+| --- | ------------------------------------------------------------------------------------------------------------------------- |
+| 🎙️  | Voice typing directly into the DSH composer                                                                               |
+| 👐  | Hands-free conversations: speak, hear responses, and continue without touching the computer                               |
+| ❓  | Spoken DSH structured questions with automatic capture and submission of your answer                                      |
+| 💬  | Continuous voice conversations that stay active while you navigate between chats                                          |
+| 🗣️  | Configurable voice commands for sending, queueing, clearing, muting, resuming, stopping speech, and ending a conversation |
+| ⌨️  | Optional hold-Control push-to-talk anywhere on the page while a composer is open                                          |
+| 🧠  | Browser SpeechRecognition, local loopback whisper.cpp, or Qwen3-ASR on Apple MLX                                          |
+| 🔊  | Browser speech synthesis, native macOS `say`, or Qwen3-TTS on Apple MLX                                                   |
+| ⏱️  | Manual or automatic sending after configurable silence                                                                    |
+| 🫁  | Stable-silence delay prevents breathing pauses from starting assistant speech                                             |
+| 🎧  | Open-microphone mode for headphones                                                                                       |
+| 🔒  | Gated microphone mode for speakers                                                                                        |
+| ✋  | Pause, resume, stop, and manual interruption controls                                                                     |
+| 🔈  | Play individual assistant messages on demand                                                                              |
+| 🏠  | Whisper audio reaches the local server only through the authenticated DSH host                                            |
 
 ## Hands-free experience
 
@@ -52,6 +61,7 @@ Start voice conversation mode and choose an automatic delivery mode to keep a co
 3. Narrate DSH structured questions, listen for your next spoken response, and submit it as a custom answer.
 4. Keep voice conversation mode active when you move between chats until you explicitly end it.
 5. Accept configurable spoken commands for common conversation controls.
+6. Start temporary push-to-talk from anywhere on the page by holding Control, even when the voice bar is off; release to finish queued transcription and automatic delivery, or press Escape to cancel.
 
 The hands-free experience coordinates speech input and output locally when you select local engines. The DSH language model itself may still be remote.
 
@@ -94,7 +104,6 @@ sequenceDiagram
 ### Headphones — open microphone
 
 The microphone remains open during playback, allowing your voice to pause the assistant.
-
 
 ### Other conversation settings
 
