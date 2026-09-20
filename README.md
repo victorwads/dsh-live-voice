@@ -1,16 +1,13 @@
 # DSH Live Voice
 
 [![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
-[![dsh.pub registry status](https://dsh.pub/api/badges/victorwads/dsh-live-voice.svg)](https://dsh.pub/en/plugins/dsh-live-voice/)
-[![license](https://img.shields.io/badge/license-GPL--3.0--only-blue)](LICENSE)
+[![DSH tested](https://img.shields.io/badge/DSH%20tested-0.1.6--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/v0.1.6-alpha.2)
 
 **A local-first, hands-free voice assistant plugin for DeepSeek Harness (DSH). Speak, listen, answer prompts, and keep working without touching the computer.**
 
 Looking for a DeepSeek Harness voice plugin, DSH microphone plugin, speech-to-text, text-to-speech, or hands-free AI assistant? DSH Live Voice brings those capabilities together in one coordinated plugin.
 
 It coordinates the microphone, composer, assistant messages, structured questions, and speech output without letting listening and speaking compete. Once voice conversation mode is running, DSH can narrate responses and questions, capture your spoken answers, and continue the conversation while your hands stay free.
-
-[![DSH tested](https://img.shields.io/badge/DSH%20tested-0.1.6--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/v0.1.6-alpha.2)
 
 ## Built for daily use, maintained with you
 
