@@ -46,6 +46,7 @@ export class VoiceCoordinator {
       conversation: false,
       listening: false,
       recognizing: false,
+      pendingTranscriptions: 0,
       muted: normalizeSettings(settings).microphoneEnabled === false,
       speaking: false,
       paused: false,
@@ -269,6 +270,13 @@ export class VoiceCoordinator {
           onResult: (result) => {
             if (valid()) this.onResult(result);
           },
+          onProcessingChange: ({ pending = 0 } = {}) => {
+            if (!valid()) return;
+            const count = Number.isSafeInteger(pending) && pending >= 0 ? pending : 0;
+            this.patch({ pendingTranscriptions: count });
+            if (count > 0) this.cancelAutoSend();
+            else this.maybeScheduleAutoSend();
+          },
           onActivity: (active) => {
             if (!valid()) return;
             if (active) {
@@ -378,8 +386,10 @@ export class VoiceCoordinator {
     }
     // Pending structured questions own recognition while waiting for a hands-free
     // answer. Keep their interim and final text out of the normal chat composer.
-    if (typeof this.composer.handleQuestionResult === 'function' &&
-        this.composer.handleQuestionResult({ final, interim })) {
+    if (
+      typeof this.composer.handleQuestionResult === 'function' &&
+      this.composer.handleQuestionResult({ final, interim })
+    ) {
       this.cancelAutoSend();
       this.transcript.reset();
       this.patch({ recognizing: !!interim });
@@ -441,7 +451,7 @@ export class VoiceCoordinator {
       }
       const next = this.transcript.update(this.composer.getDraft(), final, true);
       this.composer.setDraft(next);
-      if (this.snapshot.settings.sendingMode !== 'manual') this.scheduleAutoSend(next);
+      this.maybeScheduleAutoSend(next);
     }
     if (interim) {
       this.cancelAutoSend();
@@ -452,6 +462,15 @@ export class VoiceCoordinator {
         Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
     this.patch({ recognizing: !!interim });
     this._drain();
+  }
+  maybeScheduleAutoSend(draft = this.composer.getDraft()) {
+    if (
+      this.snapshot.settings.sendingMode === 'manual' ||
+      this.snapshot.recognizing ||
+      this.snapshot.pendingTranscriptions > 0
+    )
+      return;
+    this.scheduleAutoSend(draft);
   }
   scheduleAutoSend(draft) {
     this.cancelAutoSend();
@@ -495,7 +514,7 @@ export class VoiceCoordinator {
     this.cancelAutoSend();
     ++this.epoch;
     this.inputController?.abort();
-    this.patch({ listening: false, recognizing: false, starting: false });
+    this.patch({ listening: false, recognizing: false, pendingTranscriptions: 0, starting: false });
     return this._input(async () => {
       try {
         await this._releaseInput();

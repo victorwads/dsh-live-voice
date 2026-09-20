@@ -576,3 +576,28 @@ test('a breathing pause cannot start queued assistant speech and renewed speech 
   await turn();
   await f.coordinator.dispose();
 });
+
+test('automatic sending waits until every queued transcription completes', async () => {
+  const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 1 });
+  f.coordinator.composer.submit = () => {};
+  await f.coordinator.startDictation();
+  const callbacks = f.sessions[0];
+  callbacks.onProcessingChange({ pending: 2 });
+  callbacks.onResult({ final: 'first phrase' });
+  assert.equal(f.coordinator.snapshot.autoSendAt, null, 'a queued transcription blocks auto-send');
+  callbacks.onProcessingChange({ pending: 1 });
+  callbacks.onResult({ final: 'second phrase' });
+  assert.equal(
+    f.coordinator.snapshot.autoSendAt,
+    null,
+    'the active transcription still blocks auto-send',
+  );
+  callbacks.onProcessingChange({ pending: 0 });
+  assert.ok(
+    f.coordinator.snapshot.autoSendAt,
+    'idle queue starts the countdown after all results join the draft',
+  );
+  assert.equal(f.draft(), 'typed first phrase second phrase');
+  f.coordinator.cancelAutoSend();
+  await f.coordinator.dispose();
+});

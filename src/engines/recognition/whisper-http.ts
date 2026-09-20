@@ -73,7 +73,14 @@ export class WhisperHttpRecognitionEngine {
       };
     }
   }
-  async start({ lang = this.lang, signal, onResult, onActivity, onError } = {}) {
+  async start({
+    lang = this.lang,
+    signal,
+    onResult,
+    onActivity,
+    onError,
+    onProcessingChange,
+  } = {}) {
     await this.stop();
     if (signal?.aborted) throw abortError();
     const context = this.meter?.context,
@@ -95,16 +102,25 @@ export class WhisperHttpRecognitionEngine {
       samples: 0,
       voiced: false,
       silence: 0,
-      inflight: new Set(),
+      transcriptionQueue: [],
+      activeRequest: null,
+      draining: false,
       onResult,
       onActivity,
       onError,
+      onProcessingChange,
       lang,
       signal,
     };
     this.session = session;
     const valid = () => this.session === session && !signal?.aborted;
-    const submit = async () => {
+    const notifyProcessing = () =>
+      session.onProcessingChange?.({
+        queued: session.transcriptionQueue.length,
+        active: !!session.activeRequest,
+        pending: session.transcriptionQueue.length + (session.activeRequest ? 1 : 0),
+      });
+    const enqueue = () => {
       if (!session.voiced || session.samples < context.sampleRate * 0.25) {
         session.chunks = [];
         session.samples = 0;
@@ -122,29 +138,46 @@ export class WhisperHttpRecognitionEngine {
       session.samples = 0;
       session.voiced = false;
       session.silence = 0;
-      const request = new AbortController();
-      session.inflight.add(request);
+      session.transcriptionQueue.push(samples);
+      notifyProcessing();
+      void drain();
+    };
+    const drain = async () => {
+      if (session.draining || !valid()) return;
+      session.draining = true;
       try {
-        const response = await this.g.fetch(this.route + '/transcribe', {
-          method: 'POST',
-          credentials: 'same-origin',
-          headers: {
-            'content-type': 'audio/wav',
-            'x-dlv-client-id': session.operation,
-            'x-dlv-operation-id': id(),
-            'x-dlv-language': lang,
-          },
-          body: encodeMonoPcm16Wav(samples, context.sampleRate),
-          signal: request.signal,
-        });
-        const json = await response.json();
-        if (!response.ok || !json?.ok)
-          throw new Error(json?.error?.message || 'HTTP transcription failed.');
-        if (valid() && json.value.text) onResult?.({ final: json.value.text, interim: '' });
-      } catch (error) {
-        if (error.name !== 'AbortError' && valid()) onError?.(error);
+        while (valid() && session.transcriptionQueue.length) {
+          const samples = session.transcriptionQueue.shift();
+          const request = new AbortController();
+          session.activeRequest = request;
+          notifyProcessing();
+          try {
+            const response = await this.g.fetch(this.route + '/transcribe', {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: {
+                'content-type': 'audio/wav',
+                'x-dlv-client-id': session.operation,
+                'x-dlv-operation-id': id(),
+                'x-dlv-language': lang,
+              },
+              body: encodeMonoPcm16Wav(samples, context.sampleRate),
+              signal: request.signal,
+            });
+            const json = await response.json();
+            if (!response.ok || !json?.ok)
+              throw new Error(json?.error?.message || 'HTTP transcription failed.');
+            if (valid() && json.value.text) onResult?.({ final: json.value.text, interim: '' });
+          } catch (error) {
+            if (error.name !== 'AbortError' && valid()) onError?.(error);
+          } finally {
+            if (session.activeRequest === request) session.activeRequest = null;
+            notifyProcessing();
+          }
+        }
       } finally {
-        session.inflight.delete(request);
+        session.draining = false;
+        notifyProcessing();
       }
     };
     processor.onaudioprocess = (event) => {
@@ -166,7 +199,7 @@ export class WhisperHttpRecognitionEngine {
           session.silence > context.sampleRate * (this.segmentation.silenceMs / 1000)) ||
         session.samples > context.sampleRate * 20
       )
-        void submit();
+        enqueue();
     };
     source.connect(processor);
     session.abort = () => this.stop();
@@ -185,7 +218,9 @@ export class WhisperHttpRecognitionEngine {
       session.processor.disconnect();
       session.gain?.disconnect();
     } catch {}
-    for (const request of session.inflight) request.abort();
-    session.inflight.clear();
+    session.transcriptionQueue = [];
+    session.activeRequest?.abort();
+    session.activeRequest = null;
+    session.onProcessingChange?.({ queued: 0, active: false, pending: 0 });
   }
 }

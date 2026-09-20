@@ -145,3 +145,82 @@ test('Whisper voice detection defaults to natural pauses and external presets ch
   assert.equal(await run('natural'), 0, '1.28 seconds of silence remains in the same utterance');
   assert.equal(await run('short'), 1, 'short profile sends the utterance sooner');
 });
+
+test('Whisper browser engine serializes closed utterances and discards queued work on stop', async () => {
+  const deferred = () => {
+    let resolve, reject;
+    const promise = new Promise((yes, no) => {
+      resolve = yes;
+      reject = no;
+    });
+    return { promise, resolve, reject };
+  };
+  const source = { connect() {}, disconnect() {} },
+    processor = { connect() {}, disconnect() {}, onaudioprocess: null },
+    context = {
+      sampleRate: 16000,
+      destination: {},
+      createScriptProcessor() {
+        return processor;
+      },
+      createGain() {
+        return { gain: { value: 1 }, connect() {}, disconnect() {} };
+      },
+    },
+    requests = [];
+  const engine = new WhisperHttpRecognitionEngine({
+    globals: {
+      crypto,
+      fetch: (_url, options) => {
+        const request = { ...deferred(), options, aborted: false };
+        requests.push(request);
+        options.signal.addEventListener(
+          'abort',
+          () => {
+            request.aborted = true;
+            request.reject(Object.assign(new Error('cancelled'), { name: 'AbortError' }));
+          },
+          { once: true },
+        );
+        return request.promise;
+      },
+    },
+    meter: { context, source },
+    voiceDetectionPreset: 'short',
+  });
+  const results = [],
+    processing = [];
+  await engine.start({
+    onResult: (result) => results.push(result.final),
+    onProcessingChange: (state) => processing.push(state.pending),
+  });
+  const emit = (value) =>
+    processor.onaudioprocess({
+      inputBuffer: { getChannelData: () => new Float32Array(4096).fill(value) },
+    });
+  const utterance = () => {
+    emit(0.1);
+    emit(0.1);
+    for (let index = 0; index < 4; index++) emit(0);
+  };
+  utterance();
+  utterance();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(requests.length, 1, 'the second utterance waits for the first request');
+  assert.deepEqual(processing.at(-1), 2);
+  requests[0].resolve(Response.json({ ok: true, value: { text: 'first result' } }));
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(requests.length, 2, 'the queued utterance starts after the first response');
+  requests[1].resolve(Response.json({ ok: true, value: { text: 'second result' } }));
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.deepEqual(results, ['first result', 'second result']);
+  assert.equal(processing.at(-1), 0);
+  utterance();
+  utterance();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(requests.length, 3);
+  await engine.stop();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(requests[2].aborted, true);
+  assert.equal(requests.length, 3, 'stop must discard segments that never started');
+});

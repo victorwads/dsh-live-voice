@@ -2,6 +2,15 @@
 
 All notable changes to DSH Live Voice are documented in this file.
 
+## [0.2.2] - 2026-09-19
+
+### Bug Fixes
+
+- Serialize Whisper HTTP and Qwen HTTP transcription segments through a per-session FIFO queue, preserving capture order while the microphone continues recording.
+- Defer the automatic-send countdown while transcription segments are queued or a request is active.
+- Discard queued segments and abort the active request when recognition stops, and clear the coordinator’s pending-transcription count.
+- Add regression tests for serialized requests, ordered results, cancellation of queued work, and automatic-send gating until the transcription queue drains.
+
 ## [0.2.1] - 2026-09-19
 
 ### Documentation
@@ -85,7 +94,8 @@ This release expands conversation control, audio routing, speech filtering, and 
 - Support browser speech synthesis and native macOS `say` output.
 - Add Live Voice controls, Whisper settings, build and browser-preview scripts, and an initial test suite.
 
-[0.2.1]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.0...HEAD
+[0.2.2]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/victorwads/dsh-live-voice/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/victorwads/dsh-live-voice/compare/v0.0.2...v0.1.0
 [0.0.2]: https://github.com/victorwads/dsh-live-voice/compare/v0.0.1-alpha.1...v0.0.2
