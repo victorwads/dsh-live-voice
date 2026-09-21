@@ -186,6 +186,18 @@ Pausing playback need not stop text generation. If the user introduces a new req
 
 For spoken streaming, collect suitable text segments, synthesize them, and play them in order. Cancellation must invalidate pending work so delayed results from an old response cannot start playing later. Sentence boundaries, latency, buffering limits, and error recovery need evaluation.
 
+### Settings changes should not restart voice (planned bug fix)
+
+Changing a Live Voice preference currently stops active voice resources and makes the plugin behave as if it were restarting, even for values that can be applied live. Settings updates must be classified by effect: presentation and policy values should update immediately without interrupting capture, playback, queued speech, or the current conversation; engine, device, and other resource-boundary changes may require a targeted replacement only when necessary. The interface must state when a particular change will take effect on the next operation rather than silently resetting the whole plugin.
+
+### Backend-owned automatic speech queue (planned)
+
+The browser currently observes visible chat nodes and decides which assistant text enters its automatic-speech queue. This makes queue state dependent on the focused conversation and mounted frontend: switching chats can discard or duplicate state, and opening an older conversation can incorrectly announce historical assistant messages as if they were new.
+
+Move automatic-speech admission, streaming-segment tracking, ordering, cancellation, and queue state to the DSH host. The host must retain per-chat/turn provenance and a durable high-water mark for consumed assistant text, then dispatch synthesized audio or playback work to the appropriate connected browser client. A client must be able to receive an announcement for a non-focused chat with clear contextual phrasing, for example identifying the chat before its message.
+
+When several chats produce assistant output, the host must serialize announcements according to an explicit cross-chat policy: finish the active announcement, group pending segments by chat where appropriate, and announce one chat at a time rather than interleaving unrelated messages. The design must define how multiple browser clients are selected, how inactive clients are handled, and whether one client owns playback at a time. It must preserve correct queue state across navigation, avoid creating new work from historical chat content when an old chat is opened, and invalidate queued/in-flight speech on cancellation or an obsolete turn.
+
 ### Engine selection and interface
 
 Provide one place to select microphone, output device, conversation mode, STT engine, TTS engine, and shortcuts. Keep provider-specific complexity behind clear options without hiding important costs, permissions, or data transmission.
