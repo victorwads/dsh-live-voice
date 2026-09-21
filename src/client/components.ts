@@ -2,7 +2,7 @@
 import { createWhisperSettings } from './whisper-settings.ts';
 import { createQwenSettings } from './qwen-settings.ts';
 import { createFallbackTranslator } from './locale.ts';
-import { qwenVoices, usesPluginVoiceDetection, voiceDetectionPresets } from '../core/settings.ts';
+import { defaultAgentVoiceContext, qwenVoices, usesPluginVoiceDetection, voiceDetectionPresets } from '../core/settings.ts';
 import {
   checkLatestRelease,
   CURRENT_VERSION,
@@ -828,13 +828,47 @@ export function createComponents(React, translate = createFallbackTranslator(), 
               h('input', {
                 type: 'text',
                 maxLength: 300,
-                value: settings.outputCodeNotice || t('dsh-live-voice.speak.filters.code.notice'),
+                key: `output-code-notice-${settings.outputCodeNotice}`,
+                defaultValue: settings.outputCodeNotice || t('dsh-live-voice.speak.filters.code.notice'),
                 disabled: settings.outputCodeFilterEnabled === false,
-                onChange: (event) =>
+                onBlur: (event) =>
                   invoke('updateSettings', { outputCodeNotice: event.target.value }),
               }),
             ),
           ]),
+          h(
+            'div',
+            { className: 'dlv-settings-subcard' },
+            h(
+              'label',
+              null,
+              h('input', {
+                type: 'checkbox',
+                checked: settings.agentVoiceContextEnabled !== false,
+                onChange: (event) => invoke('updateSettings', { agentVoiceContextEnabled: event.target.checked }),
+              }),
+              'dsh-live-voice.speak.agentContext.enabled',
+            ),
+            h('small', null, 'dsh-live-voice.speak.agentContext.enabledHelp'),
+            h('label', null, 'dsh-live-voice.speak.agentContext.label'),
+            h('small', null, 'dsh-live-voice.speak.agentContext.help'),
+            h('textarea', {
+              key: `agent-voice-context-${settings.agentVoiceContext}`,
+              defaultValue: settings.agentVoiceContext,
+              maxLength: 4000,
+              rows: 7,
+              onBlur: (event) => invoke('updateSettings', { agentVoiceContext: event.target.value }),
+            }),
+            h(
+              'button',
+              {
+                type: 'button',
+                disabled: settings.agentVoiceContext === defaultAgentVoiceContext,
+                onClick: () => invoke('updateSettings', { agentVoiceContext: defaultAgentVoiceContext }),
+              },
+              'dsh-live-voice.speak.agentContext.restore',
+            ),
+          ),
           h(
             'label',
             null,
@@ -852,6 +886,24 @@ export function createComponents(React, translate = createFallbackTranslator(), 
               },
             }),
             h('small', null, 'dsh-live-voice.speak.rate.help'),
+          ),
+          h(
+            'label',
+            null,
+            'dsh-live-voice.speak.segmentGap.label',
+            h('input', {
+              type: 'number',
+              min: 0,
+              max: 2000,
+              step: 50,
+              value: settings.segmentGapMs ?? 200,
+              onChange: (event) => {
+                const segmentGapMs = Number(event.target.value);
+                if (Number.isFinite(segmentGapMs) && segmentGapMs >= 0 && segmentGapMs <= 2000)
+                  invoke('updateSettings', { segmentGapMs });
+              },
+            }),
+            h('small', null, 'dsh-live-voice.speak.segmentGap.help'),
           ),
           h('p', null, 'dsh-live-voice.speak.engine.playbackHelp'),
           ...['qwen-http', 'say', 'browser']

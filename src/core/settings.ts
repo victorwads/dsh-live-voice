@@ -30,6 +30,10 @@ export const qwenVoices = Object.freeze([
 ]);
 export const defaultQwenVoice = qwenVoices[0].value;
 export const isQwenVoice = (value) => qwenVoices.some((voice) => voice.value === value);
+export const defaultAgentVoiceContext = `Live Voice output is active. Your entire user-facing response will be spoken aloud.
+Be concise and conversational. Lead with the answer or next action. Avoid unnecessary repetition, long preambles, dense lists, raw code, paths, and verbose status narration.
+Do not narrate routine tool activity by default. If the user explicitly asks you to keep them informed while working, provide brief spoken progress updates only at meaningful milestones.`;
+
 export const defaultSettings = Object.freeze({
   engine: 'browser',
   recognitionEngine: 'browser',
@@ -40,6 +44,8 @@ export const defaultSettings = Object.freeze({
   microphoneEnabled: true,
   holdToTalkEnabled: true,
   announceAssistantMessages: true,
+  agentVoiceContextEnabled: true,
+  agentVoiceContext: defaultAgentVoiceContext,
   interruptSpeechOnUserMessage: false,
   sendingMode: 'manual',
   autoSendDelaySeconds: 4,
@@ -64,6 +70,7 @@ export const defaultSettings = Object.freeze({
   outputCodeMaxLines: 5,
   outputCodeNotice: 'Look the code on out conversation',
   rate: 1,
+  segmentGapMs: 200,
 });
 const normalizeCommandPhrases = (value, fallback) =>
   typeof value === 'string' && value.length <= 1000 && !value.includes('\0')
@@ -114,6 +121,16 @@ export function normalizeSettings(value) {
       typeof source.announceAssistantMessages === 'boolean'
         ? source.announceAssistantMessages
         : defaultSettings.announceAssistantMessages,
+    agentVoiceContextEnabled:
+      typeof source.agentVoiceContextEnabled === 'boolean'
+        ? source.agentVoiceContextEnabled
+        : defaultSettings.agentVoiceContextEnabled,
+    agentVoiceContext:
+      typeof source.agentVoiceContext === 'string' &&
+      source.agentVoiceContext.length <= 4000 &&
+      !source.agentVoiceContext.includes('\0')
+        ? source.agentVoiceContext.trim()
+        : defaultSettings.agentVoiceContext,
     interruptSpeechOnUserMessage:
       typeof source.interruptSpeechOnUserMessage === 'boolean'
         ? source.interruptSpeechOnUserMessage
@@ -225,5 +242,9 @@ export function normalizeSettings(value) {
         ? source.outputCodeNotice.trim()
         : defaultSettings.outputCodeNotice,
     rate: Number.isFinite(source.rate) && source.rate >= 0.1 && source.rate <= 3 ? source.rate : 1,
+    segmentGapMs:
+      Number.isFinite(source.segmentGapMs) && source.segmentGapMs >= 0 && source.segmentGapMs <= 2000
+        ? Math.round(source.segmentGapMs)
+        : 200,
   };
 }

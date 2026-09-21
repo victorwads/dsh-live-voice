@@ -50,6 +50,8 @@ test('valid local options survive normalization', () => {
     microphoneEnabled: false,
     holdToTalkEnabled: true,
     announceAssistantMessages: false,
+    agentVoiceContextEnabled: defaultSettings.agentVoiceContextEnabled,
+    agentVoiceContext: defaultSettings.agentVoiceContext,
     interruptSpeechOnUserMessage: true,
     recognitionLang: 'en-US',
     sendingMode: 'steer',
@@ -74,6 +76,7 @@ test('valid local options survive normalization', () => {
     outputCodeMaxLines: 9,
     outputCodeNotice: 'See the code above',
     rate: 1.4,
+    segmentGapMs: 350,
   };
   assert.deepEqual(normalizeSettings(options), options);
 });

@@ -17,8 +17,8 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     JSON.stringify({
       checkedAt: Date.now(),
       release: {
-        tag: 'v0.3.0',
-        url: 'https://github.com/victorwads/dsh-live-voice/releases/tag/v0.3.0',
+        tag: 'v0.3.1',
+        url: 'https://github.com/victorwads/dsh-live-voice/releases/tag/v0.3.1',
       },
     }),
   );
@@ -101,14 +101,14 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.equal(badgeImages.length, 2);
     assert.equal(badgeImages[0].src, 'https://cdn.simpleicons.org/npm/white');
     assert.equal(badgeImages[0].alt, '');
-    assert.equal(badgeImages[0].parentElement.title, 'DSH Live Voice v0.2.4');
-    assert.equal(badgeImages[0].parentElement.textContent, 'v0.2.4');
+    assert.equal(badgeImages[0].parentElement.title, 'DSH Live Voice v0.3.0');
+    assert.equal(badgeImages[0].parentElement.textContent, 'v0.3.0');
     assert.equal(badgeImages[1].src, 'https://cdn.simpleicons.org/deepseek/white');
     assert.equal(badgeImages[1].alt, '');
     assert.equal(badgeImages[1].parentElement.title, 'Compatible with DSH v0.1.6-alpha.2');
     assert.equal(badgeImages[1].parentElement.textContent, 'v0.1.6-alpha.2');
     assert.equal(
-      versionBadges.querySelector('[aria-label="DSH Live Voice v0.2.4. Open releases"]').href,
+      versionBadges.querySelector('[aria-label="DSH Live Voice v0.3.0. Open releases"]').href,
       'https://github.com/victorwads/dsh-live-voice/releases',
     );
     assert.equal(
@@ -125,10 +125,10 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.equal(updateBadge.parentElement.className, 'dlv-settings-heading');
     assert.equal(updateBadge.previousElementSibling.className, 'dlv-heading-divider');
     assert.equal(updateBadge.nextElementSibling.className, 'dlv-heading-divider');
-    assert.equal(updateBadge.title, 'Update available: v0.3.0');
+    assert.equal(updateBadge.title, 'Update available: v0.3.1');
     assert.equal(
       updateBadge.href,
-      'https://github.com/victorwads/dsh-live-voice/releases/tag/v0.3.0',
+      'https://github.com/victorwads/dsh-live-voice/releases/tag/v0.3.1',
     );
     const tabs = [...document.querySelectorAll('[role=tab]')];
     assert.deepEqual(
@@ -166,6 +166,14 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     const speechPanel = document.getElementById(tabs[1].getAttribute('aria-controls'));
     assert.ok(speechPanel.textContent.includes('Test selected speech output'));
     assert.ok(speechPanel.textContent.includes('Refresh available engines'));
+    const agentVoiceContext = speechPanel.querySelector('textarea');
+    assert.ok(agentVoiceContext);
+    assert.equal(typeof agentVoiceContext.value, 'string');
+    assert.equal(
+      [...speechPanel.querySelectorAll('input[type=checkbox]')].some((input) => input.parentElement.textContent.includes('Enable agent voice context') && input.checked),
+      true,
+    );
+    assert.ok([...speechPanel.querySelectorAll('button')].some((button) => button.textContent === 'Restore default'));
     assert.equal(conversation.textContent.includes('Test selected speech output'), false);
     await act(async () => tabs[2].click());
     assert.equal(tabs[2].getAttribute('aria-selected'), 'true');
@@ -206,8 +214,8 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       'browser provider controls its own segmentation',
     );
     const checks = [...document.querySelectorAll('input[type=checkbox]')];
-    assert.equal(checks.length, 8);
-    assert.equal(checks.filter((input) => input.checked).length, 7);
+    assert.equal(checks.length, 9);
+    assert.equal(checks.filter((input) => input.checked).length, 8);
     assert.equal(
       checks.find((input) =>
         input.parentElement.textContent.includes('Stop assistant speech when I send a message'),

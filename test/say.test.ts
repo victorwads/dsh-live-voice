@@ -31,6 +31,10 @@ function fixture(options = {}) {
     async writeFile(...args) {
       calls.push(['writeFile', ...args]);
     },
+    async readFile(...args) {
+      calls.push(['readFile', ...args]);
+      return Buffer.from('RIFF-test-WAVE');
+    },
     async rm(...args) {
       calls.push(['rm', ...args]);
     },
@@ -81,7 +85,12 @@ test('secure UTF-8 file argv; only close plus cleanup resolves speech', async ()
   );
   assert.deepEqual(calls.find(([name]) => name === 'spawn').slice(1), [
     '/usr/bin/say',
-    ['-f', '/fake-temp/dsh-live-voice-say-1/speech.txt', '-v', 'Samantha', '-r', '180'],
+    [
+      '-f', '/fake-temp/dsh-live-voice-say-1/speech.txt',
+      '-o', '/fake-temp/dsh-live-voice-say-1/speech.wav',
+      '--file-format=WAVE', '--data-format=LEI16@22050',
+      '-v', 'Samantha', '-r', '180',
+    ],
     { shell: false, stdio: 'ignore' },
   ]);
   children[0].emit('exit', 0, null);
@@ -102,6 +111,7 @@ test('capability checks platform and executable independently without spawning',
     supported: false,
     pause: false,
     resume: false,
+    audioFormat: 'audio/wav',
     reason: 'unsupported-platform',
   });
   await assert.rejects(linux.engine.speak('hello'), { code: 'SAY_UNAVAILABLE' });
@@ -116,7 +126,8 @@ test('capability checks platform and executable independently without spawning',
   assert.equal((await unavailable.engine.getCapabilities()).reason, 'executable-unavailable');
   await assert.rejects(unavailable.engine.speak('hello'), { code: 'SAY_UNAVAILABLE' });
   assert.equal(unavailable.children.length, 0);
-  assert.equal((await fixture().engine.getCapabilities()).pause, true);
+  assert.equal((await fixture().engine.getCapabilities()).pause, false);
+  assert.equal((await fixture().engine.getCapabilities()).audioFormat, 'audio/wav');
 });
 
 test('spawn throw, process error, and nonzero close clean temporary files', async () => {

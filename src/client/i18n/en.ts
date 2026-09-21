@@ -168,6 +168,11 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.settings.title': 'Live Voice settings',
   'dsh-live-voice.settings.whisper.hostHelp':
     'Host-wide settings. Only unauthenticated loopback HTTP URLs (localhost, 127.0.0.1, [::1]) are allowed. Loopback means the DSH host, not this browser. All health checks and audio requests run through the authenticated backend.',
+  'dsh-live-voice.speak.agentContext.enabled': 'Enable agent voice context',
+  'dsh-live-voice.speak.agentContext.enabledHelp': 'When enabled, the context below tells the agent that its responses will be spoken aloud.',
+  'dsh-live-voice.speak.agentContext.help': 'This English instruction is sent to the agent only during an active voice conversation with automatic assistant speech enabled.',
+  'dsh-live-voice.speak.agentContext.label': 'Agent voice context',
+  'dsh-live-voice.speak.agentContext.restore': 'Restore default',
   'dsh-live-voice.speak.autoPlayback.enabled': 'Automatically speak new assistant messages',
   'dsh-live-voice.speak.autoPlayback.help':
     'During a voice conversation, assistant phrases are announced automatically. Playback waits while you are speaking.',
@@ -185,7 +190,7 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.speak.browser.voice': 'Local browser voice',
   'dsh-live-voice.speak.engine.label': 'Speech engine',
   'dsh-live-voice.speak.engine.playbackHelp':
-    'Qwen synthesis runs on the DSH host and the generated WAV plays in this browser. macOS say plays on the host; Browser speech plays on this device.',
+    'Qwen and macOS say synthesize on the DSH host; compact AAC/M4A audio plays in this browser. Browser speech synthesizes and plays on this device.',
   'dsh-live-voice.speak.filters.code.enabled': 'Filter Markdown code blocks before speaking',
   'dsh-live-voice.speak.filters.code.maxLines': 'Read code blocks up to this many lines',
   'dsh-live-voice.speak.filters.code.notice': 'Look at the code in our conversation',
@@ -240,6 +245,8 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     'After you stop speaking, automatic assistant playback waits for this much continuous silence. Speaking again restarts the wait.',
   'dsh-live-voice.speak.responseDelay.label': 'Assistant response delay',
+  'dsh-live-voice.speak.segmentGap.help': 'Wait this many milliseconds between consecutive spoken segments. 200 ms is the default.',
+  'dsh-live-voice.speak.segmentGap.label': 'Pause between speech segments',
   'dsh-live-voice.speak.status.paused': 'Speech paused',
   'dsh-live-voice.speak.status.playing': 'Speaking',
 };

@@ -171,6 +171,11 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.settings.title': 'Live Voice सेटिंग्स',
   'dsh-live-voice.settings.whisper.hostHelp':
     'पूरे होस्ट पर लागू होने वाली सेटिंग्स। केवल बिना प्रमाणीकरण वाले लूपबैक HTTP URL (localhost, 127.0.0.1, [::1]) स्वीकार्य हैं। लूपबैक का अर्थ DSH होस्ट है, यह ब्राउज़र नहीं। सभी स्वास्थ्य जाँच और ऑडियो अनुरोध प्रमाणीकरण वाले बैकएंड के ज़रिए चलते हैं।',
+  'dsh-live-voice.speak.agentContext.enabled': 'एजेंट वॉइस संदर्भ सक्षम करें',
+  'dsh-live-voice.speak.agentContext.enabledHelp': 'सक्षम होने पर, नीचे दिया गया संदर्भ एजेंट को बताता है कि उसके उत्तर ज़ोर से बोले जाएंगे।',
+  'dsh-live-voice.speak.agentContext.help': 'यह अंग्रेज़ी निर्देश एजेंट को केवल सक्रिय वॉइस बातचीत के दौरान भेजा जाता है, जब सहायक का स्वचालित भाषण सक्षम हो.',
+  'dsh-live-voice.speak.agentContext.label': 'एजेंट वॉइस संदर्भ',
+  'dsh-live-voice.speak.agentContext.restore': 'डिफ़ॉल्ट बहाल करें',
   'dsh-live-voice.speak.autoPlayback.enabled': 'सहायक के नए संदेश अपने आप पढ़कर सुनाएँ',
   'dsh-live-voice.speak.autoPlayback.help':
     'वॉइस बातचीत के दौरान सहायक के वाक्यांश अपने आप पढ़कर सुनाए जाते हैं। जब आप बोल रहे हों, तो प्लेबैक प्रतीक्षा करता है।',
@@ -188,7 +193,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.speak.browser.voice': 'ब्राउज़र की स्थानीय आवाज़',
   'dsh-live-voice.speak.engine.label': 'वाक् संश्लेषण इंजन',
   'dsh-live-voice.speak.engine.playbackHelp':
-    'Qwen का वाक् संश्लेषण DSH होस्ट पर चलता है और बना हुआ WAV इस ब्राउज़र में बजता है। macOS say होस्ट पर बजता है; ब्राउज़र वाचन इस डिवाइस पर बजता है।',
+    'Qwen और macOS say DSH होस्ट पर आवाज़ बनाते हैं; कॉम्पैक्ट AAC/M4A ऑडियो इस ब्राउज़र में चलता है। ब्राउज़र स्पीच इसी डिवाइस पर बनती और चलती है।',
   'dsh-live-voice.speak.filters.code.enabled':
     'पढ़कर सुनाने से पहले Markdown कोड ब्लॉक फ़िल्टर करें',
   'dsh-live-voice.speak.filters.code.maxLines': 'अधिकतम इतनी पंक्तियों वाले कोड ब्लॉक पढ़ें',
@@ -245,6 +250,8 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     'आपके बोलना बंद करने के बाद सहायक का स्वचालित प्लेबैक इतनी देर तक लगातार मौन रहने की प्रतीक्षा करता है। दोबारा बोलने पर प्रतीक्षा फिर से शुरू होती है।',
   'dsh-live-voice.speak.responseDelay.label': 'सहायक के जवाब का विलंब',
+  'dsh-live-voice.speak.segmentGap.help': 'लगातार बोले गए हिस्सों के बीच इतने मिलीसेकंड रुकें। डिफ़ॉल्ट 200 ms है।',
+  'dsh-live-voice.speak.segmentGap.label': 'बोले गए हिस्सों के बीच विराम',
   'dsh-live-voice.speak.status.paused': 'वाचन ठहरा हुआ है',
   'dsh-live-voice.speak.status.playing': 'पढ़कर सुनाया जा रहा है',
 };

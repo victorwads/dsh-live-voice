@@ -6,7 +6,7 @@ import { VoiceOwnership } from '../core/ownership.ts';
 import { normalizeSettings } from '../core/settings.ts';
 import { MicrophoneMeter } from '../core/microphone.ts';
 import { BrowserSpeakingEngine } from '../engines/speaking/browser.ts';
-import { SayClientEngine } from '../engines/speaking/say-client.ts';
+import { HostAudioSpeakingEngine } from '../engines/speaking/host-audio.ts';
 import { BrowserRecognitionEngine } from '../engines/recognition/browser.ts';
 import { WhisperHttpRecognitionEngine } from '../engines/recognition/whisper-http.ts';
 import { QwenHttpRecognitionEngine } from '../engines/recognition/qwen-http.ts';
@@ -37,6 +37,26 @@ export function apply(ctx) {
   // A route change may replace every conversation slot, but the next committed
   // composer should inherit the user's explicit choice to remain in voice mode.
   let voiceModeActive = false;
+  const publishVoiceContext = (entry, active = entry?.controller?.getSnapshot().conversation === true) => {
+    if (!entry) return;
+    const settings = entry.controller.getSnapshot().settings;
+    const body = JSON.stringify({
+      sessionId: entry.key,
+      active:
+        active &&
+        settings.announceAssistantMessages !== false &&
+        settings.agentVoiceContextEnabled !== false,
+      context: settings.agentVoiceContext,
+    });
+    if (body === entry.lastVoiceContextBody) return;
+    entry.lastVoiceContextBody = body;
+    void fetch('/api/dsh-live-voice/voice-context', {
+      method: 'PUT',
+      credentials: 'same-origin',
+      headers: { 'content-type': 'application/json' },
+      body,
+    }).catch(() => {});
+  };
   const ownership = new VoiceOwnership();
   const recognitionSettingKeys = new Set([
     'recognitionEngine',
@@ -76,10 +96,13 @@ export function apply(ctx) {
     entry.composers.clear();
     entry.unsubscribe?.();
     entry.unsubscribe = null;
+    entry.unsubscribeVoiceContext?.();
+    entry.unsubscribeVoiceContext = null;
     entry.unsubscribePendingQuestion?.();
     entry.unsubscribePendingQuestion = null;
     entry.questionCapture = null;
     entry.controller.patch({ answeringQuestion: false });
+    publishVoiceContext(entry, false);
     entry.chatListeners.clear();
     if (controllers.get(entry.key) === entry) controllers.delete(entry.key);
     // Keep teardown in the hardware handoff barrier, not in the session registry.
@@ -100,6 +123,7 @@ export function apply(ctx) {
       buttons: 0,
       request: 0,
       closed: false,
+      lastVoiceContextBody: null,
     };
     let settings = {};
     try {
@@ -110,7 +134,13 @@ export function apply(ctx) {
       settings = normalizeSettings(null);
     }
     const engineBrowser = new BrowserSpeakingEngine({ lang: settings.lang || 'pt-BR' });
-    const engineSay = new SayClientEngine({ rpc: ctx.connection.rpc });
+    const engineSay = new HostAudioSpeakingEngine({
+      endpoint: '/api/dsh-live-voice/say/speech',
+      capability: '/api/dsh-live-voice/say/capabilities',
+      lang: settings.lang || 'pt-BR',
+      synthesisRate: () => 175,
+      playbackRate: (rate) => rate,
+    });
     const engineQwen = new QwenHttpSpeakingEngine({ lang: settings.lang || 'pt-BR' });
     const meter = new MicrophoneMeter();
     const recognition = recognitionFor(settings, meter);
@@ -174,6 +204,8 @@ export function apply(ctx) {
       settings,
     });
     const controller = entry.controller;
+    entry.unsubscribeVoiceContext = controller.subscribe(() => publishVoiceContext(entry));
+    publishVoiceContext(entry);
     entry.chat = ctx.uiConversation.binding(sessionId).target('chat');
     entry.chatListeners = new Set();
     entry.subscribeChat = (listener) => {
@@ -236,6 +268,7 @@ export function apply(ctx) {
     const update = controller.updateSettings.bind(controller);
     entry.applySettings = (next) => {
       update(next);
+      publishVoiceContext(entry);
       engineBrowser.lang = controller.getSnapshot().settings.lang;
       engineQwen.lang = controller.getSnapshot().settings.lang;
       run(controller, controller.refreshCapabilities());
@@ -258,7 +291,9 @@ export function apply(ctx) {
       controller[method] = (...args) => {
         entry.request++;
         if (method === 'endConversation' && args[0] !== true) voiceModeActive = false;
-        return original(...args);
+        const result = original(...args);
+        Promise.resolve(result).finally(() => publishVoiceContext(entry));
+        return result;
       };
     }
     for (const method of ['startDictation', 'startHoldToTalk', 'startConversation', 'speak']) {
@@ -274,7 +309,9 @@ export function apply(ctx) {
           () => {
             if (disposed || entry.closed || !entry.refs || request !== entry.request) return;
             if (method !== 'speak' && !entry.composers.size) return;
-            return original(...args);
+            const result = original(...args);
+            Promise.resolve(result).finally(() => publishVoiceContext(entry));
+            return result;
           },
         );
       };
@@ -388,7 +425,12 @@ export function apply(ctx) {
         recognition,
         engines: {
           browser,
-          say: new SayClientEngine({ rpc: ctx.connection.rpc }),
+          say: new HostAudioSpeakingEngine({
+            endpoint: '/api/dsh-live-voice/say/speech',
+            capability: '/api/dsh-live-voice/say/capabilities',
+            synthesisRate: () => 175,
+            playbackRate: (rate) => rate,
+          }),
           'qwen-http': qwen,
         },
         meter,

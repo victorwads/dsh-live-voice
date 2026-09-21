@@ -2,11 +2,20 @@
 
 All notable changes to DSH Live Voice are documented in this file.
 
-## [0.2.4] - 2026-09-21
+## [0.3.0] - Unreleased
+
+### Features
+
+- Add a configurable, session-scoped Live Voice context for agent responses. During an active voice conversation with automatic spoken responses enabled, the agent receives editable guidance that its user-facing response will be spoken aloud.
+- Add an English Live Voice context editor and Restore default action to Speaking settings; interface labels and help remain localized.
+- Standardize host speech as compact AAC/M4A played in the browser: macOS `say` and Qwen synthesize internally to WAV, the DSH host transcodes it before transport, and up to three upcoming segments are synthesized ahead to reduce gaps.
+- Add a configurable pause between consecutive spoken segments, with a 200 ms default for more natural pacing.
 
 ### Bug Fixes
 
+- Preserve spaces and in-progress edits in text settings until the field loses focus, then normalize and save the value.
 - Make automatic Steer delivery use DSH's Ctrl/Cmd+Enter accelerated composer gesture instead of the public normal-submit action, so messages are sent to the running agent rather than silently added to its queue. Add a lifecycle regression for the gesture.
+- Deduplicate voice-context synchronization so the PUT request fires only when the payload actually changes, instead of on every coordinator state update.
 
 ## [0.2.3] - 2026-09-21
 
@@ -131,7 +140,7 @@ This release expands conversation control, audio routing, speech filtering, and 
 - Support browser speech synthesis and native macOS `say` output.
 - Add Live Voice controls, Whisper settings, build and browser-preview scripts, and an initial test suite.
 
-[0.2.4]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.3...HEAD
+[0.3.0]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.3...HEAD
 [0.2.3]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.0...v0.2.1

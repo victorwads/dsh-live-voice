@@ -162,6 +162,11 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.settings.title': 'Live Voice 设置',
   'dsh-live-voice.settings.whisper.hostHelp':
     '主机级设置。仅允许无需身份验证的回环 HTTP URL（localhost、127.0.0.1、[::1]）。回环地址指 DSH 主机，而非此浏览器。所有健康检查和音频请求都通过需要身份验证的后端执行。',
+  'dsh-live-voice.speak.agentContext.enabled': '启用代理语音上下文',
+  'dsh-live-voice.speak.agentContext.enabledHelp': '启用后，下方的上下文会告知代理其回复将被朗读。',
+  'dsh-live-voice.speak.agentContext.help': '此英文指令仅在语音对话处于活动状态且启用自动朗读助手回复时发送给代理。',
+  'dsh-live-voice.speak.agentContext.label': '代理语音上下文',
+  'dsh-live-voice.speak.agentContext.restore': '恢复默认值',
   'dsh-live-voice.speak.autoPlayback.enabled': '自动朗读新的助手消息',
   'dsh-live-voice.speak.autoPlayback.help':
     '语音对话期间，助手的语句会自动朗读。你说话时会等待，不会播放。',
@@ -179,7 +184,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.speak.browser.voice': '浏览器本地语音',
   'dsh-live-voice.speak.engine.label': '语音合成引擎',
   'dsh-live-voice.speak.engine.playbackHelp':
-    'Qwen 语音合成在 DSH 主机上运行，生成的 WAV 音频在此浏览器中播放。macOS say 在主机上播放；浏览器语音合成在此设备上播放。',
+    'Qwen 和 macOS say 在 DSH 主机上合成语音；压缩的 AAC/M4A 音频在此浏览器中播放。浏览器语音则在此设备上合成并播放。',
   'dsh-live-voice.speak.filters.code.enabled': '朗读前过滤 Markdown 代码块',
   'dsh-live-voice.speak.filters.code.maxLines': '仅朗读不超过此行数的代码块',
   'dsh-live-voice.speak.filters.code.notice': '请查看我们对话中的代码',
@@ -232,6 +237,8 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     '你停止说话后，助手会等待此时长的连续静音，然后自动播放语音。再次说话会重新开始等待。',
   'dsh-live-voice.speak.responseDelay.label': '助手响应延迟',
+  'dsh-live-voice.speak.segmentGap.help': '在连续语音片段之间等待此毫秒数。默认值为 200 ms。',
+  'dsh-live-voice.speak.segmentGap.label': '语音片段之间的停顿',
   'dsh-live-voice.speak.status.paused': '语音已暂停',
   'dsh-live-voice.speak.status.playing': '正在朗读',
 };

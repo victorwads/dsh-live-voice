@@ -12,6 +12,7 @@ function deferred() {
   return { promise, resolve, reject };
 }
 function fixture(settings = {}) {
+  settings = { segmentGapMs: 0, ...settings };
   const log = [],
     spoken = [],
     sessions = [];
@@ -619,4 +620,78 @@ test('hold-to-talk release waits for queued transcription before forced delayed 
   ]);
   assert.ok(f.log.includes('input:finish'));
   await f.coordinator.dispose();
+});
+
+test('pausing host playback discards prefetched audio and resume refills the window', async () => {
+  const f = fixture();
+  const prepared = [], signals = [];
+  f.engine.prepare = (text, { signal }) => {
+    signals.push(signal);
+    const value = { text, dispose() { value.disposed = true; } };
+    prepared.push(value);
+    return Promise.resolve(value);
+  };
+  f.engine.pause = async () => true;
+  f.engine.resume = async () => true;
+  f.coordinator.patch({ speaking: true });
+  for (const text of ['one', 'two', 'three', 'four']) await f.coordinator.play(text, 'message');
+  await turn();
+  await f.coordinator.pauseSpeech();
+  assert.equal(signals.slice(0, 3).every((signal) => signal.aborted), true);
+  assert.equal(prepared.slice(0, 3).every((item) => item.disposed), true);
+  const count = prepared.length;
+  await f.coordinator.resumeSpeech();
+  await turn();
+  assert.equal(prepared.length, count + 3);
+  await f.coordinator.stopSpeech(false);
+});
+
+test('speech queue waits for the configured gap before its next segment', async () => {
+  const f = fixture({ segmentGapMs: 40 });
+  f.coordinator.patch({ conversation: true });
+  const first = f.coordinator.play('one', 'message');
+  await turn();
+  await f.coordinator.play('two', 'message');
+  f.spoken[0].resolve();
+  await first;
+  await turn();
+  assert.equal(f.spoken.length, 1, 'the next segment must not start immediately');
+  await new Promise((resolve) => setTimeout(resolve, 55));
+  assert.equal(f.spoken.length, 2);
+  f.spoken[1].resolve();
+  await turn();
+  await f.coordinator.dispose();
+});
+
+test('stopping during a speech gap cancels the queued next segment', async () => {
+  const f = fixture({ segmentGapMs: 40 });
+  f.coordinator.patch({ conversation: true });
+  const first = f.coordinator.play('one', 'message');
+  await turn();
+  await f.coordinator.play('two', 'message');
+  f.spoken[0].resolve();
+  await first;
+  await f.coordinator.stopSpeech(false);
+  await new Promise((resolve) => setTimeout(resolve, 55));
+  assert.equal(f.spoken.length, 1);
+  await f.coordinator.dispose();
+});
+
+test('host speech prefetch is bounded to three queued segments and cancelled on stop', async () => {
+  const f = fixture();
+  const prepared = [], signals = [];
+  f.engine.prepare = (text, { signal }) => {
+    signals.push(signal);
+    const value = { text, dispose() { value.disposed = true; } };
+    prepared.push(value);
+    return Promise.resolve(value);
+  };
+  f.engine.playPrepared = async () => {};
+  f.coordinator.patch({ speaking: true });
+  for (const text of ['one', 'two', 'three', 'four', 'five']) await f.coordinator.play(text, 'message');
+  await turn();
+  assert.deepEqual(prepared.map((item) => item.text), ['one', 'two', 'three']);
+  await f.coordinator.stopSpeech(false);
+  assert.equal(signals.every((signal) => signal.aborted), true);
+  assert.equal(prepared.every((item) => item.disposed), true);
 });

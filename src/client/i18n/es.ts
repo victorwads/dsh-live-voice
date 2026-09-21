@@ -181,6 +181,11 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.settings.title': 'Configuración de Live Voice',
   'dsh-live-voice.settings.whisper.hostHelp':
     'Configuración para todo el host. Solo se permiten URL HTTP sin autenticación en la interfaz de bucle local (localhost, 127.0.0.1, [::1]). El bucle local se refiere al host de DSH, no a este navegador. Todas las comprobaciones de estado y solicitudes de audio pasan por el servidor con autenticación.',
+  'dsh-live-voice.speak.agentContext.enabled': 'Activar el contexto de voz del agente',
+  'dsh-live-voice.speak.agentContext.enabledHelp': 'Cuando está activado, el contexto siguiente informa al agente que sus respuestas se leerán en voz alta.',
+  'dsh-live-voice.speak.agentContext.help': 'Esta instrucción en inglés se envía al agente solo durante una conversación de voz activa con habla automática del asistente activada.',
+  'dsh-live-voice.speak.agentContext.label': 'Contexto de voz del agente',
+  'dsh-live-voice.speak.agentContext.restore': 'Restaurar predeterminado',
   'dsh-live-voice.speak.autoPlayback.enabled':
     'Leer automáticamente los nuevos mensajes del asistente en voz alta',
   'dsh-live-voice.speak.autoPlayback.help':
@@ -199,7 +204,7 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.speak.browser.voice': 'Voz local del navegador',
   'dsh-live-voice.speak.engine.label': 'Motor de síntesis de voz',
   'dsh-live-voice.speak.engine.playbackHelp':
-    'La síntesis de Qwen se ejecuta en el host de DSH y el WAV generado se reproduce en este navegador. macOS say reproduce el audio en el host; la síntesis de voz del navegador lo reproduce en este dispositivo.',
+    'Qwen y macOS say sintetizan en el host de DSH; el audio AAC/M4A compacto se reproduce en este navegador. La voz del navegador se sintetiza y reproduce en este dispositivo.',
   'dsh-live-voice.speak.filters.code.enabled':
     'Filtrar los bloques de código Markdown antes de leer en voz alta',
   'dsh-live-voice.speak.filters.code.maxLines':
@@ -261,6 +266,8 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     'Cuando dejas de hablar, la reproducción automática del asistente espera este intervalo de silencio continuo. Si vuelves a hablar, la espera se reinicia.',
   'dsh-live-voice.speak.responseDelay.label': 'Demora de respuesta del asistente',
+  'dsh-live-voice.speak.segmentGap.help': 'Espera esta cantidad de milisegundos entre segmentos hablados consecutivos. El valor predeterminado es 200 ms.',
+  'dsh-live-voice.speak.segmentGap.label': 'Pausa entre segmentos de voz',
   'dsh-live-voice.speak.status.paused': 'Lectura en pausa',
   'dsh-live-voice.speak.status.playing': 'Hablando',
 };

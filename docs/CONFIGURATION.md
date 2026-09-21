@@ -92,7 +92,7 @@ Configure how assistant messages are read aloud:
 
 - **Speech Engine:**
   - **Browser speech:** Plays audio through the browser device using local system voices.
-  - **macOS `say`:** Direct host speech synthesis with zero overhead (plays on the host machine).
+  - **macOS `say`:** Host-local synthesis to temporary WAV, converted to compact AAC/M4A for browser playback; temporary files are removed after conversion.
   - **Qwen3 TTS:** Neural voice synthesis with WAV streaming playback in the browser.
 - **Output Device:** Route playback to specific speakers or headphones.
 - **Speech Rate:** Adjust reading speed from 0.1x to 3.0x (1.0 is normal).

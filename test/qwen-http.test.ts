@@ -75,7 +75,7 @@ test('Qwen host adapts OminiX model status and JSON/base64 transcription', async
   host.dispose();
 });
 
-test('Qwen browser speaking engine waits for WAV playback and supports pause', async () => {
+test('Qwen browser speaking engine waits for M4A playback and supports pause', async () => {
   let audio;
   const revoked = [];
   const requests = [];
@@ -99,7 +99,7 @@ test('Qwen browser speaking engine waits for WAV playback and supports pause', a
     crypto,
     fetch: async (_url, options) => {
       requests.push(JSON.parse(options.body));
-      return new Response(new Uint8Array(44), { headers: { 'content-type': 'audio/wav' } });
+      return new Response(new Uint8Array(16), { headers: { 'content-type': 'audio/mp4' } });
     },
     Audio: FakeAudio,
     URL: { createObjectURL: () => 'blob:qwen', revokeObjectURL: (value) => revoked.push(value) },

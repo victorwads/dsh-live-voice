@@ -107,8 +107,10 @@ macOS is the primary development and daily-testing platform for DSH Live Voice:
 
 Speech recognition (hearing you) and speech output (speaking back) are configured independently:
 - **Browser Speech:** Uses local system voices installed in your OS.
-- **macOS `say`:** Native host CLI speech (zero latency, plays on the host audio device).
-- **Qwen3 TTS:** High-quality neural voice synthesis running locally on the DSH host via MLX.
+- **macOS `say`:** Native host CLI synthesis. The host renders temporary WAV audio, transcodes it to compact AAC/M4A, removes temporary files, and the browser controls playback.
+- **Qwen3 TTS:** High-quality neural synthesis running on the DSH host via MLX; its internal WAV response receives the same AAC/M4A transport conversion.
+
+For both host engines, Live Voice preserves segment order and prepares at most three upcoming segments to reduce gaps. Stop, engine changes, and session teardown cancel or discard obsolete preparation. AAC in an M4A container is the shared browser transport; macOS `afconvert` provides the local conversion without a package dependency.
 
 ---
 

@@ -141,6 +141,11 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.settings.tabs.speak': string;
   'dsh-live-voice.settings.title': string;
   'dsh-live-voice.settings.whisper.hostHelp': string;
+  'dsh-live-voice.speak.agentContext.enabled': string;
+  'dsh-live-voice.speak.agentContext.enabledHelp': string;
+  'dsh-live-voice.speak.agentContext.help': string;
+  'dsh-live-voice.speak.agentContext.label': string;
+  'dsh-live-voice.speak.agentContext.restore': string;
   'dsh-live-voice.speak.autoPlayback.enabled': string;
   'dsh-live-voice.speak.autoPlayback.help': string;
   'dsh-live-voice.speak.autoPlayback.label': string;
@@ -202,6 +207,8 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.speak.rate.label': string;
   'dsh-live-voice.speak.responseDelay.help': string;
   'dsh-live-voice.speak.responseDelay.label': string;
+  'dsh-live-voice.speak.segmentGap.help': string;
+  'dsh-live-voice.speak.segmentGap.label': string;
   'dsh-live-voice.speak.status.paused': string;
   'dsh-live-voice.speak.status.playing': string;
 }

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { SayEngine } from './engines/speaking/say.ts';
+import { wavToM4aAac } from './engines/speaking/m4a-aac.ts';
 import {
   WhisperHttpHost,
   createWhisperConfigStore,
@@ -12,8 +13,25 @@ import {
 } from './engines/qwen-http-host.ts';
 
 export const name = 'dsh-live-voice';
-export const inject = ['connection'];
+export const inject = ['connection', 'systemPrompt'];
 export const SAY_CHANNEL = '/api/dsh-live-voice';
+export const VOICE_CONTEXT_PATH = SAY_CHANNEL + '/voice-context';
+
+export function createVoiceContextStore() {
+  const entries = new Map();
+  return {
+    get(sessionId) {
+      return entries.get(sessionId) || '';
+    },
+    set(sessionId, text) {
+      if (text) entries.set(sessionId, text);
+      else entries.delete(sessionId);
+    },
+    clear() {
+      entries.clear();
+    },
+  };
+}
 const ok = (value) => ({ ok: true, value });
 const fail = (code, message) => ({ ok: false, error: { code, message, details: {} } });
 const identity = (value) => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,128}$/.test(value);
@@ -112,7 +130,7 @@ export function createSayHost({ engine = new SayEngine() } = {}) {
     await engine.stop();
     active = null;
   }
-  return { handle, dispose };
+  return { handle, dispose, engine };
 }
 
 export function apply(
@@ -122,9 +140,68 @@ export function apply(
     whisperFetch = globalThis.fetch,
     qwenStore = createQwenConfigStore(),
     qwenFetch = globalThis.fetch,
+    voiceContextStore = createVoiceContextStore(),
+    createSayEngine = () => new SayEngine(),
+    encodeHostSpeech = wavToM4aAac,
   } = {},
 ) {
+  ctx.systemPrompt.variable('live_voice_context', (assemblyContext) =>
+    voiceContextStore.get(String(assemblyContext.agent?.sessionId || '')),
+  );
+  ctx.systemPrompt.context({
+    name: 'dsh-live-voice:spoken-output',
+    order: 700,
+    text: '{{live_voice_context}}',
+  });
+  const disposeVoiceContext = ctx.connection.fetch.register({
+    path: VOICE_CONTEXT_PATH,
+    methods: ['PUT'],
+    requestBody: 'buffered',
+    fetch: async (request) => {
+      try {
+        const body = await request.json();
+        if (!identity(body?.sessionId) || typeof body?.context !== 'string' || body.context.length > 4000 || body.context.includes('\0'))
+          return Response.json(fail('invalid-request', 'A valid session ID and voice context are required.'), { status: 400 });
+        voiceContextStore.set(body.sessionId, body.active === true ? body.context.trim() : '');
+        return Response.json(ok({ active: body.active === true && Boolean(body.context.trim()) }));
+      } catch {
+        return Response.json(fail('invalid-request', 'Invalid voice context request.'), { status: 400 });
+      }
+    },
+  });
+  ctx.effect(() => () => { disposeVoiceContext(); voiceContextStore.clear(); }, 'dsh-live-voice: remove voice context');
   const host = createSayHost();
+  const saySyntheses = new Set();
+  const sayCapability = ctx.connection.fetch.register({
+    path: SAY_CHANNEL + '/say/capabilities', methods: ['GET'], requestBody: 'buffered',
+    fetch: async () => Response.json(ok({ ...(await host.engine.getCapabilities()), audioFormat: 'audio/mp4' })),
+  });
+  const saySpeech = ctx.connection.fetch.register({
+    path: SAY_CHANNEL + '/say/speech', methods: ['POST'], requestBody: 'buffered',
+    fetch: async (request) => {
+      try {
+        const body = await request.json();
+        const engine = createSayEngine();
+        saySyntheses.add(engine);
+        try {
+          const wav = await engine.speak(body?.text, { voice: body?.voice, rate: body?.rate, signal: request.signal });
+          const bytes = await encodeHostSpeech(wav, { signal: request.signal });
+          return new Response(bytes, { status: 200, headers: { 'content-type': 'audio/mp4', 'cache-control': 'no-store' } });
+        } finally {
+          saySyntheses.delete(engine);
+        }
+      } catch (error) {
+        if (error?.name === 'AbortError') return Response.json(fail('cancelled', 'Speech synthesis was cancelled.'), { status: 499 });
+        return Response.json(fail('synthesis-failed', 'Local speech synthesis failed.'), { status: 502 });
+      }
+    },
+  });
+  ctx.effect(() => async () => {
+    sayCapability();
+    saySpeech();
+    await Promise.allSettled([...saySyntheses].map((engine) => engine.stop()));
+    saySyntheses.clear();
+  }, 'dsh-live-voice: remove say audio routes');
   const whisper = new WhisperHttpHost({ store: whisperStore, fetchImpl: whisperFetch });
   const qwen = new QwenHttpHost({ store: qwenStore, fetchImpl: qwenFetch });
   for (const endpoint of ['config', 'test']) {
@@ -309,14 +386,15 @@ export function apply(
     fetch: async (request) => {
       try {
         const body = await request.json();
-        const bytes = await qwen.synthesize(body?.text, {
+        const wav = await qwen.synthesize(body?.text, {
           lang: body?.lang || 'pt-BR',
           voice: body?.voice,
           signal: request.signal,
         });
+        const bytes = await encodeHostSpeech(wav, { signal: request.signal });
         return new Response(bytes, {
           status: 200,
-          headers: { 'content-type': 'audio/wav', 'cache-control': 'no-store' },
+          headers: { 'content-type': 'audio/mp4', 'cache-control': 'no-store' },
         });
       } catch (error) {
         if (error?.name === 'AbortError')

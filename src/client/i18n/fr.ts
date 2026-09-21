@@ -184,6 +184,11 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.settings.title': 'Paramètres de Live Voice',
   'dsh-live-voice.settings.whisper.hostHelp':
     'Paramètres communs à tout l’hôte. Seules les URL HTTP sans authentification sur l’interface de bouclage (localhost, 127.0.0.1, [::1]) sont autorisées. Le bouclage désigne l’hôte DSH, pas ce navigateur. Toutes les vérifications d’état et requêtes audio passent par le serveur avec authentification.',
+  'dsh-live-voice.speak.agentContext.enabled': 'Activer le contexte vocal de l’agent',
+  'dsh-live-voice.speak.agentContext.enabledHelp': 'Lorsqu’il est activé, le contexte ci-dessous indique à l’agent que ses réponses seront lues à voix haute.',
+  'dsh-live-voice.speak.agentContext.help': 'Cette instruction en anglais est envoyée à l’agent seulement pendant une conversation vocale active avec la parole automatique de l’assistant activée.',
+  'dsh-live-voice.speak.agentContext.label': 'Contexte vocal de l’agent',
+  'dsh-live-voice.speak.agentContext.restore': 'Restaurer la valeur par défaut',
   'dsh-live-voice.speak.autoPlayback.enabled':
     'Lire automatiquement les nouveaux messages de l’assistant',
   'dsh-live-voice.speak.autoPlayback.help':
@@ -202,7 +207,7 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.speak.browser.voice': 'Voix locale du navigateur',
   'dsh-live-voice.speak.engine.label': 'Moteur de synthèse vocale',
   'dsh-live-voice.speak.engine.playbackHelp':
-    'La synthèse Qwen s’exécute sur l’hôte DSH et le fichier WAV généré est lu dans ce navigateur. macOS say diffuse le son sur l’hôte ; la synthèse vocale du navigateur le diffuse sur cet appareil.',
+    'Qwen et macOS say synthétisent sur l’hôte DSH ; l’audio AAC/M4A compact est lu dans ce navigateur. La synthèse vocale du navigateur est générée et lue sur cet appareil.',
   'dsh-live-voice.speak.filters.code.enabled':
     'Filtrer les blocs de code Markdown avant la lecture vocale',
   'dsh-live-voice.speak.filters.code.maxLines': 'Nombre maximal de lignes des blocs de code à lire',
@@ -263,6 +268,8 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     'Après que vous avez cessé de parler, la lecture automatique de l’assistant attend cette durée de silence continu. Si vous reparlez, l’attente recommence.',
   'dsh-live-voice.speak.responseDelay.label': 'Délai de réponse de l’assistant',
+  'dsh-live-voice.speak.segmentGap.help': 'Attend ce nombre de millisecondes entre des segments vocaux consécutifs. La valeur par défaut est 200 ms.',
+  'dsh-live-voice.speak.segmentGap.label': 'Pause entre les segments vocaux',
   'dsh-live-voice.speak.status.paused': 'Lecture en pause',
   'dsh-live-voice.speak.status.playing': 'Lecture en cours',
 };

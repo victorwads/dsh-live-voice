@@ -1,13 +1,22 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { apply, createSayHost, SAY_CHANNEL, inject } from '../src/server.ts';
+import { apply, createSayHost, createVoiceContextStore, SAY_CHANNEL, VOICE_CONTEXT_PATH, inject } from '../src/server.ts';
 import { SayClientEngine } from '../src/engines/speaking/say-client.ts';
 
 test('shared API route adapter validates envelopes and disposes every registration', async () => {
   const routes = new Map(),
     cleanup = [];
+  const contexts = [], variables = new Map();
+  const sayBytes = Buffer.from('RIFF-test-WAVE');
+  const m4aBytes = Buffer.from([0, 0, 0, 16, 0x66, 0x74, 0x79, 0x70, 0x4d, 0x34, 0x41, 0x20]);
+  const sayEngines = [];
+  const encoded = [];
   apply({
+    systemPrompt: {
+      context(value) { contexts.push(value); },
+      variable(name, provider) { variables.set(name, provider); },
+    },
     connection: {
       fetch: {
         register(route) {
@@ -19,11 +28,49 @@ test('shared API route adapter validates envelopes and disposes every registrati
     effect(fn) {
       cleanup.push(fn());
     },
+  }, {
+    async encodeHostSpeech(wav) { encoded.push(Buffer.from(wav)); return m4aBytes; },
+    createSayEngine() {
+      const engine = {
+        async getCapabilities() { return { supported: true, audioFormat: 'audio/wav' }; },
+        async speak(text, options) { engine.call = { text, options }; return sayBytes; },
+        async stop() {},
+      };
+      sayEngines.push(engine);
+      return engine;
+    },
   });
-  assert.equal(routes.size, 14);
+  assert.equal(routes.size, 17);
+  assert.equal(contexts.length, 1);
+  assert.equal(contexts[0].text, '{{live_voice_context}}');
+  assert.equal(variables.get('live_voice_context')({ agent: { sessionId: 'one' } }), '');
+  const voiceContext = routes.get(VOICE_CONTEXT_PATH);
+  assert.equal(voiceContext.requestBody, 'buffered');
+  const contextResponse = await voiceContext.fetch(
+    new Request('http://localhost' + VOICE_CONTEXT_PATH, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ sessionId: 'one', active: true, context: 'Speak concisely.' }),
+    }),
+  );
+  assert.equal(contextResponse.status, 200);
+  assert.equal(variables.get('live_voice_context')({ agent: { sessionId: 'one' } }), 'Speak concisely.');
+  assert.equal(variables.get('live_voice_context')({ agent: { sessionId: 'two' } }), '');
   assert.equal(routes.get(SAY_CHANNEL + '/whisper/transcribe').requestBody, 'buffered');
   assert.equal(routes.get(SAY_CHANNEL + '/qwen/transcribe').requestBody, 'buffered');
   assert.equal(routes.get(SAY_CHANNEL + '/qwen/speech').requestBody, 'buffered');
+  const sayAudio = await routes.get(SAY_CHANNEL + '/say/speech').fetch(
+    new Request('http://localhost' + SAY_CHANNEL + '/say/speech', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ text: 'Hello', voice: 'Samantha', rate: 175 }),
+    }),
+  );
+  assert.equal(sayAudio.headers.get('content-type'), 'audio/mp4');
+  assert.deepEqual(Buffer.from(await sayAudio.arrayBuffer()), m4aBytes);
+  assert.deepEqual(encoded, [sayBytes]);
+  assert.equal(sayEngines.at(-1).call.text, 'Hello');
+  assert.equal(sayEngines.at(-1).call.options.rate, 175);
   const invalidAudio = await routes.get(SAY_CHANNEL + '/whisper/transcribe').fetch(
     new Request('http://localhost' + SAY_CHANNEL + '/whisper/transcribe', {
       method: 'POST',
@@ -56,7 +103,12 @@ test('shared API route adapter validates envelopes and disposes every registrati
 test('SayClient sends valid SDK targets and envelopes to actual registered routes', async () => {
   const routes = new Map(),
     cleanup = [];
+  const contexts = [], variables = new Map();
   apply({
+    systemPrompt: {
+      context(value) { contexts.push(value); },
+      variable(name, provider) { variables.set(name, provider); },
+    },
     connection: {
       fetch: {
         register(route) {
@@ -147,7 +199,7 @@ const payload = (operationId, clientId = 'client') => ({
 const tick = () => new Promise((resolve) => setImmediate(resolve));
 
 test('authenticated service injection and capability response', async () => {
-  assert.deepEqual(inject, ['connection']);
+  assert.deepEqual(inject, ['connection', 'systemPrompt']);
   const { host } = fixture();
   assert.equal((await host.handle('capabilities')).value.supported, true);
   assert.equal((await host.handle('speak', {})).error.code, 'invalid-request');

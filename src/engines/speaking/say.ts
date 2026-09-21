@@ -67,13 +67,13 @@ export class SayEngine {
   /** Checks the host executable, not browser support or installed voices. */
   async getCapabilities() {
     if (this.#platform !== 'darwin') {
-      return { supported: false, pause: false, resume: false, reason: 'unsupported-platform' };
+      return { supported: false, pause: false, resume: false, audioFormat: 'audio/wav', reason: 'unsupported-platform' };
     }
     try {
       await this.#fs.access('/usr/bin/say', constants.X_OK);
-      return { supported: true, pause: true, resume: true, reason: null };
+      return { supported: true, pause: false, resume: false, audioFormat: 'audio/wav', reason: null };
     } catch {
-      return { supported: false, pause: false, resume: false, reason: 'executable-unavailable' };
+      return { supported: false, pause: false, resume: false, audioFormat: 'audio/wav', reason: 'executable-unavailable' };
     }
   }
 
@@ -156,6 +156,7 @@ export class SayEngine {
   async #run(request, text, voice, rate) {
     let directory;
     let error;
+    let result;
     const check = () => {
       if (request.cancelled) throw aborted(request.reason);
     };
@@ -173,10 +174,11 @@ export class SayEngine {
       check();
       await this.#fs.chmod(directory, 0o700);
       const file = join(directory, 'speech.txt');
+      const output = join(directory, 'speech.wav');
       await this.#fs.writeFile(file, text, { encoding: 'utf8', mode: 0o600, flag: 'wx' });
       await this.#fs.chmod(file, 0o600);
       check();
-      const args = ['-f', file];
+      const args = ['-f', file, '-o', output, '--file-format=WAVE', '--data-format=LEI16@22050'];
       if (voice !== undefined) args.push('-v', voice);
       if (rate !== undefined) args.push('-r', String(rate));
       const child = this.#spawn('/usr/bin/say', args, { shell: false, stdio: 'ignore' });
@@ -184,6 +186,7 @@ export class SayEngine {
       this.#state = 'speaking';
       await this.#waitForClose(request, child);
       check();
+      result = await this.#fs.readFile(output);
     } catch (caught) {
       error = caught;
     } finally {
@@ -207,6 +210,7 @@ export class SayEngine {
       } else if (!this.#unclosed && this.#state !== 'error') this.#state = 'idle';
     }
     if (error) throw error;
+    return result;
   }
 
   #waitForClose(request, child) {

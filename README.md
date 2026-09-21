@@ -23,6 +23,19 @@ Open **DSH Settings → Live Voice** after your next DSH startup.
 
 ---
 
+## 🌍 Interface Languages
+
+DSH Live Voice’s plugin interface is translated into the following languages. This refers to the visible plugin UI—not speech-recognition or text-to-speech language support.
+
+- 🇺🇸 **English**
+- 🇧🇷 **Portuguese (Brazil)**
+- 🇪🇸 **Spanish**
+- 🇫🇷 **French**
+- 🇮🇳 **Hindi**
+- 🇨🇳 **Chinese**
+
+---
+
 ## 📚 Documentation
 
 Detailed guides for deep-diving into engines and configurations:
@@ -56,6 +69,7 @@ Detailed guides for deep-diving into engines and configurations:
 - 🗣️ **Spoken Commands:** Control the chat using phrases like *"send"*, *"mute"*, *"clear"*, and *"stop speaking"*.
 - 🧹 **Smart Code Filtering:** Automatically skips or summarizes large code blocks instead of reading syntax out loud.
 - 🏠 **Local-First & Private:** Audio runs locally on your machine (via Browser APIs, Apple MLX, or whisper.cpp); no external voice telemetry.
+- 🌐 **Remote-Ready Host Audio:** Qwen and macOS Say synthesize on the DSH host, then DSH delivers compact audio to your browser—so playback works over remote and LAN connections.
 
 ---
 

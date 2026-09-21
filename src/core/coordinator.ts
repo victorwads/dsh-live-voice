@@ -34,6 +34,9 @@ export class VoiceCoordinator {
     this.speechEpoch = 0;
     this.controlEpoch = 0;
     this.queue = [];
+    this.prefetchController = new AbortController();
+    this.prefetchItems = new Set();
+    this.activeSpeechItem = null;
     this.consumed = new Map();
     this.unfinished = new Set();
     this.suppressed = new Set();
@@ -110,7 +113,12 @@ export class VoiceCoordinator {
   }
   updateSettings(next) {
     if (this.disposed) return;
-    const settings = normalizeSettings({ ...this.snapshot.settings, ...next });
+    const previousSettings = this.snapshot.settings;
+    const settings = normalizeSettings({ ...previousSettings, ...next });
+    const speechPreparationChanged = ['engine', 'voice', 'lang', 'rate', 'outputDeviceId'].some(
+      (key) => Object.hasOwn(next, key) && settings[key] !== previousSettings[key],
+    );
+    if (speechPreparationChanged) this._cancelSpeechPrefetch();
     this.meter.deviceId = settings.inputDeviceId;
     Object.assign(this.recognition, {
       lang: settings.recognitionLang,
@@ -126,6 +134,7 @@ export class VoiceCoordinator {
     });
     if (settings.sendingMode === 'manual') this.cancelAutoSend();
     if (Object.hasOwn(next, 'announceAssistantMessages') && !settings.announceAssistantMessages) {
+      this._cancelSpeechPrefetch();
       this.queue = [];
       this.assistantSpeechNotBefore = 0;
       this._cancelAssistantSpeechTimer();
@@ -564,6 +573,44 @@ export class VoiceCoordinator {
     this.patch({ conversation: false });
     await Promise.all([this.stopListening(), this.stopSpeech(false)]);
   }
+  _cancelSpeechPrefetch() {
+    this.prefetchController.abort();
+    this.prefetchController = new AbortController();
+    for (const item of this.prefetchItems) {
+      item.prepared?.dispose?.();
+      item.prepared = null;
+      item.preparing = null;
+    }
+    this.prefetchItems.clear();
+  }
+
+  _prefetchSpeech() {
+    const engine = this.engines[this.snapshot.settings.engine];
+    if (typeof engine?.prepare !== 'function') return;
+    const options = {
+      voice: this.snapshot.settings.voice || undefined,
+      rate: this.snapshot.settings.rate,
+      lang: this.snapshot.settings.lang,
+      outputDeviceId: this.snapshot.settings.outputDeviceId,
+    };
+    for (const item of this.queue.slice(0, 3)) {
+      if (item.prepared || item.preparing) continue;
+      this.prefetchItems.add(item);
+      const signal = this.prefetchController.signal;
+      item.preparing = engine.prepare(item.text, { ...options, signal }).then((prepared) => {
+        item.preparing = null;
+        if (signal.aborted || !this.queue.includes(item)) {
+          prepared.dispose?.();
+          this.prefetchItems.delete(item);
+        } else item.prepared = prepared;
+        return prepared;
+      }).catch((error) => {
+        item.preparing = null;
+        if (!signal.aborted) item.prepareError = error;
+      });
+    }
+  }
+
   _syncSpeechSegments() {
     const speechSegmentsRemaining = this.queue.length + (this.snapshot.speaking ? 1 : 0);
     if (speechSegmentsRemaining !== this.snapshot.speechSegmentsRemaining)
@@ -583,6 +630,7 @@ export class VoiceCoordinator {
     this.interruptionPausedSpeech = false;
     const epoch = ++this.speechEpoch;
     ++this.controlEpoch;
+    this._cancelSpeechPrefetch();
     this._suppressPending();
     this.patch({ speaking: false, paused: false, activeMessageId: null });
     this._syncSpeechSegments();
@@ -617,6 +665,7 @@ export class VoiceCoordinator {
     const control = ++this.controlEpoch;
     try {
       const result = await this.engines[this.snapshot.settings.engine].pause();
+      if (result !== false) this._cancelSpeechPrefetch();
       if (
         epoch === this.speechEpoch &&
         control === this.controlEpoch &&
@@ -639,8 +688,10 @@ export class VoiceCoordinator {
       }
       if (epoch !== this.speechEpoch || control !== this.controlEpoch) return;
       const result = await this.engines[this.snapshot.settings.engine].resume();
-      if (epoch === this.speechEpoch && control === this.controlEpoch && result !== false)
+      if (epoch === this.speechEpoch && control === this.controlEpoch && result !== false) {
         this.patch({ paused: false });
+        this._prefetchSpeech();
+      }
     } catch (error) {
       if (epoch === this.speechEpoch) this.patch({ error: message(error) });
     }
@@ -659,6 +710,7 @@ export class VoiceCoordinator {
     const first = segments.shift();
     if (!first) return;
     this.queue.push(...segments.map((segment) => ({ text: segment, id: messageId, manual: true })));
+    this._prefetchSpeech();
     this._syncSpeechSegments();
     return this.play(first, messageId, true);
   }
@@ -666,6 +718,7 @@ export class VoiceCoordinator {
     if (this.disposed || !text.trim()) return;
     if (this.snapshot.speaking) {
       this.queue.push({ text, id: messageId, manual });
+      this._prefetchSpeech();
       this._syncSpeechSegments();
       return;
     }
@@ -689,11 +742,21 @@ export class VoiceCoordinator {
         if (this.inputReleaseError) throw this.inputReleaseError;
       }
       if (epoch !== this.speechEpoch || this.disposed) return;
-      await engine.speak(text, {
+      const queued = this.activeSpeechItem;
+      if (queued?.preparing) await queued.preparing;
+      if (epoch !== this.speechEpoch || this.disposed) return;
+      if (queued?.prepareError) throw queued.prepareError;
+      const options = {
         voice: this.snapshot.settings.voice || undefined,
         rate: this.snapshot.settings.rate,
         outputDeviceId: this.snapshot.settings.outputDeviceId,
-      });
+      };
+      if (queued?.prepared && typeof engine.playPrepared === 'function') {
+        const prepared = queued.prepared;
+        queued.prepared = null;
+        this.prefetchItems.delete(queued);
+        await engine.playPrepared(prepared, options);
+      } else await engine.speak(text, options);
     } catch (error) {
       if (epoch === this.speechEpoch) {
         failed = true;
@@ -704,7 +767,10 @@ export class VoiceCoordinator {
       if (epoch === this.speechEpoch && !this.disposed) {
         this.patch({ speaking: false, paused: false, activeMessageId: null });
         this._syncSpeechSegments();
-        if (!failed && this.queue.length) this._drain();
+        if (!failed && this.queue.length) {
+          this.assistantSpeechNotBefore = Date.now() + this.snapshot.settings.segmentGapMs;
+          this._drain();
+        }
         else if (this.snapshot.conversation && !this.snapshot.listening && !this.snapshot.starting)
           await this._startInput(true);
       }
@@ -737,7 +803,13 @@ export class VoiceCoordinator {
     this._cancelAssistantSpeechTimer();
     this.assistantSpeechNotBefore = 0;
     const next = this.queue.shift();
-    void this.play(next.text, next.id, next.manual === true);
+    this.activeSpeechItem = next;
+    this._prefetchSpeech();
+    void this.play(next.text, next.id, next.manual === true).finally(() => {
+      if (this.activeSpeechItem === next) this.activeSpeechItem = null;
+      next.prepared?.dispose?.();
+      this.prefetchItems.delete(next);
+    });
   }
   /** Baselines survive conversation toggles; cancelled message IDs remain suppressed. */
   observeMessage(id, text, { complete = false, baseline = false } = {}) {
@@ -775,6 +847,7 @@ export class VoiceCoordinator {
     this.consumed.set(id, offset + boundary);
     if (chunk) {
       this.queue.push({ text: chunk, id });
+      this._prefetchSpeech();
       this._syncSpeechSegments();
       this._drain();
     }

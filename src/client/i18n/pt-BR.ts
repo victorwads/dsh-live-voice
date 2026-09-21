@@ -175,6 +175,11 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.settings.title': 'Configurações do Live Voice',
   'dsh-live-voice.settings.whisper.hostHelp':
     'Configurações para todo o host. Apenas URLs HTTP loopback não autenticadas (localhost, 127.0.0.1, [::1]) são permitidas. Loopback refere-se ao host DSH, não a este navegador. Todas as verificações de integridade e requisições de áudio passam pelo backend autenticado.',
+  'dsh-live-voice.speak.agentContext.enabled': 'Ativar contexto de voz do agente',
+  'dsh-live-voice.speak.agentContext.enabledHelp': 'Quando ativado, o contexto abaixo informa ao agente que suas respostas serão faladas em voz alta.',
+  'dsh-live-voice.speak.agentContext.help': 'Esta instrução em inglês é enviada ao agente somente durante uma conversa por voz ativa com fala automática do assistente ativada.',
+  'dsh-live-voice.speak.agentContext.label': 'Contexto de voz do agente',
+  'dsh-live-voice.speak.agentContext.restore': 'Restaurar padrão',
   'dsh-live-voice.speak.autoPlayback.enabled':
     'Falar automaticamente novas mensagens do assistente',
   'dsh-live-voice.speak.autoPlayback.help':
@@ -193,7 +198,7 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.speak.browser.voice': 'Voz local do navegador',
   'dsh-live-voice.speak.engine.label': 'Mecanismo de fala',
   'dsh-live-voice.speak.engine.playbackHelp':
-    'A síntese Qwen é executada no host DSH e o WAV gerado é reproduzido neste navegador. macOS say toca no host; a fala do navegador toca neste dispositivo.',
+    'Qwen e macOS say sintetizam no host do DSH; o áudio AAC/M4A compacto é reproduzido neste navegador. A fala do navegador é sintetizada e reproduzida neste dispositivo.',
   'dsh-live-voice.speak.filters.code.enabled': 'Filtrar blocos de código Markdown antes de falar',
   'dsh-live-voice.speak.filters.code.maxLines':
     'Ler blocos de código até esta quantidade de linhas',
@@ -252,6 +257,8 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     'Depois que você parar de falar, a reprodução automática do assistente aguardará esse tempo de silêncio contínuo. Falar novamente reinicia a contagem.',
   'dsh-live-voice.speak.responseDelay.label': 'Atraso da resposta do assistente',
+  'dsh-live-voice.speak.segmentGap.help': 'Aguarde esta quantidade de milissegundos entre trechos falados consecutivos. O padrão é 200 ms.',
+  'dsh-live-voice.speak.segmentGap.label': 'Pausa entre trechos de fala',
   'dsh-live-voice.speak.status.paused': 'Fala pausada',
   'dsh-live-voice.speak.status.playing': 'Falando',
 };
