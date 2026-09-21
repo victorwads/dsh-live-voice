@@ -122,7 +122,17 @@ export function apply(ctx) {
         getDraft: () => entry.draft,
         submit: (mode = 'queue') => {
           const owner = [...entry.composers.values()].at(-1);
-          owner?.actions.submit?.(mode);
+          if (!owner) return;
+          if (mode === 'steer') {
+            // InputActions deliberately exposes no delivery-mode argument. Dispatch the
+            // DSH accelerated composer gesture instead: Ctrl/Cmd+Enter resolves to the
+            // opposite of the normal busy-enter policy, which is direct steering when
+            // the ordinary action queues. Never fall back to inputActions.submit() here:
+            // it would silently turn an explicit steer request into a queued message.
+            owner.submitAccelerated?.();
+            return;
+          }
+          owner.actions.submit?.();
         },
         handleQuestionResult: ({ final, interim }) => {
           const capture = entry.questionCapture;
@@ -315,7 +325,29 @@ export function apply(ctx) {
     React.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed) return;
       if (!input || typeof props.inputActions?.setDraft !== 'function') return;
-      entry.composers.set(token.current, { actions: props.inputActions });
+      entry.composers.set(token.current, {
+        actions: props.inputActions,
+        submitAccelerated: () => {
+          const active = document.activeElement;
+          const editor =
+            active?.nodeType === 1 && active.isContentEditable
+              ? active
+              : document.querySelector('[contenteditable="true"]');
+          if (!editor || editor.nodeType !== 1) return;
+          editor.focus();
+          const KeyboardEventCtor = editor.ownerDocument.defaultView?.KeyboardEvent;
+          if (!KeyboardEventCtor) return;
+          editor.dispatchEvent(
+            new KeyboardEventCtor('keydown', {
+              key: 'Enter',
+              code: 'Enter',
+              ctrlKey: true,
+              bubbles: true,
+              cancelable: true,
+            }),
+          );
+        },
+      });
       if (voiceModeActive && !entry.controller.getSnapshot().conversation)
         run(entry.controller, entry.controller.startConversation());
     }, [entry, input, props.inputActions]);

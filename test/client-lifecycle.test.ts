@@ -538,6 +538,28 @@ test('pagehide and plugin disposal invalidate pending starts and stale controlle
   assert.equal(f.store('a').listeners.size, 0);
 });
 
+test('steer delivery dispatches an accelerated composer gesture instead of normal submission', async (t) => {
+  const f = await fixture(t);
+  const calls = [];
+  const editor = document.createElement('div');
+  editor.setAttribute('contenteditable', 'true');
+  document.body.append(editor);
+  editor.addEventListener('keydown', (event) => calls.push([event.key, event.ctrlKey, event.metaKey]));
+  const actions = {
+    setDraft() {},
+    submit() {
+      calls.push(['normal-submit']);
+    },
+  };
+  await f.render(h(f.Buttons, f.props('a', actions)));
+  const controller = f.controllers[0];
+  controller.composer.submit('steer');
+  assert.deepEqual(calls, [['Enter', true, false]]);
+  controller.composer.submit('queue');
+  assert.deepEqual(calls, [['Enter', true, false], ['normal-submit']]);
+  editor.remove();
+});
+
 test('voice controls mount when DSH omits the legacy pending-interaction store', async (t) => {
   const f = await fixture(t, { pendingStore: false });
   await f.render(h(f.Buttons, f.props('a')));

@@ -101,14 +101,14 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.equal(badgeImages.length, 2);
     assert.equal(badgeImages[0].src, 'https://cdn.simpleicons.org/npm/white');
     assert.equal(badgeImages[0].alt, '');
-    assert.equal(badgeImages[0].parentElement.title, 'DSH Live Voice v0.2.3');
-    assert.equal(badgeImages[0].parentElement.textContent, 'v0.2.3');
+    assert.equal(badgeImages[0].parentElement.title, 'DSH Live Voice v0.2.4');
+    assert.equal(badgeImages[0].parentElement.textContent, 'v0.2.4');
     assert.equal(badgeImages[1].src, 'https://cdn.simpleicons.org/deepseek/white');
     assert.equal(badgeImages[1].alt, '');
     assert.equal(badgeImages[1].parentElement.title, 'Compatible with DSH v0.1.6-alpha.2');
     assert.equal(badgeImages[1].parentElement.textContent, 'v0.1.6-alpha.2');
     assert.equal(
-      versionBadges.querySelector('[aria-label="DSH Live Voice v0.2.3. Open releases"]').href,
+      versionBadges.querySelector('[aria-label="DSH Live Voice v0.2.4. Open releases"]').href,
       'https://github.com/victorwads/dsh-live-voice/releases',
     );
     assert.equal(

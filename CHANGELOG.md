@@ -2,6 +2,12 @@
 
 All notable changes to DSH Live Voice are documented in this file.
 
+## [0.2.4] - 2026-09-21
+
+### Bug Fixes
+
+- Make automatic Steer delivery use DSH's Ctrl/Cmd+Enter accelerated composer gesture instead of the public normal-submit action, so messages are sent to the running agent rather than silently added to its queue. Add a lifecycle regression for the gesture.
+
 ## [0.2.3] - 2026-09-21
 
 ### Features
@@ -125,7 +131,8 @@ This release expands conversation control, audio routing, speech filtering, and 
 - Support browser speech synthesis and native macOS `say` output.
 - Add Live Voice controls, Whisper settings, build and browser-preview scripts, and an initial test suite.
 
-[0.2.3]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.2...HEAD
+[0.2.4]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/victorwads/dsh-live-voice/compare/v0.1.0...v0.2.0
