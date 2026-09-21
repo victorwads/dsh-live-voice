@@ -186,6 +186,22 @@ Pausing playback need not stop text generation. If the user introduces a new req
 
 For spoken streaming, collect suitable text segments, synthesize them, and play them in order. Cancellation must invalidate pending work so delayed results from an old response cannot start playing later. Sentence boundaries, latency, buffering limits, and error recovery need evaluation.
 
+### Dual-audio meeting transcription (planned)
+
+Add an opt-in meeting mode with two independent audio-input pipelines. The primary pipeline remains the user’s normal microphone and labels finalized transcription with **“Me:”**. A secondary pipeline captures meeting participants from a user-selected shared-screen/system-audio stream, rather than assuming a second physical microphone, and labels finalized transcription with **“Them:”**. Each pipeline needs independent capture permission, meter/waveform, recognition work, segmentation, pending/error state, and cancellation; it must be possible to run either one alone or both together.
+
+Meeting mode appends final segments from both pipelines to the current composer in arrival order, preserving the speaker labels so the editable draft becomes a live meeting transcript: “Me: …”, “Them: …”, and so on. It must not use voice commands or automatically send messages. The user remains free to edit the composer and manually submit any selected portion as a question to the agent, retaining the preceding live transcript as context for code reviews or other meeting discussion.
+
+The design must account for browser screen/system-audio capture support, permission and device-selection UX, concurrent transcription ordering, overlap/echo between microphone and shared audio, and cleanup when either capture ends. It must never imply that system-audio capture is universally supported or silently capture meeting audio.
+
+#### Expected structural change
+
+This is a substantial input-flow refactor, not a complete plugin rewrite. The current session coordinator owns one microphone meter, one recognition instance, and one incremental composer transcript. Refactor it so the coordinator continues to own the conversation, composer integration, and shared policies, while reusable input pipelines own capture, meter/waveform, recognition, segmentation, pending work, errors, cancellation, and final-segment delivery.
+
+The target shape is one VoiceCoordinator with an independent primary microphone pipeline and an optional shared-system-audio pipeline. The existing microphone adapter must accept an externally supplied MediaStream as well as getUserMedia(), because system audio originates through explicit getDisplayMedia() sharing. Composer delivery must serialize concurrent final segments and use an explicit ordering policy, likely segment-end time plus a small buffer, because recognition completion order can differ from speaking order.
+
+The shared-audio pipeline must remain policy-isolated: it does not execute voice commands, trigger automatic delivery, or participate in microphone/TTS interruption as though meeting participants were the user. Initial implementation need not change the TTS queue; the meeting transcript stays manually editable and manually submitted. The planned backend-owned automatic-speech queue is complementary and will later make cross-chat output state independent from mounted frontend sessions.
+
 ### Settings changes should not restart voice (planned bug fix)
 
 Changing a Live Voice preference currently stops active voice resources and makes the plugin behave as if it were restarting, even for values that can be applied live. Settings updates must be classified by effect: presentation and policy values should update immediately without interrupting capture, playback, queued speech, or the current conversation; engine, device, and other resource-boundary changes may require a targeted replacement only when necessary. The interface must state when a particular change will take effect on the next operation rather than silently resetting the whole plugin.

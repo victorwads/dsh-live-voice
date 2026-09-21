@@ -71,6 +71,12 @@ Detailed guides for deep-diving into engines and configurations:
 - 🏠 **Local-First & Private:** Audio runs locally on your machine (via Browser APIs, Apple MLX, or whisper.cpp); no external voice telemetry.
 - 🌐 **Remote-Ready Host Audio:** Qwen and macOS Say synthesize on the DSH host, then DSH delivers compact audio to your browser—so playback works over remote and LAN connections.
 
+### 🧑‍💻 Coming Soon: Meeting Mode
+
+**Meeting Mode** is a planned differentiator for collaborative coding conversations. It will keep two independent live transcription streams in the DSH composer: your microphone as **“Me:”**, and meeting participants from an explicitly shared screen/system-audio stream as **“Them:”**. This creates an editable, real-time record of a code review or technical discussion, so you can manually ask DSH a question with the meeting context already in the composer.
+
+It will never automatically send the transcript or use meeting audio for voice commands. Sharing system audio will always require explicit browser permission and depends on browser and operating-system support.
+
 ---
 
 ## 🤝 Acknowledgments & Community
