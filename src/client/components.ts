@@ -907,7 +907,7 @@ export function createComponents(React, translate = createFallbackTranslator(), 
               min: 0,
               max: 2000,
               step: 50,
-              value: settings.segmentGapMs ?? 200,
+              value: settings.segmentGapMs ?? 400,
               onChange: (event) => {
                 const segmentGapMs = Number(event.target.value);
                 if (Number.isFinite(segmentGapMs) && segmentGapMs >= 0 && segmentGapMs <= 2000)

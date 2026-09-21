@@ -238,7 +238,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     '你停止说话后，助手会等待此时长的连续静音，然后自动播放语音。再次说话会重新开始等待。',
   'dsh-live-voice.speak.responseDelay.label': '助手响应延迟',
-  'dsh-live-voice.speak.segmentGap.help': '在连续语音片段之间等待此毫秒数。默认值为 200 ms。',
+  'dsh-live-voice.speak.segmentGap.help': '在连续语音片段之间等待此毫秒数。默认值为 400 ms。',
   'dsh-live-voice.speak.segmentGap.label': '语音片段之间的停顿',
   'dsh-live-voice.speak.status.paused': '语音已暂停',
   'dsh-live-voice.speak.status.playing': '正在朗读',

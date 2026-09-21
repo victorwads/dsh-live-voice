@@ -251,7 +251,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     'आपके बोलना बंद करने के बाद सहायक का स्वचालित प्लेबैक इतनी देर तक लगातार मौन रहने की प्रतीक्षा करता है। दोबारा बोलने पर प्रतीक्षा फिर से शुरू होती है।',
   'dsh-live-voice.speak.responseDelay.label': 'सहायक के जवाब का विलंब',
-  'dsh-live-voice.speak.segmentGap.help': 'लगातार बोले गए हिस्सों के बीच इतने मिलीसेकंड रुकें। डिफ़ॉल्ट 200 ms है।',
+  'dsh-live-voice.speak.segmentGap.help': 'लगातार बोले गए हिस्सों के बीच इतने मिलीसेकंड रुकें। डिफ़ॉल्ट 400 ms है।',
   'dsh-live-voice.speak.segmentGap.label': 'बोले गए हिस्सों के बीच विराम',
   'dsh-live-voice.speak.status.paused': 'वाचन ठहरा हुआ है',
   'dsh-live-voice.speak.status.playing': 'पढ़कर सुनाया जा रहा है',

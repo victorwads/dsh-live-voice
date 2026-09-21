@@ -246,7 +246,7 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     'After you stop speaking, automatic assistant playback waits for this much continuous silence. Speaking again restarts the wait.',
   'dsh-live-voice.speak.responseDelay.label': 'Assistant response delay',
-  'dsh-live-voice.speak.segmentGap.help': 'Wait this many milliseconds between consecutive spoken segments. 200 ms is the default.',
+  'dsh-live-voice.speak.segmentGap.help': 'Wait this many milliseconds between consecutive spoken segments. 400 ms is the default.',
   'dsh-live-voice.speak.segmentGap.label': 'Pause between speech segments',
   'dsh-live-voice.speak.status.paused': 'Speech paused',
   'dsh-live-voice.speak.status.playing': 'Speaking',

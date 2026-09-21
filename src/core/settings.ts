@@ -70,7 +70,7 @@ export const defaultSettings = Object.freeze({
   outputCodeMaxLines: 5,
   outputCodeNotice: 'Look the code on out conversation',
   rate: 1,
-  segmentGapMs: 200,
+  segmentGapMs: 400,
 });
 const normalizeCommandPhrases = (value, fallback) =>
   typeof value === 'string' && value.length <= 1000 && !value.includes('\0')
@@ -245,6 +245,6 @@ export function normalizeSettings(value) {
     segmentGapMs:
       Number.isFinite(source.segmentGapMs) && source.segmentGapMs >= 0 && source.segmentGapMs <= 2000
         ? Math.round(source.segmentGapMs)
-        : 200,
+        : 400,
   };
 }

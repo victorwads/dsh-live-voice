@@ -267,7 +267,7 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     'Cuando dejas de hablar, la reproducción automática del asistente espera este intervalo de silencio continuo. Si vuelves a hablar, la espera se reinicia.',
   'dsh-live-voice.speak.responseDelay.label': 'Demora de respuesta del asistente',
-  'dsh-live-voice.speak.segmentGap.help': 'Espera esta cantidad de milisegundos entre segmentos hablados consecutivos. El valor predeterminado es 200 ms.',
+  'dsh-live-voice.speak.segmentGap.help': 'Espera esta cantidad de milisegundos entre segmentos hablados consecutivos. El valor predeterminado es 400 ms.',
   'dsh-live-voice.speak.segmentGap.label': 'Pausa entre segmentos de voz',
   'dsh-live-voice.speak.status.paused': 'Lectura en pausa',
   'dsh-live-voice.speak.status.playing': 'Hablando',

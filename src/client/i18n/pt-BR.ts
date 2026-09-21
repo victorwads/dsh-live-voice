@@ -258,7 +258,7 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     'Depois que você parar de falar, a reprodução automática do assistente aguardará esse tempo de silêncio contínuo. Falar novamente reinicia a contagem.',
   'dsh-live-voice.speak.responseDelay.label': 'Atraso da resposta do assistente',
-  'dsh-live-voice.speak.segmentGap.help': 'Aguarde esta quantidade de milissegundos entre trechos falados consecutivos. O padrão é 200 ms.',
+  'dsh-live-voice.speak.segmentGap.help': 'Aguarde esta quantidade de milissegundos entre trechos falados consecutivos. O padrão é 400 ms.',
   'dsh-live-voice.speak.segmentGap.label': 'Pausa entre trechos de fala',
   'dsh-live-voice.speak.status.paused': 'Fala pausada',
   'dsh-live-voice.speak.status.playing': 'Falando',
