@@ -231,6 +231,7 @@ const es: LiveVoiceTranslation = {
     'DSH Live Voice. La salida de voz seleccionada funciona.',
   'dsh-live-voice.speak.output.testing': 'Probando la voz…',
   'dsh-live-voice.speak.playback.message': 'Leer el mensaje en voz alta',
+  'dsh-live-voice.speak.playback.next': 'Saltar al siguiente segmento de voz',
   'dsh-live-voice.speak.playback.pause': 'Pausar la lectura en voz alta',
   'dsh-live-voice.speak.playback.resume': 'Reanudar la lectura en voz alta',
   'dsh-live-voice.speak.playback.stop': 'Detener la lectura en voz alta',

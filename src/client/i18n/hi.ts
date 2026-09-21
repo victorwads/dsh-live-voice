@@ -216,6 +216,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.speak.output.testPhrase': 'DSH Live Voice। चुना गया वाक् आउटपुट काम कर रहा है।',
   'dsh-live-voice.speak.output.testing': 'वाचन का परीक्षण हो रहा है…',
   'dsh-live-voice.speak.playback.message': 'संदेश पढ़कर सुनाएँ',
+  'dsh-live-voice.speak.playback.next': 'अगले वाणी खंड पर जाएँ',
   'dsh-live-voice.speak.playback.pause': 'वाचन ठहराएँ',
   'dsh-live-voice.speak.playback.resume': 'वाचन फिर शुरू करें',
   'dsh-live-voice.speak.playback.stop': 'वाचन बंद करें',

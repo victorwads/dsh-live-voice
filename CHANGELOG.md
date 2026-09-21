@@ -10,6 +10,7 @@ All notable changes to DSH Live Voice are documented in this file.
 - Add an English Live Voice context editor and Restore default action to Speaking settings; interface labels and help remain localized.
 - Standardize host speech as compact AAC/M4A played in the browser: macOS `say` and Qwen synthesize internally to WAV, the DSH host transcodes it before transport, and up to three upcoming segments are synthesized ahead to reduce gaps.
 - Add a configurable pause between consecutive spoken segments, with a 200 ms default for more natural pacing.
+- Add a Next speech control that skips only the current spoken segment, immediately starts the next queued segment, and keeps queued and incoming streaming speech intact.
 
 ### Bug Fixes
 

@@ -73,6 +73,7 @@ export function createComponents(React, translate = createFallbackTranslator(), 
       stop: 'M6 6h12v12H6z',
       pause: 'M8 5v14M16 5v14',
       play: 'M7 4l13 8-13 8z',
+      skipNext: 'M5 5l10 7-10 7V5M19 5v14',
       send: 'M3 11.5L21 3l-8.5 18-2-7.5L3 11.5zm7.5 2L21 3',
       queue: 'M5 6h14M5 12h10M5 18h6M18 15v6M15 18h6',
       speakerOff: 'M3 9h4l6-5v16l-6-5H3V9M17 9l5 6M22 9l-5 6',
@@ -423,10 +424,20 @@ export function createComponents(React, translate = createFallbackTranslator(), 
               onClick: () => invoke(state.muted ? 'resumeListeningInput' : 'muteListening'),
             })
           : null,
-        state.speaking && !state.paused && state.capabilities[state.settings.engine]?.pause
+        // Keep the playback controls mounted during the configured gap between
+        // queued segments; only Pause is unavailable when no audio is active.
+        state.speechSegmentsRemaining > 1
+          ? h(Button, {
+              label: 'dsh-live-voice.speak.playback.next',
+              icon: 'skipNext',
+              onClick: () => invoke('skipSpeechSegment'),
+            })
+          : null,
+        state.speechSegmentsRemaining > 0 && state.capabilities[state.settings.engine]?.pause
           ? h(Button, {
               label: 'dsh-live-voice.speak.playback.pause',
               icon: 'pause',
+              disabled: !state.speaking || state.paused,
               onClick: () => invoke('pauseSpeech'),
             })
           : null,
@@ -437,7 +448,7 @@ export function createComponents(React, translate = createFallbackTranslator(), 
               onClick: () => invoke('resumeSpeech'),
             })
           : null,
-        state.speaking || state.paused
+        state.speechSegmentsRemaining > 0
           ? h(Button, {
               label: 'dsh-live-voice.speak.playback.stopAll',
               icon: 'stop',

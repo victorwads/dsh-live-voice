@@ -666,6 +666,44 @@ export class VoiceCoordinator {
     )
       await this._startInput(true);
   }
+  async skipSpeechSegment() {
+    // Unlike Stop, Next discards only the active segment. Queued and future
+    // streaming segments remain eligible for playback.
+    if (this.disposed || this.queue.length === 0) return;
+    // During the intentional inter-segment gap there is no active audio. In
+    // that case Next discards the imminent segment and immediately drains the
+    // following one, so the persistent button remains useful.
+    if (!this.snapshot.speaking && !this.snapshot.paused) {
+      const skipped = this.queue.shift();
+      skipped?.prepared?.dispose?.();
+      this.prefetchItems.delete(skipped);
+      this._cancelAssistantSpeechTimer();
+      this.assistantSpeechNotBefore = 0;
+      this._syncSpeechSegments();
+      this._prefetchSpeech();
+      this._drain();
+      return;
+    }
+    const epoch = ++this.speechEpoch;
+    ++this.controlEpoch;
+    this._cancelAssistantSpeechTimer();
+    this.assistantSpeechNotBefore = 0;
+    this._cancelSpeechPrefetch();
+    this.patch({ speaking: false, paused: false, activeMessageId: null });
+    this._syncSpeechSegments();
+    const stopped = this.speechBarrier.then(() =>
+      Promise.resolve().then(() => this.engines[this.snapshot.settings.engine]?.stop()),
+    );
+    this.speechBarrier = stopped.catch(() => {});
+    try {
+      await stopped;
+    } catch (error) {
+      if (epoch === this.speechEpoch) this.patch({ error: message(error) });
+      return;
+    }
+    if (epoch !== this.speechEpoch || this.disposed) return;
+    this._drain();
+  }
   async pauseSpeech() {
     if (this.disposed || !this.snapshot.speaking || this.snapshot.paused) return;
     const epoch = this.speechEpoch;

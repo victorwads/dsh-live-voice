@@ -222,6 +222,7 @@ const ptBR: LiveVoiceTranslation = {
     'DSH Live Voice. A saída de fala selecionada está funcionando.',
   'dsh-live-voice.speak.output.testing': 'Testando fala…',
   'dsh-live-voice.speak.playback.message': 'Falar mensagem',
+  'dsh-live-voice.speak.playback.next': 'Pular para o próximo trecho de fala',
   'dsh-live-voice.speak.playback.pause': 'Pausar fala',
   'dsh-live-voice.speak.playback.resume': 'Retomar fala',
   'dsh-live-voice.speak.playback.stop': 'Parar de falar',

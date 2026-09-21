@@ -204,6 +204,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.speak.output.testPhrase': 'DSH Live Voice。所选语音输出工作正常。',
   'dsh-live-voice.speak.output.testing': '正在测试语音…',
   'dsh-live-voice.speak.playback.message': '朗读消息',
+  'dsh-live-voice.speak.playback.next': '跳至下一语音片段',
   'dsh-live-voice.speak.playback.pause': '暂停朗读',
   'dsh-live-voice.speak.playback.resume': '恢复朗读',
   'dsh-live-voice.speak.playback.stop': '停止朗读',

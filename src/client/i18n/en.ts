@@ -212,6 +212,7 @@ const en: LiveVoiceTranslation = {
     'DSH Live Voice. The selected speech output is working.',
   'dsh-live-voice.speak.output.testing': 'Testing speech…',
   'dsh-live-voice.speak.playback.message': 'Speak message',
+  'dsh-live-voice.speak.playback.next': 'Skip to next speech segment',
   'dsh-live-voice.speak.playback.pause': 'Pause speech',
   'dsh-live-voice.speak.playback.resume': 'Resume speech',
   'dsh-live-voice.speak.playback.stop': 'Stop speaking',

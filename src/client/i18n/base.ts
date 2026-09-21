@@ -177,6 +177,7 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.speak.output.testPhrase': string;
   'dsh-live-voice.speak.output.testing': string;
   'dsh-live-voice.speak.playback.message': string;
+  'dsh-live-voice.speak.playback.next': string;
   'dsh-live-voice.speak.playback.pause': string;
   'dsh-live-voice.speak.playback.resume': string;
   'dsh-live-voice.speak.playback.stop': string;

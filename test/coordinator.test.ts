@@ -706,6 +706,72 @@ test('pausing host playback discards prefetched audio and resume refills the win
   await f.coordinator.stopSpeech(false);
 });
 
+test('next speech segment stops only the active item and immediately drains the preserved queue', async () => {
+  const f = fixture({ mode: 'headphones', segmentGapMs: 0 });
+  await f.coordinator.startConversation();
+  f.coordinator.observeMessage('first', 'First.', { complete: true });
+  await turn();
+  f.coordinator.observeMessage('second', 'Second.', { complete: true });
+  f.coordinator.observeMessage('third', 'Third.', { complete: true });
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 3);
+
+  await f.coordinator.skipSpeechSegment();
+  await turn();
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 2);
+  assert.deepEqual(
+    f.spoken.map((item) => item.text),
+    ['First.', 'Second.'],
+    'Next begins the queued item without a segment gap',
+  );
+  f.spoken[1].resolve();
+  await turn();
+  assert.deepEqual(f.spoken.map((item) => item.text), ['First.', 'Second.', 'Third.']);
+  f.spoken[2].resolve();
+  await turn();
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 0);
+  await f.coordinator.dispose();
+});
+
+test('next preserves incoming streaming speech after it skips the active segment', async () => {
+  const f = fixture({ mode: 'headphones' });
+  await f.coordinator.startConversation();
+  f.coordinator.observeMessage('first', 'First.\n');
+  await turn();
+  f.coordinator.observeMessage('second', 'Second.\n');
+  await f.coordinator.skipSpeechSegment();
+  f.coordinator.observeMessage('third', 'Third.\n');
+  await turn();
+  assert.deepEqual(f.spoken.map((item) => item.text), ['First.', 'Second.']);
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 2);
+  f.spoken[1].resolve();
+  await turn();
+  assert.deepEqual(f.spoken.map((item) => item.text), ['First.', 'Second.', 'Third.']);
+  f.spoken[2].resolve();
+  await turn();
+  await f.coordinator.dispose();
+});
+
+test('next skips the imminent segment during a queued speech gap', async () => {
+  const f = fixture({ mode: 'headphones', segmentGapMs: 1000 });
+  await f.coordinator.startConversation();
+  f.coordinator.observeMessage('first', 'First.', { complete: true });
+  await turn();
+  f.coordinator.observeMessage('second', 'Second.', { complete: true });
+  f.coordinator.observeMessage('third', 'Third.', { complete: true });
+  f.spoken[0].resolve();
+  await turn();
+  assert.equal(f.coordinator.snapshot.speaking, false);
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 2);
+
+  await f.coordinator.skipSpeechSegment();
+  await turn();
+  assert.deepEqual(f.spoken.map((item) => item.text), ['First.', 'Third.']);
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 1);
+  f.spoken[1].resolve();
+  await turn();
+  await f.coordinator.dispose();
+});
+
 test('speech queue waits for the configured gap before its next segment', async () => {
   const f = fixture({ segmentGapMs: 40 });
   f.coordinator.patch({ conversation: true });

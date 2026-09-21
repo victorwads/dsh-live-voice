@@ -59,6 +59,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     startConversation: () => calls.push('conversation'),
     endConversation: () => calls.push('end'),
     stopSpeech: () => calls.push('stop'),
+    skipSpeechSegment: () => calls.push('next'),
     resumeSpeech: () => calls.push('resume'),
     speak: (text) => calls.push(['speak', text]),
     updateSettings: (value) => {
@@ -311,10 +312,18 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.equal(assistantSpeechToggle.getAttribute('aria-checked'), 'false');
     assert.equal(assistantSpeechToggle.textContent, 'OFF');
     await act(async () => {
-      state = { ...state, speaking: true, paused: true };
+      state = { ...state, speaking: true, paused: true, speechSegmentsRemaining: 2 };
       callbacks.forEach((cb) => cb());
     });
+    await act(async () => click('Skip to next speech segment'));
     await act(async () => click('Resume speech'));
+    await act(async () => {
+      state = { ...state, speaking: false, paused: false, speechSegmentsRemaining: 2 };
+      callbacks.forEach((cb) => cb());
+    });
+    assert.ok(document.querySelector('[aria-label="Skip to next speech segment"]'));
+    assert.ok(document.querySelector('[aria-label="Stop all speech"]'));
+    assert.equal(document.querySelector('[aria-label="Pause speech"]').disabled, true);
     await act(async () => click('Stop all speech'));
     await act(async () => click('End voice conversation'));
     assert.deepEqual(
@@ -328,6 +337,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
         'settings',
         'settings',
         'settings',
+        'next',
         'resume',
         'stop',
         'end',
