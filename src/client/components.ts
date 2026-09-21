@@ -2,6 +2,17 @@
 import { createWhisperSettings } from './whisper-settings.ts';
 import { createQwenSettings } from './qwen-settings.ts';
 import { qwenVoices, usesPluginVoiceDetection, voiceDetectionPresets } from '../core/settings.ts';
+import {
+  checkLatestRelease,
+  CURRENT_VERSION,
+  DSH_BADGE_URL,
+  hasNewerRelease,
+  LIVE_VOICE_BADGE_URL,
+  RELEASES_URL,
+  REPOSITORY_URL,
+  TESTED_DSH_RELEASE_URL,
+  TESTED_DSH_VERSION,
+} from './releases.ts';
 
 // UI only: the controller owns capture, recognition, playback and policy.
 export function createComponents(React) {
@@ -383,6 +394,17 @@ export function createComponents(React) {
     const settings = state.settings || {};
     const capabilities = state.capabilities || {};
     const tabsId = React.useId();
+    const [latestRelease, setLatestRelease] = React.useState(null);
+    React.useEffect(() => {
+      let active = true;
+      void checkLatestRelease().then((result) => {
+        if (active) setLatestRelease(result.release);
+      });
+      return () => {
+        active = false;
+      };
+    }, []);
+    const updateAvailable = hasNewerRelease(latestRelease);
     const tabs = [
       { id: 'conversation', label: 'Conversation' },
       { id: 'speech', label: 'Speech' },
@@ -483,7 +505,73 @@ export function createComponents(React) {
     return h(
       'section',
       { className: 'dlv-settings', 'aria-label': 'Live Voice settings' },
-      h('h3', null, 'Live Voice'),
+      h(
+        'div',
+        { className: 'dlv-settings-heading' },
+        h('h3', null, 'Live Voice'),
+        h(
+          'div',
+          { className: 'dlv-version-badges', 'aria-label': 'Version information' },
+          h(
+            'a',
+            {
+              className: 'dlv-shields-badge',
+              href: RELEASES_URL,
+              target: '_blank',
+              rel: 'noreferrer',
+              'aria-label': `DSH Live Voice v${CURRENT_VERSION}. Open releases`,
+              title: `DSH Live Voice v${CURRENT_VERSION}`,
+            },
+            h('img', { src: LIVE_VOICE_BADGE_URL, alt: '' }),
+            h('span', null, `v${CURRENT_VERSION}`),
+          ),
+          h(
+            'a',
+            {
+              className: 'dlv-shields-badge',
+              href: TESTED_DSH_RELEASE_URL,
+              target: '_blank',
+              rel: 'noreferrer',
+              'aria-label': `Compatible with DSH v${TESTED_DSH_VERSION}. Open release`,
+              title: `Compatible with DSH v${TESTED_DSH_VERSION}`,
+            },
+            h('img', { src: DSH_BADGE_URL, alt: '' }),
+            h('span', null, `v${TESTED_DSH_VERSION}`),
+          ),
+        ),
+        h('span', { className: 'dlv-heading-divider', 'aria-hidden': true }),
+        updateAvailable
+          ? h(
+              'a',
+              {
+                className: 'dlv-version-badge dlv-update-badge',
+                href: latestRelease.url,
+                target: '_blank',
+                rel: 'noreferrer',
+                'aria-label': `Update available: ${latestRelease.tag}. Open release`,
+                title: `Update available: ${latestRelease.tag}`,
+              },
+              h('span', { className: 'dlv-update-icon', 'aria-hidden': true }, '↑'),
+              'Update available',
+            )
+          : null,
+        updateAvailable
+          ? h('span', { className: 'dlv-heading-divider', 'aria-hidden': true })
+          : null,
+        h(
+          'a',
+          {
+            className: 'dlv-version-badge dlv-star-badge',
+            href: REPOSITORY_URL,
+            target: '_blank',
+            rel: 'noreferrer',
+            'aria-label': 'Star DSH Live Voice on GitHub',
+            title: 'Star DSH Live Voice on GitHub',
+          },
+          h('span', { className: 'dlv-star-icon', 'aria-hidden': true }, '★'),
+          'Star Us on GitHub',
+        ),
+      ),
       onClose
         ? h(Button, { label: 'Close voice settings', icon: 'close', onClick: onClose })
         : null,
@@ -710,10 +798,31 @@ export function createComponents(React) {
                       : { recognitionEngine: event.target.value },
                   ),
               },
-              h('option', { value: 'qwen-http' }, 'Qwen3 ASR — local MLX server'),
-              h('option', { value: 'browser' }, 'Browser SpeechRecognition'),
-              h('option', { value: 'whisper-http' }, 'Whisper HTTP — DSH host'),
+              h('option', { value: 'browser' }, 'Browser SpeechRecognition — Default option'),
+              h('option', { value: 'qwen-http' }, 'Qwen3 ASR — HTTP API'),
+              h('option', { value: 'whisper-http' }, 'Whisper — HTTP API'),
+              h(
+                'optgroup',
+                { label: 'Coming Soon — vote on repo issues' },
+                h('option', { value: 'webgpu', disabled: true }, 'Browser WebGPU Inference — Soon'),
+                h(
+                  'option',
+                  { value: 'sherpa-onnx', disabled: true },
+                  'sherpa-onnx Streaming — Soon',
+                ),
+                h('option', { value: 'parakeet', disabled: true }, 'NVIDIA Parakeet — Soon'),
+                h('option', { value: 'voxtral', disabled: true }, 'Voxtral Realtime — Soon'),
+              ),
             ),
+          ),
+          h(
+            'small',
+            { className: 'dlv-recognition-engine-description' },
+            settings.recognitionEngine === 'qwen-http'
+              ? 'HTTP API at the configured base URL (default: http://127.0.0.1:8080/). Compatible with POST /v1/audio/transcriptions.'
+              : settings.recognitionEngine === 'whisper-http'
+                ? 'HTTP API at the configured DSH host URL (default: http://127.0.0.1:8080/inference). Audio uses the authenticated DSH host transcription route.'
+                : 'Uses the browser SpeechRecognition API. This is the default option.',
           ),
           field('Input device', 'inputDeviceId', deviceOptions('audioinput', 'Microphone')),
           settings.recognitionEngine === 'browser'

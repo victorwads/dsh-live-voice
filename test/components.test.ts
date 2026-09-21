@@ -12,6 +12,16 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
   globalThis.document = dom.window.document;
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   dom.window.HTMLCanvasElement.prototype.getContext = () => null;
+  dom.window.localStorage.setItem(
+    'dsh-live-voice.latest-release-check',
+    JSON.stringify({
+      checkedAt: Date.now(),
+      release: {
+        tag: 'v0.3.0',
+        url: 'https://github.com/victorwads/dsh-live-voice/releases/tag/v0.3.0',
+      },
+    }),
+  );
   const callbacks = new Set();
   const calls = [];
   let state = {
@@ -85,6 +95,41 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.deepEqual(calls, ['conversation']);
     assert.equal(document.querySelector('[aria-label="Voice controls"]'), null);
     assert.equal(document.querySelector('option[value=say]').disabled, true);
+    const versionBadges = document.querySelector('[aria-label="Version information"]');
+    assert.ok(versionBadges);
+    const badgeImages = [...versionBadges.querySelectorAll('.dlv-shields-badge img')];
+    assert.equal(badgeImages.length, 2);
+    assert.equal(badgeImages[0].src, 'https://cdn.simpleicons.org/npm/white');
+    assert.equal(badgeImages[0].alt, '');
+    assert.equal(badgeImages[0].parentElement.title, 'DSH Live Voice v0.2.3');
+    assert.equal(badgeImages[0].parentElement.textContent, 'v0.2.3');
+    assert.equal(badgeImages[1].src, 'https://cdn.simpleicons.org/deepseek/white');
+    assert.equal(badgeImages[1].alt, '');
+    assert.equal(badgeImages[1].parentElement.title, 'Compatible with DSH v0.1.6-alpha.2');
+    assert.equal(badgeImages[1].parentElement.textContent, 'v0.1.6-alpha.2');
+    assert.equal(
+      versionBadges.querySelector('[aria-label="DSH Live Voice v0.2.3. Open releases"]').href,
+      'https://github.com/victorwads/dsh-live-voice/releases',
+    );
+    assert.equal(
+      versionBadges.querySelector('[aria-label="Compatible with DSH v0.1.6-alpha.2. Open release"]')
+        .href,
+      'https://github.com/deepseek-ai/deepseek-harness/releases/tag/v0.1.6-alpha.2',
+    );
+    const starBadge = document.querySelector('[aria-label="Star DSH Live Voice on GitHub"]');
+    assert.equal(starBadge.textContent, '★Star Us on GitHub');
+    assert.equal(starBadge.parentElement.className, 'dlv-settings-heading');
+    assert.equal(starBadge.href, 'https://github.com/victorwads/dsh-live-voice');
+    const updateBadge = document.querySelector('.dlv-update-badge');
+    assert.equal(updateBadge.textContent, '↑Update available');
+    assert.equal(updateBadge.parentElement.className, 'dlv-settings-heading');
+    assert.equal(updateBadge.previousElementSibling.className, 'dlv-heading-divider');
+    assert.equal(updateBadge.nextElementSibling.className, 'dlv-heading-divider');
+    assert.equal(updateBadge.title, 'Update available: v0.3.0');
+    assert.equal(
+      updateBadge.href,
+      'https://github.com/victorwads/dsh-live-voice/releases/tag/v0.3.0',
+    );
     const tabs = [...document.querySelectorAll('[role=tab]')];
     assert.deepEqual(
       tabs.map((tab) => tab.textContent),
@@ -131,9 +176,29 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       ),
       true,
     );
+    const recognitionSelect = [...document.querySelectorAll('select')].find((select) =>
+      select.parentElement.textContent.includes('Recognition engine'),
+    );
+    assert.deepEqual(
+      [...recognitionSelect.options].map((option) => option.textContent),
+      [
+        'Browser SpeechRecognition — Default option',
+        'Qwen3 ASR — HTTP API',
+        'Whisper — HTTP API',
+        'Browser WebGPU Inference — Soon',
+        'sherpa-onnx Streaming — Soon',
+        'NVIDIA Parakeet — Soon',
+        'Voxtral Realtime — Soon',
+      ],
+    );
     assert.equal(
-      document.querySelector('option[value=whisper-http]').textContent,
-      'Whisper HTTP — DSH host',
+      recognitionSelect.querySelector('optgroup').label,
+      'Coming Soon — vote on repo issues',
+    );
+    assert.equal([...recognitionSelect.options].filter((option) => option.disabled).length, 4);
+    assert.match(
+      document.querySelector('.dlv-recognition-engine-description').textContent,
+      /browser SpeechRecognition API.*default option/i,
     );
     assert.equal(
       document.querySelector('[aria-label="Silence detection settings"]'),

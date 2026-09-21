@@ -1,7 +1,7 @@
 # DSH Live Voice
 
 [![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
-[![DSH tested](https://img.shields.io/badge/DSH%20tested-0.1.6--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/v0.1.6-alpha.2)
+[![DSH](https://img.shields.io/badge/DSH-v0.1.6--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/v0.1.6-alpha.2)
 
 **A local-first, hands-free voice assistant plugin for DeepSeek Harness (DSH). Speak, listen, answer prompts, and keep working without touching the computer.**
 

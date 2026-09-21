@@ -1,6 +1,12 @@
 // @ts-nocheck
 import { build, context, type BuildOptions } from 'esbuild';
-import { rm, mkdir } from 'node:fs/promises';
+import { rm, mkdir, readFile } from 'node:fs/promises';
+
+const packageMetadata = JSON.parse(await readFile('package.json', 'utf8'));
+const versionDefine = {
+  __DLV_VERSION__: JSON.stringify(packageMetadata.version),
+  __DLV_TESTED_DSH_VERSION__: JSON.stringify(packageMetadata.dshTestedVersion),
+};
 
 const client: BuildOptions = {
   entryPoints: ['src/client/index.ts'],
@@ -10,6 +16,7 @@ const client: BuildOptions = {
   platform: 'browser',
   target: ['es2022'],
   external: ['react', 'react-dom'],
+  define: versionDefine,
   banner: {
     js: 'window.__ModuleLoader__.load({id:"dsh-live-voice",factory:(require)=>{var module={exports:{}};var exports=module.exports;',
   },
@@ -35,6 +42,7 @@ const tests: BuildOptions = {
   platform: 'node',
   target: ['node22'],
   packages: 'external',
+  define: versionDefine,
   logLevel: 'silent',
 };
 const watch = process.argv.includes('--watch');

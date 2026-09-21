@@ -3,7 +3,7 @@
 ## Project identity and current stage
 
 - Project: **DSH Live Voice**; npm package: `dsh-live-voice`.
-- Current version: `0.0.1-developing`. The published artifact is a documentation placeholder; the local working tree now contains an initial plugin under active validation. See PLAN.md for progress and remaining checks.
+- Read the current project version from `package.json`; do not duplicate it in this instruction file. The local working tree contains a plugin under active validation. See PLAN.md for progress and remaining checks.
 - Read `README.md`, `HISTORY.md`, and `package.json` before making project changes.
 - Write repository documentation, code comments, and public package metadata in English. Keep the requested filename `HISTORY.md`.
 
@@ -40,6 +40,8 @@
 
 ## Packaging and authorization
 
+- Treat `package.json` as the single source of truth for version badges: `version` is the plugin version and `dshTestedVersion` is the tested DSH version. The build injects both values into the client bundle; do not hard-code them in source files.
+- When changing either version, update `package.json`, keep the DSH-tested badge/link in `README.md` aligned, run the build to regenerate `lib/client.js`, and review the generated diff. `npm version` may update the package version and lockfile, but the README badge remains a manual documentation update.
 - Keep public metadata and README aligned with the local-first focus.
 - Do not invent author or repository URLs.
 - Use explicit `--tag developing` for this prerelease. Never silently promote it to `latest`.

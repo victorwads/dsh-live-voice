@@ -2,6 +2,25 @@
 
 All notable changes to DSH Live Voice are documented in this file.
 
+## [0.2.3] - 2026-09-21
+
+### Features
+
+- Add an update notification in Live Voice settings when a newer GitHub release is available. The check runs at most once every 24 hours and the action opens the matching release.
+- Show the installed Live Voice version and the tested DSH version in the settings header.
+- Show Browser WebGPU Inference, sherpa-onnx Streaming, NVIDIA Parakeet, and Voxtral Realtime as disabled upcoming recognition engines.
+
+### Changes
+
+- Rename recognition-engine options to describe the API they use: Browser SpeechRecognition, Qwen3 ASR HTTP API, and Whisper HTTP API.
+- Show the expected HTTP URL or transcription route for the selected recognition engine.
+
+### Bug Fixes
+
+- Avoid repeated GitHub requests when the release API is unavailable by caching failed checks for the same 24-hour interval.
+- Handle release tags with a leading `v` and prerelease identifiers correctly when deciding whether an update is newer.
+- Ignore unexpected release URLs and fall back to the repository releases page.
+
 ## [0.2.2] - 2026-09-19
 
 ### Features
@@ -106,7 +125,8 @@ This release expands conversation control, audio routing, speech filtering, and 
 - Support browser speech synthesis and native macOS `say` output.
 - Add Live Voice controls, Whisper settings, build and browser-preview scripts, and an initial test suite.
 
-[0.2.2]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.1...HEAD
+[0.2.3]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/victorwads/dsh-live-voice/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/victorwads/dsh-live-voice/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/victorwads/dsh-live-voice/compare/v0.0.2...v0.1.0
