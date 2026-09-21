@@ -381,7 +381,7 @@ test('turning off automatic assistant speech discards delayed queued phrases', a
   f.coordinator.updateSettings({ announceAssistantMessages: false });
   assert.equal(f.coordinator.queue.length, 0);
   callbacks.onActivity(false);
-  await new Promise((resolve) => setTimeout(resolve, 1100));
+  await new Promise((resolve) => setTimeout(resolve, 2100));
   assert.deepEqual(f.spoken, []);
   await f.coordinator.dispose();
 });
@@ -573,6 +573,66 @@ test('a breathing pause cannot start queued assistant speech and renewed speech 
     f.spoken.map((item) => item.text),
     ['Wait for me.'],
   );
+  f.spoken[0].resolve();
+  await turn();
+  await f.coordinator.dispose();
+});
+
+test('speaker mode keeps queued assistant speech behind pending transcription', async () => {
+  const f = fixture({
+    mode: 'speaker',
+    sendingMode: 'queue',
+    autoSendDelaySeconds: 2,
+    assistantSpeechDelaySeconds: 0,
+  });
+  const submitted = [];
+  f.coordinator.composer.submit = () => submitted.push(f.draft());
+  await f.coordinator.startConversation();
+  const callbacks = f.sessions[0];
+  callbacks.onActivity(true);
+  callbacks.onProcessingChange({ pending: 1 });
+  callbacks.onResult({ final: 'complete my turn' });
+  callbacks.onActivity(false);
+  f.coordinator.observeMessage('a', 'Queued answer.', { complete: true });
+  await turn();
+
+  assert.equal(f.spoken.length, 0, 'playback must not stop recognition while STT is pending');
+  assert.equal(f.coordinator.snapshot.listening, true);
+  callbacks.onProcessingChange({ pending: 0 });
+  await new Promise((resolve) => setTimeout(resolve, 2100));
+  await turn();
+  assert.deepEqual(submitted, ['typed complete my turn']);
+  await new Promise((resolve) => setTimeout(resolve, 1100));
+  assert.equal(f.spoken.length, 1, 'playback starts only after automatic delivery');
+  assert.equal(f.spoken[0].text, 'Queued answer.');
+  f.spoken[0].resolve();
+  await turn();
+  await f.coordinator.dispose();
+});
+
+test('speaker mode preserves the auto-send countdown before assistant speech', async () => {
+  const f = fixture({
+    mode: 'speaker',
+    sendingMode: 'queue',
+    autoSendDelaySeconds: 2,
+    assistantSpeechDelaySeconds: 0,
+  });
+  const submitted = [];
+  f.coordinator.composer.submit = () => submitted.push(f.draft());
+  await f.coordinator.startConversation();
+  const callbacks = f.sessions[0];
+  callbacks.onResult({ final: 'send this first' });
+  f.coordinator.observeMessage('a', 'Do not overtake.', { complete: true });
+  await turn();
+
+  assert.ok(f.coordinator.snapshot.autoSendAt);
+  assert.equal(f.spoken.length, 0);
+  assert.equal(f.coordinator.snapshot.listening, true);
+  await new Promise((resolve) => setTimeout(resolve, 2100));
+  await turn();
+  assert.deepEqual(submitted, ['typed send this first']);
+  assert.equal(f.spoken.length, 1);
+  assert.equal(f.spoken[0].text, 'Do not overtake.');
   f.spoken[0].resolve();
   await turn();
   await f.coordinator.dispose();

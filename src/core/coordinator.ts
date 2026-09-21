@@ -533,7 +533,14 @@ export class VoiceCoordinator {
           if (stopAfter) void this.stopListening();
         } catch (error) {
           this.patch({ error: message(error) });
+        } finally {
+          // Automatic assistant speech shares the same turn boundary as delivery:
+          // it may proceed only after the transcript was submitted (or the
+          // countdown ended without a matching draft).
+          this._drain();
         }
+      } else {
+        this._drain();
       }
     }, delay);
   }
@@ -788,6 +795,8 @@ export class VoiceCoordinator {
       this.snapshot.speaking ||
       this.snapshot.recognizing ||
       this.snapshot.starting ||
+      (!this.queue[0]?.manual &&
+        (this.snapshot.pendingTranscriptions > 0 || this.snapshot.autoSendAt !== null)) ||
       !this.queue.length
     )
       return;

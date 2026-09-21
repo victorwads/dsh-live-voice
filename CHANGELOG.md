@@ -16,6 +16,7 @@ All notable changes to DSH Live Voice are documented in this file.
 - Preserve spaces and in-progress edits in text settings until the field loses focus, then normalize and save the value.
 - Make automatic Steer delivery use DSH's Ctrl/Cmd+Enter accelerated composer gesture instead of the public normal-submit action, so messages are sent to the running agent rather than silently added to its queue. Add a lifecycle regression for the gesture.
 - Deduplicate voice-context synchronization so the PUT request fires only when the payload actually changes, instead of on every coordinator state update.
+- Prevent automatic assistant speech in speaker mode from overtaking the user's turn. Playback now waits for all pending backend transcriptions to finish and for the automatic-send countdown and delivery attempt to complete, avoiding canceled recognition, discarded transcripts, and interrupted automatic delivery.
 
 ## [0.2.3] - 2026-09-21
 
