@@ -523,6 +523,33 @@ test('voice conversation mode follows the composer across chat switches until ex
   );
 });
 
+test('restarting voice conversation baselines visible assistant history before new speech arrives', async (t) => {
+  const f = await fixture(t);
+  const observed = [];
+  t.mock.method(VoiceCoordinator.prototype, 'observeMessage', function (...args) {
+    observed.push(args);
+  });
+  await f.render(h(f.Buttons, f.props('a')));
+  const c = f.controllers[0];
+  observed.length = 0;
+
+  await c.endConversation();
+  const store = f.store('a');
+  await act(async () => {
+    store.getSnapshot().nodes.get('one').data.blocks[0].text = 'Text streamed while voice was off.';
+    store.listeners.forEach((fn) => fn());
+  });
+  observed.length = 0;
+  await c.startConversation();
+
+  assert.deepEqual(
+    observed.map(([, , options]) => options),
+    [{ complete: true, baseline: true }],
+    'restarting voice consumes visible history instead of queuing it for playback',
+  );
+  f.close();
+});
+
 test('pagehide and plugin disposal invalidate pending starts and stale controllers', async (t) => {
   const f = await fixture(t);
   await f.render(h(f.Buttons, f.props('a')));

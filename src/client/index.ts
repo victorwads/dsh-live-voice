@@ -301,7 +301,13 @@ export function apply(ctx) {
       controller[method] = (...args) => {
         if (disposed || entry.closed || !entry.refs) return Promise.resolve();
         if (method !== 'speak' && !entry.composers.size) return Promise.resolve();
-        if (method === 'startConversation') voiceModeActive = true;
+        if (method === 'startConversation') {
+          // Re-entering voice mode must not replay visible history or the portion
+          // of a response that streamed while voice mode was off. Consume the
+          // current chat snapshot before admitting new assistant text.
+          refresh(true);
+          voiceModeActive = true;
+        }
         const request = ++entry.request;
         return ownership.run(
           controller,
