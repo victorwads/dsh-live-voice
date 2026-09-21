@@ -1,0 +1,13 @@
+{
+  "format": "wads-i18n-project-config",
+  "version": 1,
+  "levelCount": 0,
+  "levelNames": "",
+  "levelImports": [
+    { "path": "src/client" }
+  ],
+  "importAliases": {},
+  "translationsDirectory": "i18n",
+  "languageFileTemplate": "{language}.ts",
+  "languageReplacer": {}
+}

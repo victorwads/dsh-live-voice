@@ -1,7 +1,12 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { assistantMessages, addressedTurn, latestUserSequence, pendingQuestionSpeech } from '../src/client/chat.ts';
+import {
+  assistantMessages,
+  addressedTurn,
+  latestUserSequence,
+  pendingQuestionSpeech,
+} from '../src/client/chat.ts';
 test('pending question speech reads question prompts only', () => {
   assert.equal(
     pendingQuestionSpeech({

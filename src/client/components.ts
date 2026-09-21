@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { createWhisperSettings } from './whisper-settings.ts';
 import { createQwenSettings } from './qwen-settings.ts';
+import { createFallbackTranslator } from './locale.ts';
 import { qwenVoices, usesPluginVoiceDetection, voiceDetectionPresets } from '../core/settings.ts';
 import {
   checkLatestRelease,
@@ -15,11 +16,40 @@ import {
 } from './releases.ts';
 
 // UI only: the controller owns capture, recognition, playback and policy.
-export function createComponents(React) {
-  const h = React.createElement;
-  const WhisperSettings = createWhisperSettings(React);
-  const QwenSettings = createQwenSettings(React);
+const EMPTY_LOCALE_SNAPSHOT = Object.freeze({ revision: 0 });
+export function createComponents(React, translate = createFallbackTranslator(), locale) {
+  const t = (key, params) => translate(key, params);
+  const localize = (value) =>
+    typeof value === 'string' && value.startsWith('dsh-live-voice.') ? t(value) : value;
+  const h = (type, props, ...children) => {
+    const nextProps =
+      props && typeof props === 'object'
+        ? {
+            ...props,
+            ...(typeof props['aria-label'] === 'string'
+              ? { 'aria-label': localize(props['aria-label']) }
+              : {}),
+            ...(typeof props.title === 'string' ? { title: localize(props.title) } : {}),
+            ...(typeof props.label === 'string' ? { label: localize(props.label) } : {}),
+            ...(typeof props.visibleLabel === 'string'
+              ? { visibleLabel: localize(props.visibleLabel) }
+              : {}),
+          }
+        : props;
+    return React.createElement(type, nextProps, ...children.map(localize));
+  };
+  const WhisperSettings = createWhisperSettings(React, t);
+  const QwenSettings = createQwenSettings(React, t);
   function useController(controller) {
+    const localeSubscribe = React.useCallback(
+      (listener) => locale?.subscribe?.(listener) || (() => {}),
+      [],
+    );
+    const localeSnapshot = React.useCallback(
+      () => locale?.getSnapshot?.() || EMPTY_LOCALE_SNAPSHOT,
+      [],
+    );
+    React.useSyncExternalStore(localeSubscribe, localeSnapshot, localeSnapshot);
     const subscribe = React.useCallback((listener) => controller.subscribe(listener), [controller]);
     const read = React.useCallback(() => controller.getSnapshot(), [controller]);
     return React.useSyncExternalStore(subscribe, read, read);
@@ -103,8 +133,12 @@ export function createComponents(React) {
           onDismiss
             ? h(
                 'button',
-                { type: 'button', 'aria-label': 'Dismiss voice error', onClick: onDismiss },
-                'Dismiss',
+                {
+                  type: 'button',
+                  'aria-label': 'dsh-live-voice.commons.dismissError',
+                  onClick: onDismiss,
+                },
+                'dsh-live-voice.commons.dismiss',
               )
             : null,
         )
@@ -127,10 +161,10 @@ export function createComponents(React) {
         className: 'dlv-mic',
         icon: 'mic',
         label: pending
-          ? 'Checking microphone availability'
+          ? 'dsh-live-voice.recognition.microphone.checking'
           : unavailable
-            ? reason || 'Speech recognition unavailable'
-            : 'Start voice conversation',
+            ? reason || 'dsh-live-voice.recognition.status.unavailable'
+            : 'dsh-live-voice.commons.conversation.start',
         disabled: pending,
         onClick: () => (unavailable ? invoke('explainRecognition') : invoke('startConversation')),
       }),
@@ -229,24 +263,24 @@ export function createComponents(React) {
       : null;
     const status =
       state.answeringQuestion && state.recognizing
-        ? 'Recognizing answer…'
+        ? 'dsh-live-voice.recognition.status.answer'
         : state.answeringQuestion && state.listening
-          ? 'Listening for your answer…'
+          ? 'dsh-live-voice.recognition.status.awaitingAnswer'
           : remaining
-            ? `Sending in ${remaining}…`
+            ? t('dsh-live-voice.settings.autoSend.countdown', { remaining })
             : state.starting
-              ? 'Starting microphone…'
+              ? 'dsh-live-voice.recognition.microphone.starting'
               : state.paused
-                ? 'Speech paused'
+                ? 'dsh-live-voice.speak.status.paused'
                 : state.speaking
-                  ? 'Speaking'
+                  ? 'dsh-live-voice.speak.status.playing'
                   : state.recognizing
-                    ? 'Recognizing speech…'
+                    ? 'dsh-live-voice.recognition.status.processing'
                     : state.listening
-                      ? 'Listening — waiting for speech'
+                      ? 'dsh-live-voice.recognition.status.listening'
                       : state.conversation
-                        ? 'Conversation idle'
-                        : 'Voice ready';
+                        ? 'dsh-live-voice.commons.conversation.idle'
+                        : 'dsh-live-voice.commons.status.ready';
     return h(
       'div',
       {
@@ -255,17 +289,21 @@ export function createComponents(React) {
       },
       h(
         'div',
-        { className: 'dlv-pill', role: 'group', 'aria-label': 'Voice controls' },
+        {
+          className: 'dlv-pill',
+          role: 'group',
+          'aria-label': 'dsh-live-voice.commons.controls.title',
+        },
         capture && !state.conversation
           ? h(Button, {
-              label: 'Cancel dictation',
+              label: 'dsh-live-voice.recognition.dictation.cancel',
               icon: 'close',
               onClick: () => invoke('cancelDictation'),
             })
           : null,
         state.conversation
           ? h(Button, {
-              label: 'End voice conversation',
+              label: 'dsh-live-voice.commons.conversation.end',
               icon: 'close',
               onClick: () => invoke('endConversation'),
             })
@@ -274,22 +312,31 @@ export function createComponents(React) {
         h('span', { className: 'dlv-status', role: 'status', 'aria-live': 'polite' }, status),
         h(Button, {
           className: 'dlv-live-toggle',
-          label: 'Automatic delivery mode',
-          title: `Automatic delivery: ${
-            state.settings.sendingMode === 'steer'
-              ? 'send to the running agent'
-              : state.settings.sendingMode === 'queue'
-                ? 'queue'
-                : 'off'
-          }`,
+          label: 'dsh-live-voice.settings.delivery.toggle',
+          title: t('dsh-live-voice.settings.delivery.status', {
+            mode:
+              state.settings.sendingMode === 'steer'
+                ? t('dsh-live-voice.settings.delivery.steerDescription')
+                : state.settings.sendingMode === 'queue'
+                  ? t('dsh-live-voice.commons.queue')
+                  : t('dsh-live-voice.commons.off'),
+          }),
           icon: state.settings.sendingMode === 'queue' ? 'queue' : 'send',
           visibleLabel:
             state.settings.sendingMode === 'steer'
-              ? 'SEND'
+              ? 'dsh-live-voice.commons.send'
               : state.settings.sendingMode === 'queue'
-                ? 'QUEUE'
-                : 'OFF',
-          'aria-label': `Automatic delivery: ${state.settings.sendingMode || 'manual'}`,
+                ? 'dsh-live-voice.commons.delivery.queueBadge'
+                : 'dsh-live-voice.commons.toggle.offBadge',
+          'aria-label': t('dsh-live-voice.settings.delivery.status', {
+            mode: t(
+              state.settings.sendingMode === 'steer'
+                ? 'dsh-live-voice.settings.delivery.steerDescription'
+                : state.settings.sendingMode === 'queue'
+                  ? 'dsh-live-voice.commons.queue'
+                  : 'dsh-live-voice.commons.manual',
+            ),
+          }),
           'aria-pressed': ['queue', 'steer'].includes(state.settings.sendingMode),
           'data-mode': state.settings.sendingMode || 'manual',
           onClick: () =>
@@ -303,17 +350,36 @@ export function createComponents(React) {
         }),
         h(Button, {
           className: `dlv-live-toggle${state.speechSegmentsRemaining > 0 ? ' dlv-live-toggle-expanded' : ''}`,
-          label: 'Automatic assistant speech',
-          title: `Automatic assistant speech: ${
-            state.settings.announceAssistantMessages !== false ? 'on' : 'off'
-          }${state.speechSegmentsRemaining > 0 ? ` — ${state.speechSegmentsRemaining} speech segment${state.speechSegmentsRemaining === 1 ? '' : 's'} remaining` : ''}`,
+          label: 'dsh-live-voice.speak.autoPlayback.label',
+          title:
+            state.speechSegmentsRemaining > 0
+              ? t(
+                  state.speechSegmentsRemaining === 1
+                    ? 'dsh-live-voice.speak.autoPlayback.remainingOne'
+                    : 'dsh-live-voice.speak.autoPlayback.remainingOther',
+                  {
+                    state: t(
+                      state.settings.announceAssistantMessages !== false
+                        ? 'dsh-live-voice.commons.on'
+                        : 'dsh-live-voice.commons.off',
+                    ),
+                    count: state.speechSegmentsRemaining,
+                  },
+                )
+              : t('dsh-live-voice.speak.autoPlayback.status', {
+                  state: t(
+                    state.settings.announceAssistantMessages !== false
+                      ? 'dsh-live-voice.commons.on'
+                      : 'dsh-live-voice.commons.off',
+                  ),
+                }),
           icon: state.settings.announceAssistantMessages !== false ? 'speaker' : 'speakerOff',
           visibleLabel:
             state.settings.announceAssistantMessages === false
-              ? 'OFF'
+              ? 'dsh-live-voice.commons.toggle.offBadge'
               : state.speechSegmentsRemaining > 0
                 ? String(state.speechSegmentsRemaining)
-                : 'ON',
+                : 'dsh-live-voice.commons.on',
           role: 'switch',
           'aria-checked': state.settings.announceAssistantMessages !== false,
           onClick: () =>
@@ -323,14 +389,14 @@ export function createComponents(React) {
         }),
         remaining
           ? h(Button, {
-              label: 'Cancel automatic send',
+              label: 'dsh-live-voice.settings.autoSend.cancel',
               icon: 'close',
               onClick: () => invoke('cancelAutoSend'),
             })
           : null,
         state.conversation && !capture
           ? h(Button, {
-              label: 'Take microphone',
+              label: 'dsh-live-voice.recognition.microphone.takeControl',
               icon: 'mic',
               onClick: () => invoke('startConversation'),
             })
@@ -338,10 +404,20 @@ export function createComponents(React) {
         capture
           ? h(Button, {
               className: 'dlv-live-toggle dlv-mic-state',
-              label: state.muted ? 'Resume listening' : 'Ignore composer input',
-              title: `Microphone input: ${state.muted ? 'ignoring' : 'listening'}`,
+              label: state.muted
+                ? 'dsh-live-voice.recognition.microphone.resume'
+                : 'dsh-live-voice.recognition.microphone.ignore',
+              title: t('dsh-live-voice.recognition.microphone.inputStatus', {
+                state: t(
+                  state.muted
+                    ? 'dsh-live-voice.commons.input.ignoring'
+                    : 'dsh-live-voice.commons.input.listening',
+                ),
+              }),
               icon: state.muted ? 'micOff' : 'mic',
-              visibleLabel: state.muted ? 'IGNORING' : 'LISTENING',
+              visibleLabel: state.muted
+                ? 'dsh-live-voice.commons.input.ignoringBadge'
+                : 'dsh-live-voice.commons.input.listeningBadge',
               'aria-pressed': Boolean(state.muted),
               'data-muted': state.muted ? 'true' : 'false',
               onClick: () => invoke(state.muted ? 'resumeListeningInput' : 'muteListening'),
@@ -349,21 +425,21 @@ export function createComponents(React) {
           : null,
         state.speaking && !state.paused && state.capabilities[state.settings.engine]?.pause
           ? h(Button, {
-              label: 'Pause speech',
+              label: 'dsh-live-voice.speak.playback.pause',
               icon: 'pause',
               onClick: () => invoke('pauseSpeech'),
             })
           : null,
         state.paused && state.capabilities[state.settings.engine]?.resume
           ? h(Button, {
-              label: 'Resume speech',
+              label: 'dsh-live-voice.speak.playback.resume',
               icon: 'play',
               onClick: () => invoke('resumeSpeech'),
             })
           : null,
         state.speaking || state.paused
           ? h(Button, {
-              label: 'Stop all speech',
+              label: 'dsh-live-voice.speak.playback.stopAll',
               icon: 'stop',
               onClick: () => invoke('stopSpeech'),
             })
@@ -381,7 +457,9 @@ export function createComponents(React) {
   function SpeakButton({ active = false, disabled = false, label, onClick }) {
     return h(Button, {
       className: 'dlv-speaker',
-      label: label || (active ? 'Stop speaking' : 'Speak message'),
+      label:
+        label ||
+        (active ? 'dsh-live-voice.speak.playback.stop' : 'dsh-live-voice.speak.playback.message'),
       icon: active ? 'stop' : 'speaker',
       'aria-pressed': Boolean(active),
       disabled,
@@ -406,9 +484,12 @@ export function createComponents(React) {
     }, []);
     const updateAvailable = hasNewerRelease(latestRelease);
     const tabs = [
-      { id: 'conversation', label: 'Conversation' },
-      { id: 'speech', label: 'Speech' },
-      { id: 'recognition', label: 'Speech recognition' },
+      { id: 'conversation', label: 'dsh-live-voice.settings.tabs.conversation' },
+      { id: 'speech', label: 'dsh-live-voice.settings.tabs.speak' },
+      {
+        id: 'recognition',
+        label: 'dsh-live-voice.settings.tabs.recognition',
+      },
     ];
     const tabRefs = React.useRef([]);
     const [activeTab, setActiveTab] = React.useState('conversation');
@@ -447,14 +528,19 @@ export function createComponents(React) {
       };
     }, []);
     const deviceOptions = (kind, fallback) => [
-      { value: '', label: 'System default' },
+      { value: '', label: 'dsh-live-voice.commons.systemDefault' },
       ...audioDevices
         .filter(
           (device) => device.kind === kind && device.deviceId && device.deviceId !== 'default',
         )
         .map((device, index) => ({
           value: device.deviceId,
-          label: device.label || `${fallback} ${index + 1}`,
+          label:
+            device.label ||
+            t('dsh-live-voice.commons.device.numberedLabel', {
+              device: t(fallback),
+              number: index + 1,
+            }),
         })),
     ];
     const field = (label, key, options) =>
@@ -504,14 +590,20 @@ export function createComponents(React) {
       );
     return h(
       'section',
-      { className: 'dlv-settings', 'aria-label': 'Live Voice settings' },
+      {
+        className: 'dlv-settings',
+        'aria-label': 'dsh-live-voice.settings.title',
+      },
       h(
         'div',
         { className: 'dlv-settings-heading' },
-        h('h3', null, 'Live Voice'),
+        h('h3', null, 'dsh-live-voice.commons.pluginName'),
         h(
           'div',
-          { className: 'dlv-version-badges', 'aria-label': 'Version information' },
+          {
+            className: 'dlv-version-badges',
+            'aria-label': 'dsh-live-voice.commons.version.title',
+          },
           h(
             'a',
             {
@@ -519,8 +611,12 @@ export function createComponents(React) {
               href: RELEASES_URL,
               target: '_blank',
               rel: 'noreferrer',
-              'aria-label': `DSH Live Voice v${CURRENT_VERSION}. Open releases`,
-              title: `DSH Live Voice v${CURRENT_VERSION}`,
+              'aria-label': t('dsh-live-voice.commons.version.link', {
+                version: CURRENT_VERSION,
+              }),
+              title: t('dsh-live-voice.commons.version.label', {
+                version: CURRENT_VERSION,
+              }),
             },
             h('img', { src: LIVE_VOICE_BADGE_URL, alt: '' }),
             h('span', null, `v${CURRENT_VERSION}`),
@@ -532,8 +628,12 @@ export function createComponents(React) {
               href: TESTED_DSH_RELEASE_URL,
               target: '_blank',
               rel: 'noreferrer',
-              'aria-label': `Compatible with DSH v${TESTED_DSH_VERSION}. Open release`,
-              title: `Compatible with DSH v${TESTED_DSH_VERSION}`,
+              'aria-label': t('dsh-live-voice.commons.version.compatibilityLink', {
+                version: TESTED_DSH_VERSION,
+              }),
+              title: t('dsh-live-voice.commons.version.compatibility', {
+                version: TESTED_DSH_VERSION,
+              }),
             },
             h('img', { src: DSH_BADGE_URL, alt: '' }),
             h('span', null, `v${TESTED_DSH_VERSION}`),
@@ -548,11 +648,15 @@ export function createComponents(React) {
                 href: latestRelease.url,
                 target: '_blank',
                 rel: 'noreferrer',
-                'aria-label': `Update available: ${latestRelease.tag}. Open release`,
-                title: `Update available: ${latestRelease.tag}`,
+                'aria-label': t('dsh-live-voice.commons.update.link', {
+                  version: latestRelease.tag,
+                }),
+                title: t('dsh-live-voice.commons.update.version', {
+                  version: latestRelease.tag,
+                }),
               },
               h('span', { className: 'dlv-update-icon', 'aria-hidden': true }, '↑'),
-              'Update available',
+              'dsh-live-voice.commons.update.label',
             )
           : null,
         updateAvailable
@@ -565,19 +669,27 @@ export function createComponents(React) {
             href: REPOSITORY_URL,
             target: '_blank',
             rel: 'noreferrer',
-            'aria-label': 'Star DSH Live Voice on GitHub',
-            title: 'Star DSH Live Voice on GitHub',
+            'aria-label': 'dsh-live-voice.commons.repository.starLink',
+            title: 'dsh-live-voice.commons.repository.starLink',
           },
           h('span', { className: 'dlv-star-icon', 'aria-hidden': true }, '★'),
-          'Star Us on GitHub',
+          'dsh-live-voice.commons.repository.starLabel',
         ),
       ),
       onClose
-        ? h(Button, { label: 'Close voice settings', icon: 'close', onClick: onClose })
+        ? h(Button, {
+            label: 'dsh-live-voice.settings.close',
+            icon: 'close',
+            onClick: onClose,
+          })
         : null,
       h(
         'div',
-        { className: 'dlv-settings-tabs', role: 'tablist', 'aria-label': 'Live Voice settings' },
+        {
+          className: 'dlv-settings-tabs',
+          role: 'tablist',
+          'aria-label': 'dsh-live-voice.settings.title',
+        },
         tabs.map((tab, index) => {
           const selected = activeTab === tab.id;
           return h(
@@ -614,40 +726,43 @@ export function createComponents(React) {
         h(
           'div',
           { className: 'dlv-settings-card-body' },
-          field('Speech engine', 'engine', [
+          field('dsh-live-voice.speak.engine.label', 'engine', [
             {
               value: 'qwen-http',
-              label: 'Qwen3 TTS — local MLX server',
+              label: 'dsh-live-voice.speak.qwen.label',
               disabled: capabilities['qwen-http']?.supported === false,
             },
             {
               value: 'say',
-              label: 'macOS say — host audio',
+              label: 'dsh-live-voice.speak.macos.label',
               disabled: capabilities.say?.supported === false,
             },
             {
               value: 'browser',
-              label: 'Browser speech — device audio',
+              label: 'dsh-live-voice.speak.browser.label',
               disabled: capabilities.browser?.supported === false,
             },
           ]),
           settings.engine !== 'say'
-            ? field('Output device', 'outputDeviceId', deviceOptions('audiooutput', 'Audio output'))
-            : h('small', null, 'macOS say uses the output selected on the DSH host.'),
+            ? field(
+                'dsh-live-voice.speak.output.device',
+                'outputDeviceId',
+                deviceOptions('audiooutput', 'dsh-live-voice.speak.output.fallbackName'),
+              )
+            : h('small', null, 'dsh-live-voice.speak.macos.outputHelp'),
           settings.engine === 'browser'
             ? h(
                 React.Fragment,
                 null,
-                h(
-                  'small',
-                  null,
-                  'Browser speech synthesis may ignore the selected output device; this browser API normally follows the system default.',
-                ),
-                field('Local browser voice', 'voice', [
-                  { value: '', label: 'Automatic local voice' },
+                h('small', null, 'dsh-live-voice.speak.browser.outputHelp'),
+                field('dsh-live-voice.speak.browser.voice', 'voice', [
+                  { value: '', label: 'dsh-live-voice.speak.browser.automaticVoice' },
                   ...(capabilities.browser?.voices || []).map((voice) => ({
                     value: voice.voiceURI || voice.name,
-                    label: `${voice.name} — ${voice.lang || 'unknown language'}`,
+                    label:
+                      voice.name +
+                      ' — ' +
+                      (voice.lang || t('dsh-live-voice.commons.unknownLanguage')),
                   })),
                 ]),
               )
@@ -656,18 +771,27 @@ export function createComponents(React) {
             ? h(
                 React.Fragment,
                 null,
-                field('Qwen voice', 'voice', qwenVoices),
-                h(
-                  'small',
-                  null,
-                  `Aiden is used by default. These preset voices are not native Brazilian Portuguese voices.`,
+                field(
+                  'dsh-live-voice.speak.qwen.voice',
+                  'voice',
+                  qwenVoices.map((voice) => ({
+                    value: voice.value,
+                    label: `dsh-live-voice.speak.qwen.voices.${
+                      voice.value === 'uncle_fu'
+                        ? 'uncleFu'
+                        : voice.value === 'ono_anna'
+                          ? 'onoAnna'
+                          : voice.value
+                    }`,
+                  })),
                 ),
-                subcard('Qwen server connection', [
+                h('small', null, 'dsh-live-voice.speak.qwen.voiceHelp'),
+                subcard('dsh-live-voice.speak.qwen.connection', [
                   h(QwenSettings, { key: 'qwen-output-settings', controller }),
                 ]),
               )
             : null,
-          subcard('Filtering', [
+          subcard('dsh-live-voice.settings.filters.title', [
             h(
               'label',
               { key: 'output-code-filter', className: 'dlv-check' },
@@ -677,12 +801,13 @@ export function createComponents(React) {
                 onChange: (event) =>
                   invoke('updateSettings', { outputCodeFilterEnabled: event.target.checked }),
               }),
-              ' Filter Markdown code blocks before speaking',
+              ' ',
+              'dsh-live-voice.speak.filters.code.enabled',
             ),
             h(
               'label',
               { key: 'output-code-lines' },
-              'Read code blocks up to this many lines',
+              'dsh-live-voice.speak.filters.code.maxLines',
               h('input', {
                 type: 'number',
                 min: 0,
@@ -699,11 +824,11 @@ export function createComponents(React) {
             h(
               'label',
               { key: 'output-code-notice' },
-              'Replacement phrase for larger code blocks',
+              'dsh-live-voice.speak.filters.code.replacement',
               h('input', {
                 type: 'text',
                 maxLength: 300,
-                value: settings.outputCodeNotice || 'Look the code on out conversation',
+                value: settings.outputCodeNotice || t('dsh-live-voice.speak.filters.code.notice'),
                 disabled: settings.outputCodeFilterEnabled === false,
                 onChange: (event) =>
                   invoke('updateSettings', { outputCodeNotice: event.target.value }),
@@ -713,7 +838,7 @@ export function createComponents(React) {
           h(
             'label',
             null,
-            'Speech rate',
+            'dsh-live-voice.speak.rate.label',
             h('input', {
               type: 'number',
               min: 0.1,
@@ -726,20 +851,25 @@ export function createComponents(React) {
                   invoke('updateSettings', { rate });
               },
             }),
-            h('small', null, 'Relative speed: 1 is normal.'),
+            h('small', null, 'dsh-live-voice.speak.rate.help'),
           ),
-          h(
-            'p',
-            null,
-            'Qwen synthesis runs on the DSH host and the generated WAV plays in this browser. macOS say plays on the host; Browser speech plays on this device.',
-          ),
+          h('p', null, 'dsh-live-voice.speak.engine.playbackHelp'),
           ...['qwen-http', 'say', 'browser']
             .filter((id) => capabilities[id]?.supported === false)
             .map((id) =>
               h(
                 'p',
                 { key: id, role: 'status' },
-                `${id === 'qwen-http' ? 'Qwen3 local' : id === 'say' ? 'macOS say' : 'Browser speech'}: ${capabilities[id].reason}`,
+                t('dsh-live-voice.commons.engine.failure', {
+                  engine: t(
+                    id === 'qwen-http'
+                      ? 'dsh-live-voice.speak.qwen.name'
+                      : id === 'say'
+                        ? 'dsh-live-voice.speak.macos.name'
+                        : 'dsh-live-voice.speak.browser.name',
+                  ),
+                  reason: capabilities[id].reason,
+                }),
               ),
             ),
           h(
@@ -750,22 +880,23 @@ export function createComponents(React) {
               {
                 type: 'button',
                 disabled: capabilities[settings.engine]?.supported !== true || state.speaking,
-                onClick: () =>
-                  invoke('speak', 'DSH Live Voice. The selected speech output is working.'),
+                onClick: () => invoke('speak', t('dsh-live-voice.speak.output.testPhrase')),
               },
-              state.speaking ? 'Testing speech…' : 'Test selected speech output',
+              state.speaking
+                ? 'dsh-live-voice.speak.output.testing'
+                : 'dsh-live-voice.speak.output.test',
             ),
             state.speaking || state.paused
               ? h(
                   'button',
                   { type: 'button', onClick: () => invoke('stopSpeech') },
-                  'Stop speech test',
+                  'dsh-live-voice.speak.output.stopTest',
                 )
               : null,
             h(
               'button',
               { type: 'button', onClick: () => invoke('refreshCapabilities') },
-              'Refresh available engines',
+              'dsh-live-voice.settings.engine.refresh',
             ),
           ),
         ),
@@ -785,7 +916,7 @@ export function createComponents(React) {
           h(
             'label',
             null,
-            'Recognition engine',
+            'dsh-live-voice.recognition.engine.label',
             h(
               'select',
               {
@@ -798,20 +929,32 @@ export function createComponents(React) {
                       : { recognitionEngine: event.target.value },
                   ),
               },
-              h('option', { value: 'browser' }, 'Browser SpeechRecognition — Default option'),
-              h('option', { value: 'qwen-http' }, 'Qwen3 ASR — HTTP API'),
-              h('option', { value: 'whisper-http' }, 'Whisper — HTTP API'),
+              h('option', { value: 'browser' }, 'dsh-live-voice.recognition.browser.label'),
+              h('option', { value: 'qwen-http' }, 'dsh-live-voice.recognition.qwen.label'),
+              h('option', { value: 'whisper-http' }, 'dsh-live-voice.recognition.whisper.label'),
               h(
                 'optgroup',
-                { label: 'Coming Soon — vote on repo issues' },
-                h('option', { value: 'webgpu', disabled: true }, 'Browser WebGPU Inference — Soon'),
+                { label: 'dsh-live-voice.recognition.planned.vote' },
+                h(
+                  'option',
+                  { value: 'webgpu', disabled: true },
+                  'dsh-live-voice.recognition.planned.webGpu',
+                ),
                 h(
                   'option',
                   { value: 'sherpa-onnx', disabled: true },
-                  'sherpa-onnx Streaming — Soon',
+                  'dsh-live-voice.recognition.planned.sherpa',
                 ),
-                h('option', { value: 'parakeet', disabled: true }, 'NVIDIA Parakeet — Soon'),
-                h('option', { value: 'voxtral', disabled: true }, 'Voxtral Realtime — Soon'),
+                h(
+                  'option',
+                  { value: 'parakeet', disabled: true },
+                  'dsh-live-voice.recognition.planned.parakeet',
+                ),
+                h(
+                  'option',
+                  { value: 'voxtral', disabled: true },
+                  'dsh-live-voice.recognition.planned.voxtral',
+                ),
               ),
             ),
           ),
@@ -819,22 +962,27 @@ export function createComponents(React) {
             'small',
             { className: 'dlv-recognition-engine-description' },
             settings.recognitionEngine === 'qwen-http'
-              ? 'HTTP API at the configured base URL (default: http://127.0.0.1:8080/). Compatible with POST /v1/audio/transcriptions.'
+              ? 'dsh-live-voice.recognition.whisper.endpointHelp'
               : settings.recognitionEngine === 'whisper-http'
-                ? 'HTTP API at the configured DSH host URL (default: http://127.0.0.1:8080/inference). Audio uses the authenticated DSH host transcription route.'
-                : 'Uses the browser SpeechRecognition API. This is the default option.',
+                ? 'dsh-live-voice.recognition.qwen.endpointHelp'
+                : 'dsh-live-voice.recognition.browser.help',
           ),
-          field('Input device', 'inputDeviceId', deviceOptions('audioinput', 'Microphone')),
+          field(
+            'dsh-live-voice.recognition.microphone.device',
+            'inputDeviceId',
+            deviceOptions('audioinput', 'dsh-live-voice.recognition.microphone.label'),
+          ),
           settings.recognitionEngine === 'browser'
-            ? h(
-                'small',
-                null,
-                'Browser SpeechRecognition may use the browser or system default microphone instead of this selection.',
-              )
+            ? h('small', null, 'dsh-live-voice.recognition.browser.microphoneHelp')
             : null,
-          field('Recognition language', 'recognitionLang', [
+          field('dsh-live-voice.recognition.language.label', 'recognitionLang', [
             ...(settings.recognitionEngine !== 'browser'
-              ? [{ value: 'auto', label: 'Automatic — detect language' }]
+              ? [
+                  {
+                    value: 'auto',
+                    label: 'dsh-live-voice.recognition.language.automatic',
+                  },
+                ]
               : []),
             { value: 'pt-BR', label: 'Português (Brasil)' },
             { value: 'en-US', label: 'English (United States)' },
@@ -852,7 +1000,8 @@ export function createComponents(React) {
                     onChange: (event) =>
                       invoke('updateSettings', { recognitionProcessLocally: event.target.checked }),
                   }),
-                  ' Process recognition locally on this device',
+                  ' ',
+                  'dsh-live-voice.recognition.browser.localProcessing',
                 ),
                 settings.recognitionProcessLocally !== false
                   ? h(
@@ -866,31 +1015,34 @@ export function createComponents(React) {
                             recognitionAutoInstall: event.target.checked,
                           }),
                       }),
-                      ' Automatically install this browser language pack when needed',
+                      ' ',
+                      'dsh-live-voice.recognition.browser.autoInstallPack',
                     )
                   : h(
                       'p',
                       { role: 'status' },
-                      'Browser-service recognition is enabled. The browser may send microphone audio to its recognition service.',
+                      'dsh-live-voice.recognition.browser.remoteServiceWarning',
                     ),
               )
             : h(
                 'p',
                 { role: 'status' },
                 settings.recognitionEngine === 'qwen-http'
-                  ? 'Audio is segmented into complete WAV utterances and sent through authenticated DSH to the host-local Qwen3 ASR model.'
-                  : 'Audio is segmented into complete WAV utterances, sent through authenticated DSH, and processed by loopback whisper.cpp HTTP.',
+                  ? 'dsh-live-voice.recognition.qwen.captureHelp'
+                  : 'dsh-live-voice.recognition.whisper.captureHelp',
               ),
           settings.recognitionEngine === 'whisper-http'
-            ? subcard('Connection settings', [h(WhisperSettings, { key: 'settings', controller })])
+            ? subcard('dsh-live-voice.commons.connection.title', [
+                h(WhisperSettings, { key: 'settings', controller }),
+              ])
             : null,
           settings.recognitionEngine === 'qwen-http' && settings.engine !== 'qwen-http'
-            ? subcard('Qwen server connection', [
+            ? subcard('dsh-live-voice.speak.qwen.connection', [
                 h(QwenSettings, { key: 'qwen-recognition-settings', controller }),
               ])
             : null,
-          h('p', null, 'Provider settings change with the selected recognition engine.'),
-          subcard('Voice commands', [
+          h('p', null, 'dsh-live-voice.recognition.providerSettings.help'),
+          subcard('dsh-live-voice.recognition.commands.title', [
             h(
               'label',
               { key: 'voice-commands-enabled', className: 'dlv-check' },
@@ -900,25 +1052,50 @@ export function createComponents(React) {
                 onChange: (event) =>
                   invoke('updateSettings', { voiceCommandsEnabled: event.target.checked }),
               }),
-              ' Enable exact voice commands',
+              ' ',
+              'dsh-live-voice.recognition.commands.enabled',
             ),
             h(
               'small',
               { key: 'voice-command-help' },
-              'Separate phrases with commas. Matching ignores capitalization, accents, punctuation, and extra spaces. The entire final chunk must match.',
+              'dsh-live-voice.recognition.voiceCommands.help',
             ),
             ...[
-              ['Send to running agent', 'voiceCommandSend', 'send, send message'],
-              ['Put in queue', 'voiceCommandQueue', 'queue, queue message'],
-              ['End conversation', 'voiceCommandEnd', 'end, end conversation'],
-              ['Mute composer input', 'voiceCommandMute', 'mute, stop listening'],
-              ['Resume composer input', 'voiceCommandResume', 'resume, start listening'],
               [
-                'Stop assistant speech',
+                'dsh-live-voice.recognition.commands.send',
+                'voiceCommandSend',
+                'send, send message',
+              ],
+              [
+                'dsh-live-voice.recognition.commands.queue',
+                'voiceCommandQueue',
+                'queue, queue message',
+              ],
+              [
+                'dsh-live-voice.commons.conversation.end',
+                'voiceCommandEnd',
+                'end, end conversation',
+              ],
+              [
+                'dsh-live-voice.recognition.commands.mute',
+                'voiceCommandMute',
+                'mute, stop listening',
+              ],
+              [
+                'dsh-live-voice.recognition.commands.resume',
+                'voiceCommandResume',
+                'resume, start listening',
+              ],
+              [
+                'dsh-live-voice.recognition.commands.stopSpeech',
                 'voiceCommandStopSpeaking',
                 'stop talking, stop speaking, shut up',
               ],
-              ['Clear composer', 'voiceCommandClear', 'clear all, clear message'],
+              [
+                'dsh-live-voice.recognition.commands.clear',
+                'voiceCommandClear',
+                'clear all, clear message',
+              ],
             ].map(([label, key, fallback]) =>
               h(
                 'label',
@@ -934,7 +1111,7 @@ export function createComponents(React) {
               ),
             ),
           ]),
-          subcard('Filtering', [
+          subcard('dsh-live-voice.settings.filters.title', [
             h(
               'label',
               { key: 'recognition-filter', className: 'dlv-check' },
@@ -944,12 +1121,13 @@ export function createComponents(React) {
                 onChange: (event) =>
                   invoke('updateSettings', { recognitionFilterEnabled: event.target.checked }),
               }),
-              ' Ignore short final transcription chunks',
+              ' ',
+              'dsh-live-voice.recognition.minimumWords.enabled',
             ),
             h(
               'label',
               { key: 'recognition-minimum-words' },
-              'Minimum words per final chunk',
+              'dsh-live-voice.recognition.minimumWords.label',
               h('input', {
                 type: 'number',
                 min: 1,
@@ -962,21 +1140,19 @@ export function createComponents(React) {
                     invoke('updateSettings', { recognitionMinimumWords: value });
                 },
               }),
-              h(
-                'small',
-                null,
-                'Final chunks with fewer words are ignored before they reach the composer or automatic delivery.',
-              ),
+              h('small', null, 'dsh-live-voice.recognition.minimumWords.help'),
             ),
           ]),
           capabilities.capture?.supported === false
-            ? h('p', { role: 'status' }, `Microphone: ${capabilities.capture.reason}`)
+            ? h(
+                'p',
+                { role: 'status' },
+                t('dsh-live-voice.recognition.microphone.failure', {
+                  reason: capabilities.capture.reason,
+                }),
+              )
             : capabilities.capture?.permission === 'prompt'
-              ? h(
-                  'p',
-                  { role: 'status' },
-                  'Microphone permission will be requested only when you start dictation or a voice conversation.',
-                )
+              ? h('p', { role: 'status' }, 'dsh-live-voice.recognition.microphone.permissionHelp')
               : null,
           capabilities.recognition?.supported === false
             ? h('p', { role: 'status' }, capabilities.recognition.reason)
@@ -984,20 +1160,19 @@ export function createComponents(React) {
           usesPluginVoiceDetection(settings.recognitionEngine)
             ? h(
                 'details',
-                { className: 'dlv-settings-subcard', 'aria-label': 'Silence detection settings' },
-                h('summary', null, 'Silence detection'),
+                {
+                  className: 'dlv-settings-subcard',
+                  'aria-label': 'dsh-live-voice.recognition.silenceDetection.title',
+                },
+                h('summary', null, 'dsh-live-voice.recognition.silenceDetection.label'),
                 h(
                   'div',
                   { className: 'dlv-settings-subcard-body' },
-                  h(
-                    'p',
-                    null,
-                    'Controls how long a pause must last before captured speech is sent for recognition.',
-                  ),
+                  h('p', null, 'dsh-live-voice.recognition.silenceDetection.help'),
                   h(
                     'label',
                     { className: 'dlv-setting-field' },
-                    'Maximum continuous speech (seconds)',
+                    'dsh-live-voice.recognition.maxUtterance.label',
                     h('input', {
                       type: 'number',
                       min: 10,
@@ -1010,18 +1185,14 @@ export function createComponents(React) {
                           invoke('updateSettings', { recognitionMaxUtteranceSeconds: value });
                       },
                     }),
-                    h(
-                      'small',
-                      null,
-                      'If speech never pauses, start a new transcription chunk after this duration. Default: 60 seconds.',
-                    ),
+                    h('small', null, 'dsh-live-voice.recognition.maxUtterance.help'),
                   ),
                   h(
                     'div',
                     {
                       className: 'dlv-preset-group',
                       role: 'radiogroup',
-                      'aria-label': 'Pause before sending',
+                      'aria-label': 'dsh-live-voice.recognition.silenceDetection.pauseLabel',
                     },
                     Object.entries(voiceDetectionPresets).map(([value, preset]) =>
                       h(
@@ -1037,8 +1208,12 @@ export function createComponents(React) {
                         h(
                           'span',
                           null,
-                          h('strong', null, preset.label),
-                          h('small', null, preset.description),
+                          h('strong', null, `dsh-live-voice.recognition.presets.${value}.label`),
+                          h(
+                            'small',
+                            null,
+                            `dsh-live-voice.recognition.presets.${value}.description`,
+                          ),
                         ),
                       ),
                     ),
@@ -1046,10 +1221,11 @@ export function createComponents(React) {
                   h(
                     'p',
                     { className: 'dlv-vad-summary' },
-                    'Pause before sending: ' +
-                      (voiceDetectionPresets[settings.voiceDetectionPreset]?.silenceMs ||
-                        voiceDetectionPresets.natural.silenceMs) +
-                      ' ms',
+                    t('dsh-live-voice.recognition.silenceDetection.duration', {
+                      milliseconds:
+                        voiceDetectionPresets[settings.voiceDetectionPreset]?.silenceMs ||
+                        voiceDetectionPresets.natural.silenceMs,
+                    }),
                   ),
                 ),
               )
@@ -1066,13 +1242,10 @@ export function createComponents(React) {
             onChange: (event) =>
               invoke('updateSettings', { announceAssistantMessages: event.target.checked }),
           }),
-          ' Automatically speak new assistant messages',
+          ' ',
+          'dsh-live-voice.speak.autoPlayback.enabled',
         ),
-        h(
-          'p',
-          { key: 'policy' },
-          'During a voice conversation, assistant phrases are announced automatically. Playback waits while you are speaking.',
-        ),
+        h('p', { key: 'policy' }, 'dsh-live-voice.speak.autoPlayback.help'),
         h(
           'label',
           { key: 'interrupt-message', className: 'dlv-check' },
@@ -1082,14 +1255,15 @@ export function createComponents(React) {
             onChange: (event) =>
               invoke('updateSettings', { interruptSpeechOnUserMessage: event.target.checked }),
           }),
-          ' Stop assistant speech when I send a message',
+          ' ',
+          'dsh-live-voice.speak.interruption.enabled',
         ),
         h(
           'p',
           { key: 'interrupt-message-description', className: 'dlv-setting-description' },
           settings.interruptSpeechOnUserMessage
-            ? 'Sending or steering a new user message stops current or paused assistant speech.'
-            : 'Sending another message does not stop the assistant audio you are already hearing.',
+            ? 'dsh-live-voice.speak.interruption.enabledHelp'
+            : 'dsh-live-voice.speak.interruption.disabledHelp',
         ),
         h(
           'label',
@@ -1100,28 +1274,35 @@ export function createComponents(React) {
             onChange: (event) =>
               invoke('updateSettings', { holdToTalkEnabled: event.target.checked }),
           }),
-          ' Hold Control to talk',
+          ' ',
+          'dsh-live-voice.recognition.holdToTalk.enabled',
         ),
         h(
           'p',
           { key: 'hold-to-talk-description', className: 'dlv-setting-description' },
-          'While a composer is open, hold Control anywhere on the page to capture speech. Release it to flush queued transcription, wait the configured send delay, queue the message, and close voice capture. Press Escape while holding to cancel.',
+          'dsh-live-voice.recognition.holdToTalk.help',
         ),
-        field('Listening mode', 'mode', [
-          { value: 'speaker', label: 'Speakers — gated listening' },
-          { value: 'headphones', label: 'Headphones — open microphone' },
+        field('dsh-live-voice.recognition.mode.label', 'mode', [
+          {
+            value: 'speaker',
+            label: 'dsh-live-voice.recognition.speakerMode.label',
+          },
+          {
+            value: 'headphones',
+            label: 'dsh-live-voice.recognition.headphoneMode.label',
+          },
         ]),
         h(
           'p',
           { key: 'mode-description', className: 'dlv-setting-description' },
           settings.mode === 'headphones'
-            ? 'Open microphone keeps listening while responses play. When your speech is detected, playback pauses and resumes only when you choose.'
-            : 'Gated listening releases the microphone while responses play, preventing speaker audio from being recognized. Use Take microphone to interrupt.',
+            ? 'dsh-live-voice.recognition.headphoneMode.help'
+            : 'dsh-live-voice.recognition.speakerMode.help',
         ),
         h(
           'label',
           { key: 'speech-delay' },
-          'Assistant response delay',
+          'dsh-live-voice.speak.responseDelay.label',
           h(
             'select',
             {
@@ -1132,25 +1313,34 @@ export function createComponents(React) {
                 }),
             },
             [1, 2, 3, 4, 5, 6, 8, 10].map((seconds) =>
-              h('option', { key: seconds, value: String(seconds) }, seconds + ' seconds'),
+              h(
+                'option',
+                { key: seconds, value: String(seconds) },
+                t('dsh-live-voice.commons.seconds', { seconds }),
+              ),
             ),
           ),
-          h(
-            'small',
-            null,
-            'After you stop speaking, automatic assistant playback waits for this much continuous silence. Speaking again restarts the wait.',
-          ),
+          h('small', null, 'dsh-live-voice.speak.responseDelay.help'),
         ),
-        field('Sending mode', 'sendingMode', [
-          { value: 'manual', label: 'Off — review and send manually' },
-          { value: 'queue', label: 'Queue — automatically add after silence' },
-          { value: 'steer', label: 'Steer — automatically send to the running agent' },
+        field('dsh-live-voice.settings.delivery.label', 'sendingMode', [
+          {
+            value: 'manual',
+            label: 'dsh-live-voice.settings.delivery.manualLabel',
+          },
+          {
+            value: 'queue',
+            label: 'dsh-live-voice.settings.delivery.queueLabel',
+          },
+          {
+            value: 'steer',
+            label: 'dsh-live-voice.settings.delivery.steerLabel',
+          },
         ]),
         settings.sendingMode !== 'manual'
           ? h(
               'label',
               { key: 'delay' },
-              'Send after silence',
+              'dsh-live-voice.settings.autoSend.delay',
               h(
                 'select',
                 {
@@ -1161,19 +1351,22 @@ export function createComponents(React) {
                     }),
                 },
                 [2, 3, 4, 5, 6, 8, 10].map((seconds) =>
-                  h('option', { key: seconds, value: String(seconds) }, seconds + ' seconds'),
+                  h(
+                    'option',
+                    { key: seconds, value: String(seconds) },
+                    t('dsh-live-voice.commons.seconds', { seconds }),
+                  ),
                 ),
               ),
-              h(
-                'small',
-                null,
-                'Countdown starts after a final recognized phrase. New speech or edits cancel it.',
-              ),
+              h('small', null, 'dsh-live-voice.recognition.autoSend.countdownHelp'),
             )
           : h(
               'p',
-              { key: 'manual', className: 'dlv-setting-description' },
-              'Recognized text stays in the composer until you use the normal DSH Send control.',
+              {
+                key: 'manual',
+                className: 'dlv-setting-description',
+              },
+              'dsh-live-voice.recognition.manualSend.help',
             ),
       ]),
       h(ErrorText, {

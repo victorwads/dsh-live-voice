@@ -22,7 +22,10 @@ test('built bundle registers independently in the DSH lazy module loader', async
     assert.fail('unexpected module: ' + id);
   });
   assert.equal(typeof plugin.apply, 'function');
-  assert.deepEqual([...plugin.inject], ['slots', 'connection', 'uiConversation', 'uiSession']);
+  assert.deepEqual(
+    [...plugin.inject],
+    ['slots', 'connection', 'uiConversation', 'uiSession', 'locale'],
+  );
   const slots = [];
   const effects = [];
   plugin.apply({

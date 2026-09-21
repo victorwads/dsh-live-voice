@@ -6,6 +6,9 @@
 - Read the current project version from `package.json`; do not duplicate it in this instruction file. The local working tree contains a plugin under active validation. See PLAN.md for progress and remaining checks.
 - Read `README.md`, `HISTORY.md`, and `package.json` before making project changes.
 - Write repository documentation, code comments, and public package metadata in English. Keep the requested filename `HISTORY.md`.
+- Treat user-facing plugin copy as internationalized: add or update the typed per-language catalogs under `src/client/i18n/` for every visible label, help text, status, actionable error, tooltip, aria label, and test phrase. Keep every supported locale dictionary complete through the shared `LiveVoiceTranslation` contract from `@wads.dev/i18n-ts`; use DSH's `ctx.locale` service rather than a parallel locale preference, and preserve the independence of UI locale, STT/TTS languages, and user-configured voice commands.
+
+- Translation identifiers must describe intent using `dsh-live-voice.commons.*`, `dsh-live-voice.recognition.*`, `dsh-live-voice.speak.*`, or `dsh-live-voice.settings.*`. Use concise feature/property paths such as `recognition.holdToTalk.help`; never derive identifiers from whole sentences or add numeric collision suffixes. Keep the base contract and every catalog in alphabetical key order. Translation values, persisted enum values, action identifiers, and user data are not translation keys.
 
 ## Product priorities
 
@@ -36,7 +39,7 @@
 - Do not implement features or add dependencies just to make the placeholder look complete.
 - Keep planned capabilities clearly labeled until implemented and validated.
 - Future audio work must account for echo, false interruptions, recognition latency, playback position, and stale asynchronous results after cancellation.
-- Third-party engines and model weights require their own license and platform checks. This repository uses GPL-3.0-only. Commercial use and paid redistribution are allowed subject to GPL obligations; do not describe the license as non-commercial. Check DSH and dependency license compatibility before integration.
+- Third-party engines and model weights require their own license and platform checks. This repository uses Apache-2.0. Check DSH and dependency license compatibility before integration.
 
 ## Packaging and authorization
 

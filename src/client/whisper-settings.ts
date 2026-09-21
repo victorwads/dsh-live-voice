@@ -1,7 +1,6 @@
 // @ts-nocheck
 const BASE = '/api/dsh-live-voice/whisper';
-const UNLOADED =
-  'Whisper settings routes are not loaded. A normal DSH server restart is required to load updated plugin routes; refreshing this page alone is not enough.';
+const UNLOADED = 'dsh-live-voice.recognition.whisper.restartRequired';
 export async function whisperSettingsRequest(
   path,
   { method = 'GET', config, signal } = {},
@@ -15,7 +14,7 @@ export async function whisperSettingsRequest(
     body: config ? JSON.stringify(config) : undefined,
   });
   if (response.status === 401 || response.status === 403)
-    throw new Error('Sign in to DSH to manage Whisper settings.');
+    throw new Error('dsh-live-voice.recognition.whisper.signInRequired');
   if (response.status === 404 || response.status === 405) throw new Error(UNLOADED);
   let body;
   try {
@@ -25,11 +24,19 @@ export async function whisperSettingsRequest(
   }
   if (typeof body?.ok !== 'boolean') throw new Error(UNLOADED);
   if (!response.ok || !body.ok)
-    throw new Error(body.error?.message || 'Whisper settings request failed.');
+    throw new Error(body.error?.message || 'dsh-live-voice.recognition.whisper.requestFailed');
   return body.value;
 }
-export function createWhisperSettings(React) {
-  const h = React.createElement;
+export function createWhisperSettings(React, translate = (value) => value) {
+  const t = translate;
+  const h = (type, props, ...children) =>
+    React.createElement(
+      type,
+      props,
+      ...children.map((value) =>
+        typeof value === 'string' && value.startsWith('dsh-live-voice.') ? t(value) : value,
+      ),
+    );
   return function WhisperSettings({ controller }) {
     const [draft, setDraft] = React.useState({
       url: 'http://127.0.0.1:8080/inference',
@@ -64,7 +71,7 @@ export function createWhisperSettings(React) {
           });
           if (!abort.signal.aborted) {
             setDraft(value);
-            setMessage('Saved on the DSH host. Active host transcription requests were cancelled.');
+            setMessage('dsh-live-voice.recognition.whisper.saved');
             await controller.refreshCapabilities?.();
           }
         } else {
@@ -74,10 +81,9 @@ export function createWhisperSettings(React) {
             signal: abort.signal,
           });
           if (!abort.signal.aborted) {
-            if (!value.supported) throw new Error(value.reason || 'Whisper health check failed.');
-            setMessage(
-              'Connection successful. Health endpoint responded; transcription was not tested. Unsaved edits have not been applied.',
-            );
+            if (!value.supported)
+              throw new Error(value.reason || 'dsh-live-voice.recognition.whisper.healthFailed');
+            setMessage('dsh-live-voice.recognition.whisper.connectionSuccess');
           }
         }
       } catch (reason) {
@@ -103,7 +109,7 @@ export function createWhisperSettings(React) {
           ...(type === 'number' ? { min: 100, max: 300000, step: 1 } : {}),
           onChange: (event) => {
             setDraft({ ...draft, [key]: event.target.value });
-            setMessage('Unsaved changes');
+            setMessage('dsh-live-voice.commons.connection.unsaved');
             setError('');
           },
         }),
@@ -112,34 +118,30 @@ export function createWhisperSettings(React) {
     return h(
       React.Fragment,
       null,
-      h(
-        'p',
-        null,
-        'Host-wide settings. Only unauthenticated loopback HTTP URLs (localhost, 127.0.0.1, [::1]) are allowed. Loopback means the DSH host, not this browser. All health checks and audio requests run through the authenticated backend.',
-      ),
-      field('Endpoint URL', 'url'),
-      field('Health URL or path', 'healthUrl'),
-      field('Request timeout (ms)', 'timeoutMs', 'number'),
+      h('p', null, 'dsh-live-voice.settings.whisper.hostHelp'),
+      field('dsh-live-voice.commons.connection.endpoint', 'url'),
+      field('dsh-live-voice.commons.connection.healthEndpoint', 'healthUrl'),
+      field('dsh-live-voice.commons.connection.timeout', 'timeoutMs', 'number'),
       h(
         'div',
         { className: 'dlv-settings-actions' },
         h(
           'button',
           { type: 'button', disabled: busy || !loaded, onClick: () => run('save') },
-          'Save Whisper settings',
+          'dsh-live-voice.recognition.whisper.save',
         ),
         h(
           'button',
           { type: 'button', disabled: busy || !loaded, onClick: () => run('test') },
-          'Test connection',
+          'dsh-live-voice.commons.connection.test',
         ),
         h(
           'button',
           { type: 'button', disabled: busy, onClick: () => run('load') },
-          'Reload saved settings',
+          'dsh-live-voice.commons.connection.reload',
         ),
       ),
-      busy ? h('p', { role: 'status' }, 'Contacting DSH host…') : null,
+      busy ? h('p', { role: 'status' }, 'dsh-live-voice.commons.connection.contactingHost') : null,
       message ? h('p', { role: 'status' }, message) : null,
       error ? h('p', { role: 'alert' }, error) : null,
     );

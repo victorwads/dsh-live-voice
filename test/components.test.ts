@@ -283,7 +283,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.equal(autoSendToggle.getAttribute('aria-pressed'), 'false');
     assert.equal(autoSendToggle.textContent, 'OFF');
     assert.equal(assistantSpeechToggle.getAttribute('aria-checked'), 'true');
-    assert.equal(assistantSpeechToggle.textContent, 'ON');
+    assert.equal(assistantSpeechToggle.textContent, 'on');
     const muteMicrophone = document.querySelector('[aria-label="Ignore composer input"]');
     assert.ok(muteMicrophone);
     assert.equal(

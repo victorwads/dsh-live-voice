@@ -12,6 +12,7 @@ import { WhisperHttpRecognitionEngine } from '../engines/recognition/whisper-htt
 import { QwenHttpRecognitionEngine } from '../engines/recognition/qwen-http.ts';
 import { QwenHttpSpeakingEngine } from '../engines/speaking/qwen-http.ts';
 import { createComponents } from './components.ts';
+import { registerLiveVoiceLocales } from './locale.ts';
 import { styles } from './styles.ts';
 import {
   assistantMessages,
@@ -20,10 +21,15 @@ import {
   pendingQuestionSpeech,
 } from './chat.ts';
 
-export const inject = ['slots', 'connection', 'uiConversation', 'uiSession'];
+export const inject = ['slots', 'connection', 'uiConversation', 'uiSession', 'locale'];
 export function apply(ctx) {
+  const t = registerLiveVoiceLocales(ctx);
   const e = React.createElement;
-  const { MicrophoneButtons, RecordingBar, SpeakButton, SettingsPanel } = createComponents(React);
+  const { MicrophoneButtons, RecordingBar, SpeakButton, SettingsPanel } = createComponents(
+    React,
+    t,
+    ctx.locale,
+  );
   const controllers = new Map();
   const retiring = new Set();
   let disposed = false;
@@ -402,7 +408,12 @@ export function apply(ctx) {
   }
   ctx.slots.inject('settings.section', () =>
     ctx.slots.register(
-      { name: 'settings.section', id: 'dsh-live-voice', order: 65, label: 'Live Voice' },
+      {
+        name: 'settings.section',
+        id: 'dsh-live-voice',
+        order: 65,
+        label: () => t('dsh-live-voice.commons.pluginName'),
+      },
       Settings,
     ),
   );
@@ -467,7 +478,9 @@ export function apply(ctx) {
     return e(SpeakButton, {
       active,
       disabled: !message.text.trim() || (!active && unavailable),
-      label: unavailable ? capability?.reason || 'Checking speech output…' : undefined,
+      label: unavailable
+        ? capability?.reason || t('dsh-live-voice.speak.output.checking')
+        : undefined,
       onClick: () =>
         run(
           entry.controller,
@@ -493,7 +506,10 @@ export function apply(ctx) {
     ['conversation.chat.assistant-actions', 'live-voice-speak', 5, Action],
   ])
     ctx.slots.inject(name, () =>
-      ctx.slots.register({ name, id, order, label: 'DSH Live Voice' }, component),
+      ctx.slots.register(
+        { name, id, order, label: () => t('dsh-live-voice.commons.pluginName') },
+        component,
+      ),
     );
   ctx.effect(() => {
     const stop = () => {

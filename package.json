@@ -54,7 +54,7 @@
     "name": "wads.dev",
     "url": "https://www.npmjs.com/org/wads.dev"
   },
-  "license": "GPL-3.0-only",
+  "license": "Apache-2.0",
   "files": [
     "src/",
     "lib/",
@@ -64,6 +64,7 @@
     "PLAN.md",
     "DEVELOPMENT.md",
     "HISTORY.md",
+    "docs/",
     "scripts/",
     "LICENSE"
   ],
@@ -103,8 +104,12 @@
         "@deepseek-ai/dsh-client-ui-conversation",
         "@deepseek-ai/dsh-client-ui-chat",
         "@deepseek-ai/dsh-client-connection",
-        "@deepseek-ai/dsh-client-ui-settings"
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-locale"
       ]
     }
+  },
+  "dependencies": {
+    "@wads.dev/i18n-ts": "0.0.1-alpha.0"
   }
 }

@@ -1,7 +1,6 @@
 // @ts-nocheck
 const BASE = '/api/dsh-live-voice/qwen';
-const UNLOADED =
-  'Qwen settings routes are not loaded. A normal DSH server restart is required to load updated plugin routes; refreshing this page alone is not enough.';
+const UNLOADED = 'dsh-live-voice.speak.qwen.restartRequired';
 export async function qwenSettingsRequest(
   path,
   { method = 'GET', config, signal } = {},
@@ -15,7 +14,7 @@ export async function qwenSettingsRequest(
     body: config ? JSON.stringify(config) : undefined,
   });
   if (response.status === 401 || response.status === 403)
-    throw new Error('Sign in to DSH to manage Qwen settings.');
+    throw new Error('dsh-live-voice.speak.qwen.signInRequired');
   if (response.status === 404 || response.status === 405) throw new Error(UNLOADED);
   let body;
   try {
@@ -25,11 +24,19 @@ export async function qwenSettingsRequest(
   }
   if (typeof body?.ok !== 'boolean') throw new Error(UNLOADED);
   if (!response.ok || !body.ok)
-    throw new Error(body.error?.message || 'Qwen settings request failed.');
+    throw new Error(body.error?.message || 'dsh-live-voice.speak.qwen.requestFailed');
   return body.value;
 }
-export function createQwenSettings(React) {
-  const h = React.createElement;
+export function createQwenSettings(React, translate = (value) => value) {
+  const t = translate;
+  const h = (type, props, ...children) =>
+    React.createElement(
+      type,
+      props,
+      ...children.map((value) =>
+        typeof value === 'string' && value.startsWith('dsh-live-voice.') ? t(value) : value,
+      ),
+    );
   return function QwenSettings({ controller }) {
     const [draft, setDraft] = React.useState({
       baseUrl: 'http://127.0.0.1:8080/',
@@ -63,7 +70,7 @@ export function createQwenSettings(React) {
           });
           if (!abort.signal.aborted) {
             setDraft(value);
-            setMessage('Saved on the DSH host. Active Qwen requests were cancelled.');
+            setMessage('dsh-live-voice.speak.qwen.saved');
             await controller.refreshCapabilities?.();
           }
         } else {
@@ -73,10 +80,9 @@ export function createQwenSettings(React) {
             signal: abort.signal,
           });
           if (!abort.signal.aborted) {
-            if (!value.supported) throw new Error(value.reason || 'Qwen health check failed.');
-            setMessage(
-              'Connection successful. Both Qwen ASR and TTS are loaded. Unsaved edits have not been applied.',
-            );
+            if (!value.supported)
+              throw new Error(value.reason || 'dsh-live-voice.speak.qwen.healthFailed');
+            setMessage('dsh-live-voice.recognition.qwen.connectionSuccess');
           }
         }
       } catch (reason) {
@@ -102,7 +108,7 @@ export function createQwenSettings(React) {
           ...(type === 'number' ? { min: 1000, max: 600000, step: 1 } : {}),
           onChange: (event) => {
             setDraft({ ...draft, [key]: event.target.value });
-            setMessage('Unsaved changes');
+            setMessage('dsh-live-voice.commons.connection.unsaved');
             setError('');
           },
         }),
@@ -110,33 +116,29 @@ export function createQwenSettings(React) {
     return h(
       React.Fragment,
       null,
-      h(
-        'p',
-        null,
-        'Host-wide settings for the Qwen3 ASR + TTS server. Enter any HTTP or HTTPS base URL reachable from the DSH host. The browser accesses it through authenticated DSH routes.',
-      ),
-      field('Qwen API base URL', 'baseUrl'),
-      field('Request timeout (ms)', 'timeoutMs', 'number'),
+      h('p', null, 'dsh-live-voice.recognition.qwen.hostHelp'),
+      field('dsh-live-voice.speak.qwen.endpoint', 'baseUrl'),
+      field('dsh-live-voice.commons.connection.timeout', 'timeoutMs', 'number'),
       h(
         'div',
         { className: 'dlv-settings-actions' },
         h(
           'button',
           { type: 'button', disabled: busy || !loaded, onClick: () => run('save') },
-          'Save Qwen settings',
+          'dsh-live-voice.speak.qwen.save',
         ),
         h(
           'button',
           { type: 'button', disabled: busy || !loaded, onClick: () => run('test') },
-          'Test Qwen server',
+          'dsh-live-voice.speak.qwen.test',
         ),
         h(
           'button',
           { type: 'button', disabled: busy, onClick: () => run('load') },
-          'Reload saved settings',
+          'dsh-live-voice.commons.connection.reload',
         ),
       ),
-      busy ? h('p', { role: 'status' }, 'Contacting DSH host…') : null,
+      busy ? h('p', { role: 'status' }, 'dsh-live-voice.commons.connection.contactingHost') : null,
       message ? h('p', { role: 'status' }, message) : null,
       error ? h('p', { role: 'alert' }, error) : null,
     );
