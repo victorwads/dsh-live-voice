@@ -9,6 +9,7 @@ coverage/
 artifacts/
 .test-dist/
 .npm-cache/
+.pnpm-store/
 .DS_Store
 
 # Local speech runtimes, model weights, logs, and generated audio. These files

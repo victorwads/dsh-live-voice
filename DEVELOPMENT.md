@@ -9,6 +9,19 @@ npm run build
 
 Implementation, test, and build-script source is TypeScript (`.ts`). `npm run typecheck` compiles the TypeScript project; `npm test` typechecks, builds the browser and host bundles, transpiles the TypeScript tests, then runs them. Tests exercise engines, coordination, transcript edits, RPC, configuration, and UI contracts, but do not record the microphone. `npm run dev` watches the browser and host bundles only; it is not a replacement DSH server.
 
+## Component previews
+
+[Preview.js](https://previewjs.com/docs/guides/react) runs the plugin UI in isolation from DSH. Install dependencies and start the local preview workspace:
+
+```sh
+npm ci
+npm run preview
+```
+
+The Preview.js component list includes `VoiceBarPreview` and `SettingsScreenPreview` from `__previewjs__/LiveVoicePreviews.tsx`. The voice-bar preview accepts the scenarios `listening`, `processing`, `speaking`, `paused`, and `queued`; its controls update an in-memory controller only. The settings preview uses the same mock controller and the real translation provider. The shared wrapper injects the production plugin CSS plus a small set of DSH-like theme tokens. It never starts microphone capture, speech recognition, speech synthesis, or a DSH server.
+
+Preview-only state belongs under `__previewjs__/`; production components must not import it. The next planned preview target is a DevInfo screen that subscribes to the controller snapshot and displays state-machine transitions in real time.
+
 ## Qwen3 HTTP engine contract
 
 The plugin can connect to a separately managed Qwen3 speech service on an unauthenticated loopback HTTP base URL. The service lifecycle and weights are deliberately outside this repository. It must expose `GET /health`, `POST /v1/audio/transcriptions`, and `POST /v1/audio/speech`. Standard OpenAI multipart transcription and OminiX-API's JSON/base64 transcription contract are detected automatically. Host configuration is stored at `~/.dsh/dsh-live-voice-qwen.json` with owner-only permissions and rejects non-loopback URLs.
