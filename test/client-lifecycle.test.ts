@@ -4,8 +4,8 @@ import assert from 'node:assert/strict';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
-import { apply } from '../src/client/index.tsx';
-import { VoiceCoordinator } from '../src/core/coordinator.ts';
+import { apply } from '../src/app/client/apply.tsx';
+import { VoiceCoordinator } from '../src/modules/core/coordinator.ts';
 
 const h = React.createElement;
 function deferred() {

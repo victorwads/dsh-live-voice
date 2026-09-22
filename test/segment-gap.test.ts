@@ -1,7 +1,7 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeSettings, defaultSettings } from '../src/core/settings.ts';
+import { normalizeSettings, defaultSettings } from '../src/modules/core/settings.ts';
 
 test('speech segment gap defaults to 400 ms and accepts bounded integer values', () => {
   assert.equal(defaultSettings.segmentGapMs, 400);

@@ -8,7 +8,7 @@ import {
   LATEST_RELEASE_API_URL,
   RELEASE_CHECK_INTERVAL_MS,
   RELEASE_CHECK_STORAGE_KEY,
-} from '../src/client/releases.ts';
+} from '../src/modules/settings/services/releases.ts';
 
 function memoryStorage() {
   const values = new Map();

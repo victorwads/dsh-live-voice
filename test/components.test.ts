@@ -4,7 +4,11 @@ import assert from 'node:assert/strict';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
-import { createComponents } from '../src/client/components.tsx';
+import { createConversationComponents } from '../src/modules/conversation/components/createConversationComponents.tsx';
+import { createLiveVoiceSettings } from '../src/modules/settings/components/createLiveVoiceSettings.tsx';
+import { withAppLanguage } from '../src/app/client/i18n/index.ts';
+const EN_SNAPSHOT = Object.freeze({ active: 'en', revision: 0 });
+const EN_LOCALE = Object.freeze({ subscribe: () => () => {}, getSnapshot: () => EN_SNAPSHOT });
 test('mounted voice UI exposes controls, distinct states, and capability failures', async () => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost' });
   const previous = { window: globalThis.window, document: globalThis.document };
@@ -69,7 +73,8 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     },
     clearError: () => calls.push('clear'),
   };
-  const { MicrophoneButtons, RecordingBar, SettingsPanel } = createComponents(React);
+  const { MicrophoneButtons, RecordingBar } = createConversationComponents(React);
+  const SettingsPanel = withAppLanguage(createLiveVoiceSettings(), EN_LOCALE);
   const root = createRoot(document.getElementById('root'));
   const click = (label) => document.querySelector('[aria-label="' + label + '"]').click();
   try {
@@ -118,7 +123,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       'https://github.com/deepseek-ai/deepseek-harness/releases/tag/v0.1.6-alpha.2',
     );
     const starBadge = document.querySelector('[aria-label="Star DSH Live Voice on GitHub"]');
-    assert.equal(starBadge.textContent, '★Star Us on GitHub');
+    assert.equal(starBadge.textContent, '★ Star Us on GitHub');
     assert.equal(starBadge.parentElement.className, 'dlv-settings-heading');
     assert.equal(starBadge.href, 'https://github.com/victorwads/dsh-live-voice');
     const updateBadge = document.querySelector('.dlv-update-badge');
@@ -134,11 +139,11 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     const tabs = [...document.querySelectorAll('[role=tab]')];
     assert.deepEqual(
       tabs.map((tab) => tab.textContent),
-      ['Conversation', 'Speech', 'Speech recognition'],
+      ['Speech', 'Speech recognition', 'Conversation'],
     );
     assert.deepEqual(
       tabs.map((tab) => tab.getAttribute('aria-selected')),
-      ['true', 'false', 'false'],
+      ['false', 'false', 'true'],
       'Conversation is the initial settings tab',
     );
     const panels = [...document.querySelectorAll('[role=tabpanel]')];
@@ -150,7 +155,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     );
     const conversation = panels.find((panel) => panel.id.endsWith('-panel-conversation'));
     assert.equal(conversation.hidden, false);
-    assert.match(conversation.textContent, /Automatically speak new assistant messages/);
+    assert.match(conversation.textContent, /Automatic assistant speech/);
     assert.match(conversation.textContent, /Stop assistant speech when I send a message/);
     assert.match(conversation.textContent, /does not stop the assistant audio/);
     assert.match(conversation.textContent, /Assistant response delay/);
@@ -158,13 +163,13 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.match(conversation.textContent, /Sending mode/);
     assert.match(conversation.textContent, /Gated listening releases the microphone/);
     await act(async () =>
-      tabs[0].dispatchEvent(
+      tabs[2].dispatchEvent(
         new window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }),
       ),
     );
-    assert.equal(tabs[1].getAttribute('aria-selected'), 'true');
-    assert.equal(document.getElementById(tabs[1].getAttribute('aria-controls')).hidden, false);
-    const speechPanel = document.getElementById(tabs[1].getAttribute('aria-controls'));
+    assert.equal(tabs[0].getAttribute('aria-selected'), 'true');
+    assert.equal(document.getElementById(tabs[0].getAttribute('aria-controls')).hidden, false);
+    const speechPanel = document.getElementById(tabs[0].getAttribute('aria-controls'));
     assert.ok(speechPanel.textContent.includes('Test selected speech output'));
     assert.ok(speechPanel.textContent.includes('Refresh available engines'));
     const agentVoiceContext = speechPanel.querySelector('textarea');
@@ -183,9 +188,9 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       ),
     );
     assert.equal(conversation.textContent.includes('Test selected speech output'), false);
-    await act(async () => tabs[2].click());
-    assert.equal(tabs[2].getAttribute('aria-selected'), 'true');
-    assert.equal(document.getElementById(tabs[2].getAttribute('aria-controls')).hidden, false);
+    await act(async () => tabs[1].click());
+    assert.equal(tabs[1].getAttribute('aria-selected'), 'true');
+    assert.equal(document.getElementById(tabs[1].getAttribute('aria-controls')).hidden, false);
     assert.equal(
       [...document.querySelectorAll('.dlv-settings label')].some((label) =>
         label.textContent.includes('Recognition engine'),
@@ -197,24 +202,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     );
     assert.deepEqual(
       [...recognitionSelect.options].map((option) => option.textContent),
-      [
-        'Browser SpeechRecognition — Default option',
-        'Qwen3 ASR — HTTP API',
-        'Whisper — HTTP API',
-        'Browser WebGPU Inference — Soon',
-        'sherpa-onnx Streaming — Soon',
-        'NVIDIA Parakeet — Soon',
-        'Voxtral Realtime — Soon',
-      ],
-    );
-    assert.equal(
-      recognitionSelect.querySelector('optgroup').label,
-      'Coming Soon — vote on repo issues',
-    );
-    assert.equal([...recognitionSelect.options].filter((option) => option.disabled).length, 4);
-    assert.match(
-      document.querySelector('.dlv-recognition-engine-description').textContent,
-      /browser SpeechRecognition API.*default option/i,
+      ['Browser SpeechRecognition — Default option', 'Qwen3 ASR — HTTP API', 'Whisper — HTTP API'],
     );
     assert.equal(
       document.querySelector('[aria-label="Silence detection settings"]'),
@@ -421,7 +409,7 @@ test('Qwen speech output exposes and persists the selected preset voice', async 
     endConversation: () => {},
     refreshCapabilities: () => {},
   };
-  const { SettingsPanel } = createComponents(React);
+  const SettingsPanel = withAppLanguage(createLiveVoiceSettings(), EN_LOCALE);
   const root = createRoot(document.getElementById('root'));
   try {
     await act(async () => root.render(React.createElement(SettingsPanel, { controller })));

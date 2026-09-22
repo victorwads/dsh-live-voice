@@ -1,7 +1,7 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { TranscriptDraft } from '../src/core/transcript.ts';
+import { TranscriptDraft } from '../src/modules/core/transcript.ts';
 test('interim revisions replace only owned suffix and finals commit once', () => {
   const d = new TranscriptDraft();
   assert.equal(d.update('Hello', 'wor'), 'Hello wor');

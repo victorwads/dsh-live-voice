@@ -9,7 +9,7 @@ const versionDefine = {
 };
 
 const client: BuildOptions = {
-  entryPoints: ['src/client/index.tsx'],
+  entryPoints: ['src/app/client/apply.tsx'],
   outfile: 'lib/client.js',
   bundle: true,
   format: 'cjs',
@@ -28,7 +28,7 @@ const client: BuildOptions = {
   logLevel: 'info',
 };
 const host: BuildOptions = {
-  entryPoints: ['src/server.ts'],
+  entryPoints: ['src/app/server/apply.ts'],
   outfile: 'lib/server.js',
   bundle: true,
   format: 'esm',
@@ -38,7 +38,7 @@ const host: BuildOptions = {
   logLevel: 'info',
 };
 const tests: BuildOptions = {
-  entryPoints: ['test/*.test.ts'],
+  entryPoints: ['test/*.test.ts', 'test/*.test.tsx'],
   outdir: '.test-dist',
   outbase: 'test',
   bundle: true,

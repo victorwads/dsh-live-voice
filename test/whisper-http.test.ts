@@ -4,12 +4,12 @@ import assert from 'node:assert/strict';
 import {
   encodeMonoPcm16Wav,
   WhisperHttpRecognitionEngine,
-} from '../src/engines/recognition/whisper-http.ts';
+} from '../src/modules/recognition/engines/whisper/WhisperRecognitionEngine.ts';
 import {
   resolveWhisperUrl,
   validateMonoPcm16Wav,
   WhisperHttpHost,
-} from '../src/engines/recognition/whisper-http-host.ts';
+} from '../src/modules/recognition/engines/whisper/whisperRecognitionHost.ts';
 
 test('Whisper host accepts only loopback and canonical mono PCM16 WAV', () => {
   assert.equal(resolveWhisperUrl('http://127.0.0.1:8080/inference').pathname, '/inference');

@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { getEventListeners } from 'node:events';
-import { MicrophoneMeter } from '../src/core/microphone.ts';
+import { MicrophoneMeter } from '../src/modules/core/microphone.ts';
 
 const deferred = () => {
   let resolve, reject;

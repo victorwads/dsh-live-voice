@@ -1,7 +1,7 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeSettings, defaultSettings } from '../src/core/settings.ts';
+import { normalizeSettings, defaultSettings } from '../src/modules/core/settings.ts';
 test('malformed persisted preferences cannot select remote engines or invalid options', () => {
   for (const input of [
     null,

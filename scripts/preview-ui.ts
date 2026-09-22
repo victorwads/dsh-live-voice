@@ -2,7 +2,7 @@
 import { build } from 'esbuild';
 import { chromium } from 'playwright-core';
 import { mkdir } from 'node:fs/promises';
-const entry = `import React from 'react'; import {createRoot} from 'react-dom/client'; import {createComponents} from './src/client/components.ts'; import {styles} from './src/client/styles.ts'; const style=document.createElement('style');style.textContent=styles;document.head.appendChild(style); const state={conversation:true,listening:true,recognizing:true,speaking:false,paused:false,settings:{},capabilities:{}}; const c={subscribe:()=>()=>{},getSnapshot:()=>state,meter:{level:()=>0.4}};const {RecordingBar}=createComponents(React);createRoot(document.getElementById('root')).render(React.createElement(RecordingBar,{controller:c}));`;
+const entry = `import React from 'react'; import {createRoot} from 'react-dom/client'; import {createConversationComponents} from './src/modules/conversation/components/createConversationComponents.tsx'; import {styles} from './src/styles/index.ts'; const style=document.createElement('style');style.textContent=styles;document.head.appendChild(style); const state={conversation:true,listening:true,recognizing:true,speaking:false,paused:false,settings:{},capabilities:{}}; const c={subscribe:()=>()=>{},getSnapshot:()=>state,meter:{level:()=>0.4}};const {RecordingBar}=createConversationComponents(React);createRoot(document.getElementById('root')).render(React.createElement(RecordingBar,{controller:c}));`;
 const output = await build({
   stdin: { contents: entry, resolveDir: process.cwd() },
   bundle: true,

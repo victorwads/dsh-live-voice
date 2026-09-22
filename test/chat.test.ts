@@ -6,7 +6,7 @@ import {
   addressedTurn,
   latestUserSequence,
   pendingQuestionSpeech,
-} from '../src/client/chat.ts';
+} from '../src/modules/conversation/models/chat.ts';
 test('pending question speech reads question prompts only', () => {
   assert.equal(
     pendingQuestionSpeech({

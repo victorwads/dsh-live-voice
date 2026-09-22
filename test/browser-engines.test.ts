@@ -2,8 +2,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { getEventListeners } from 'node:events';
-import { BrowserSpeakingEngine } from '../src/engines/speaking/browser.ts';
-import { BrowserRecognitionEngine } from '../src/engines/recognition/browser.ts';
+import { BrowserSpeakingEngine } from '../src/modules/speak/engines/browser/BrowserSpeakingEngine.ts';
+import { BrowserRecognitionEngine } from '../src/modules/recognition/engines/browser/BrowserRecognitionEngine.ts';
 
 const local = { name: 'Local', voiceURI: 'local', lang: 'pt-BR', localService: true };
 const remote = { name: 'Remote', voiceURI: 'remote', lang: 'pt-BR', localService: false };

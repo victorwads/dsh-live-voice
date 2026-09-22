@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
-import { SayEngine } from '../src/engines/speaking/say.ts';
+import { SayEngine } from '../src/modules/speak/engines/say/SaySpeakingEngine.ts';
 
 const turn = () => new Promise((resolve) => setImmediate(resolve));
 function deferred() {
@@ -86,10 +86,16 @@ test('secure UTF-8 file argv; only close plus cleanup resolves speech', async ()
   assert.deepEqual(calls.find(([name]) => name === 'spawn').slice(1), [
     '/usr/bin/say',
     [
-      '-f', '/fake-temp/dsh-live-voice-say-1/speech.txt',
-      '-o', '/fake-temp/dsh-live-voice-say-1/speech.wav',
-      '--file-format=WAVE', '--data-format=LEI16@22050',
-      '-v', 'Samantha', '-r', '180',
+      '-f',
+      '/fake-temp/dsh-live-voice-say-1/speech.txt',
+      '-o',
+      '/fake-temp/dsh-live-voice-say-1/speech.wav',
+      '--file-format=WAVE',
+      '--data-format=LEI16@22050',
+      '-v',
+      'Samantha',
+      '-r',
+      '180',
     ],
     { shell: false, stdio: 'ignore' },
   ]);

@@ -7,16 +7,19 @@ import {
   createFallbackTranslator,
   liveVoiceDictionaries,
   registerLiveVoiceLocales,
-} from '../src/client/locale.ts';
+} from '../src/app/client/i18n/index.ts';
 
 test('ships complete typed dictionaries for DSH built-ins and contributed languages', async () => {
   const baseSource = await import('node:fs/promises').then(({ readFile }) =>
-    readFile(new URL('../src/client/i18n/base.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../src/app/client/i18n/catalogs/base.ts', import.meta.url), 'utf8'),
   );
   assert.match(baseSource, /export interface LiveVoiceTranslation/);
   for (const locale of ['en', 'zh', 'pt-BR', 'fr', 'es', 'hi']) {
     const source = await import('node:fs/promises').then(({ readFile }) =>
-      readFile(new URL('../src/client/i18n/' + locale + '.ts', import.meta.url), 'utf8'),
+      readFile(
+        new URL('../src/app/client/i18n/catalogs/' + locale + '.ts', import.meta.url),
+        'utf8',
+      ),
     );
     assert.match(
       source,

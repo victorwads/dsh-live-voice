@@ -4,9 +4,11 @@ import assert from 'node:assert/strict';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
-import { createComponents } from '../src/client/components.tsx';
-import { createFallbackTranslator, liveVoiceDictionaries } from '../src/client/locale.ts';
-import { normalizeSettings } from '../src/core/settings.ts';
+import { createConversationComponents } from '../src/modules/conversation/components/createConversationComponents.tsx';
+import { createLiveVoiceSettings } from '../src/modules/settings/components/createLiveVoiceSettings.tsx';
+import { withAppLanguage } from '../src/app/client/i18n/index.ts';
+import { createFallbackTranslator, liveVoiceDictionaries } from '../src/app/client/i18n/index.ts';
+import { normalizeSettings } from '../src/modules/core/settings.ts';
 
 test('settings labels and help render from every locale catalog', async () => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost' });
@@ -40,15 +42,17 @@ test('settings labels and help render from every locale catalog', async () => {
         subscribe: () => () => {},
         getSnapshot: () => localeSnapshot,
       };
-      const { SettingsPanel } = createComponents(
-        React,
-        createFallbackTranslator(locale),
-        dshLocale,
-      );
+      const SettingsPanel = withAppLanguage(createLiveVoiceSettings(), dshLocale);
       await act(async () => root.render(React.createElement(SettingsPanel, { controller })));
-      const text = document.getElementById('root').textContent;
+      const tabs = [...document.querySelectorAll('[role="tab"]')];
+      const rendered = [];
+      for (const tab of tabs) {
+        await act(async () => tab.click());
+        rendered.push(document.getElementById('root').textContent);
+      }
+      const text = rendered.join(' ');
       for (const suffix of [
-        'speak.autoPlayback.enabled',
+        'speak.autoPlayback.label',
         'speak.autoPlayback.help',
         'speak.interruption.enabled',
         'speak.interruption.disabledHelp',
@@ -56,7 +60,7 @@ test('settings labels and help render from every locale catalog', async () => {
         'recognition.holdToTalk.help',
         'recognition.speakerMode.help',
         'speak.responseDelay.help',
-        'recognition.manualSend.help',
+        'settings.delivery.manualLabel',
         'speak.filters.code.enabled',
         'recognition.commands.enabled',
         'recognition.minimumWords.enabled',
@@ -111,7 +115,7 @@ test('voice controls follow a live DSH locale change without changing speech set
     startConversation: () => {},
   };
   const translate = (key, params) => createFallbackTranslator(active)(key, params);
-  const { MicrophoneButtons } = createComponents(React, translate, locale);
+  const { MicrophoneButtons } = createConversationComponents(React, translate, locale);
   const root = createRoot(document.getElementById('root'));
   try {
     await act(async () => root.render(React.createElement(MicrophoneButtons, { controller })));

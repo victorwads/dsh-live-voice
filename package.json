@@ -9,8 +9,8 @@
     "build": "npm run typecheck && node --experimental-strip-types scripts/build.ts",
     "check:dist": "node scripts/check-dist.mjs",
     "dev": "node --experimental-strip-types scripts/build.ts --watch",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"test/**/*.{ts,tsx}\" \"scripts/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"test/**/*.{ts,tsx}\" \"scripts/**/*.ts\"",
     "setup:hooks": "git config core.hooksPath .githooks",
     "prepack": "npm run build"
   },

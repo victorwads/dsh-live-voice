@@ -1,16 +1,25 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { defaultAgentVoiceContext, normalizeSettings } from '../src/core/settings.ts';
+import { defaultAgentVoiceContext, normalizeSettings } from '../src/modules/core/settings.ts';
 import { createVoiceContextStore } from '../src/server.ts';
 
 test('voice context defaults, supports customization, and rejects unsafe persisted input', () => {
   assert.equal(normalizeSettings({}).agentVoiceContext, defaultAgentVoiceContext);
-  assert.equal(normalizeSettings({ agentVoiceContext: 'Speak briefly.' }).agentVoiceContext, 'Speak briefly.');
-  assert.equal(normalizeSettings({ agentVoiceContext: 'bad\0context' }).agentVoiceContext, defaultAgentVoiceContext);
+  assert.equal(
+    normalizeSettings({ agentVoiceContext: 'Speak briefly.' }).agentVoiceContext,
+    'Speak briefly.',
+  );
+  assert.equal(
+    normalizeSettings({ agentVoiceContext: 'bad\0context' }).agentVoiceContext,
+    defaultAgentVoiceContext,
+  );
   assert.equal(normalizeSettings({ agentVoiceContext: '' }).agentVoiceContext, '');
   assert.equal(normalizeSettings({}).agentVoiceContextEnabled, true);
-  assert.equal(normalizeSettings({ agentVoiceContextEnabled: false }).agentVoiceContextEnabled, false);
+  assert.equal(
+    normalizeSettings({ agentVoiceContextEnabled: false }).agentVoiceContextEnabled,
+    false,
+  );
 });
 
 test('voice context store isolates sessions and removes inactive contexts', () => {

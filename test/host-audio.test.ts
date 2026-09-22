@@ -1,22 +1,34 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HostAudioSpeakingEngine } from '../src/engines/speaking/host-audio.ts';
+import { HostAudioSpeakingEngine } from '../src/modules/speak/engines/audio/HostAudioEngine.ts';
 
 class AudioMock extends EventTarget {
   paused = true;
   playbackRate = 1;
-  async play() { this.paused = false; }
-  pause() { this.paused = true; }
+  async play() {
+    this.paused = false;
+  }
+  pause() {
+    this.paused = true;
+  }
 }
 
 test('host M4A engine prepares standardized audio and browser owns playback', async () => {
-  const revoked = [], audio = new AudioMock();
-  const engine = new HostAudioSpeakingEngine({ endpoint: '/speech', globals: {
-    fetch: async () => new Response(new Blob(['M4A-test'], { type: 'audio/mp4' })),
-    URL: { createObjectURL: () => 'blob:test', revokeObjectURL: (url) => revoked.push(url) },
-    Audio: class { constructor() { return audio; } },
-  }});
+  const revoked = [],
+    audio = new AudioMock();
+  const engine = new HostAudioSpeakingEngine({
+    endpoint: '/speech',
+    globals: {
+      fetch: async () => new Response(new Blob(['M4A-test'], { type: 'audio/mp4' })),
+      URL: { createObjectURL: () => 'blob:test', revokeObjectURL: (url) => revoked.push(url) },
+      Audio: class {
+        constructor() {
+          return audio;
+        }
+      },
+    },
+  });
   const prepared = await engine.prepare('hello');
   const playing = engine.playPrepared(prepared);
   await Promise.resolve();
@@ -27,7 +39,8 @@ test('host M4A engine prepares standardized audio and browser owns playback', as
 });
 
 test('host audio maps synthesis and browser playback rates independently', async () => {
-  const requests = [], audio = new AudioMock();
+  const requests = [],
+    audio = new AudioMock();
   const engine = new HostAudioSpeakingEngine({
     endpoint: '/speech',
     synthesisRate: () => 175,
@@ -38,7 +51,11 @@ test('host audio maps synthesis and browser playback rates independently', async
         return new Response(new Blob(['M4A-test'], { type: 'audio/mp4' }));
       },
       URL: { createObjectURL: () => 'blob:rate', revokeObjectURL() {} },
-      Audio: class { constructor() { return audio; } },
+      Audio: class {
+        constructor() {
+          return audio;
+        }
+      },
     },
   });
   const prepared = await engine.prepare('hello', { rate: 1.6 });
@@ -52,10 +69,19 @@ test('host audio maps synthesis and browser playback rates independently', async
 
 test('host audio preparation aborts fetch and rejects stale work', async () => {
   const controller = new AbortController();
-  const engine = new HostAudioSpeakingEngine({ endpoint: '/speech', globals: {
-    fetch: (_url, options) => new Promise((_resolve, reject) => options.signal.addEventListener('abort', () => reject(Object.assign(new Error('aborted'), { name: 'AbortError' })))),
-    URL: {}, Audio: class {},
-  }});
+  const engine = new HostAudioSpeakingEngine({
+    endpoint: '/speech',
+    globals: {
+      fetch: (_url, options) =>
+        new Promise((_resolve, reject) =>
+          options.signal.addEventListener('abort', () =>
+            reject(Object.assign(new Error('aborted'), { name: 'AbortError' })),
+          ),
+        ),
+      URL: {},
+      Audio: class {},
+    },
+  });
   const preparing = engine.prepare('hello', { signal: controller.signal });
   controller.abort();
   await assert.rejects(preparing, { name: 'AbortError' });

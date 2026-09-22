@@ -4,8 +4,8 @@ import assert from 'node:assert/strict';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
-import { apply } from '../src/client/index.tsx';
-import { MicrophoneMeter } from '../src/core/microphone.ts';
+import { apply } from '../src/app/client/apply.tsx';
+import { MicrophoneMeter } from '../src/modules/core/microphone.ts';
 
 // Contract model, not the DSH/Lexical runtime: state is published by a shell,
 // consumers subscribe independently, and setDraft updates the visible editor.

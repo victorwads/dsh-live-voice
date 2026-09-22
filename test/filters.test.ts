@@ -8,7 +8,7 @@ import {
   matchVoiceCommand,
   normalizeVoiceCommand,
   splitSpeechOutput,
-} from '../src/core/filters.ts';
+} from '../src/modules/core/filters.ts';
 
 test('voice commands match the whole normalized chunk', () => {
   assert.equal(normalizeVoiceCommand('  ÉND, conversation!!! '), 'end conversation');

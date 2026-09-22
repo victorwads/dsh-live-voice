@@ -1,7 +1,7 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { VoiceCoordinator } from '../src/core/coordinator.ts';
+import { VoiceCoordinator } from '../src/modules/core/coordinator.ts';
 const turn = () => new Promise((resolve) => setImmediate(resolve));
 function deferred() {
   let resolve, reject;
@@ -684,10 +684,16 @@ test('hold-to-talk release waits for queued transcription before forced delayed 
 
 test('pausing host playback discards prefetched audio and resume refills the window', async () => {
   const f = fixture();
-  const prepared = [], signals = [];
+  const prepared = [],
+    signals = [];
   f.engine.prepare = (text, { signal }) => {
     signals.push(signal);
-    const value = { text, dispose() { value.disposed = true; } };
+    const value = {
+      text,
+      dispose() {
+        value.disposed = true;
+      },
+    };
     prepared.push(value);
     return Promise.resolve(value);
   };
@@ -697,8 +703,14 @@ test('pausing host playback discards prefetched audio and resume refills the win
   for (const text of ['one', 'two', 'three', 'four']) await f.coordinator.play(text, 'message');
   await turn();
   await f.coordinator.pauseSpeech();
-  assert.equal(signals.slice(0, 3).every((signal) => signal.aborted), true);
-  assert.equal(prepared.slice(0, 3).every((item) => item.disposed), true);
+  assert.equal(
+    signals.slice(0, 3).every((signal) => signal.aborted),
+    true,
+  );
+  assert.equal(
+    prepared.slice(0, 3).every((item) => item.disposed),
+    true,
+  );
   const count = prepared.length;
   await f.coordinator.resumeSpeech();
   await turn();
@@ -725,7 +737,10 @@ test('next speech segment stops only the active item and immediately drains the 
   );
   f.spoken[1].resolve();
   await turn();
-  assert.deepEqual(f.spoken.map((item) => item.text), ['First.', 'Second.', 'Third.']);
+  assert.deepEqual(
+    f.spoken.map((item) => item.text),
+    ['First.', 'Second.', 'Third.'],
+  );
   f.spoken[2].resolve();
   await turn();
   assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 0);
@@ -741,11 +756,17 @@ test('next preserves incoming streaming speech after it skips the active segment
   await f.coordinator.skipSpeechSegment();
   f.coordinator.observeMessage('third', 'Third.\n');
   await turn();
-  assert.deepEqual(f.spoken.map((item) => item.text), ['First.', 'Second.']);
+  assert.deepEqual(
+    f.spoken.map((item) => item.text),
+    ['First.', 'Second.'],
+  );
   assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 2);
   f.spoken[1].resolve();
   await turn();
-  assert.deepEqual(f.spoken.map((item) => item.text), ['First.', 'Second.', 'Third.']);
+  assert.deepEqual(
+    f.spoken.map((item) => item.text),
+    ['First.', 'Second.', 'Third.'],
+  );
   f.spoken[2].resolve();
   await turn();
   await f.coordinator.dispose();
@@ -765,7 +786,10 @@ test('next skips the imminent segment during a queued speech gap', async () => {
 
   await f.coordinator.skipSpeechSegment();
   await turn();
-  assert.deepEqual(f.spoken.map((item) => item.text), ['First.', 'Third.']);
+  assert.deepEqual(
+    f.spoken.map((item) => item.text),
+    ['First.', 'Third.'],
+  );
   assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 1);
   f.spoken[1].resolve();
   await turn();
@@ -805,19 +829,35 @@ test('stopping during a speech gap cancels the queued next segment', async () =>
 
 test('host speech prefetch is bounded to three queued segments and cancelled on stop', async () => {
   const f = fixture();
-  const prepared = [], signals = [];
+  const prepared = [],
+    signals = [];
   f.engine.prepare = (text, { signal }) => {
     signals.push(signal);
-    const value = { text, dispose() { value.disposed = true; } };
+    const value = {
+      text,
+      dispose() {
+        value.disposed = true;
+      },
+    };
     prepared.push(value);
     return Promise.resolve(value);
   };
   f.engine.playPrepared = async () => {};
   f.coordinator.patch({ speaking: true });
-  for (const text of ['one', 'two', 'three', 'four', 'five']) await f.coordinator.play(text, 'message');
+  for (const text of ['one', 'two', 'three', 'four', 'five'])
+    await f.coordinator.play(text, 'message');
   await turn();
-  assert.deepEqual(prepared.map((item) => item.text), ['one', 'two', 'three']);
+  assert.deepEqual(
+    prepared.map((item) => item.text),
+    ['one', 'two', 'three'],
+  );
   await f.coordinator.stopSpeech(false);
-  assert.equal(signals.every((signal) => signal.aborted), true);
-  assert.equal(prepared.every((item) => item.disposed), true);
+  assert.equal(
+    signals.every((signal) => signal.aborted),
+    true,
+  );
+  assert.equal(
+    prepared.every((item) => item.disposed),
+    true,
+  );
 });

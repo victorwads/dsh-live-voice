@@ -1,7 +1,7 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { VoiceOwnership } from '../src/core/ownership.ts';
+import { VoiceOwnership } from '../src/modules/core/ownership.ts';
 test('latest concurrent hardware request wins', async () => {
   const gate = new VoiceOwnership(),
     calls = [];

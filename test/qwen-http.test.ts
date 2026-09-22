@@ -5,9 +5,9 @@ import {
   QwenHttpHost,
   resolveQwenBaseUrl,
   validateQwenConfig,
-} from '../src/engines/qwen-http-host.ts';
-import { encodeMonoPcm16Wav } from '../src/engines/recognition/whisper-http.ts';
-import { QwenHttpSpeakingEngine } from '../src/engines/speaking/qwen-http.ts';
+} from '../src/modules/core/qwen/QwenHttpHost.ts';
+import { encodeMonoPcm16Wav } from '../src/modules/recognition/engines/whisper/WhisperRecognitionEngine.ts';
+import { QwenHttpSpeakingEngine } from '../src/modules/speak/engines/qwen/QwenSpeakingEngine.ts';
 
 test('Qwen host permits arbitrary HTTP and HTTPS base URLs', () => {
   const accepted = [
