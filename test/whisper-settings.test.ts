@@ -6,7 +6,7 @@ import {
   validateWhisperConfig,
   resolveWhisperUrl,
 } from '../src/engines/recognition/whisper-http-host.ts';
-import { whisperSettingsRequest } from '../src/client/whisper-settings.ts';
+import { whisperSettingsRequest } from '../src/client/whisper-settings.tsx';
 
 test('Whisper settings validate loopback hosts and persist only a validated config', async () => {
   const writes = [];

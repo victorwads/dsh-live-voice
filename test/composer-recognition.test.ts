@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
-import { apply } from '../src/client/index.ts';
+import { apply } from '../src/client/index.tsx';
 import { MicrophoneMeter } from '../src/core/microphone.ts';
 
 // Contract model, not the DSH/Lexical runtime: state is published by a shell,

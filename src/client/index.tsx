@@ -11,8 +11,9 @@ import { BrowserRecognitionEngine } from '../engines/recognition/browser.ts';
 import { WhisperHttpRecognitionEngine } from '../engines/recognition/whisper-http.ts';
 import { QwenHttpRecognitionEngine } from '../engines/recognition/qwen-http.ts';
 import { QwenHttpSpeakingEngine } from '../engines/speaking/qwen-http.ts';
-import { createComponents } from './components.ts';
+import { createComponents } from './components.tsx';
 import { registerLiveVoiceLocales } from './locale.ts';
+import { withLiveVoiceLanguage } from './i18n-react.tsx';
 import { styles } from './styles.ts';
 import {
   assistantMessages,
@@ -24,7 +25,6 @@ import {
 export const inject = ['slots', 'connection', 'uiConversation', 'uiSession', 'locale'];
 export function apply(ctx) {
   const t = registerLiveVoiceLocales(ctx);
-  const e = React.createElement;
   const { MicrophoneButtons, RecordingBar, SpeakButton, SettingsPanel } = createComponents(
     React,
     t,
@@ -37,7 +37,10 @@ export function apply(ctx) {
   // A route change may replace every conversation slot, but the next committed
   // composer should inherit the user's explicit choice to remain in voice mode.
   let voiceModeActive = false;
-  const publishVoiceContext = (entry, active = entry?.controller?.getSnapshot().conversation === true) => {
+  const publishVoiceContext = (
+    entry,
+    active = entry?.controller?.getSnapshot().conversation === true,
+  ) => {
     if (!entry) return;
     const settings = entry.controller.getSnapshot().settings;
     const body = JSON.stringify({
@@ -410,7 +413,7 @@ export function apply(ctx) {
   function Buttons(props) {
     const entry = useEntry(props.sessionId, 'buttons');
     useComposer(entry, props);
-    return entry ? e(MicrophoneButtons, { controller: entry.controller }) : null;
+    return entry ? <MicrophoneButtons controller={entry.controller} /> : null;
   }
   function Settings() {
     const [controller, setController] = React.useState(null);
@@ -484,7 +487,7 @@ export function apply(ctx) {
         void c.dispose();
       };
     }, []);
-    return controller ? e(SettingsPanel, { controller }) : null;
+    return controller ? <SettingsPanel controller={controller} /> : null;
   }
   ctx.slots.inject('settings.section', () =>
     ctx.slots.register(
@@ -494,13 +497,13 @@ export function apply(ctx) {
         order: 65,
         label: () => t('dsh-live-voice.commons.pluginName'),
       },
-      Settings,
+      withLiveVoiceLanguage(Settings, ctx.locale),
     ),
   );
   function Dock(props) {
     const entry = useEntry(props.sessionId, 'dock');
     useComposer(entry, props);
-    return entry ? e(RecordingBar, { controller: entry.controller }) : null;
+    return entry ? <RecordingBar controller={entry.controller} /> : null;
   }
   function QuestionStatusView({ entry }) {
     const snapshot = React.useSyncExternalStore(
@@ -531,19 +534,20 @@ export function apply(ctx) {
     const target = typeof document === 'undefined' ? null : document.body;
     return snapshot.answeringQuestion && target && overlayStyle
       ? createPortal(
-          e(RecordingBar, {
-            controller: entry.controller,
-            questionOnly: true,
-            overlay: true,
-            overlayStyle,
-          }),
+          <RecordingBar
+            controller={entry.controller}
+            questionOnly
+            overlay
+            overlayStyle={overlayStyle}
+          />,
+
           target,
         )
       : null;
   }
   function QuestionStatus(props) {
     const entry = useEntry(props.sessionId, 'question-status');
-    return entry ? e(QuestionStatusView, { entry }) : null;
+    return entry ? <QuestionStatusView entry={entry} /> : null;
   }
   function ActionView({ entry, messageId }) {
     const snapshot = React.useSyncExternalStore(
@@ -555,22 +559,27 @@ export function apply(ctx) {
     const capability = snapshot.capabilities[snapshot.settings.engine];
     const active = snapshot.speaking && message.id === snapshot.activeMessageId;
     const unavailable = capability?.supported !== true;
-    return e(SpeakButton, {
-      active,
-      disabled: !message.text.trim() || (!active && unavailable),
-      label: unavailable
-        ? capability?.reason || t('dsh-live-voice.speak.output.checking')
-        : undefined,
-      onClick: () =>
-        run(
-          entry.controller,
-          active ? entry.controller.stopSpeech() : entry.controller.speak(message.text, message.id),
-        ),
-    });
+    return (
+      <SpeakButton
+        active={active}
+        disabled={!message.text.trim() || (!active && unavailable)}
+        label={
+          unavailable ? capability?.reason || t('dsh-live-voice.speak.output.checking') : undefined
+        }
+        onClick={() =>
+          run(
+            entry.controller,
+            active
+              ? entry.controller.stopSpeech()
+              : entry.controller.speak(message.text, message.id),
+          )
+        }
+      />
+    );
   }
   function Action(props) {
     const entry = useEntry(props.sessionId, 'action');
-    return entry ? e(ActionView, { entry, messageId: props.messageId }) : null;
+    return entry ? <ActionView entry={entry} messageId={props.messageId} /> : null;
   }
   ctx.effect(() => {
     const style = document.createElement('style');
@@ -588,7 +597,7 @@ export function apply(ctx) {
     ctx.slots.inject(name, () =>
       ctx.slots.register(
         { name, id, order, label: () => t('dsh-live-voice.commons.pluginName') },
-        component,
+        withLiveVoiceLanguage(component, ctx.locale),
       ),
     );
   ctx.effect(() => {

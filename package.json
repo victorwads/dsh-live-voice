@@ -9,8 +9,8 @@
     "build": "npm run typecheck && node --experimental-strip-types scripts/build.ts",
     "check:dist": "node scripts/check-dist.mjs",
     "dev": "node --experimental-strip-types scripts/build.ts --watch",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
     "setup:hooks": "git config core.hooksPath .githooks",
     "prepack": "npm run build"
   },
@@ -110,6 +110,7 @@
     }
   },
   "dependencies": {
+    "@wads.dev/i18n-react": "^0.0.1-alpha.0",
     "@wads.dev/i18n-ts": "0.0.1-alpha.0"
   }
 }

@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
-import { createComponents } from '../src/client/components.ts';
+import { createComponents } from '../src/client/components.tsx';
 import { createFallbackTranslator, liveVoiceDictionaries } from '../src/client/locale.ts';
 import { normalizeSettings } from '../src/core/settings.ts';
 
@@ -35,7 +35,16 @@ test('settings labels and help render from every locale catalog', async () => {
   const root = createRoot(document.getElementById('root'));
   try {
     for (const locale of Object.keys(liveVoiceDictionaries)) {
-      const { SettingsPanel } = createComponents(React, createFallbackTranslator(locale));
+      const localeSnapshot = { active: locale, revision: 0 };
+      const dshLocale = {
+        subscribe: () => () => {},
+        getSnapshot: () => localeSnapshot,
+      };
+      const { SettingsPanel } = createComponents(
+        React,
+        createFallbackTranslator(locale),
+        dshLocale,
+      );
       await act(async () => root.render(React.createElement(SettingsPanel, { controller })));
       const text = document.getElementById('root').textContent;
       for (const suffix of [
@@ -56,7 +65,7 @@ test('settings labels and help render from every locale catalog', async () => {
           text.includes(liveVoiceDictionaries[locale]['dsh-live-voice.' + suffix]),
           locale + ': ' + suffix,
         );
-      assert.ok(!text.includes('dsh-live-voice.'));
+      assert.ok(!text.includes('dsh-live-voice.'), text.match(/dsh-live-voice\.[^\s<]*/)?.[0]);
     }
   } finally {
     await act(async () => root.unmount());
@@ -76,7 +85,7 @@ test('voice controls follow a live DSH locale change without changing speech set
   const listeners = new Set();
   let active = 'en';
   let revision = 0;
-  let localeSnapshot = { revision };
+  let localeSnapshot = { active, revision };
   const locale = {
     subscribe(listener) {
       listeners.add(listener);
@@ -112,7 +121,7 @@ test('voice controls follow a live DSH locale change without changing speech set
     );
     active = 'pt-BR';
     revision += 1;
-    localeSnapshot = { revision };
+    localeSnapshot = { active, revision };
     await act(async () => listeners.forEach((listener) => listener()));
     assert.equal(
       document.querySelector('.dlv-mic').getAttribute('aria-label'),

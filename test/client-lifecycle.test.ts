@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
-import { apply } from '../src/client/index.ts';
+import { apply } from '../src/client/index.tsx';
 import { VoiceCoordinator } from '../src/core/coordinator.ts';
 
 const h = React.createElement;
@@ -571,7 +571,9 @@ test('steer delivery dispatches an accelerated composer gesture instead of norma
   const editor = document.createElement('div');
   editor.setAttribute('contenteditable', 'true');
   document.body.append(editor);
-  editor.addEventListener('keydown', (event) => calls.push([event.key, event.ctrlKey, event.metaKey]));
+  editor.addEventListener('keydown', (event) =>
+    calls.push([event.key, event.ctrlKey, event.metaKey]),
+  );
   const actions = {
     setDraft() {},
     submit() {

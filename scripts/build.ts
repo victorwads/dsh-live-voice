@@ -9,13 +9,17 @@ const versionDefine = {
 };
 
 const client: BuildOptions = {
-  entryPoints: ['src/client/index.ts'],
+  entryPoints: ['src/client/index.tsx'],
   outfile: 'lib/client.js',
   bundle: true,
   format: 'cjs',
   platform: 'browser',
   target: ['es2022'],
   external: ['react', 'react-dom'],
+  jsx: 'transform',
+  jsxFactory: 'React.createElement',
+  jsxFragment: 'React.Fragment',
+  tsconfigRaw: { compilerOptions: { jsx: 'react' } },
   define: versionDefine,
   banner: {
     js: 'window.__ModuleLoader__.load({id:"dsh-live-voice",factory:(require)=>{var module={exports:{}};var exports=module.exports;',

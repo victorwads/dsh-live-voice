@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
-import { createComponents } from '../src/client/components.ts';
+import { createComponents } from '../src/client/components.tsx';
 test('mounted voice UI exposes controls, distinct states, and capability failures', async () => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost' });
   const previous = { window: globalThis.window, document: globalThis.document };
@@ -171,10 +171,17 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.ok(agentVoiceContext);
     assert.equal(typeof agentVoiceContext.value, 'string');
     assert.equal(
-      [...speechPanel.querySelectorAll('input[type=checkbox]')].some((input) => input.parentElement.textContent.includes('Enable agent voice context') && input.checked),
+      [...speechPanel.querySelectorAll('input[type=checkbox]')].some(
+        (input) =>
+          input.parentElement.textContent.includes('Enable agent voice context') && input.checked,
+      ),
       true,
     );
-    assert.ok([...speechPanel.querySelectorAll('button')].some((button) => button.textContent === 'Restore default'));
+    assert.ok(
+      [...speechPanel.querySelectorAll('button')].some(
+        (button) => button.textContent === 'Restore default',
+      ),
+    );
     assert.equal(conversation.textContent.includes('Test selected speech output'), false);
     await act(async () => tabs[2].click());
     assert.equal(tabs[2].getAttribute('aria-selected'), 'true');
