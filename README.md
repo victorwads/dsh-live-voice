@@ -16,7 +16,7 @@ Speak, listen, answer prompts, and code without touching your keyboard. DSH Live
 Install with `npx dsh` into your DSH web profile:
 
 ```sh
-npx dsh plugin add --profile web github:victorwads/dsh-live-voice
+npx dsh plugin add --profile web dsh-live-voice
 ```
 
 Open **DSH Settings → Live Voice** after your next DSH startup.
