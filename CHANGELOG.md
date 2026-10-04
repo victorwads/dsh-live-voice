@@ -2,7 +2,11 @@
 
 All notable changes to DSH Live Voice are documented in this file.
 
-## [0.3.1] - Unreleased
+## [0.3.1] - 2026-10-03
+
+### Release Changes
+
+This release simplifies the Settings interface, supports larger Qwen recognition uploads, and confirms compatibility with the current tested DSH release.
 
 ### Changes
 
@@ -14,14 +18,26 @@ All notable changes to DSH Live Voice are documented in this file.
 
 - Split agent guidance and architecture documentation by application, domain module, and shared design-system boundaries.
 
+### Bug Fixes
+
+- Increase the default Qwen recognition audio-upload limit from 2 MB to 50 MB and add regression coverage for uploads larger than 2 MB.
+- Derive the installed-version badge and newer-release test fixture from package metadata instead of hard-coded plugin versions.
+
 ### Compatibility
 
-- Confirm tested compatibility with DeepSeek Harness **0.2.0-rc.2**.
+- Confirm tested compatibility with DeepSeek Harness **0.2.0-rc.2** and correct the tested-version release link.
 
-## [0.3.0] - Unreleased
+**Full Changelog:** https://github.com/victorwads/dsh-live-voice/compare/v0.3.0...v0.3.1
+
+## [0.3.0] - 2026-09-24
+
+### Release Changes
+
+This release adds multilingual DSH-native localization, voice-aware agent context, smoother host-audio playback, and a modular foundation for future development.
 
 ### Features
 
+- Translate the plugin interface into English, Portuguese (Brazil), Spanish, French, Hindi, and Chinese through the DSH locale service. Interface language remains independent of recognition language, synthesis language, and user-defined voice commands.
 - Add a configurable, session-scoped Live Voice context for agent responses. During an active voice conversation with automatic spoken responses enabled, the agent receives editable guidance that its user-facing response will be spoken aloud.
 - Add an English Live Voice context editor and Restore default action to Speaking settings; interface labels and help remain localized.
 - Standardize host speech as compact AAC/M4A played in the browser: macOS `say` and Qwen synthesize internally to WAV, the DSH host transcodes it before transport, and up to three upcoming segments are synthesized ahead to reduce gaps.
@@ -34,8 +50,26 @@ All notable changes to DSH Live Voice are documented in this file.
 - Make automatic Steer delivery use DSH's Ctrl/Cmd+Enter accelerated composer gesture instead of the public normal-submit action, so messages are sent to the running agent rather than silently added to its queue. Add a lifecycle regression for the gesture.
 - Deduplicate voice-context synchronization so the PUT request fires only when the payload actually changes, instead of on every coordinator state update.
 - Prevent automatic assistant speech in speaker mode from overtaking the user's turn. Playback now waits for all pending backend transcriptions to finish and for the automatic-send countdown and delivery attempt to complete, avoiding canceled recognition, discarded transcripts, and interrupted automatic delivery.
+- Consume visible assistant history when restarting voice conversation so previous responses and text streamed while voice mode was off are not replayed.
+
+### Changes
+
+- Migrate React UI components to TSX and organize the implementation into application composition roots, domain modules, and a reusable design system.
+- Add a Preview.js component workspace with synthetic voice-bar and Settings scenarios for isolated UI development.
+- Change the project license and package metadata from GPL-3.0-only to Apache-2.0.
+
+### Documentation
+
+- Add dedicated configuration, engine-selection, architecture, review, and voice-lifecycle guides.
+- Update the quick-start command to install the plugin into the DSH web profile.
+
+**Full Changelog:** https://github.com/victorwads/dsh-live-voice/compare/v0.2.3...v0.3.0
 
 ## [0.2.3] - 2026-09-21
+
+### Release Changes
+
+This release makes plugin updates and tested-version information visible in Settings and clarifies the recognition-engine roadmap.
 
 ### Features
 
@@ -53,6 +87,12 @@ All notable changes to DSH Live Voice are documented in this file.
 - Avoid repeated GitHub requests when the release API is unavailable by caching failed checks for the same 24-hour interval.
 - Handle release tags with a leading `v` and prerelease identifiers correctly when deciding whether an update is newer.
 - Ignore unexpected release URLs and fall back to the repository releases page.
+
+### Documentation
+
+- Improve README clarity and remove duplicated content.
+
+**Full Changelog:** https://github.com/victorwads/dsh-live-voice/compare/v0.2.2...v0.2.3
 
 ## [0.2.2] - 2026-09-19
 
