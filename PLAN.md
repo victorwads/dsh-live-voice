@@ -2,6 +2,10 @@
 
 This document describes the product plan and local implementation progress. The published npm version is a documentation placeholder; the working tree now contains an initial plugin undergoing integration validation. Features below describe intended behavior unless verified in the progress section.
 
+## 0.3.2 work in progress
+
+The next release version is reserved as 0.3.2; this is not a completed release or publication. Silence detection now offers Short (500 ms), Natural (1000 ms), Long (2000 ms), and a persisted Custom profile (100–10,000 whole milliseconds). Custom edits save on blur and invalid edits restore the saved value. Qwen and Whisper share the same normalized timing; Browser SpeechRecognition keeps its own segmentation. Validation: `npm test` passed all 183 automated tests, including the build and TypeScript check. An isolated headless Chrome smoke with a synthetic settings controller passed four-option selection, saving 300/400 ms, restoring invalid edits, and retaining the custom value across profile switches without page errors. The test suite still emits existing React act/JSDOM event diagnostics in lifecycle fixtures; these are not physical-device results. Physical-microphone and authenticated-runtime acceptance remain unverified and separate checks.
+
 ## 0.3.1 release preparation
 
 The Settings interface now groups primary fields under collapsed General sections, adds icons to tabs and subsection headings, and keeps recognition capability status outside the General section. All six interface catalogs include the new section label. Release metadata and the lockfile use 0.3.1; the version-badge regression derives the current and next release versions from build-injected package metadata.
@@ -46,7 +50,7 @@ The pause segmentation controls are nested inside the Speech recognition card an
 
 ## Simple provider-independent voice detection
 
-Recognition provider configuration and browser-side audio segmentation are now separate concerns in Settings. Provider connection controls remain inside Speech recognition and change with the selected engine. Engines whose raw audio is captured by this plugin opt into a separate Voice detection block; currently that is Whisper HTTP, while Browser SpeechRecognition continues to manage its own boundaries. The normal interface offers only Short (900 ms), Natural (1500 ms, default), and Long (2200 ms) pause profiles. The selected browser preference is passed into the capture adapter, so it can be reused by future external recognition providers without making VAD look like a whisper.cpp server setting.
+Recognition provider configuration and browser-side audio segmentation are now separate concerns in Settings. Provider connection controls remain inside Speech recognition and change with the selected engine. Engines whose raw audio is captured by this plugin opt into a separate Voice detection block; currently that is Whisper HTTP, while Browser SpeechRecognition continues to manage its own boundaries. The interface now offers Short (500 ms), Natural (1000 ms, default), Long (2000 ms), and Custom (100–10,000 ms) pause profiles. The selected browser preference is passed into the capture adapter, so it can be reused by future external recognition providers without making VAD look like a whisper.cpp server setting.
 
 ## Host-side Whisper HTTP recognition
 

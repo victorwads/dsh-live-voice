@@ -102,6 +102,8 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.planned.vote': 'Em breve — vote nas issues do repositório',
   'dsh-live-voice.recognition.planned.voxtral': 'Voxtral Realtime — Em breve',
   'dsh-live-voice.recognition.planned.webGpu': 'Inferência WebGPU no navegador — Em breve',
+  'dsh-live-voice.recognition.presets.custom.description': 'Escolha a duração do silêncio.',
+  'dsh-live-voice.recognition.presets.custom.label': 'Personalizada',
   'dsh-live-voice.recognition.presets.long.description':
     'Aguarda durante pausas de pensamento mais longas.',
   'dsh-live-voice.recognition.presets.long.label': 'Longa',
@@ -120,6 +122,9 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.qwen.hostHelp':
     'Configurações de todo o host para o servidor Qwen3 ASR + TTS. Insira qualquer URL base HTTP ou HTTPS acessível a partir do host DSH. O navegador acessa através de rotas autenticadas do DSH.',
   'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR — API HTTP',
+  'dsh-live-voice.recognition.silenceDetection.customHelp':
+    'Insira um número inteiro de 100 a 10.000 ms. Salvo ao sair do campo. Pausas curtas podem dividir a fala; o reconhecimento acrescenta sua própria latência.',
+  'dsh-live-voice.recognition.silenceDetection.customLabel': 'Pausa personalizada (milissegundos)',
   'dsh-live-voice.recognition.silenceDetection.duration':
     'Pausa antes de enviar: {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.help':

@@ -1,7 +1,11 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeSettings, defaultSettings } from '../src/modules/core/settings.ts';
+import {
+  normalizeSettings,
+  defaultSettings,
+  voiceDetectionSilenceMs,
+} from '../src/modules/core/settings.ts';
 test('malformed persisted preferences cannot select remote engines or invalid options', () => {
   for (const input of [
     null,
@@ -26,6 +30,38 @@ test('Whisper HTTP recognition and simple voice detection presets survive normal
     'natural',
   );
 });
+test('custom silence survives persistence and rejects malformed or unsafe timings', () => {
+  for (const value of [100, 300, 400, 1800, 10000]) {
+    const settings = normalizeSettings({
+      voiceDetectionPreset: 'custom',
+      voiceDetectionCustomSilenceMs: value,
+    });
+    assert.equal(settings.voiceDetectionPreset, 'custom');
+    assert.equal(
+      voiceDetectionSilenceMs(normalizeSettings(JSON.parse(JSON.stringify(settings)))),
+      value,
+    );
+  }
+  for (const value of [undefined, null, '300', 0, 99, 10001, 300.5, NaN, Infinity])
+    assert.equal(
+      voiceDetectionSilenceMs(
+        normalizeSettings({ voiceDetectionPreset: 'custom', voiceDetectionCustomSilenceMs: value }),
+      ),
+      1000,
+    );
+  for (const [preset, ms] of [
+    ['short', 500],
+    ['natural', 1000],
+    ['long', 2000],
+  ])
+    assert.equal(
+      voiceDetectionSilenceMs(
+        normalizeSettings({ voiceDetectionPreset: preset, voiceDetectionCustomSilenceMs: 300 }),
+      ),
+      ms,
+    );
+});
+
 test('Qwen local ASR and TTS selections survive normalization', () => {
   const settings = normalizeSettings({
     engine: 'qwen-http',
@@ -46,6 +82,7 @@ test('valid local options survive normalization', () => {
     recognitionProcessLocally: false,
     recognitionAutoInstall: false,
     voiceDetectionPreset: 'short',
+    voiceDetectionCustomSilenceMs: 400,
     recognitionMaxUtteranceSeconds: 120,
     microphoneEnabled: false,
     holdToTalkEnabled: true,

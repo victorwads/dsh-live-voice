@@ -1,17 +1,17 @@
 // @ts-nocheck
 export const voiceDetectionPresets = Object.freeze({
   short: Object.freeze({
-    silenceMs: 900,
+    silenceMs: 500,
     label: 'Short',
     description: 'Send quickly after a short pause.',
   }),
   natural: Object.freeze({
-    silenceMs: 1500,
+    silenceMs: 1000,
     label: 'Natural',
     description: 'Allow normal pauses between phrases.',
   }),
   long: Object.freeze({
-    silenceMs: 2200,
+    silenceMs: 2000,
     label: 'Long',
     description: 'Wait through longer thinking pauses.',
   }),
@@ -40,6 +40,7 @@ export const defaultSettings = Object.freeze({
   recognitionProcessLocally: true,
   recognitionAutoInstall: true,
   voiceDetectionPreset: 'natural',
+  voiceDetectionCustomSilenceMs: 1000,
   recognitionMaxUtteranceSeconds: 60,
   microphoneEnabled: true,
   holdToTalkEnabled: true,
@@ -82,6 +83,18 @@ const normalizeCommandPhrases = (value, fallback) =>
         .join(', ')
     : fallback;
 
+export const customSilenceMinMs = 100;
+export const customSilenceMaxMs = 10000;
+export const normalizeCustomSilenceMs = (value) =>
+  Number.isInteger(value) && value >= customSilenceMinMs && value <= customSilenceMaxMs
+    ? value
+    : defaultSettings.voiceDetectionCustomSilenceMs;
+export const voiceDetectionSilenceMs = (settings) =>
+  settings.voiceDetectionPreset === 'custom'
+    ? normalizeCustomSilenceMs(settings.voiceDetectionCustomSilenceMs)
+    : (voiceDetectionPresets[settings.voiceDetectionPreset] || voiceDetectionPresets.natural)
+        .silenceMs;
+
 /** Persisted browser preferences are untrusted and may belong to an older version. */
 export function normalizeSettings(value) {
   const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
@@ -100,9 +113,12 @@ export function normalizeSettings(value) {
       typeof source.recognitionAutoInstall === 'boolean'
         ? source.recognitionAutoInstall
         : defaultSettings.recognitionAutoInstall,
-    voiceDetectionPreset: Object.hasOwn(voiceDetectionPresets, source.voiceDetectionPreset)
-      ? source.voiceDetectionPreset
-      : defaultSettings.voiceDetectionPreset,
+    voiceDetectionPreset:
+      source.voiceDetectionPreset === 'custom' ||
+      Object.hasOwn(voiceDetectionPresets, source.voiceDetectionPreset)
+        ? source.voiceDetectionPreset
+        : defaultSettings.voiceDetectionPreset,
+    voiceDetectionCustomSilenceMs: normalizeCustomSilenceMs(source.voiceDetectionCustomSilenceMs),
     recognitionMaxUtteranceSeconds:
       Number.isInteger(source.recognitionMaxUtteranceSeconds) &&
       source.recognitionMaxUtteranceSeconds >= 10 &&

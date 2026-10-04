@@ -97,6 +97,8 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.planned.vote': '即将推出 — 请在仓库议题中投票',
   'dsh-live-voice.recognition.planned.voxtral': 'Voxtral Realtime — 即将推出',
   'dsh-live-voice.recognition.planned.webGpu': '浏览器 WebGPU 推理 — 即将推出',
+  'dsh-live-voice.recognition.presets.custom.description': '自行选择静音时长。',
+  'dsh-live-voice.recognition.presets.custom.label': '自定义',
   'dsh-live-voice.recognition.presets.long.description': '等待较长的思考停顿。',
   'dsh-live-voice.recognition.presets.long.label': '长',
   'dsh-live-voice.recognition.presets.natural.description': '允许短语之间出现自然停顿。',
@@ -113,6 +115,9 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.qwen.hostHelp':
     'Qwen3 ASR + TTS 服务器的主机级设置。请输入 DSH 主机可访问的任意 HTTP 或 HTTPS 基础 URL。浏览器通过需要身份验证的 DSH 路由访问该服务器。',
   'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR — HTTP API',
+  'dsh-live-voice.recognition.silenceDetection.customHelp':
+    '请输入 100 至 10,000 ms 的整数。离开输入框时保存。短停顿可能切分语音；识别还需要额外时间。',
+  'dsh-live-voice.recognition.silenceDetection.customLabel': '自定义停顿（毫秒）',
   'dsh-live-voice.recognition.silenceDetection.duration': '发送前停顿：{milliseconds} 毫秒',
   'dsh-live-voice.recognition.silenceDetection.help':
     '设置停顿持续多久后，将采集的语音发送进行识别。',

@@ -276,12 +276,48 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.equal(maxUtterance.value, '60');
     assert.equal(maxUtterance.min, '10');
     assert.equal(maxUtterance.max, '300');
-    assert.equal(detection.querySelectorAll('input[type=radio]').length, 3);
+    assert.equal(detection.querySelectorAll('input[type=radio]').length, 4);
     const long = [...detection.querySelectorAll('input[type=radio]')].find(
       (input) => input.value === 'long',
     );
     await act(async () => long.click());
     assert.deepEqual(calls.at(-1), ['settings', { voiceDetectionPreset: 'long' }]);
+    assert.match(detection.querySelector('.dlv-vad-summary').textContent, /2000 ms/);
+    await act(async () => detection.querySelector('input[value=custom]').click());
+    assert.deepEqual(calls.at(-1), ['settings', { voiceDetectionPreset: 'custom' }]);
+    const customPause = [...detection.querySelectorAll('label')]
+      .find((label) => label.textContent.includes('Custom pause (milliseconds)'))
+      .querySelector('input');
+    assert.equal(customPause.value, '1000');
+    assert.equal(customPause.min, '100');
+    assert.equal(customPause.max, '10000');
+    const setCustom = async (value) => {
+      await act(async () => {
+        Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(
+          customPause,
+          value,
+        );
+        customPause.dispatchEvent(new window.Event('input', { bubbles: true }));
+      });
+      await act(async () =>
+        customPause.dispatchEvent(new window.FocusEvent('focusout', { bubbles: true })),
+      );
+    };
+    await setCustom('400');
+    assert.deepEqual(calls.at(-1), ['settings', { voiceDetectionCustomSilenceMs: 400 }]);
+    assert.match(detection.querySelector('.dlv-vad-summary').textContent, /400 ms/);
+    const count = calls.length;
+    await setCustom('');
+    assert.equal(calls.length, count);
+    assert.equal(customPause.value, '400');
+    await setCustom('99');
+    assert.equal(calls.length, count);
+    assert.equal(customPause.value, '400');
+    await act(async () => detection.querySelector('input[value=short]').click());
+    assert.match(detection.querySelector('.dlv-vad-summary').textContent, /500 ms/);
+    assert.equal(customPause.isConnected, false);
+    await act(async () => detection.querySelector('input[value=custom]').click());
+    assert.equal([...detection.querySelectorAll('input[type=number]')].at(-1).value, '400');
     await act(async () => {
       state = { ...state, conversation: true, listening: true, recognizing: true };
       callbacks.forEach((cb) => cb());
@@ -335,6 +371,10 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
         'conversation',
         'settings',
         'speak',
+        'settings',
+        'settings',
+        'settings',
+        'settings',
         'settings',
         'settings',
         'settings',

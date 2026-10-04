@@ -88,6 +88,8 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.recognition.planned.vote': string;
   'dsh-live-voice.recognition.planned.voxtral': string;
   'dsh-live-voice.recognition.planned.webGpu': string;
+  'dsh-live-voice.recognition.presets.custom.description': string;
+  'dsh-live-voice.recognition.presets.custom.label': string;
   'dsh-live-voice.recognition.presets.long.description': string;
   'dsh-live-voice.recognition.presets.long.label': string;
   'dsh-live-voice.recognition.presets.natural.description': string;
@@ -100,6 +102,8 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.recognition.qwen.endpointHelp': string;
   'dsh-live-voice.recognition.qwen.hostHelp': string;
   'dsh-live-voice.recognition.qwen.label': string;
+  'dsh-live-voice.recognition.silenceDetection.customHelp': string;
+  'dsh-live-voice.recognition.silenceDetection.customLabel': string;
   'dsh-live-voice.recognition.silenceDetection.duration': string;
   'dsh-live-voice.recognition.silenceDetection.help': string;
   'dsh-live-voice.recognition.silenceDetection.label': string;

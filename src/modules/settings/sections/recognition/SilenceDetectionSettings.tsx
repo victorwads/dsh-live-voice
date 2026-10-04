@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
-import { usesPluginVoiceDetection, voiceDetectionPresets } from '../../../core/settings.js';
+import {
+  customSilenceMinMs,
+  customSilenceMaxMs,
+  usesPluginVoiceDetection,
+  voiceDetectionPresets,
+  voiceDetectionSilenceMs,
+  normalizeCustomSilenceMs,
+} from '../../../core/settings.js';
 import { NumberField, SettingsSubcard } from '../../../../shared/design-system/index.js';
 export function SilenceDetectionSettings({ settings, updateSettings }: any) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
+  const savedCustomMs = normalizeCustomSilenceMs(settings.voiceDetectionCustomSilenceMs);
+  const [customDraft, setCustomDraft] = useState(String(savedCustomMs));
+  useEffect(() => setCustomDraft(String(savedCustomMs)), [savedCustomMs]);
   if (!usesPluginVoiceDetection(settings.recognitionEngine)) return null;
   const selected = settings.voiceDetectionPreset || 'natural';
   return (
@@ -31,7 +41,7 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
         role="radiogroup"
         aria-label={(recognition as any).silenceDetection.pauseLabel()}
       >
-        {Object.entries(voiceDetectionPresets).map(([value, preset]: [string, any]) => (
+        {[...Object.keys(voiceDetectionPresets), 'custom'].map((value) => (
           <label key={value} className="dlv-preset">
             <input
               type="radio"
@@ -47,10 +57,34 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
           </label>
         ))}
       </div>
+      {selected === 'custom' && (
+        <>
+          <NumberField
+            label={(recognition as any).silenceDetection.customLabel()}
+            min={customSilenceMinMs}
+            max={customSilenceMaxMs}
+            step={1}
+            value={customDraft}
+            onInput={(event) => setCustomDraft(event.currentTarget.value)}
+            onBlur={(event) => {
+              const draft = event.currentTarget.value;
+              const value = Number(draft);
+              if (
+                draft.trim() &&
+                Number.isInteger(value) &&
+                value >= customSilenceMinMs &&
+                value <= customSilenceMaxMs
+              )
+                updateSettings({ voiceDetectionCustomSilenceMs: value });
+              else setCustomDraft(String(savedCustomMs));
+            }}
+          />
+          <small>{(recognition as any).silenceDetection.customHelp()}</small>
+        </>
+      )}
       <p className="dlv-vad-summary">
         {(recognition as any).silenceDetection.duration({
-          milliseconds:
-            voiceDetectionPresets[selected]?.silenceMs || voiceDetectionPresets.natural.silenceMs,
+          milliseconds: voiceDetectionSilenceMs(settings),
         })}
       </p>
     </SettingsSubcard>

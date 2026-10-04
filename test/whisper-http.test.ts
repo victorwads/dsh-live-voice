@@ -105,7 +105,7 @@ test('Whisper browser engine segments speech and sends authenticated complete ut
 });
 
 test('Whisper voice detection defaults to natural pauses and external presets change segmentation', async () => {
-  const run = async (preset) => {
+  const run = async (preset, customMs = 1000) => {
     const requests = [],
       source = { connect() {}, disconnect() {} },
       processor = { connect() {}, disconnect() {}, onaudioprocess: null };
@@ -121,6 +121,7 @@ test('Whisper voice detection defaults to natural pauses and external presets ch
     };
     const engine = new WhisperHttpRecognitionEngine({
       voiceDetectionPreset: preset,
+      voiceDetectionCustomSilenceMs: customMs,
       globals: {
         crypto,
         fetch: async (url, options = {}) => {
@@ -136,14 +137,18 @@ test('Whisper voice detection defaults to natural pauses and external presets ch
         inputBuffer: { getChannelData: () => new Float32Array(4096).fill(value) },
       });
     emit(0.1);
-    for (let i = 0; i < 5; i++) emit(0);
+    for (let i = 0; i < 3; i++) emit(0);
     await new Promise((resolve) => setImmediate(resolve));
     const sent = requests.length;
     await engine.stop();
     return sent;
   };
-  assert.equal(await run('natural'), 0, '1.28 seconds of silence remains in the same utterance');
+  assert.equal(await run('natural'), 0, '768 ms of silence remains in the same utterance');
   assert.equal(await run('short'), 1, 'short profile sends the utterance sooner');
+  assert.equal(await run('long'), 0);
+  assert.equal(await run('custom', 300), 1);
+  assert.equal(await run('custom', 400), 1);
+  assert.equal(await run('custom', 1800), 0);
 });
 
 test('Whisper browser engine serializes closed utterances and discards queued work on stop', async () => {

@@ -100,6 +100,8 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.planned.vote': 'जल्द आ रहा है — रिपॉज़िटरी के इश्यू में वोट दें',
   'dsh-live-voice.recognition.planned.voxtral': 'Voxtral Realtime — जल्द आ रहा है',
   'dsh-live-voice.recognition.planned.webGpu': 'ब्राउज़र में WebGPU इन्फ़रेंस — जल्द आ रहा है',
+  'dsh-live-voice.recognition.presets.custom.description': 'मौन की अवधि स्वयं चुनें।',
+  'dsh-live-voice.recognition.presets.custom.label': 'कस्टम',
   'dsh-live-voice.recognition.presets.long.description':
     'लंबे सोच-विचार वाले विरामों तक प्रतीक्षा करें।',
   'dsh-live-voice.recognition.presets.long.label': 'लंबा',
@@ -119,6 +121,9 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.qwen.hostHelp':
     'Qwen3 ASR + TTS सर्वर की पूरे होस्ट पर लागू होने वाली सेटिंग्स। कोई भी HTTP या HTTPS बेस URL दर्ज करें जिस तक DSH होस्ट पहुँच सके। ब्राउज़र प्रमाणीकरण वाले DSH रूटों के ज़रिए इसे एक्सेस करता है।',
   'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR — HTTP API',
+  'dsh-live-voice.recognition.silenceDetection.customHelp':
+    '100 से 10,000 ms तक पूर्णांक दर्ज करें। फ़ील्ड छोड़ने पर सहेजा जाता है। छोटे विराम बोलने को खंडों में बाँट सकते हैं; पहचान में अतिरिक्त समय लगता है।',
+  'dsh-live-voice.recognition.silenceDetection.customLabel': 'कस्टम विराम (मिलीसेकंड)',
   'dsh-live-voice.recognition.silenceDetection.duration':
     'भेजने से पहले का विराम: {milliseconds} मिलीसेकंड',
   'dsh-live-voice.recognition.silenceDetection.help':

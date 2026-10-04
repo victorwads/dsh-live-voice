@@ -73,6 +73,7 @@ export function apply(ctx) {
     'recognitionProcessLocally',
     'recognitionAutoInstall',
     'voiceDetectionPreset',
+    'voiceDetectionCustomSilenceMs',
     'recognitionMaxUtteranceSeconds',
   ]);
   const changesRecognition = (next) =>
@@ -82,12 +83,14 @@ export function apply(ctx) {
       ? new QwenHttpRecognitionEngine({
           meter,
           voiceDetectionPreset: settings.voiceDetectionPreset,
+          voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
           maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds,
         })
       : settings.recognitionEngine === 'whisper-http'
         ? new WhisperHttpRecognitionEngine({
             meter,
             voiceDetectionPreset: settings.voiceDetectionPreset,
+            voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
             maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds,
           })
         : new BrowserRecognitionEngine({

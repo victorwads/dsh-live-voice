@@ -100,6 +100,7 @@ export class VoiceCoordinator {
       processLocally: this.snapshot.settings.recognitionProcessLocally,
       autoInstallLocalPack: this.snapshot.settings.recognitionAutoInstall,
       voiceDetectionPreset: this.snapshot.settings.voiceDetectionPreset,
+      voiceDetectionCustomSilenceMs: this.snapshot.settings.voiceDetectionCustomSilenceMs,
     });
     this.patch({ capabilities: { ...this.snapshot.capabilities, recognition: undefined } });
   }
@@ -125,6 +126,7 @@ export class VoiceCoordinator {
       processLocally: settings.recognitionProcessLocally,
       autoInstallLocalPack: settings.recognitionAutoInstall,
       voiceDetectionPreset: settings.voiceDetectionPreset,
+      voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
     });
     this.patch({
       settings,

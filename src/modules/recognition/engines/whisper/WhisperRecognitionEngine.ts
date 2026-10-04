@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { voiceDetectionPresets } from '../../../core/settings.js';
+import { defaultSettings, voiceDetectionSilenceMs } from '../../../core/settings.js';
 
 const ROUTE = '/api/dsh-live-voice/whisper';
 const id = () => globalThis.crypto.randomUUID();
@@ -43,6 +43,7 @@ export class WhisperHttpRecognitionEngine {
     globals = globalThis,
     meter,
     voiceDetectionPreset = 'natural',
+    voiceDetectionCustomSilenceMs = defaultSettings.voiceDetectionCustomSilenceMs,
     maxUtteranceSeconds = 60,
   } = {}) {
     this.g = globals;
@@ -50,11 +51,12 @@ export class WhisperHttpRecognitionEngine {
     this.session = null;
     this.lang = 'pt-BR';
     this.voiceDetectionPreset = voiceDetectionPreset;
+    this.voiceDetectionCustomSilenceMs = voiceDetectionCustomSilenceMs;
     this.maxUtteranceSeconds = maxUtteranceSeconds;
     this.route = ROUTE;
   }
   get segmentation() {
-    return voiceDetectionPresets[this.voiceDetectionPreset] || voiceDetectionPresets.natural;
+    return { silenceMs: voiceDetectionSilenceMs(this) };
   }
   async capability() {
     try {
