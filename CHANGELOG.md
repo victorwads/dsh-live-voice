@@ -2,6 +2,22 @@
 
 All notable changes to DSH Live Voice are documented in this file.
 
+## [0.3.1] - Unreleased
+
+### Changes
+
+- Group the primary speech, recognition, and conversation settings into collapsed General sections, with icons on tabs and subsection headings.
+- Start silence-detection settings collapsed and keep recognition capability status visible outside the General section.
+- Add the General section label to every supported interface language and update accessibility and mounted-component regression coverage.
+
+### Documentation
+
+- Split agent guidance and architecture documentation by application, domain module, and shared design-system boundaries.
+
+### Compatibility
+
+- Confirm tested compatibility with DeepSeek Harness **0.2.0-rc.2**.
+
 ## [0.3.0] - Unreleased
 
 ### Features

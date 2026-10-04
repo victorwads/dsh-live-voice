@@ -175,6 +175,7 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.settings.delivery.toggle': 'Modo de envío automático',
   'dsh-live-voice.settings.engine.refresh': 'Actualizar los motores disponibles',
   'dsh-live-voice.settings.filters.title': 'Filtrado',
+  'dsh-live-voice.settings.general.title': 'General',
   'dsh-live-voice.settings.tabs.conversation': 'Conversación',
   'dsh-live-voice.settings.tabs.recognition': 'Reconocimiento de voz',
   'dsh-live-voice.settings.tabs.speak': 'Síntesis de voz',

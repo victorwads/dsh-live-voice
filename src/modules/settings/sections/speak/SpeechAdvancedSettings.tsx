@@ -39,11 +39,11 @@ export function SpeechAdvancedSettings({
         <p className="dlv-setting-description">{(speak as any).macos.outputHelp()}</p>
       )}
       {settings.engine === 'qwen-http' && (
-        <SettingsSubcard title={(speak as any).qwen.connection()}>
+        <SettingsSubcard title={(speak as any).qwen.connection()} icon="link">
           <QwenSettings controller={controller} />
         </SettingsSubcard>
       )}
-      <SettingsSubcard title={(speak as any).agentContext.label()}>
+      <SettingsSubcard title={(speak as any).agentContext.label()} icon="settings">
         <CheckboxField
           label={(speak as any).agentContext.enabled()}
           checked={settings.agentVoiceContextEnabled !== false}

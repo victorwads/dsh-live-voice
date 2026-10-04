@@ -1,6 +1,7 @@
 import React from 'react';
+import { Icon, type IconName } from '../icons/index.js';
 
-export type SettingsTab = { id: string; label: string };
+export type SettingsTab = { id: string; label: string; icon?: IconName };
 export type SettingsTabsProps = {
   label: string;
   tabs: readonly SettingsTab[];
@@ -46,7 +47,8 @@ export function SettingsTabs({ label, tabs, active, idPrefix, onChange }: Settin
           onClick={() => onChange(tab.id)}
           onKeyDown={(event) => onKeyDown(event, index)}
         >
-          {tab.label}
+          {tab.icon ? <Icon name={tab.icon} className="dlv-settings-tab-icon" /> : null}
+          <span>{tab.label}</span>
         </button>
       ))}
     </div>

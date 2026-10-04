@@ -162,6 +162,7 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.settings.delivery.toggle': 'Automatic delivery mode',
   'dsh-live-voice.settings.engine.refresh': 'Refresh available engines',
   'dsh-live-voice.settings.filters.title': 'Filtering',
+  'dsh-live-voice.settings.general.title': 'General',
   'dsh-live-voice.settings.tabs.conversation': 'Conversation',
   'dsh-live-voice.settings.tabs.recognition': 'Speech recognition',
   'dsh-live-voice.settings.tabs.speak': 'Speech',

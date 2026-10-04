@@ -17,9 +17,17 @@ export function LiveVoiceSettings({ controller, onClose }: { controller: any; on
   const [activeTab, setActiveTab] = React.useState('conversation');
   const tabsId = React.useId();
   const tabs = [
-    { id: 'speech', label: (settingsLanguage as any).tabs.speak() },
-    { id: 'recognition', label: (settingsLanguage as any).tabs.recognition() },
-    { id: 'conversation', label: (settingsLanguage as any).tabs.conversation() },
+    { id: 'speech', label: (settingsLanguage as any).tabs.speak(), icon: 'speaker' as const },
+    {
+      id: 'recognition',
+      label: (settingsLanguage as any).tabs.recognition(),
+      icon: 'mic' as const,
+    },
+    {
+      id: 'conversation',
+      label: (settingsLanguage as any).tabs.conversation(),
+      icon: 'send' as const,
+    },
   ];
   const sectionProps = {
     controller,

@@ -1,0 +1,5 @@
+# Core voice domain
+
+`core` owns policy and reusable voice-domain state, not DSH slot/route registration or provider-specific presentation. `coordinator.ts` serializes input transitions, owns conversation state and speech queues, and invalidates stale async work with generations. `ownership.ts` arbitrates microphone and speaker use between sessions and Settings self-tests. `transcript.ts` manages draft/final recognition text, `microphone.ts` manages capture and activity, `filters.ts` handles voice commands and speech text filtering, and `settings.ts` normalizes persisted values and defaults.
+
+The `qwen/` subtree contains shared Qwen host configuration and its settings UI; recognition and speaking adapters live in their respective modules. Keep the client/host dependency graphs separate. Preserve the persisted `dsh-live-voice.settings` key and normalization compatibility. Distinguish capture, recognition, playback, and generation; do not conflate pausing with cancellation or resume obsolete speech after a new turn. Consult [voice lifecycle](../../../docs/VOICE-LIFECYCLE.md) for expected transitions.

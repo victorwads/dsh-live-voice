@@ -156,6 +156,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.settings.delivery.toggle': '自动发送模式',
   'dsh-live-voice.settings.engine.refresh': '刷新可用引擎',
   'dsh-live-voice.settings.filters.title': '过滤',
+  'dsh-live-voice.settings.general.title': '常规',
   'dsh-live-voice.settings.tabs.conversation': '对话',
   'dsh-live-voice.settings.tabs.recognition': '语音识别',
   'dsh-live-voice.settings.tabs.speak': '语音合成',

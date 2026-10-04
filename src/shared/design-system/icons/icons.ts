@@ -10,6 +10,10 @@ export const iconPaths = {
   skipNext: 'M5 5l10 7-10 7V5M19 5v14',
   send: 'M3 11.5L21 3l-8.5 18-2-7.5L3 11.5zm7.5 2L21 3',
   queue: 'M5 6h14M5 12h10M5 18h6M18 15v6M15 18h6',
+  settings: 'M4 7h16M4 17h16M8 4v6M16 14v6',
+  filter: 'M3 5h18l-7 8v6l-4 2v-8L3 5z',
+  link: 'M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.7 1.7M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.7-1.7',
+  chevron: 'M6 9l6 6 6-6',
   close: 'M6 6l12 12M18 6 6 18',
 } as const;
 

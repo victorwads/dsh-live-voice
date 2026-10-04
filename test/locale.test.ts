@@ -93,6 +93,7 @@ test('catalogs preserve placeholders and contain no unreviewed English copies', 
     es: new Set([
       'dsh-live-voice.commons.manual',
       'dsh-live-voice.recognition.presets.natural.label',
+      'dsh-live-voice.settings.general.title',
       'dsh-live-voice.speak.qwen.name',
     ]),
     zh: new Set(),

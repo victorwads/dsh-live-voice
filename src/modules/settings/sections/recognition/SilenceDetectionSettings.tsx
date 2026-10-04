@@ -10,7 +10,7 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
     <SettingsSubcard
       title={(recognition as any).silenceDetection.label()}
       ariaLabel={(recognition as any).silenceDetection.title()}
-      open
+      icon="pause"
     >
       <p>{(recognition as any).silenceDetection.help()}</p>
       <NumberField

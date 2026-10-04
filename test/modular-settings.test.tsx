@@ -71,7 +71,22 @@ test('modular settings composes speech, recognition, and conversation tabs', asy
   assert.equal(document.querySelectorAll('[role="tabpanel"]')[0].hidden, false);
   await act(async () => tabs[2].click());
   assert.equal(document.querySelectorAll('[role="tabpanel"]')[2].hidden, false);
-  const delivery = document.querySelectorAll('[role="tabpanel"]')[2].querySelector('select');
+  const panels = [...document.querySelectorAll('[role="tabpanel"]')];
+  for (const panel of panels) {
+    const general = [...panel.querySelectorAll('details')].find((details) =>
+      details.querySelector(':scope > summary')?.textContent?.includes('General'),
+    );
+    assert.ok(general, 'each tab groups its primary fields under General');
+    assert.equal(general.open, false, 'sections start collapsed');
+    assert.ok(general.querySelector('summary svg'), 'section headings show an icon');
+  }
+  const conversation = panels[2];
+  const general = [...conversation.querySelectorAll('details')].find((details) =>
+    details.querySelector(':scope > summary')?.textContent?.includes('General'),
+  );
+  await act(async () => general.querySelector('summary').click());
+  assert.equal(general.open, true);
+  const delivery = general.querySelector('select');
   assert.ok(delivery);
   await act(async () => {
     delivery.value = 'queue';

@@ -7,6 +7,9 @@ import { JSDOM } from 'jsdom';
 import { createConversationComponents } from '../src/modules/conversation/components/createConversationComponents.tsx';
 import { createLiveVoiceSettings } from '../src/modules/settings/components/createLiveVoiceSettings.tsx';
 import { withAppLanguage } from '../src/app/client/i18n/index.ts';
+import { CURRENT_VERSION } from '../src/modules/settings/services/releases.ts';
+const [major, minor, patch] = CURRENT_VERSION.split('.').map(Number);
+const NEXT_RELEASE_VERSION = `${major}.${minor}.${patch + 1}`;
 const EN_SNAPSHOT = Object.freeze({ active: 'en', revision: 0 });
 const EN_LOCALE = Object.freeze({ subscribe: () => () => {}, getSnapshot: () => EN_SNAPSHOT });
 test('mounted voice UI exposes controls, distinct states, and capability failures', async () => {
@@ -21,8 +24,8 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     JSON.stringify({
       checkedAt: Date.now(),
       release: {
-        tag: 'v0.3.1',
-        url: 'https://github.com/victorwads/dsh-live-voice/releases/tag/v0.3.1',
+        tag: `v${NEXT_RELEASE_VERSION}`,
+        url: `https://github.com/victorwads/dsh-live-voice/releases/tag/v${NEXT_RELEASE_VERSION}`,
       },
     }),
   );
@@ -107,14 +110,16 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.equal(badgeImages.length, 2);
     assert.equal(badgeImages[0].src, 'https://cdn.simpleicons.org/npm/white');
     assert.equal(badgeImages[0].alt, '');
-    assert.equal(badgeImages[0].parentElement.title, 'DSH Live Voice v0.3.0');
-    assert.equal(badgeImages[0].parentElement.textContent, 'v0.3.0');
+    assert.equal(badgeImages[0].parentElement.title, `DSH Live Voice v${CURRENT_VERSION}`);
+    assert.equal(badgeImages[0].parentElement.textContent, `v${CURRENT_VERSION}`);
     assert.equal(badgeImages[1].src, 'https://cdn.simpleicons.org/deepseek/white');
     assert.equal(badgeImages[1].alt, '');
     assert.equal(badgeImages[1].parentElement.title, 'Compatible with DSH v0.2.0-rc.2');
     assert.equal(badgeImages[1].parentElement.textContent, 'v0.2.0-rc.2');
     assert.equal(
-      versionBadges.querySelector('[aria-label="DSH Live Voice v0.3.0. Open releases"]').href,
+      versionBadges.querySelector(
+        `[aria-label="DSH Live Voice v${CURRENT_VERSION}. Open releases"]`,
+      ).href,
       'https://github.com/victorwads/dsh-live-voice/releases',
     );
     assert.equal(
@@ -131,10 +136,10 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.equal(updateBadge.parentElement.className, 'dlv-settings-heading');
     assert.equal(updateBadge.previousElementSibling.className, 'dlv-heading-divider');
     assert.equal(updateBadge.nextElementSibling.className, 'dlv-heading-divider');
-    assert.equal(updateBadge.title, 'Update available: v0.3.1');
+    assert.equal(updateBadge.title, `Update available: v${NEXT_RELEASE_VERSION}`);
     assert.equal(
       updateBadge.href,
-      'https://github.com/victorwads/dsh-live-voice/releases/tag/v0.3.1',
+      `https://github.com/victorwads/dsh-live-voice/releases/tag/v${NEXT_RELEASE_VERSION}`,
     );
     const tabs = [...document.querySelectorAll('[role=tab]')];
     assert.deepEqual(
@@ -260,8 +265,11 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       null,
       'connection fields are not wrapped in another card',
     );
-    const detection = document.querySelector('[aria-label="Silence detection settings"]');
+    const detection = document
+      .querySelector('summary[aria-label="Silence detection settings"]')
+      ?.closest('details');
     assert.ok(detection);
+    assert.equal(detection.open, false);
     const maxUtterance = [...detection.querySelectorAll('label')]
       .find((label) => label.textContent.includes('Maximum continuous speech'))
       .querySelector('input');

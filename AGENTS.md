@@ -1,54 +1,17 @@
-# Agent Instructions
+# DSH Live Voice agent guide
 
-## Project identity and current stage
+This is an information router. Read the relevant local `AGENTS.md` and `ARCHITECTURE.md` before changing code; consult [the architecture map](docs/ARCHITECTURE.md) and [voice lifecycle](docs/VOICE-LIFECYCLE.md) for contracts.
 
-- Project: **DSH Live Voice**; npm package: `dsh-live-voice`.
-- Read the current project version from `package.json`; do not duplicate it in this instruction file. The local working tree contains a plugin under active validation. See PLAN.md for progress and remaining checks.
-- Read `README.md`, `HISTORY.md`, and `package.json` before making project changes.
-- Write repository documentation, code comments, and public package metadata in English. Keep the requested filename `HISTORY.md`.
-- Treat user-facing plugin copy as internationalized: add or update the typed per-language catalogs under `src/app/client/i18n/` for every visible label, help text, status, actionable error, tooltip, aria label, and test phrase. Keep every supported locale dictionary complete through the shared `LiveVoiceTranslation` contract from `@wads.dev/i18n-ts`; use DSH's `ctx.locale` service rather than a parallel locale preference, and preserve the independence of UI locale, STT/TTS languages, and user-configured voice commands.
+- Start with `README.md`, `HISTORY.md`, and `package.json` before project changes. `package.json` is the sole source for the plugin version and tested DSH version; `PLAN.md` records progress and validation still needed.
+- Application integration, routes, slots, and i18n: [app guidance](src/app/AGENTS.md) and [architecture](src/app/ARCHITECTURE.md).
+- Product behavior and provider adapters: [module guidance](src/modules/AGENTS.md); then the local architecture file in [core](src/modules/core/ARCHITECTURE.md), [conversation](src/modules/conversation/ARCHITECTURE.md), [settings](src/modules/settings/ARCHITECTURE.md), [recognition](src/modules/recognition/ARCHITECTURE.md), or [speaking](src/modules/speak/ARCHITECTURE.md).
+- Reusable UI: [shared architecture](src/shared/ARCHITECTURE.md). Native local engine work also consults `.local-voice/qwen3-asr-swift/AGENTS.md` when inside that subtree.
 
-- Translation identifiers must describe intent using `dsh-live-voice.commons.*`, `dsh-live-voice.recognition.*`, `dsh-live-voice.speak.*`, or `dsh-live-voice.settings.*`. Use concise feature/property paths such as `recognition.holdToTalk.help`; never derive identifiers from whole sentences or add numeric collision suffixes. Keep the base contract and every catalog in alphabetical key order. Translation values, persisted enum values, action identifiers, and user data are not translation keys.
+## Repository-wide constraints
 
-## Product priorities
-
-- Lead with **local-first voice conversations**. Both STT and TTS should be able to run on the user’s machine. External providers are optional.
-- Do not claim full offline operation merely because voice processing is local; the DSH language model can be remote.
-- Coordinate input and output in one plugin. Preserve separate states for capture/recognition, synthesis/playback, and agent generation.
-- Keep pause, resume, and cancel distinct. Do not automatically resume obsolete speech just because the user becomes silent.
-- Plan for speaker mode with recognition gating and manual interruption, and headphone mode with open-microphone interruption. Exact policies remain undecided.
-- Capability detection must distinguish the DSH host from the browser/device environment. Do not assume OS detection proves feature support or that a browser shortcut is global.
-- Make capture, recognition, transmission, playback, and permission states understandable to users. Avoid recording or logging raw audio/transcripts by default.
-
-## HISTORY.md is a human story, not a work log
-
-`HISTORY.md` tells the maintainer’s personal story: lived experiences using DSH, frustrations, needs, and hopes that led to this project. It is not a changelog, architecture document, decision register, or report of agent activity.
-
-- Write in English, as a natural personal narrative grounded only in what the maintainer has actually shared. Do not invent feelings, experiences, motives, or outcomes.
-- Append a new dated chapter only when the maintainer requests an addition to the human story. Routine technical work must not trigger a history entry.
-- Never add CI/OIDC configuration, package metadata, licensing discussions, commits, pushes, releases, validation results, or file-edit summaries to this story. Put technical explanations in the appropriate documentation.
-- Keep direct acknowledgments and links to the original authors in the main README, not as a separate acknowledgment entry in the history.
-- Preserve existing chapters exactly. Future updates are append-only unless the maintainer explicitly requests a correction or rewrite. Correcting this initial misinterpretation does not authorize routine rewriting later.
-- Read the story before appending. Use the actual date for new chapters, and do not add multiple entries merely because several tasks happened on the same day.
-
-## Implementation discipline
-
-- Inspect actual DSH extension APIs before selecting integration points. Do not fabricate hooks, plugin manifests, install commands, or support guarantees.
-- Existing STT/TTS plugin reuse versus direct engine integration is unresolved.
-- Keep conversation policy separate from provider adapters and UI.
-- Do not implement features or add dependencies just to make the placeholder look complete.
-- Keep planned capabilities clearly labeled until implemented and validated.
-- Future audio work must account for echo, false interruptions, recognition latency, playback position, and stale asynchronous results after cancellation.
-- Third-party engines and model weights require their own license and platform checks. This repository uses Apache-2.0. Check DSH and dependency license compatibility before integration.
-
-## Packaging and authorization
-
-- Treat `package.json` as the single source of truth for version badges: `version` is the plugin version and `dshTestedVersion` is the tested DSH version. The build injects both values into the client bundle; do not hard-code them in source files.
-- When changing either version, update `package.json`, keep the DSH-tested badge/link in `README.md` aligned, run the build to regenerate `lib/client.js`, and review the generated diff. `npm version` may update the package version and lockfile, but the README badge remains a manual documentation update.
-- Keep public metadata and README aligned with the local-first focus.
-- Do not invent author or repository URLs.
-- Use explicit `--tag developing` for this prerelease. Never silently promote it to `latest`.
-- `npm publish --dry-run --tag developing` validates packaging without publishing; it does not reserve a name or prove registry authorization.
-- Run npm test (includes a client build). Fake-engine and DOM integration tests do not prove real microphone/browser compatibility; report physical-device and authenticated-runtime checks separately. Never describe a packaging dry run as a runtime test.
-- Commit, push, actual npm publication, and secondary package creation require explicit maintainer authorization.
-- The maintainer supplied `git@github.com:victorwads/dsh-live-voice.git` and authorized the first commit and push to `main`. npm publication requires separate authorization.
+- Write documentation, comments, and public metadata in English. Internationalize all visible plugin copy, help, status, errors, tooltips, aria labels, and test phrases in every typed locale catalog. Keep translation keys descriptive and alphabetized; use the DSH `ctx.locale` service and keep UI language independent of STT/TTS languages and user-defined commands.
+- Lead with local-first STT and TTS without claiming DSH itself is fully offline. Preserve separate capture/recognition, synthesis/playback, and generation states; distinguish pause, resume, and cancel. Avoid raw audio/transcript logging by default. Never infer capabilities from OS alone.
+- `HISTORY.md` is an append-only human story, not a technical work log. Read it before a maintainer-requested story addition; never add a routine technical chapter or invent experiences. Keep acknowledgments in the README.
+- Inspect real DSH extension APIs before altering integration. Do not fabricate hooks, manifests, support claims, or add features/dependencies merely to make a placeholder look complete. Check third-party engine and model licensing/platform requirements.
+- Run `npm test` (which builds the client) and report fake-engine/DOM results separately from physical-microphone and authenticated-runtime validation. A packaging dry run is not a runtime test. Keep README's tested-DSH badge aligned if that version changes, and review generated bundle changes.
+- Do not commit, push, publish, or create a secondary package without explicit authorization for this work. Prerelease publication requires explicit `--tag developing`; `npm publish --dry-run --tag developing` only checks packaging.

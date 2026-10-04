@@ -10,7 +10,7 @@ export function OutputFilterSettings({ settings, updateSettings }: any) {
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const enabled = settings.outputCodeFilterEnabled !== false;
   return (
-    <SettingsSubcard title={(speak as any).filters.code.enabled()}>
+    <SettingsSubcard title={(speak as any).filters.code.enabled()} icon="filter">
       <CheckboxField
         label={(speak as any).filters.code.enabled()}
         checked={enabled}

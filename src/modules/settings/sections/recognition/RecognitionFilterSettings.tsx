@@ -9,7 +9,7 @@ export function RecognitionFilterSettings({ settings, updateSettings }: any) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const enabled = settings.recognitionFilterEnabled !== false;
   return (
-    <SettingsSubcard title={(recognition as any).minimumWords.label()}>
+    <SettingsSubcard title={(recognition as any).minimumWords.label()} icon="filter">
       <CheckboxField
         label={(recognition as any).minimumWords.enabled()}
         description={(recognition as any).minimumWords.help()}

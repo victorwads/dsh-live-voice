@@ -11,24 +11,17 @@ DSH Live Voice uses application composition roots, domain modules, and a domain-
 5. Feature modules use the intentionally centralized client i18n API, but never register DSH slots or host routes.
 6. Browser and host dependency graphs remain separate. Host-only Node imports must never enter the client bundle.
 
-## Composition roots
+## Ownership map
 
-- Client: `src/app/client/apply.tsx`.
-- Server: `src/app/server/apply.ts`.
-- Slot definitions and registration: `src/app/client/slotDefinitions.ts` and `registerSlots.tsx`.
-- Styles: `src/styles/index.ts`.
+- [Application composition, slots, routes, i18n](../src/app/ARCHITECTURE.md)
+- [Core voice policy, ownership, settings normalization](../src/modules/core/ARCHITECTURE.md)
+- [Conversation and composer behavior](../src/modules/conversation/ARCHITECTURE.md)
+- [Settings presentation and storage](../src/modules/settings/ARCHITECTURE.md)
+- [Recognition engines and capability](../src/modules/recognition/ARCHITECTURE.md)
+- [Speaking engines and playback](../src/modules/speak/ARCHITECTURE.md)
+- [Shared design system](../src/shared/ARCHITECTURE.md)
 
-## Internationalization
-
-The only client language tree is `src/app/client/i18n`. It owns typed catalogs, the React runtime, DSH catalog registration, and synchronization with `ctx.locale`. Every DSH slot component is wrapped by the application language boundary. UI locale, recognition language, synthesis language, and user-defined command phrases are independent values.
-
-## Modules
-
-- `modules/core`: shared voice-domain coordination, settings normalization, ownership, transcript handling, microphone policy, filters, and shared Qwen configuration.
-- `modules/conversation`: composer/chat UI, conversation components, chat models, and session-facing behavior.
-- `modules/settings`: modular Settings shell, hooks, services, and Conversation/Recognition/Speech sections.
-- `modules/recognition/engines/{browser,qwen,whisper}`: recognition adapters and provider-specific host/UI code.
-- `modules/speak/engines/{browser,qwen,say,audio}`: speech adapters, host audio, transcoding, and provider clients.
+Read the relevant local architecture file before editing a boundary. The source of truth for plugin and tested-DSH versions is `package.json`.
 
 ## Stable contracts
 

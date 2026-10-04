@@ -165,6 +165,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.settings.delivery.toggle': 'स्वचालित भेजने का मोड',
   'dsh-live-voice.settings.engine.refresh': 'उपलब्ध इंजन रीफ़्रेश करें',
   'dsh-live-voice.settings.filters.title': 'फ़िल्टरिंग',
+  'dsh-live-voice.settings.general.title': 'सामान्य',
   'dsh-live-voice.settings.tabs.conversation': 'बातचीत',
   'dsh-live-voice.settings.tabs.recognition': 'वाक् पहचान',
   'dsh-live-voice.settings.tabs.speak': 'वाचन',

@@ -2,6 +2,12 @@
 
 This document describes the product plan and local implementation progress. The published npm version is a documentation placeholder; the working tree now contains an initial plugin undergoing integration validation. Features below describe intended behavior unless verified in the progress section.
 
+## 0.3.1 release preparation
+
+The Settings interface now groups primary fields under collapsed General sections, adds icons to tabs and subsection headings, and keeps recognition capability status outside the General section. All six interface catalogs include the new section label. Release metadata and the lockfile use 0.3.1; the version-badge regression derives the current and next release versions from build-injected package metadata.
+
+Validation on an isolated release snapshot: `npm test` passed all 182 automated tests, including the build and TypeScript check; `npm run format:check` passed; an isolated Chrome preview with a synthetic controller verified the three tabs, initially collapsed General sections, and disclosure interactions without browser errors; `npm publish --dry-run --access public --tag latest` passed package validation. These checks do not constitute physical-microphone, native speech-engine, or authenticated DSH runtime acceptance. No npm publication or version tag was created.
+
 ## Qwen3 local engine
 
 Qwen3 is available as independent recognition and speaking selections backed by a separately managed HTTP process on the DSH host. Runtime installation, weights, and service lifecycle stay outside the repository. The authenticated host bridge accepts only a loopback base URL, validates bounded mono PCM16 WAV before ASR forwarding, maps `pt-BR` to Portuguese, forwards TTS text without logging it, and returns WAV audio for browser playback. Browser cancellation aborts pending host/model requests and stale synthesized audio cannot begin playback after cancellation. Automated plugin coverage includes configuration normalization, loopback validation, HTTP payloads, WAV transport, browser playback, and route cleanup. Native model and endpoint acceptance must be reported separately from these tests.

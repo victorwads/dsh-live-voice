@@ -93,13 +93,13 @@ export function RecognitionEngineSettings({
         </>
       )}
       {engine === 'whisper-http' && (
-        <SettingsSubcard title={(commons as any).connection.title()}>
+        <SettingsSubcard title={(commons as any).connection.title()} icon="link">
           <p>{(recognition as any).whisper.captureHelp()}</p>
           <WhisperSettings controller={controller} />
         </SettingsSubcard>
       )}
       {engine === 'qwen-http' && (
-        <SettingsSubcard title={(commons as any).connection.title()}>
+        <SettingsSubcard title={(commons as any).connection.title()} icon="link">
           <p>{(recognition as any).qwen.captureHelp()}</p>
           {settings.engine !== 'qwen-http' && <QwenSettings controller={controller} />}
         </SettingsSubcard>

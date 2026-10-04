@@ -169,6 +169,7 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.settings.delivery.toggle': 'Modo de entrega automática',
   'dsh-live-voice.settings.engine.refresh': 'Atualizar mecanismos disponíveis',
   'dsh-live-voice.settings.filters.title': 'Filtragem',
+  'dsh-live-voice.settings.general.title': 'Gerais',
   'dsh-live-voice.settings.tabs.conversation': 'Conversa',
   'dsh-live-voice.settings.tabs.recognition': 'Reconhecimento de voz',
   'dsh-live-voice.settings.tabs.speak': 'Fala',

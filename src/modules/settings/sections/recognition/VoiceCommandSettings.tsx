@@ -18,7 +18,7 @@ export function VoiceCommandSettings({ settings, updateSettings }: any) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const enabled = settings.voiceCommandsEnabled !== false;
   return (
-    <SettingsSubcard title={(recognition as any).commands.title()}>
+    <SettingsSubcard title={(recognition as any).commands.title()} icon="send">
       <CheckboxField
         label={(recognition as any).commands.enabled()}
         checked={enabled}
