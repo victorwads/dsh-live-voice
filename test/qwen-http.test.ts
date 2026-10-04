@@ -24,9 +24,10 @@ test('Qwen host permits arbitrary HTTP and HTTPS base URLs', () => {
   assert.throws(() => resolveQwenBaseUrl('file:///tmp/qwen.sock'), /HTTP or HTTPS/);
 });
 
-test('Qwen host maps pt-BR onto the unified API', async () => {
+test('Qwen host maps pt-BR onto the unified API for audio above 2 MB', async () => {
   const requests = [];
-  const wav = encodeMonoPcm16Wav(new Float32Array(16000).fill(0.1), 16000);
+  const wav = encodeMonoPcm16Wav(new Float32Array(1_000_100).fill(0.1), 16000);
+  assert.ok(wav.byteLength > 2_000_000);
   const host = new QwenHttpHost({
     fetchImpl: async (url, options = {}) => {
       requests.push({ url: String(url), options });

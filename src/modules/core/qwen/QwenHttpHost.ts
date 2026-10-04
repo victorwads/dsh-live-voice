@@ -64,7 +64,7 @@ export class QwenHttpHost {
     baseUrl,
     timeoutMs = 300000,
     fetchImpl = globalThis.fetch,
-    maxBytes = 2_000_000,
+    maxBytes = 50_000_000,
     maxSpeechBytes = 50_000_000,
     store,
   } = {}) {
