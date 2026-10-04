@@ -42,7 +42,7 @@ export class WhisperHttpRecognitionEngine {
   constructor({
     globals = globalThis,
     meter,
-    voiceDetectionPreset = 'natural',
+    voiceDetectionPreset = defaultSettings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs = defaultSettings.voiceDetectionCustomSilenceMs,
     maxUtteranceSeconds = 60,
   } = {}) {

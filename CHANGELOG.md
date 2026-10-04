@@ -4,9 +4,13 @@ All notable changes to DSH Live Voice are documented in this file.
 
 ## [0.3.2] - Unreleased
 
+### Release Changes
+
+Voice control feels more immediate: the new default Short profile sends captured speech for recognition after 500 ms of silence, reducing the wait before transcription and voice-command execution. Maintainer feedback reports a noticeably more responsive experience in daily use. This reduces the segmentation delay, not model inference time, and does not claim improved recognition accuracy. Existing saved profiles remain unchanged; Natural, Long, and Custom remain available for longer pauses.
+
 ### Changes
 
-- Adjust silence-detection profiles to Short (500 ms), Natural (1000 ms, default), and Long (2000 ms).
+- Adjust silence-detection profiles to Short (500 ms, now the default), Natural (1000 ms), and Long (2000 ms).
 - Add a persisted Custom silence profile with whole-millisecond input from 100 to 10,000 ms for Qwen and Whisper capture, translated into every supported interface language.
 
 ## [0.3.1] - 2026-10-03

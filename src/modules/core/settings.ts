@@ -39,7 +39,7 @@ export const defaultSettings = Object.freeze({
   recognitionEngine: 'browser',
   recognitionProcessLocally: true,
   recognitionAutoInstall: true,
-  voiceDetectionPreset: 'natural',
+  voiceDetectionPreset: 'short',
   voiceDetectionCustomSilenceMs: 1000,
   recognitionMaxUtteranceSeconds: 60,
   microphoneEnabled: true,
@@ -92,8 +92,10 @@ export const normalizeCustomSilenceMs = (value) =>
 export const voiceDetectionSilenceMs = (settings) =>
   settings.voiceDetectionPreset === 'custom'
     ? normalizeCustomSilenceMs(settings.voiceDetectionCustomSilenceMs)
-    : (voiceDetectionPresets[settings.voiceDetectionPreset] || voiceDetectionPresets.natural)
-        .silenceMs;
+    : (
+        voiceDetectionPresets[settings.voiceDetectionPreset] ||
+        voiceDetectionPresets[defaultSettings.voiceDetectionPreset]
+      ).silenceMs;
 
 /** Persisted browser preferences are untrusted and may belong to an older version. */
 export function normalizeSettings(value) {

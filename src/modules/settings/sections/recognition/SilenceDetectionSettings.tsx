@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
 import {
+  defaultSettings,
   customSilenceMinMs,
   customSilenceMaxMs,
   usesPluginVoiceDetection,
@@ -15,7 +16,7 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
   const [customDraft, setCustomDraft] = useState(String(savedCustomMs));
   useEffect(() => setCustomDraft(String(savedCustomMs)), [savedCustomMs]);
   if (!usesPluginVoiceDetection(settings.recognitionEngine)) return null;
-  const selected = settings.voiceDetectionPreset || 'natural';
+  const selected = settings.voiceDetectionPreset || defaultSettings.voiceDetectionPreset;
   return (
     <SettingsSubcard
       title={(recognition as any).silenceDetection.label()}

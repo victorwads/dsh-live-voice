@@ -79,8 +79,8 @@ Configure your microphone and speech-to-text (STT) engine:
   - *Process recognition locally on this device:* Ensures speech is not sent to external browser vendor cloud servers.
   - *Automatically install language pack:* Allows the browser to download offline language packs on demand.
 - **Silence Detection (VAD) Profiles:**
-  - *Short (500 ms):* Fast turnaround for concise commands.
-  - *Natural (1000 ms - default):* Balanced for conversational cadence.
+  - *Short (500 ms - default):* Fast turnaround for concise commands.
+  - *Natural (1000 ms):* Balanced for conversational cadence.
   - *Long (2000 ms):* Accommodates thinking pauses during complex prompts.
   - *Custom:* Choose any whole-millisecond value from 100 to 10,000 ms, including 300 or 400 ms. The value is saved when the field loses focus and retained when switching profiles; invalid edits revert to the saved value. Shorter pauses may split speech between phrases.
   - These profiles apply to Qwen and Whisper plugin-managed capture, not Browser SpeechRecognition. The pause ends a transcription chunk, not the total recognition latency or the separate automatic message-send countdown. Actual boundaries are evaluated in audio-buffer increments.

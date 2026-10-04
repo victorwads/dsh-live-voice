@@ -27,9 +27,17 @@ test('Whisper HTTP recognition and simple voice detection presets survive normal
   assert.equal(settings.voiceDetectionPreset, 'long');
   assert.equal(
     normalizeSettings({ voiceDetectionPreset: 'technical-garbage' }).voiceDetectionPreset,
-    'natural',
+    'short',
   );
 });
+test('short is the default without overriding existing saved profiles', () => {
+  assert.equal(defaultSettings.voiceDetectionPreset, 'short');
+  assert.equal(voiceDetectionSilenceMs(normalizeSettings({})), 500);
+  assert.equal(voiceDetectionSilenceMs({}), 500);
+  for (const preset of ['short', 'natural', 'long', 'custom'])
+    assert.equal(normalizeSettings({ voiceDetectionPreset: preset }).voiceDetectionPreset, preset);
+});
+
 test('custom silence survives persistence and rejects malformed or unsafe timings', () => {
   for (const value of [100, 300, 400, 1800, 10000]) {
     const settings = normalizeSettings({

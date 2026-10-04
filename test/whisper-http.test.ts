@@ -104,7 +104,7 @@ test('Whisper browser engine segments speech and sends authenticated complete ut
   await engine.stop();
 });
 
-test('Whisper voice detection defaults to natural pauses and external presets change segmentation', async () => {
+test('Whisper voice detection defaults to short pauses and external presets change segmentation', async () => {
   const run = async (preset, customMs = 1000) => {
     const requests = [],
       source = { connect() {}, disconnect() {} },
@@ -143,6 +143,8 @@ test('Whisper voice detection defaults to natural pauses and external presets ch
     await engine.stop();
     return sent;
   };
+  assert.equal(new WhisperHttpRecognitionEngine().segmentation.silenceMs, 500);
+  assert.equal(await run(undefined), 1, 'default profile sends after a short pause');
   assert.equal(await run('natural'), 0, '768 ms of silence remains in the same utterance');
   assert.equal(await run('short'), 1, 'short profile sends the utterance sooner');
   assert.equal(await run('long'), 0);
