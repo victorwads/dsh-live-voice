@@ -13,7 +13,7 @@ export const RELEASE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
 
 export const LIVE_VOICE_BADGE_URL = 'https://cdn.simpleicons.org/npm/white';
 export const DSH_BADGE_URL = 'https://cdn.simpleicons.org/deepseek/white';
-export const TESTED_DSH_RELEASE_URL = `https://github.com/deepseek-ai/deepseek-harness/releases/tag/v${TESTED_DSH_VERSION}`;
+export const TESTED_DSH_RELEASE_URL = `https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v${TESTED_DSH_VERSION}`;
 
 function versionParts(version) {
   const normalized = String(version || '')

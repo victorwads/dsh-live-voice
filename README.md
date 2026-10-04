@@ -1,8 +1,10 @@
 # DSH Live Voice
 
 [![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
-[![DSH](https://img.shields.io/badge/DSH-v0.1.6--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/v0.1.6-alpha.2)
+[![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.0--rc.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.0-rc.2)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+
+**Tested and working with DeepSeek Harness v0.2.0-rc.2.** This is the current tested DSH version, recorded in the `dshTestedVersion` field in [package.json](package.json).
 
 **A local-first, hands-free voice assistant plugin for DeepSeek Harness (DSH).**
 *Built in Brazil 🇧🇷 and tested daily with Brazilian Portuguese on macOS.*
