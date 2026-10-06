@@ -12,6 +12,8 @@ All notable changes to DSH Live Voice are documented in this file.
 
 ### Build and Release Checks
 
+- Reorganize the repository as a pnpm workspace with two complete plugin packages under `packages/live-voice` and `packages/live-voice-debugger`, each with separate source, tests, manifests and runtime bundles. Update builds, local-link paths, CI and publication paths for the monorepo.
+
 - Keep the main and debugger package versions aligned. Reject mismatches during builds, CI and the publication workflow. The debugger is a public package. The manual OIDC publication workflow supports both packages or either package individually; no publication is triggered by a push.
 
 ### Bug Fixes
