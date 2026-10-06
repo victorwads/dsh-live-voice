@@ -463,7 +463,7 @@ export class VoiceCoordinator {
         } else if (this.snapshot.muted) return;
         else {
           const sendingMode = command === 'send' ? 'steer' : 'queue';
-          this.updateSettings({ sendingMode });
+          // Spoken delivery is a one-shot action, not an automatic-send preference change.
           if (this.composer.getDraft().trim() && typeof this.composer.submit === 'function')
             this.composer.submit(sendingMode);
         }

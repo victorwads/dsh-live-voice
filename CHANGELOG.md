@@ -4,6 +4,11 @@ All notable changes to DSH Live Voice are documented in this file.
 
 ## [0.3.3] - Unreleased
 
+### Bug Fixes
+
+- Keep spoken Send and Queue commands as one-shot delivery actions. They no longer enable automatic sending, change its mode, or persist a different sending preference. Manual sending remains manual after a spoken command; existing automatic modes remain unchanged.
+- Add regressions for spoken delivery in Manual, Queue, and Steer modes, including unchanged preferences, no settings writes, and subsequent dictation behavior.
+
 ## [0.3.2] - 2026-10-06
 
 ### Release Changes

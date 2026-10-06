@@ -28,6 +28,7 @@ Capture, recognition, user speech activity, message delivery, agent generation, 
 
 - **Speakers:** playback gates recognition/capture so speaker output is not recognized. Manual interruption transfers ownership only after old playback teardown succeeds.
 - **Headphones:** the microphone can remain open. Interruption requires qualifying transcript/activity rather than a single noise event.
+- Spoken Send and Queue commands perform one delivery using their requested mode, without enabling, disabling, changing, or persisting the automatic-send preference. They cancel any pending countdown before that one-shot delivery.
 - Automatic delivery starts only after final transcription and the configured quiet delay. New speech, edits, cancellation, or session replacement cancels a pending delivery.
 - Automatic assistant playback waits for continuous silence and pending transcription/delivery work. Renewed speech restarts the delay. Manual per-message playback is not delayed.
 - Sending a user message does not stop existing assistant playback unless the explicit interruption preference is enabled. Loaded history never counts as a new user turn.

@@ -427,11 +427,11 @@ test('voice commands run before the minimum-word filter and never enter the comp
   await f.coordinator.startConversation();
   f.sessions[0].onResult({ final: 'SEND!!!' });
   assert.deepEqual(submitted, ['steer']);
-  assert.equal(f.coordinator.snapshot.settings.sendingMode, 'steer');
+  assert.equal(f.coordinator.snapshot.settings.sendingMode, 'manual');
   assert.equal(f.draft(), 'typed');
   f.sessions[0].onResult({ final: 'queue.' });
   assert.deepEqual(submitted, ['steer', 'queue']);
-  assert.equal(f.coordinator.snapshot.settings.sendingMode, 'queue');
+  assert.equal(f.coordinator.snapshot.settings.sendingMode, 'manual');
   assert.equal(f.draft(), 'typed');
   f.sessions[0].onResult({ final: 'END' });
   await turn();
@@ -439,6 +439,34 @@ test('voice commands run before the minimum-word filter and never enter the comp
   assert.equal(f.draft(), 'typed');
   await f.coordinator.dispose();
 });
+
+for (const sendingMode of ['manual', 'queue', 'steer']) {
+  test(
+    'spoken delivery preserves ' + sendingMode + ' preferences and never persists a mode change',
+    async () => {
+      const f = fixture({ sendingMode });
+      await f.coordinator.startConversation();
+      const saved = [];
+      const submitted = [];
+      const update = f.coordinator.updateSettings.bind(f.coordinator);
+      f.coordinator.updateSettings = (next) => {
+        saved.push(next);
+        update(next);
+      };
+      f.coordinator.composer.submit = (mode) => submitted.push(mode);
+      for (const command of ['send', 'queue']) {
+        f.sessions[0].onResult({ final: command });
+        assert.equal(f.coordinator.snapshot.settings.sendingMode, sendingMode);
+        assert.equal(f.coordinator.snapshot.autoSendAt, null);
+      }
+      assert.deepEqual(submitted, ['steer', 'queue']);
+      assert.deepEqual(saved, [], 'one-shot commands must not invoke settings persistence');
+      f.sessions[0].onResult({ final: 'more dictated words' });
+      assert.equal(f.coordinator.snapshot.autoSendAt === null, sendingMode === 'manual');
+      await f.coordinator.dispose();
+    },
+  );
+}
 
 test('clear command removes all composer text and cancels pending automatic delivery', async () => {
   const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 2 });
