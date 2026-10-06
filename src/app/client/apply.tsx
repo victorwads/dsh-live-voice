@@ -161,6 +161,10 @@ export function apply(ctx) {
       key,
       draft: '',
       pendingDraft: undefined,
+      publishedDraft: undefined,
+      publishedRevision: undefined,
+      pendingRevision: undefined,
+      staleDrafts: new Set(),
       composers: new Map(),
       refs: 0,
       buttons: 0,
@@ -228,12 +232,14 @@ export function apply(ctx) {
           if (disposed || entry.closed) return;
           const owner = [...entry.composers.values()].at(-1);
           if (!owner) return;
-          // `setDraft()` updates Lexical synchronously but the subscribed InputState
-          // can publish on a subsequent React commit. Preserve the optimistic value
-          // until that exact publication arrives; otherwise another slot render can
-          // make a later recognition result start from stale text.
+          // Preserve unacknowledged voice writes across unchanged slot renders,
+          // but let new editor publications (including manual edits) supersede them.
+          if (entry.pendingDraft === undefined) entry.staleDrafts.clear();
+          entry.staleDrafts.add(entry.draft);
+          if (entry.publishedDraft !== undefined) entry.staleDrafts.add(entry.publishedDraft);
           entry.draft = text;
           entry.pendingDraft = text;
+          entry.pendingRevision = entry.publishedRevision;
           owner.actions.setDraft(text);
         },
       },
@@ -438,10 +444,22 @@ export function apply(ctx) {
       const published = typeof input.draft === 'string' ? input.draft : '';
       // A voice write is optimistic until React commits the editor publication.
       // Unrelated slot renders must not restore the previous draft in between.
+      entry.publishedDraft = published;
+      entry.publishedRevision = input.draftRev;
+      const newerRevision =
+        Number.isInteger(input.draftRev) &&
+        Number.isInteger(entry.pendingRevision) &&
+        input.draftRev > entry.pendingRevision;
       if (entry.pendingDraft === undefined) entry.draft = published;
-      else if (published === entry.pendingDraft) {
+      else if (
+        published === entry.pendingDraft ||
+        newerRevision ||
+        !entry.staleDrafts.has(published)
+      ) {
+        // A new manual edit is authoritative even if the exact voice echo was skipped.
         entry.draft = published;
         entry.pendingDraft = undefined;
+        entry.staleDrafts.clear();
       }
       entry.controller.composerChanged(entry.draft);
     });

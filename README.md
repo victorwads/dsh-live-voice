@@ -63,7 +63,7 @@ Detailed guides for deep-diving into engines and configurations:
 
 ## ✨ Features at a Glance
 
-- 🎙️ **Voice Typing:** Speak directly into the DSH composer with live interim transcription.
+- 🎙️ **Voice Typing:** Append final recognized speech to the end of the DSH composer without replacing manual edits.
 - 👐 **Hands-Free Conversation:** Continuous dialogue that stays active across chat sessions.
 - ❓ **Spoken Structured Questions:** Narrates DSH prompt questions and submits your spoken answer.
 - ⌨️ **Hold-to-Talk (Push-to-Talk):** Hold `Control` anywhere on the page to speak; release to send.

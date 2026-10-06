@@ -14,6 +14,10 @@ After updating the plugin, restart the DSH server to load the new settings route
 
 ---
 
+## Append-only dictation
+
+Live Voice appends final recognized chunks to the end of the current message draft. Manual edits and existing composer text are preserved; caret position does not move dictation into an earlier part of the draft. Provisional recognition results no longer appear inside the composer or replace earlier text. A final chunk becomes visible when recognition completes. Cancelling or muting recognition leaves committed text intact. Only an explicit Clear command or normal message submission may intentionally clear the composer.
+
 ## 1. Acoustic Modes & Turn-Taking
 
 How listening and speaking coordinate depends on whether you use speakers or headphones:

@@ -225,7 +225,7 @@ export class VoiceCoordinator {
   }
   muteListening() {
     this.cancelAutoSend();
-    this.composer.setDraft(this.transcript.update(this.composer.getDraft(), '', true));
+    // Discard pending recognition without rewriting the composer.
     this.transcript.reset();
     this.updateSettings({ microphoneEnabled: false });
     if (!this.snapshot.settings.voiceCommandsEnabled) return this.stopListening();
@@ -446,7 +446,7 @@ export class VoiceCoordinator {
           clear: this.snapshot.settings.voiceCommandClear,
         });
       if (command) {
-        this.composer.setDraft(this.transcript.update(this.composer.getDraft(), '', true));
+        // Discard pending recognition without rewriting the composer.
         this.transcript.reset();
         this.cancelAutoSend();
         this.patch({ recognizing: false });
@@ -470,7 +470,7 @@ export class VoiceCoordinator {
         return;
       }
       if (this.snapshot.muted) {
-        this.composer.setDraft(this.transcript.update(this.composer.getDraft(), '', true));
+        // Discard pending recognition without rewriting the composer.
         this.transcript.reset();
         this.patch({ recognizing: false });
         return;
@@ -479,7 +479,7 @@ export class VoiceCoordinator {
         this.snapshot.settings.recognitionFilterEnabled &&
         !hasMinimumWords(final, this.snapshot.settings.recognitionMinimumWords)
       ) {
-        this.composer.setDraft(this.transcript.update(this.composer.getDraft(), '', true));
+        // Discard pending recognition without rewriting the composer.
         this.transcript.reset();
         this.patch({ recognizing: false });
         return;
@@ -490,7 +490,7 @@ export class VoiceCoordinator {
     }
     if (interim) {
       this.cancelAutoSend();
-      this.composer.setDraft(this.transcript.update(this.composer.getDraft(), interim));
+      // Interim hypotheses affect recognition status only, never composer content.
     }
     if (!interim && this.snapshot.recognizing)
       this.assistantSpeechNotBefore =
@@ -573,7 +573,7 @@ export class VoiceCoordinator {
     });
   }
   async cancelDictation() {
-    this.composer.setDraft(this.transcript.update(this.composer.getDraft(), '', true));
+    // Discard pending recognition without rewriting the composer.
     await this.stopListening();
   }
   async endConversation() {

@@ -20,6 +20,9 @@ Voice control feels more immediate: the new default Short profile sends captured
 
 ### Bug Fixes
 
+- Make dictation append-only: append final recognized chunks at the end of the current composer and keep provisional hypotheses out of its text. Existing text and manual edits are preserved; explicit Clear and normal submission remain separate actions.
+- Accept manual composer updates when React skips the exact echo of an earlier voice write, preventing later chunks from restoring stale draft snapshots. Muting, cancellation, commands, and rejected short phrases no longer perform unnecessary whole-draft writes.
+- Add mounted regressions for skipped voice echoes, manual replacement, delayed publications, and append-only final chunks; document the append-only lifecycle contract.
 - Preserve spaces, commas, line breaks, and unfinished entries while editing voice commands and other settings. Normalize and save text only when the field loses focus, not on every keystroke.
 - Centralize text inputs, textareas, and numeric inputs on one shared draft-field component. Parent updates and delayed server responses no longer overwrite an active edit; invalid numeric drafts restore the saved value on blur.
 - Apply the same blur-only saving behavior to Qwen and Whisper connection fields, and allow empty voice-command fields without restoring fallback phrases.

@@ -68,13 +68,13 @@ for (const staleSnapshot of [false, true])
           }),
         },
       });
-      let snapshot = { draft: 'Draft' },
+      let snapshot = { draft: 'Draft', draftRev: 0 },
         pending = null,
         delay = false;
       const listeners = new Set();
       let writes = 0;
       const publish = (text) => {
-        snapshot = { draft: text };
+        snapshot = { draft: text, draftRev: snapshot.draftRev + 1 };
         for (const fn of listeners) fn();
       };
       const actions = {
@@ -132,19 +132,26 @@ for (const staleSnapshot of [false, true])
       assert.ok(button, 'voice conversation button mounted');
       await act(async () => button.click());
       assert.ok(native, 'real coordinator starts recognition adapter');
+      const results = [];
+      let resultIndex = 0;
       const emit = (text, isFinal = false) => {
-        const result = Object.assign([{ transcript: text }], { isFinal });
-        native.onresult({ resultIndex: 0, results: [result] });
+        results[resultIndex] = Object.assign([{ transcript: text }], { isFinal });
+        native.onresult({ resultIndex, results });
+        if (isFinal) resultIndex++;
       };
       await act(async () => native.onspeechstart());
       assert.equal(document.querySelector('textarea').value, 'Draft', 'activity alone is not text');
       await act(async () => emit('Olá'));
-      assert.equal(document.querySelector('textarea').value, 'Draft Olá');
+      assert.equal(
+        document.querySelector('textarea').value,
+        'Draft',
+        'interim speech never changes the composer',
+      );
       await act(async () => publish('Typed Draft Olá'));
       await act(async () => emit('Olá mundo'));
       assert.equal(
         document.querySelector('textarea').value,
-        'Typed Draft Olá mundo',
+        'Typed Draft Olá',
         'external edit survives next hypothesis',
       );
       // Delay the shell publication and force both slot wrappers to commit unchanged
@@ -155,7 +162,36 @@ for (const staleSnapshot of [false, true])
       await act(async () => emit('Olá mundo novo', true));
       delay = false;
       await act(async () => publish(pending));
-      assert.equal(document.querySelector('textarea').value, 'Typed Draft Olá mundo novo');
+      assert.equal(document.querySelector('textarea').value, 'Typed Draft Olá Olá mundo novo');
+      // Skip the exact voice echo: a manual edit is the next published editor state.
+      delay = true;
+      await act(async () => emit('primeiro trecho', true));
+      await act(async () => publish('Typed Draft Olá Olá mundo novo primeiro trecho + manual'));
+      await act(async () => emit('segundo trecho', true));
+      assert.equal(
+        pending,
+        'Typed Draft Olá Olá mundo novo primeiro trecho + manual segundo trecho',
+      );
+      delay = false;
+      await act(async () => publish(pending));
+      delay = true;
+      await act(async () => emit('pending chunk', true));
+      await act(async () => publish(''));
+      await act(async () => emit('after manual clear', true));
+      assert.equal(
+        pending,
+        'after manual clear',
+        'a newer empty editor revision must supersede pending voice text',
+      );
+      delay = false;
+      await act(async () => publish(pending));
+      // A later chunk must append even after the user clears or replaces the composer.
+      await act(async () => publish('replacement written manually'));
+      await act(async () => emit('novo trecho', true));
+      assert.equal(
+        document.querySelector('textarea').value,
+        'replacement written manually novo trecho',
+      );
       const count = writes;
       const late = native.onresult;
       await act(async () => root.render(null));

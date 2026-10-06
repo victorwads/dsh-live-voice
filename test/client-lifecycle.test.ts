@@ -281,7 +281,7 @@ test('recognized browser text writes through the actual InputState and InputActi
   const c = f.controllers[0];
   c.patch({ listening: true });
   c.onResult({ interim: 'Olá mundo', final: '' });
-  assert.deepEqual(written, ['Draft Olá mundo']);
+  assert.deepEqual(written, [], 'interim recognition is status-only');
   c.onResult({ interim: '', final: 'Olá mundo' });
   assert.equal(written.at(-1), 'Draft Olá mundo');
 });

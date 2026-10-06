@@ -46,6 +46,10 @@ Capture, recognition, user speech activity, message delivery, agent generation, 
 | Unmount/dispose/pagehide | Invalidate pending work and release every owned resource |
 | Late async result | Ignore it unless its session and operation generation are still current |
 
+## Append-only dictation contract
+
+Recognition is append-only at the end of the current composer. Only final recognized chunks are committed; provisional hypotheses affect recognition/activity status but never insert, replace, or remove composer text. Each final chunk appends after the latest published manual text, regardless of caret position. Live Voice must not restore an older full-draft snapshot over a manual edit, even when React skips the exact echo of a previous voice write. Muting, cancellation, rejected short phrases, and voice-command recognition do not rewrite the composer. The explicit Clear command and ordinary user submission remain intentional exceptions; they are not dictation writes.
+
 ## Invariants
 
 1. A new session never inherits soft mute.
