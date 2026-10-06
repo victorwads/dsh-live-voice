@@ -2,7 +2,9 @@
 
 All notable changes to DSH Live Voice are documented in this file.
 
-## [0.3.2] - Unreleased
+## [0.3.3] - Unreleased
+
+## [0.3.2] - 2026-10-06
 
 ### Release Changes
 
@@ -33,6 +35,8 @@ Voice control feels more immediate: the new default Short profile sends captured
 - Legacy browser preferences are not imported. The first load without saved server preferences uses defaults; configure Live Voice once again. Qwen and Whisper connection settings already stored on the host remain unchanged.
 - Restart the DSH server after updating to load the new settings route, then refresh the browser. Refreshing the page alone is not sufficient.
 - Device selections are shared too, but the selected device must exist and be usable in the current browser. Microphone permissions and browser language-pack installations remain browser-managed capabilities.
+
+**Full Changelog:** https://github.com/victorwads/dsh-live-voice/compare/v0.3.1...v0.3.2
 
 ## [0.3.1] - 2026-10-03
 
