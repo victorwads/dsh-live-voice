@@ -34,6 +34,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify main and debugger versions match
+        run: npm run check:versions
+
       - name: Run automated tests
         run: npm test
 

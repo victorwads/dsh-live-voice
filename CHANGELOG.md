@@ -4,6 +4,16 @@ All notable changes to DSH Live Voice are documented in this file.
 
 ## [0.3.3] - Unreleased
 
+### Features
+
+- Add Live Voice Debugger as a separate, optional package in the same repository. Installing it contributes a Developer tab inside Live Voice Settings; the main plugin works without the debugger and does not bundle its interface.
+- Open the read-only inspector in a separate browser window, with independently scrolling state and event panes, queue inspection, module filtering, event pause/resume and clearing, and selectable 1–20 Hz refresh (10 Hz by default). Keep diagnostic history bounded and text content hidden unless explicitly enabled.
+- Add fake-adapter and DOM regressions for state transitions, segmentation, optional activation, popup handling, event controls, and refresh frequency.
+
+### Build and Release Checks
+
+- Keep the main and debugger package versions aligned. Reject mismatches during builds, CI and the publication workflow. The debugger remains private; this change does not publish either package.
+
 ### Bug Fixes
 
 - Keep spoken Send and Queue commands as one-shot delivery actions. They no longer enable automatic sending, change its mode, or persist a different sending preference. Manual sending remains manual after a spoken command; existing automatic modes remain unchanged.

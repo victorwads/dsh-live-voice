@@ -27,6 +27,23 @@ const client: BuildOptions = {
   footer: { js: 'return module.exports;}});' },
   logLevel: 'info',
 };
+const debuggerClient: BuildOptions = {
+  ...client,
+  entryPoints: ['src_debugger/apply.tsx'],
+  outfile: 'src_debugger/lib/client.js',
+  banner: {
+    js: 'window.__ModuleLoader__.load({id:"dsh-live-voice-debugger",factory:(require)=>{var module={exports:{}};var exports=module.exports;',
+  },
+};
+const debuggerHost: BuildOptions = {
+  entryPoints: ['src_debugger/server.ts'],
+  outfile: 'src_debugger/lib/server.js',
+  bundle: true,
+  format: 'esm',
+  platform: 'node',
+  target: ['node22'],
+  logLevel: 'info',
+};
 const host: BuildOptions = {
   entryPoints: ['src/app/server/apply.ts'],
   outfile: 'lib/server.js',
@@ -55,8 +72,16 @@ if (watch) {
   await clientContext.watch();
   const hostContext = await context(host);
   await hostContext.watch();
+  await (await context(debuggerClient)).watch();
+  await (await context(debuggerHost)).watch();
 } else {
   await rm('.test-dist', { recursive: true, force: true });
   await mkdir('.test-dist', { recursive: true });
-  await Promise.all([build(client), build(host), build(tests)]);
+  await Promise.all([
+    build(client),
+    build(host),
+    build(debuggerClient),
+    build(debuggerHost),
+    build(tests),
+  ]);
 }

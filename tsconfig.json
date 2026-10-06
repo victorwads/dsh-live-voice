@@ -19,6 +19,8 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
+    "src_debugger/**/*.ts",
+    "src_debugger/**/*.tsx",
     "test/**/*.tsx",
     "scripts/**/*.ts",
     "__previewjs__/**/*.tsx"

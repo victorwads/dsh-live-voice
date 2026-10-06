@@ -8,6 +8,10 @@ import {
   SpeakSettingsSection,
 } from '../sections/index.js';
 import { SettingsHeader } from './SettingsHeader.js';
+import {
+  readDeveloperExtension,
+  subscribeDeveloperExtension,
+} from '../../core/developerExtension.js';
 
 export function LiveVoiceSettings({ controller, onClose }: { controller: any; onClose?(): void }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
@@ -16,6 +20,13 @@ export function LiveVoiceSettings({ controller, onClose }: { controller: any; on
   const { invoke, error, clearError } = useLiveVoiceSettingsActions(controller);
   const [activeTab, setActiveTab] = React.useState('conversation');
   const tabsId = React.useId();
+  const developer = React.useSyncExternalStore(
+    subscribeDeveloperExtension,
+    readDeveloperExtension,
+    () => null,
+  );
+  const Developer = developer?.component;
+  const selectedTab = activeTab === 'developer' && !developer ? 'conversation' : activeTab;
   const tabs = [
     { id: 'speech', label: (settingsLanguage as any).tabs.speak(), icon: 'speaker' as const },
     {
@@ -29,6 +40,7 @@ export function LiveVoiceSettings({ controller, onClose }: { controller: any; on
       icon: 'send' as const,
     },
   ];
+  if (developer) tabs.push({ id: 'developer', label: developer.label(), icon: 'send' });
   const sectionProps = {
     controller,
     settings: state.settings,
@@ -44,7 +56,7 @@ export function LiveVoiceSettings({ controller, onClose }: { controller: any; on
       <SettingsTabs
         label={(settingsLanguage as any).title()}
         tabs={tabs}
-        active={activeTab}
+        active={selectedTab}
         idPrefix={tabsId}
         onChange={setActiveTab}
       />
@@ -55,9 +67,11 @@ export function LiveVoiceSettings({ controller, onClose }: { controller: any; on
           className="dlv-settings-panel"
           role="tabpanel"
           aria-labelledby={`${tabsId}-tab-${tab.id}`}
-          hidden={activeTab !== tab.id}
+          hidden={selectedTab !== tab.id}
         >
-          {tab.id === 'speech' ? (
+          {tab.id === 'developer' && Developer ? (
+            <Developer />
+          ) : tab.id === 'speech' ? (
             <SpeakSettingsSection {...sectionProps} />
           ) : tab.id === 'recognition' ? (
             <RecognitionSettingsSection {...sectionProps} />

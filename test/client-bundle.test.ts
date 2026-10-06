@@ -50,5 +50,5 @@ test('built bundle registers independently in the DSH lazy module loader', async
       'conversation.chat.assistant-actions',
     ],
   );
-  assert.equal(effects.length, 3);
+  assert.equal(effects.length, 4);
 });

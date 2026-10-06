@@ -1,4 +1,5 @@
 node_modules/
+src_debugger/lib/
 # dsh.pub installs from a pinned GitHub commit and validates these runtime
 # entries without executing the source build.
 lib/*

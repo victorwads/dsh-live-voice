@@ -23,6 +23,10 @@ DSH Live Voice uses application composition roots, domain modules, and a domain-
 
 Read the relevant local architecture file before editing a boundary. The source of truth for plugin and tested-DSH versions is `package.json`.
 
+## Optional diagnostics
+
+The main client publishes a versioned, read-only diagnostic source through `src/modules/core/diagnostics.ts`. The separately built `src_debugger` plugin owns all inspector UI and optional Developer-tab activation inside Live Voice Settings; the main client never imports it. See [debugger architecture](../src_debugger/ARCHITECTURE.md) for installation, sampling, privacy and current limitations.
+
 ## Stable contracts
 
 - Preserve DSH slot names, IDs, order, and injected services.

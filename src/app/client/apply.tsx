@@ -23,6 +23,10 @@ import { registerConversationSlots, registerSettingsSlot } from './registerSlots
 import { styles } from '../../styles/index.js';
 import { createSettingsClient } from '../../modules/settings/models/settingsStorage.js';
 import {
+  publishDiagnosticSource,
+  readCoordinatorDiagnostics,
+} from '../../modules/core/diagnostics.js';
+import {
   assistantMessages,
   addressedTurn,
   latestUserSequence,
@@ -42,6 +46,43 @@ export function apply(ctx) {
   // A route change may replace every conversation slot, but the next committed
   // composer should inherit the user's explicit choice to remain in voice mode.
   let voiceModeActive = false;
+  const diagnosticListeners = new Set();
+  const notifyDiagnostics = () => {
+    for (const listener of diagnosticListeners) {
+      try {
+        listener();
+      } catch {
+        /* Observers never own voice behavior. */
+      }
+    }
+  };
+  ctx.effect(() => {
+    const unpublish = publishDiagnosticSource(window, {
+      version: 1,
+      read: ({ includeContent = false } = {}) => ({
+        application: { disposed, voiceModeActive, retiring: retiring.size },
+        sessions: Object.fromEntries(
+          [...controllers].map(([id, entry]) => [
+            id,
+            readCoordinatorDiagnostics(entry.controller, includeContent),
+          ]),
+        ),
+        settingsControllers: [...settingsControllers].map((controller) =>
+          readCoordinatorDiagnostics(controller, includeContent),
+        ),
+      }),
+      subscribe: (listener) => {
+        diagnosticListeners.add(listener);
+        return () => {
+          diagnosticListeners.delete(listener);
+        };
+      },
+    });
+    return () => {
+      unpublish();
+      diagnosticListeners.clear();
+    };
+  }, 'dsh-live-voice: diagnostic bridge');
   const publishVoiceContext = (
     entry,
     active = entry?.controller?.getSnapshot().conversation === true,
@@ -148,6 +189,7 @@ export function apply(ctx) {
     publishVoiceContext(entry, false);
     entry.chatListeners.clear();
     if (controllers.get(entry.key) === entry) controllers.delete(entry.key);
+    notifyDiagnostics();
     // Keep teardown in the hardware handoff barrier, not in the session registry.
     const done = run(entry.controller, entry.controller.dispose());
     const barrier = { endConversation: () => done };
@@ -246,7 +288,11 @@ export function apply(ctx) {
       settings,
     });
     const controller = entry.controller;
-    entry.unsubscribeVoiceContext = controller.subscribe(() => publishVoiceContext(entry));
+    entry.unsubscribeVoiceContext = controller.subscribe(() => {
+      publishVoiceContext(entry);
+      notifyDiagnostics();
+    });
+    notifyDiagnostics();
     publishVoiceContext(entry);
     entry.chat = ctx.uiConversation.binding(sessionId).target('chat');
     entry.chatListeners = new Set();
@@ -510,6 +556,8 @@ export function apply(ctx) {
       const update = c.updateSettings.bind(c);
       c.applySavedSettings = update;
       settingsControllers.add(c);
+      const unsubscribeDiagnostics = c.subscribe(notifyDiagnostics);
+      notifyDiagnostics();
       void preferences.ready.catch(() =>
         c.patch({ error: t('dsh-live-voice.settings.persistence.loadError') }),
       );
@@ -546,7 +594,9 @@ export function apply(ctx) {
       refresh();
       return () => {
         document.removeEventListener('dsh-live-voice:capabilitieschanged', refresh);
+        unsubscribeDiagnostics();
         settingsControllers.delete(c);
+        notifyDiagnostics();
         void c.dispose();
       };
     }, []);

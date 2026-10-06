@@ -1,5 +1,9 @@
 # DSH Live Voice — Features and Plan
 
+## Optional Live Voice Debugger scaffold
+
+`src_debugger` is a private, separately built client plugin with optional Developer-tab activation inside Live Voice Settings and a separate, resizable browser window containing the React inspector. A versioned read-only bridge in the main client projects current coordinator state, settings, capture/activity, HTTP segmentation buffers, pending transcription and speech queues. The inspector samples at 10 Hz, supports freezing, records bounded state differences filterable by module, and hides free-form text by default. It does not implement the future replacement state machine, semantic logger, backend queue, or event injection into a live session. Fake-adapter tests exercise activity, processing, final results and PCM segmentation through real runtime entry points, plus load order, cleanup, activation and independent bundles. Validation: `npm test` passed all 198 automated tests, including TypeScript and separate runtime/debugger builds; `npm run format:check` and `git diff --check` passed. Existing React act/JSDOM diagnostics remain in lifecycle fixtures. Physical-microphone and authenticated DSH runtime validation remain unperformed; adding the separate plugin and loading the rebuilt main client are required before its Settings page appears.
+
 This document describes the product plan and local implementation progress. The published npm version is a documentation placeholder; the working tree now contains an initial plugin undergoing integration validation. Features below describe intended behavior unless verified in the progress section.
 
 ## One-shot spoken delivery commands

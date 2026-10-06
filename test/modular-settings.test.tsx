@@ -7,6 +7,7 @@ import { JSDOM } from 'jsdom';
 import { LiveVoiceTranslationProvider } from '../src/app/client/i18n/index.ts';
 import { defaultSettings } from '../src/modules/core/settings.ts';
 import { LiveVoiceSettings } from '../src/modules/settings/index.ts';
+import { publishDeveloperExtension } from '../src/modules/core/developerExtension.ts';
 
 test('modular settings composes speech, recognition, and conversation tabs', async (t) => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'https://dsh.local/' });
@@ -93,4 +94,21 @@ test('modular settings composes speech, recognition, and conversation tabs', asy
     delivery.dispatchEvent(new window.Event('change', { bubbles: true }));
   });
   assert.deepEqual(calls, [{ sendingMode: 'queue' }]);
+  let removeDeveloper;
+  await act(async () => {
+    removeDeveloper = publishDeveloperExtension(window, {
+      version: 1,
+      label: () => 'Developer',
+      component: () => <p>Developer controls</p>,
+    });
+  });
+  assert.equal(document.querySelectorAll('[role="tab"]').length, 4);
+  const developerTab = [...document.querySelectorAll('[role="tab"]')].find(
+    (tab) => tab.textContent === 'Developer',
+  );
+  await act(async () => developerTab.click());
+  assert.equal(document.querySelectorAll('[role="tabpanel"]')[3].hidden, false);
+  await act(async () => removeDeveloper());
+  assert.equal(document.querySelectorAll('[role="tab"]').length, 3);
+  assert.equal(document.querySelectorAll('[role="tabpanel"]')[2].hidden, false);
 });
