@@ -13,19 +13,19 @@ DSH Live Voice uses application composition roots, domain modules, and a domain-
 
 ## Ownership map
 
-- [Application composition, slots, routes, i18n](../src/app/ARCHITECTURE.md)
-- [Core voice policy, ownership, settings normalization](../src/modules/core/ARCHITECTURE.md)
-- [Conversation and composer behavior](../src/modules/conversation/ARCHITECTURE.md)
-- [Settings presentation and storage](../src/modules/settings/ARCHITECTURE.md)
-- [Recognition engines and capability](../src/modules/recognition/ARCHITECTURE.md)
-- [Speaking engines and playback](../src/modules/speak/ARCHITECTURE.md)
-- [Shared design system](../src/shared/ARCHITECTURE.md)
+- [Application composition, slots, routes, i18n](../packages/live-voice/src/app/ARCHITECTURE.md)
+- [Core voice policy, ownership, settings normalization](../packages/live-voice/src/modules/core/ARCHITECTURE.md)
+- [Conversation and composer behavior](../packages/live-voice/src/modules/conversation/ARCHITECTURE.md)
+- [Settings presentation and storage](../packages/live-voice/src/modules/settings/ARCHITECTURE.md)
+- [Recognition engines and capability](../packages/live-voice/src/modules/recognition/ARCHITECTURE.md)
+- [Speaking engines and playback](../packages/live-voice/src/modules/speak/ARCHITECTURE.md)
+- [Shared design system](../packages/live-voice/src/shared/ARCHITECTURE.md)
 
 Read the relevant local architecture file before editing a boundary. The source of truth for plugin and tested-DSH versions is `package.json`.
 
 ## Optional diagnostics
 
-The main client publishes a versioned, read-only diagnostic source through `src/modules/core/diagnostics.ts`. The separately built `src_debugger` plugin owns all inspector UI and optional Developer-tab activation inside Live Voice Settings; the main client never imports it. See [debugger architecture](../src_debugger/ARCHITECTURE.md) for installation, sampling, privacy and current limitations.
+The main client publishes a versioned, read-only diagnostic source through `packages/live-voice/src/modules/core/diagnostics.ts`. The separately built `packages/live-voice-debugger` plugin owns all inspector UI and optional Developer-tab activation inside Live Voice Settings; the main client never imports it. See [debugger architecture](../packages/live-voice-debugger/ARCHITECTURE.md) for installation, sampling, privacy and current limitations.
 
 ## Stable contracts
 

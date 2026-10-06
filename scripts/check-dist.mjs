@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 
-const runtimeEntries = ['lib/client.js', 'lib/server.js'];
+const runtimeEntries = ['packages/live-voice/lib/client.js', 'packages/live-voice/lib/server.js'];
 
 const run = (command, args, options = {}) => {
   const result = spawnSync(command, args, {

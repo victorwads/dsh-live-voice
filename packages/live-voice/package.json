@@ -1,0 +1,99 @@
+{
+  "name": "dsh-live-voice",
+  "version": "0.3.2",
+  "dshTestedVersion": "0.2.0-rc.2",
+  "type": "module",
+  "scripts": {
+    "build": "node --experimental-strip-types ../../scripts/build.ts --package live-voice",
+    "test": "npm run build && node --test .test-dist/*.test.js",
+    "typecheck": "tsc --noEmit",
+    "dev": "node --experimental-strip-types ../../scripts/build.ts --package live-voice --watch",
+    "prepack": "npm run build",
+    "preview": "previewjs .",
+    "preview:check": "previewjs . --help"
+  },
+  "description": "Local-first hands-free AI voice assistant plugin for DeepSeek Harness (DSH), with speech-to-text, text-to-speech, voice commands, and local speech engines.",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "local-first",
+    "local-voice",
+    "hands-free",
+    "hands-free-ai",
+    "hands-free-assistant",
+    "voice-control",
+    "voice-commands",
+    "voice-assistant",
+    "voice-conversation",
+    "conversational-ai",
+    "continuous-conversation",
+    "voice-dictation",
+    "spoken-prompts",
+    "speech-to-text",
+    "text-to-speech",
+    "speech-recognition",
+    "speech-synthesis",
+    "stt",
+    "tts",
+    "whisper",
+    "whisper-cpp",
+    "qwen3-asr",
+    "qwen3-tts",
+    "mlx",
+    "apple-silicon",
+    "web-speech-api",
+    "macos-say",
+    "turn-taking",
+    "voice-interruption",
+    "silence-detection"
+  ],
+  "author": {
+    "name": "wads.dev",
+    "url": "https://www.npmjs.com/org/wads.dev"
+  },
+  "license": "Apache-2.0",
+  "files": [
+    "src/",
+    "lib/",
+    "cordis.patch.yml",
+    "README.md",
+    "CHANGELOG.md",
+    "HISTORY.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "tag": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorwads/dsh-live-voice.git",
+    "directory": "packages/live-voice"
+  },
+  "main": "./lib/server.js",
+  "exports": {
+    ".": "./lib/server.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-chat",
+        "@deepseek-ai/dsh-client-connection",
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-locale"
+      ]
+    }
+  },
+  "dependencies": {
+    "@wads.dev/i18n-react": "^0.0.1-alpha.0",
+    "@wads.dev/i18n-ts": "0.0.1-alpha.0"
+  }
+}

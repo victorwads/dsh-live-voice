@@ -1,7 +1,6 @@
 {
   "name": "dsh-live-voice-debugger",
   "version": "0.3.2",
-  "private": true,
   "type": "module",
   "description": "Optional read-only state inspector for DSH Live Voice.",
   "license": "Apache-2.0",
@@ -26,5 +25,21 @@
         "@deepseek-ai/dsh-client-locale"
       ]
     }
+  },
+  "scripts": {
+    "build": "node --experimental-strip-types ../../scripts/build.ts --package live-voice-debugger",
+    "test": "npm run build && node --test .test-dist/*.test.js",
+    "typecheck": "tsc --noEmit",
+    "dev": "node --experimental-strip-types ../../scripts/build.ts --package live-voice-debugger --watch",
+    "prepack": "npm run build"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorwads/dsh-live-voice.git",
+    "directory": "packages/live-voice-debugger"
   }
 }

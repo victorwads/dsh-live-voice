@@ -3,7 +3,7 @@ import {
   DIAGNOSTIC_CHANGED,
   DIAGNOSTIC_KEY,
   type DiagnosticSource,
-} from '../src/modules/core/diagnostics.js';
+} from '../../live-voice/src/modules/core/diagnostics.js';
 import { createInspector } from './inspector.js';
 import type { DebuggerCopy } from './locales.js';
 import { StateTree } from './StateTree.js';

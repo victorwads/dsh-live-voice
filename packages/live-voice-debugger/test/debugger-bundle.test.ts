@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import React from 'react';
 
 test('optional debugger bundle loads independently without bundling the voice coordinator', async () => {
-  const code = await readFile(new URL('../src_debugger/lib/client.js', import.meta.url), 'utf8');
+  const code = await readFile(new URL('../lib/client.js', import.meta.url), 'utf8');
   let registration: any;
   vm.runInNewContext(code, {
     window: {
@@ -25,6 +25,6 @@ test('optional debugger bundle loads independently without bundling the voice co
   assert.equal(typeof plugin.apply, 'function');
   assert.deepEqual([...plugin.inject], ['locale']);
   assert.doesNotMatch(code, /class VoiceCoordinator/);
-  const main = await readFile(new URL('../lib/client.js', import.meta.url), 'utf8');
+  const main = await readFile(new URL('../../live-voice/lib/client.js', import.meta.url), 'utf8');
   assert.doesNotMatch(main, /dlvd-panel|Show floating debugger/);
 });

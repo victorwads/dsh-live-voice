@@ -1,4 +1,7 @@
-import type { DiagnosticSource, DiagnosticValue } from '../src/modules/core/diagnostics.js';
+import type {
+  DiagnosticSource,
+  DiagnosticValue,
+} from '../../live-voice/src/modules/core/diagnostics.js';
 export interface TransitionEntry {
   sequence: number;
   timeMs: number;

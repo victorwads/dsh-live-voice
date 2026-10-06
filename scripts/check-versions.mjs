@@ -16,9 +16,14 @@ export function assertMatchingVersions(main, debuggerPackage) {
   }
 }
 export async function checkVersions() {
-  const main = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
+  const main = JSON.parse(
+    await readFile(new URL('../packages/live-voice/package.json', import.meta.url), 'utf8'),
+  );
   const debuggerPackage = JSON.parse(
-    await readFile(new URL('../src_debugger/package.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../packages/live-voice-debugger/package.json', import.meta.url),
+      'utf8',
+    ),
   );
   assertMatchingVersions(main, debuggerPackage);
   console.log('Live Voice and debugger versions match: ' + main.version);

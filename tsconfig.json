@@ -1,29 +1,12 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "jsx": "react-jsx",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "strict": false,
-    "noUncheckedIndexedAccess": false,
-    "exactOptionalPropertyTypes": false,
-    "useUnknownInCatchVariables": false,
-    "noImplicitOverride": false,
-    "verbatimModuleSyntax": true,
-    "skipLibCheck": true,
-    "allowJs": false,
-    "noEmit": true,
-    "types": ["node", "react", "react-dom"]
-  },
+  "extends": "./packages/live-voice/tsconfig.json",
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src_debugger/**/*.ts",
-    "src_debugger/**/*.tsx",
-    "test/**/*.tsx",
-    "scripts/**/*.ts",
-    "__previewjs__/**/*.tsx"
+    "packages/*/src/**/*.ts",
+    "packages/*/src/**/*.tsx",
+    "packages/*/test/**/*.tsx",
+    "packages/*/scripts/**/*.ts",
+    "packages/live-voice/__previewjs__/**/*.tsx",
+    "scripts/**/*.ts"
   ],
-  "exclude": ["lib", "node_modules", ".test-dist"]
+  "exclude": ["**/lib", "**/node_modules", "**/.test-dist"]
 }

@@ -4,18 +4,18 @@ import assert from 'node:assert/strict';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
-import { VoiceCoordinator } from '../src/modules/core/coordinator.ts';
-import { WhisperHttpRecognitionEngine } from '../src/modules/recognition/engines/whisper/WhisperRecognitionEngine.ts';
+import { VoiceCoordinator } from '../../live-voice/src/modules/core/coordinator.ts';
+import { WhisperHttpRecognitionEngine } from '../../live-voice/src/modules/recognition/engines/whisper/WhisperRecognitionEngine.ts';
 import {
   DIAGNOSTIC_KEY,
   publishDiagnosticSource,
   readCoordinatorDiagnostics,
-} from '../src/modules/core/diagnostics.ts';
-import { createInspector } from '../src_debugger/inspector.ts';
-import { DebuggerPanel } from '../src_debugger/DebuggerPanel.tsx';
-import { copyFor, dictionaries } from '../src_debugger/locales.ts';
-import { apply } from '../src_debugger/apply.tsx';
-import { readDeveloperExtension } from '../src/modules/core/developerExtension.ts';
+} from '../../live-voice/src/modules/core/diagnostics.ts';
+import { createInspector } from '../src/inspector.ts';
+import { DebuggerPanel } from '../src/DebuggerPanel.tsx';
+import { copyFor, dictionaries } from '../src/locales.ts';
+import { apply } from '../src/apply.tsx';
+import { readDeveloperExtension } from '../../live-voice/src/modules/core/developerExtension.ts';
 
 function fixture(t) {
   let callbacks,

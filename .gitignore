@@ -1,10 +1,10 @@
 node_modules/
-src_debugger/lib/
+packages/live-voice-debugger/lib/
 # dsh.pub installs from a pinned GitHub commit and validates these runtime
 # entries without executing the source build.
-lib/*
-!lib/client.js
-!lib/server.js
+packages/live-voice/lib/*
+!packages/live-voice/lib/client.js
+!packages/live-voice/lib/server.js
 *.tgz
 coverage/
 artifacts/

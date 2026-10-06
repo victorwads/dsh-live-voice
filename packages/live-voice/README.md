@@ -1,14 +1,5 @@
 # DSH Live Voice
 
-## Workspace layout
-
-This pnpm monorepo contains two independently installable plugins:
-
-- `packages/live-voice`: the main voice plugin, with its own source, tests, manifest and runtime bundles.
-- `packages/live-voice-debugger`: the optional debugger, with its own `src`, tests and manifest.
-
-Run `pnpm install --frozen-lockfile`, then `pnpm build` or `pnpm test` from the root. Build individual plugins with `pnpm --filter dsh-live-voice build` or `pnpm --filter dsh-live-voice-debugger build`. Root documentation covers both packages; package README and changelog copies are included for npm distribution. Existing DSH local links must be updated to the new package directories.
-
 [![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
 [![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.0--rc.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.0-rc.2)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)

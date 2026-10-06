@@ -1,5 +1,5 @@
 import React from 'react';
-import type { DiagnosticValue } from '../src/modules/core/diagnostics.js';
+import type { DiagnosticValue } from '../../live-voice/src/modules/core/diagnostics.js';
 export function StateTree({
   name,
   value,

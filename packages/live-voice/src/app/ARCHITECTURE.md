@@ -7,4 +7,4 @@
 - `client/i18n` owns the only UI translation tree: typed, alphabetized catalogs for every supported locale, runtime selection synchronized with `ctx.locale`, DSH registration, and the boundary wrapping slot components. UI language must not change STT/TTS language or user-defined command phrases.
 - Styles are assembled from `src/styles/index.ts`; design-system primitives live under `src/shared/design-system` rather than here.
 
-Read [the repository overview](../../docs/ARCHITECTURE.md) for dependency direction and stable contracts, and the relevant module architecture before editing feature behavior. Read [application agent guidance](AGENTS.md) for operational constraints.
+Read [the repository overview](../../../../docs/ARCHITECTURE.md) for dependency direction and stable contracts, and the relevant module architecture before editing feature behavior. Read [application agent guidance](AGENTS.md) for operational constraints.

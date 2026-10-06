@@ -3,7 +3,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { DebuggerPanel } from './DebuggerPanel.js';
 import { dictionaries, namespace, type DebuggerCopy } from './locales.js';
 import { styles } from './styles.js';
-import { publishDeveloperExtension } from '../src/modules/core/developerExtension.js';
+import { publishDeveloperExtension } from '../../live-voice/src/modules/core/developerExtension.js';
 export const inject = ['locale'];
 export function apply(ctx: any) {
   let enabled = false;

@@ -1,7 +1,7 @@
 # Development and local testing
 
 ```sh
-npm ci
+pnpm install --frozen-lockfile
 npm run typecheck
 npm test
 npm run build
@@ -14,7 +14,7 @@ Implementation, test, and build-script source is TypeScript (`.ts`). `npm run ty
 [Preview.js](https://previewjs.com/docs/guides/react) runs the plugin UI in isolation from DSH. Install dependencies and start the local preview workspace:
 
 ```sh
-npm ci
+pnpm install --frozen-lockfile
 npm run preview
 ```
 
