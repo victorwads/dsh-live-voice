@@ -6,12 +6,23 @@ All notable changes to DSH Live Voice are documented in this file.
 
 ### Release Changes
 
-Voice control feels more immediate: the new default Short profile sends captured speech for recognition after 500 ms of silence, reducing the wait before transcription and voice-command execution. Maintainer feedback reports a noticeably more responsive experience in daily use. This reduces the segmentation delay, not model inference time, and does not claim improved recognition accuracy. Existing saved profiles remain unchanged; Natural, Long, and Custom remain available for longer pauses.
+Voice control feels more immediate: the new default Short profile sends captured speech for recognition after 500 ms of silence, reducing the wait before transcription and voice-command execution. Maintainer feedback reports a noticeably more responsive experience in daily use. This reduces the segmentation delay, not model inference time, and does not claim improved recognition accuracy. Natural, Long, and Custom remain available for longer pauses. All Live Voice preferences now live on the DSH server instead of in browser storage, so browsers connecting to the same host load the same saved configuration. Legacy browser preferences are intentionally not migrated; configure them once again after updating.
 
 ### Changes
 
 - Adjust silence-detection profiles to Short (500 ms, now the default), Natural (1000 ms), and Long (2000 ms).
 - Add a persisted Custom silence profile with whole-millisecond input from 100 to 10,000 ms for Qwen and Whisper capture, translated into every supported interface language.
+- Move every Live Voice preference to authenticated server-side persistence, including engines, languages, device selections, conversation policy, silence timing, response/send delays, filters, voice commands, and editable spoken-context text.
+- Save normalized settings atomically with owner-only file permissions and serialize partial updates to preserve unrelated preferences during concurrent saves.
+- Remove browser-storage reads and writes from the plugin; keep release-check metadata in memory only.
+- Add translated server load/save errors in all six interface languages, with no browser-storage fallback.
+- Add regression coverage for persistence across host-store recreation and independent clients, concurrent updates, file permissions, invalid requests, corrupted storage, and ignored legacy browser preferences.
+
+### Upgrade Notes
+
+- Legacy browser preferences are not imported. The first load without saved server preferences uses defaults; configure Live Voice once again. Qwen and Whisper connection settings already stored on the host remain unchanged.
+- Restart the DSH server after updating to load the new settings route, then refresh the browser. Refreshing the page alone is not sufficient.
+- Device selections are shared too, but the selected device must exist and be usable in the current browser. Microphone permissions and browser language-pack installations remain browser-managed capabilities.
 
 ## [0.3.1] - 2026-10-03
 

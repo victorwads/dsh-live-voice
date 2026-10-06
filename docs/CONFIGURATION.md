@@ -4,6 +4,14 @@ DSH Live Voice integrates directly into DeepSeek Harness settings under **DSH Se
 
 This guide covers all conversation modes, acoustic settings, silence thresholds, audio device routing, voice commands, and external engine configurations.
 
+## Server-side preferences
+
+All Live Voice preferences are loaded and saved on the DSH host, including engines, languages, devices, conversation mode, delays, silence detection, filters, voice commands, and editable spoken-context text. They are shared by browsers connecting to the same host and survive server restarts. The authenticated settings route persists normalized preferences atomically to `~/.dsh/dsh-live-voice.settings.json` (with owner-only file permissions). Qwen and Whisper connection configurations remain in their existing host-side stores.
+
+Legacy browser preferences are not imported or used. The first load without a server preferences file uses defaults; configure them once again. No settings are written to browser storage, and release-check metadata is cached only in memory. A failed server load or save is reported instead of falling back to browser persistence. Reload after a load failure to retry. Device IDs are shared too, but a selected device must still exist and be usable on the current browser; microphone permission and browser language-pack installation remain browser-managed capabilities, not plugin preferences.
+
+After updating the plugin, restart the DSH server to load the new settings route, then refresh the browser.
+
 ---
 
 ## 1. Acoustic Modes & Turn-Taking

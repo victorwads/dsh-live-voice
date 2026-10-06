@@ -77,9 +77,17 @@ function writeCached(storage, value) {
   } catch {}
 }
 
+const releaseMemory = new Map<string, string>();
+const memoryStorage = {
+  getItem: (key: string) => releaseMemory.get(key) ?? null,
+  setItem: (key: string, value: string) => {
+    releaseMemory.set(key, value);
+  },
+};
+
 export async function checkLatestRelease({
   fetchImpl = globalThis.window?.fetch?.bind(globalThis.window),
-  storage = globalThis.window?.localStorage,
+  storage = memoryStorage,
   now = Date.now(),
 } = {}) {
   const cached = readCached(storage, now);

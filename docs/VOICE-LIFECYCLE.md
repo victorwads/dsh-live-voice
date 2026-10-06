@@ -6,7 +6,7 @@ This is the natural-language behavioral contract for conversation lifecycle and 
 
 ### Persisted preferences
 
-Engine, language, input/output device, Speakers/Headphones mode, delivery mode, delays, filters, and customized voice-command phrases may survive conversations and reloads through `dsh-live-voice.settings`.
+Engine, language, input/output device, Speakers/Headphones mode, delivery mode, delays, filters, and customized voice-command phrases survive conversations and reloads through the host-side `dsh-live-voice.settings` preferences. Browser storage is not read or written; legacy browser values are intentionally not migrated.
 
 ### Application continuity
 

@@ -11,6 +11,8 @@ import {
 } from '../../modules/recognition/engines/whisper/whisperRecognitionHost.js';
 import { wavToM4aAac } from '../../modules/speak/engines/audio/M4aAacTranscoder.js';
 import { SayEngine } from '../../modules/speak/engines/say/SaySpeakingEngine.js';
+import { createSettingsStore } from '../../modules/settings/models/settingsHost.js';
+import { registerSettingsRoute } from './registerRoutes.js';
 
 export const name = 'dsh-live-voice';
 export const inject = ['connection', 'systemPrompt'];
@@ -136,6 +138,7 @@ export function createSayHost({ engine = new SayEngine() } = {}) {
 export function apply(
   ctx,
   {
+    settingsStore = createSettingsStore(),
     whisperStore = createWhisperConfigStore(),
     whisperFetch = globalThis.fetch,
     qwenStore = createQwenConfigStore(),
@@ -145,6 +148,7 @@ export function apply(
     encodeHostSpeech = wavToM4aAac,
   } = {},
 ) {
+  registerSettingsRoute(ctx, settingsStore);
   ctx.systemPrompt.variable('live_voice_context', (assemblyContext) =>
     voiceContextStore.get(String(assemblyContext.agent?.sessionId || '')),
   );

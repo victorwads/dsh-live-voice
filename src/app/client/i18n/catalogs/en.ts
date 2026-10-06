@@ -168,6 +168,10 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.settings.engine.refresh': 'Refresh available engines',
   'dsh-live-voice.settings.filters.title': 'Filtering',
   'dsh-live-voice.settings.general.title': 'General',
+  'dsh-live-voice.settings.persistence.loadError':
+    'Could not load Live Voice settings from the server. Reload to try again.',
+  'dsh-live-voice.settings.persistence.saveError':
+    'Could not save Live Voice settings on the server. Please try again.',
   'dsh-live-voice.settings.tabs.conversation': 'Conversation',
   'dsh-live-voice.settings.tabs.recognition': 'Speech recognition',
   'dsh-live-voice.settings.tabs.speak': 'Speech',

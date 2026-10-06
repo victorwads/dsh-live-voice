@@ -141,6 +141,8 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.settings.engine.refresh': string;
   'dsh-live-voice.settings.filters.title': string;
   'dsh-live-voice.settings.general.title': string;
+  'dsh-live-voice.settings.persistence.loadError': string;
+  'dsh-live-voice.settings.persistence.saveError': string;
   'dsh-live-voice.settings.tabs.conversation': string;
   'dsh-live-voice.settings.tabs.recognition': string;
   'dsh-live-voice.settings.tabs.speak': string;

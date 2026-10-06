@@ -40,6 +40,19 @@ async function fixture(t, { pendingStore = true } = {}) {
     configurable: true,
     value: new dom.window.EventTarget(),
   });
+  dom.window.localStorage.setItem(
+    'dsh-live-voice.settings',
+    JSON.stringify({ engine: 'say', mode: 'headphones' }),
+  );
+  let serverSettings = {};
+  t.mock.method(globalThis, 'fetch', async (url, options = {}) => {
+    if (url === '/api/dsh-live-voice/settings') {
+      if (options.method === 'PUT')
+        serverSettings = { ...serverSettings, ...JSON.parse(options.body) };
+      return Response.json({ ok: true, value: serverSettings });
+    }
+    return Response.json({ ok: true, value: {} });
+  });
   const controllers = [];
   const calls = [];
   const holds = new Map();
@@ -175,6 +188,7 @@ async function fixture(t, { pendingStore = true } = {}) {
     for (const fn of restore) fn();
   });
   return {
+    serverSettings: () => serverSettings,
     render,
     props,
     Buttons,
@@ -206,6 +220,11 @@ test('real assistant-step rows enable playback even without local recognition', 
       },
     }),
   );
+  assert.equal(
+    f.controllers[0].getSnapshot().settings.engine,
+    'browser',
+    'legacy browser preferences are ignored',
+  );
   const button = document.querySelector('button');
   assert.equal(button.disabled, false);
   await act(async () => button.click());
@@ -223,7 +242,11 @@ test('native Settings owns preferences without a composer gear', async (t) => {
     select.value = 'say';
     select.dispatchEvent(new window.Event('change', { bubbles: true }));
   });
-  assert.equal(JSON.parse(localStorage.getItem('dsh-live-voice.settings')).engine, 'say');
+  assert.equal(f.serverSettings().engine, 'say');
+  assert.deepEqual(JSON.parse(localStorage.getItem('dsh-live-voice.settings')), {
+    engine: 'say',
+    mode: 'headphones',
+  });
   const test = [...document.querySelectorAll('button')].find(
     (button) => button.textContent === 'Test selected speech output',
   );
@@ -241,7 +264,11 @@ test('changing Settings stops active voice, persists immediately, and applies ne
     engine.value = 'say';
     engine.dispatchEvent(new window.Event('change', { bubbles: true }));
   });
-  assert.equal(JSON.parse(localStorage.getItem('dsh-live-voice.settings')).engine, 'say');
+  assert.equal(f.serverSettings().engine, 'say');
+  assert.deepEqual(JSON.parse(localStorage.getItem('dsh-live-voice.settings')), {
+    engine: 'say',
+    mode: 'headphones',
+  });
   assert.ok(f.calls.some(([name, controller]) => name === 'end' && controller === session));
   assert.equal(session.getSnapshot().settings.engine, 'say');
   assert.equal(document.querySelector('[role=alert]'), null);

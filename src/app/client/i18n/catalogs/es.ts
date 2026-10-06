@@ -181,6 +181,10 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.settings.engine.refresh': 'Actualizar los motores disponibles',
   'dsh-live-voice.settings.filters.title': 'Filtrado',
   'dsh-live-voice.settings.general.title': 'General',
+  'dsh-live-voice.settings.persistence.loadError':
+    'No se pudieron cargar los ajustes de Live Voice del servidor. Recarga para volver a intentarlo.',
+  'dsh-live-voice.settings.persistence.saveError':
+    'No se pudieron guardar los ajustes de Live Voice en el servidor. Inténtalo de nuevo.',
   'dsh-live-voice.settings.tabs.conversation': 'Conversación',
   'dsh-live-voice.settings.tabs.recognition': 'Reconocimiento de voz',
   'dsh-live-voice.settings.tabs.speak': 'Síntesis de voz',

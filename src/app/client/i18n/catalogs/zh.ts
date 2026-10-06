@@ -162,6 +162,9 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.settings.engine.refresh': '刷新可用引擎',
   'dsh-live-voice.settings.filters.title': '过滤',
   'dsh-live-voice.settings.general.title': '常规',
+  'dsh-live-voice.settings.persistence.loadError':
+    '无法从服务器加载 Live Voice 设置。请刷新后重试。',
+  'dsh-live-voice.settings.persistence.saveError': '无法在服务器上保存 Live Voice 设置。请重试。',
   'dsh-live-voice.settings.tabs.conversation': '对话',
   'dsh-live-voice.settings.tabs.recognition': '语音识别',
   'dsh-live-voice.settings.tabs.speak': '语音合成',

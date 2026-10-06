@@ -19,16 +19,14 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
   globalThis.document = dom.window.document;
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   dom.window.HTMLCanvasElement.prototype.getContext = () => null;
-  dom.window.localStorage.setItem(
-    'dsh-live-voice.latest-release-check',
-    JSON.stringify({
-      checkedAt: Date.now(),
-      release: {
-        tag: `v${NEXT_RELEASE_VERSION}`,
-        url: `https://github.com/victorwads/dsh-live-voice/releases/tag/v${NEXT_RELEASE_VERSION}`,
-      },
+  dom.window.fetch = async () => ({
+    ok: true,
+    json: async () => ({
+      tag_name: 'v' + NEXT_RELEASE_VERSION,
+      html_url:
+        'https://github.com/victorwads/dsh-live-voice/releases/tag/v' + NEXT_RELEASE_VERSION,
     }),
-  );
+  });
   const callbacks = new Set();
   const calls = [];
   let state = {

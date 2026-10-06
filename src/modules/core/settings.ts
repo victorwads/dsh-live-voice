@@ -97,7 +97,7 @@ export const voiceDetectionSilenceMs = (settings) =>
         voiceDetectionPresets[defaultSettings.voiceDetectionPreset]
       ).silenceMs;
 
-/** Persisted browser preferences are untrusted and may belong to an older version. */
+/** Persisted preferences are untrusted and may belong to an older version. */
 export function normalizeSettings(value) {
   const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
   return {

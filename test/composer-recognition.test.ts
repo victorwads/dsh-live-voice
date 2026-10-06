@@ -48,6 +48,7 @@ for (const staleSnapshot of [false, true])
       t.mock.method(MicrophoneMeter.prototype, 'capability', async () => ({ supported: true }));
       t.mock.method(MicrophoneMeter.prototype, 'start', async () => true);
       t.mock.method(MicrophoneMeter.prototype, 'stop', async () => {});
+      t.mock.method(globalThis, 'fetch', async () => Response.json({ ok: true, value: {} }));
       const slots = new Map(),
         cleanup = [];
       const chat = { nodes: new Map() };

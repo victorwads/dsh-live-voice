@@ -1,12 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import { createPortal } from 'react-dom';
-import {
-  MicrophoneMeter,
-  VoiceCoordinator,
-  VoiceOwnership,
-  normalizeSettings,
-} from '../../modules/core/index.js';
+import { MicrophoneMeter, VoiceCoordinator, VoiceOwnership } from '../../modules/core/index.js';
 import {
   BrowserRecognitionEngine,
   QwenHttpRecognitionEngine,
@@ -26,6 +21,7 @@ import {
 import { registerLiveVoiceLocales } from './i18n/index.js';
 import { registerConversationSlots, registerSettingsSlot } from './registerSlots.js';
 import { styles } from '../../styles/index.js';
+import { createSettingsClient } from '../../modules/settings/models/settingsStorage.js';
 import {
   assistantMessages,
   addressedTurn,
@@ -39,6 +35,8 @@ export function apply(ctx) {
   const SettingsPanel = createLiveVoiceSettings(t, ctx.locale);
   const controllers = new Map();
   const retiring = new Set();
+  const preferences = createSettingsClient();
+  const settingsControllers = new Set();
   let disposed = false;
   // Voice conversation mode belongs to the plugin, not to a mounted composer.
   // A route change may replace every conversation slot, but the next committed
@@ -102,6 +100,38 @@ export function apply(ctx) {
       if (!disposed && !controller.disposed)
         controller.patch({ error: error?.message || String(error) });
     });
+  async function savePreferences(controller, next) {
+    try {
+      return await preferences.save(next);
+    } catch {
+      const error = new Error(t('dsh-live-voice.settings.persistence.saveError'));
+      if (!disposed && !controller.disposed) controller.patch({ error: error.message });
+      throw error;
+    }
+  }
+  const unsubscribePreferences = preferences.subscribe((settings) => {
+    if (disposed) return;
+    for (const entry of controllers.values()) {
+      if (entry.closed) continue;
+      const previous = entry.controller.getSnapshot().settings;
+      if ([...recognitionSettingKeys].some((key) => previous[key] !== settings[key]))
+        entry.controller.replaceRecognition(recognitionFor(settings, entry.controller.meter));
+      entry.applySettings(settings);
+    }
+    for (const c of settingsControllers) {
+      if (c.disposed) continue;
+      const previous = c.getSnapshot().settings;
+      if ([...recognitionSettingKeys].some((key) => previous[key] !== settings[key]))
+        c.replaceRecognition(recognitionFor(settings, c.meter));
+      c.applySavedSettings(settings);
+      for (const engine of Object.values(c.engines)) engine.lang = settings.lang;
+      run(c, c.refreshCapabilities());
+    }
+  });
+  ctx.effect(
+    () => () => unsubscribePreferences(),
+    'dsh-live-voice: remove preferences subscription',
+  );
   function retire(entry) {
     if (entry.closed) return;
     entry.closed = true;
@@ -138,14 +168,7 @@ export function apply(ctx) {
       closed: false,
       lastVoiceContextBody: null,
     };
-    let settings = {};
-    try {
-      settings = normalizeSettings(
-        JSON.parse(localStorage.getItem('dsh-live-voice.settings') || '{}'),
-      );
-    } catch {
-      settings = normalizeSettings(null);
-    }
+    const settings = preferences.getSnapshot();
     const engineBrowser = new BrowserSpeakingEngine({ lang: settings.lang || 'pt-BR' });
     const engineSay = new HostAudioSpeakingEngine({
       endpoint: '/api/dsh-live-voice/say/speech',
@@ -289,13 +312,7 @@ export function apply(ctx) {
     controller.updateSettings = (next) => {
       if (disposed || entry.closed) return;
       entry.applySettings(next);
-      const settings = controller.getSnapshot().settings;
-      try {
-        localStorage.setItem('dsh-live-voice.settings', JSON.stringify(settings));
-      } catch {}
-      for (const other of controllers.values()) {
-        if (other !== entry && !other.closed) other.applySettings(settings);
-      }
+      return savePreferences(controller, next);
     };
     // Cancel only this entry's queued acquisition. Global cancellation here would
     // invalidate a newer session while its predecessor is being unmounted.
@@ -325,7 +342,12 @@ export function apply(ctx) {
         return ownership.run(
           controller,
           [...controllers.values()].map((other) => other.controller).concat([...retiring]),
-          () => {
+          async () => {
+            try {
+              await preferences.ready;
+            } catch {
+              throw new Error(t('dsh-live-voice.settings.persistence.loadError'));
+            }
             if (disposed || entry.closed || !entry.refs || request !== entry.request) return;
             if (method !== 'speak' && !entry.composers.size) return;
             const result = original(...args);
@@ -336,6 +358,10 @@ export function apply(ctx) {
       };
     }
     controllers.set(key, entry);
+    void preferences.ready.catch(() => {
+      if (!entry.closed)
+        controller.patch({ error: t('dsh-live-voice.settings.persistence.loadError') });
+    });
     run(controller, controller.refreshCapabilities());
     return entry;
   }
@@ -428,14 +454,7 @@ export function apply(ctx) {
   function Settings() {
     const [controller, setController] = React.useState(null);
     React.useEffect(() => {
-      let settings;
-      try {
-        settings = normalizeSettings(
-          JSON.parse(localStorage.getItem('dsh-live-voice.settings') || '{}'),
-        );
-      } catch {
-        settings = normalizeSettings(null);
-      }
+      const settings = preferences.getSnapshot();
       const browser = new BrowserSpeakingEngine({ lang: settings.lang });
       const qwen = new QwenHttpSpeakingEngine({ lang: settings.lang });
       const meter = new MicrophoneMeter();
@@ -461,9 +480,21 @@ export function apply(ctx) {
         ownership.run(
           c,
           [...controllers.values()].map((entry) => entry.controller).concat([...retiring]),
-          () => speak(...args),
+          async () => {
+            try {
+              await preferences.ready;
+            } catch {
+              throw new Error(t('dsh-live-voice.settings.persistence.loadError'));
+            }
+            if (!disposed && !c.disposed) return speak(...args);
+          },
         );
       const update = c.updateSettings.bind(c);
+      c.applySavedSettings = update;
+      settingsControllers.add(c);
+      void preferences.ready.catch(() =>
+        c.patch({ error: t('dsh-live-voice.settings.persistence.loadError') }),
+      );
       let settingsRevision = 0;
       c.updateSettings = async (next) => {
         const revision = ++settingsRevision;
@@ -472,10 +503,11 @@ export function apply(ctx) {
         qwen.lang = c.getSnapshot().settings.lang;
         const settings = c.getSnapshot().settings;
         if (changesRecognition(next)) c.replaceRecognition(recognitionFor(settings, c.meter));
-        localStorage.setItem('dsh-live-voice.settings', JSON.stringify(settings));
+        const saved = savePreferences(c, next);
         run(c, c.refreshCapabilities());
         const active = [...controllers.values()];
-        await Promise.allSettled([
+        const [savedSettings] = await Promise.all([
+          saved,
           c.endConversation(),
           ...active.map((entry) => entry.controller.endConversation()),
         ]);
@@ -483,8 +515,10 @@ export function apply(ctx) {
         for (const entry of controllers.values()) {
           if (entry.closed) continue;
           if (changesRecognition(next))
-            entry.controller.replaceRecognition(recognitionFor(settings, entry.controller.meter));
-          entry.applySettings(settings);
+            entry.controller.replaceRecognition(
+              recognitionFor(savedSettings, entry.controller.meter),
+            );
+          entry.applySettings(savedSettings);
           run(entry.controller, entry.controller.refreshCapabilities());
         }
       };
@@ -494,6 +528,7 @@ export function apply(ctx) {
       refresh();
       return () => {
         document.removeEventListener('dsh-live-voice:capabilitieschanged', refresh);
+        settingsControllers.delete(c);
         void c.dispose();
       };
     }, []);

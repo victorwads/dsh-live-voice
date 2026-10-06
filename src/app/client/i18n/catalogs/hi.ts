@@ -171,6 +171,10 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.settings.engine.refresh': 'उपलब्ध इंजन रीफ़्रेश करें',
   'dsh-live-voice.settings.filters.title': 'फ़िल्टरिंग',
   'dsh-live-voice.settings.general.title': 'सामान्य',
+  'dsh-live-voice.settings.persistence.loadError':
+    'सर्वर से Live Voice सेटिंग लोड नहीं हो सकीं। फिर प्रयास करने के लिए पेज रीलोड करें।',
+  'dsh-live-voice.settings.persistence.saveError':
+    'सर्वर पर Live Voice सेटिंग सेव नहीं हो सकीं। फिर प्रयास करें।',
   'dsh-live-voice.settings.tabs.conversation': 'बातचीत',
   'dsh-live-voice.settings.tabs.recognition': 'वाक् पहचान',
   'dsh-live-voice.settings.tabs.speak': 'वाचन',

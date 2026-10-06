@@ -175,6 +175,10 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.settings.engine.refresh': 'Atualizar mecanismos disponíveis',
   'dsh-live-voice.settings.filters.title': 'Filtragem',
   'dsh-live-voice.settings.general.title': 'Gerais',
+  'dsh-live-voice.settings.persistence.loadError':
+    'Não foi possível carregar as configurações do Live Voice do servidor. Recarregue para tentar novamente.',
+  'dsh-live-voice.settings.persistence.saveError':
+    'Não foi possível salvar as configurações do Live Voice no servidor. Tente novamente.',
   'dsh-live-voice.settings.tabs.conversation': 'Conversa',
   'dsh-live-voice.settings.tabs.recognition': 'Reconhecimento de voz',
   'dsh-live-voice.settings.tabs.speak': 'Fala',
