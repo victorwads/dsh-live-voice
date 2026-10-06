@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import { createPortal } from 'react-dom';
+import { preserveComposerSelection } from './composerSelection.js';
 import { MicrophoneMeter, VoiceCoordinator, VoiceOwnership } from '../../modules/core/index.js';
 import {
   BrowserRecognitionEngine,
@@ -279,10 +280,13 @@ export function apply(ctx) {
           if (entry.pendingDraft === undefined) entry.staleDrafts.clear();
           entry.staleDrafts.add(entry.draft);
           if (entry.publishedDraft !== undefined) entry.staleDrafts.add(entry.publishedDraft);
+          const previous = entry.draft;
           entry.draft = text;
           entry.pendingDraft = text;
           entry.pendingRevision = entry.publishedRevision;
-          owner.actions.setDraft(text);
+          const append = text.length > previous.length && text.startsWith(previous);
+          if (append) preserveComposerSelection(() => owner.actions.setDraft(text));
+          else owner.actions.setDraft(text);
         },
       },
       settings,

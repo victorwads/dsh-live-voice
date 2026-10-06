@@ -80,6 +80,9 @@ for (const staleSnapshot of [false, true])
       const actions = {
         setDraft(text) {
           writes++;
+          // DSH updates the editor synchronously; only the subscribed publication can lag.
+          const editor = document.querySelector('textarea');
+          if (editor) editor.value = text;
           if (delay) pending = text;
           else publish(text);
         },
@@ -185,6 +188,14 @@ for (const staleSnapshot of [false, true])
       );
       delay = false;
       await act(async () => publish(pending));
+      const editor = document.querySelector('textarea');
+      editor.focus();
+      editor.setSelectionRange(1, 4, 'backward');
+      await act(async () => emit('speech while editing', true));
+      assert.equal(editor.selectionStart, 1);
+      assert.equal(editor.selectionEnd, 4);
+      assert.equal(editor.selectionDirection, 'backward');
+      assert.equal(document.activeElement, editor);
       // A later chunk must append even after the user clears or replaces the composer.
       await act(async () => publish('replacement written manually'));
       await act(async () => emit('novo trecho', true));

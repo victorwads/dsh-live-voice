@@ -4,6 +4,10 @@ All notable changes to DSH Live Voice are documented in this file.
 
 ## [0.3.3] - Unreleased
 
+### Release Changes
+
+This version adds the optional Live Voice Debugger and a two-package workspace, keeps spoken Send and Queue commands independent of automatic-send preferences, and preserves the composer caret and selection while final dictation is appended. Both plugin packages are versioned together at 0.3.3; this section remains unreleased until publication.
+
 ### Features
 
 - Add Live Voice Debugger as a separate, optional package in the same repository. Installing it contributes a Developer tab inside Live Voice Settings; the main plugin works without the debugger and does not bundle its interface.
@@ -18,6 +22,7 @@ All notable changes to DSH Live Voice are documented in this file.
 
 ### Bug Fixes
 
+- Preserve the composer caret, forward/backward selection, focus, and scroll position when appending final dictation. Restore selection after DSH rebuilds editor nodes and notify its selection bridge; explicit Clear remains a separate action.
 - Keep spoken Send and Queue commands as one-shot delivery actions. They no longer enable automatic sending, change its mode, or persist a different sending preference. Manual sending remains manual after a spoken command; existing automatic modes remain unchanged.
 - Add regressions for spoken delivery in Manual, Queue, and Steer modes, including unchanged preferences, no settings writes, and subsequent dictation behavior.
 

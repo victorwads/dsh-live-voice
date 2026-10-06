@@ -1,6 +1,6 @@
 # Conversation module
 
-Dictation is append-only at the current composer end. Final chunks preserve existing and manually edited text; provisional hypotheses never rewrite the editor. Client synchronization must accept a new manual publication even when the previous voice echo was skipped, while ignoring unchanged stale slot snapshots. Explicit Clear and normal submit actions are separate from dictation.
+Dictation is append-only at the current composer end. Final chunks preserve existing and manually edited text; provisional hypotheses never rewrite the editor. Client synchronization must accept a new manual publication even when the previous voice echo was skipped, while ignoring unchanged stale slot snapshots. Explicit Clear and normal submit actions are separate from dictation. Appends preserve the active caret, directional selection, focus and scroll; `app/client/composerSelection.ts` restores DOM bookmarks after the synchronous DSH editor write and publishes selectionchange through the editor bridge.
 
 `models/chat.ts` interprets DSH chat turns and pending questions. `hooks/useConversationController.ts` subscribes to session state; `hooks/useConversationActions.ts` maps user actions onto the controller. `components/` renders composer controls, microphone state, playback controls, status, and waveform; `createConversationComponents.tsx` composes them for the application slot boundary.
 

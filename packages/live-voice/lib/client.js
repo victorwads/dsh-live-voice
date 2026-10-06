@@ -37,6 +37,77 @@ module.exports = __toCommonJS(apply_exports);
 var import_react54 = __toESM(require("react"), 1);
 var import_react_dom = require("react-dom");
 
+// src/app/client/composerSelection.ts
+function preserveComposerSelection(write, doc = document) {
+  const active = doc.activeElement;
+  const selection = doc.getSelection();
+  const editable = active?.closest('[contenteditable="true"]');
+  const ownsSelection = editable && selection?.anchorNode && selection.focusNode && editable.contains(selection.anchorNode) && editable.contains(selection.focusNode);
+  const offset = (node, at) => {
+    const range = doc.createRange();
+    range.selectNodeContents(editable);
+    range.setEnd(node, at);
+    return range.toString().length;
+  };
+  const anchor = ownsSelection ? offset(selection.anchorNode, selection.anchorOffset) : null;
+  const focus = ownsSelection ? offset(selection.focusNode, selection.focusOffset) : null;
+  const outside = !ownsSelection && selection?.rangeCount ? selection.getRangeAt(0).cloneRange() : null;
+  const input = active;
+  const inputSelection = input && typeof input.selectionStart === "number" ? {
+    start: input.selectionStart,
+    end: input.selectionEnd,
+    direction: input.selectionDirection
+  } : null;
+  const scrollTop = active?.scrollTop, scrollLeft = active?.scrollLeft;
+  const bookmark = (node, at) => {
+    const path = [];
+    let child = node;
+    while (child !== editable && child.parentNode) {
+      path.unshift(Array.prototype.indexOf.call(child.parentNode.childNodes, child));
+      child = child.parentNode;
+    }
+    return { path, at, type: node.nodeType, text: node.textContent };
+  };
+  const anchorMark = ownsSelection ? bookmark(selection.anchorNode, selection.anchorOffset) : null;
+  const focusMark = ownsSelection ? bookmark(selection.focusNode, selection.focusOffset) : null;
+  write();
+  if (active?.isConnected && doc.activeElement !== active) active.focus({ preventScroll: true });
+  if (ownsSelection && editable.isConnected) {
+    const point = (at) => {
+      const walker = doc.createTreeWalker(editable, 4);
+      let node;
+      let last = editable;
+      while (node = walker.nextNode()) {
+        last = node;
+        const length = node.textContent?.length ?? 0;
+        if (at <= length) return [node, at];
+        at -= length;
+      }
+      return [last, last === editable ? last.childNodes.length : last.textContent?.length ?? 0];
+    };
+    const restorePoint = (mark, at) => {
+      let node = editable;
+      for (const index of mark.path) node = node?.childNodes[index];
+      if (node && node.nodeType === mark.type && (node.nodeType !== 3 || node.textContent?.startsWith(mark.text ?? "")) && mark.at <= (node.nodeType === 3 ? node.textContent.length : node.childNodes.length))
+        return [node, mark.at];
+      return point(at);
+    };
+    const [a, ao] = restorePoint(anchorMark, anchor);
+    const [f, fo] = restorePoint(focusMark, focus);
+    selection.setBaseAndExtent(a, ao, f, fo);
+    doc.dispatchEvent(new doc.defaultView.Event("selectionchange"));
+  } else if (inputSelection && active?.isConnected) {
+    input.setSelectionRange(inputSelection.start, inputSelection.end, inputSelection.direction);
+  } else if (outside?.startContainer.isConnected && outside.endContainer.isConnected) {
+    selection?.removeAllRanges();
+    selection?.addRange(outside);
+  }
+  if (active?.isConnected) {
+    active.scrollTop = scrollTop;
+    active.scrollLeft = scrollLeft;
+  }
+}
+
 // src/modules/core/transcript.ts
 var TranscriptDraft = class {
   reset() {
@@ -3934,7 +4005,7 @@ function useConversationController(controller) {
 var import_react24 = __toESM(require("react"), 1);
 
 // src/modules/settings/services/releases.ts
-var CURRENT_VERSION = "0.3.2";
+var CURRENT_VERSION = "0.3.3";
 var TESTED_DSH_VERSION = "0.2.0-rc.2";
 var REPOSITORY_URL = "https://github.com/victorwads/dsh-live-voice";
 var RELEASES_URL = `${REPOSITORY_URL}/releases`;
@@ -5824,10 +5895,13 @@ function apply(ctx) {
           if (entry.pendingDraft === void 0) entry.staleDrafts.clear();
           entry.staleDrafts.add(entry.draft);
           if (entry.publishedDraft !== void 0) entry.staleDrafts.add(entry.publishedDraft);
+          const previous = entry.draft;
           entry.draft = text;
           entry.pendingDraft = text;
           entry.pendingRevision = entry.publishedRevision;
-          owner.actions.setDraft(text);
+          const append = text.length > previous.length && text.startsWith(previous);
+          if (append) preserveComposerSelection(() => owner.actions.setDraft(text));
+          else owner.actions.setDraft(text);
         }
       },
       settings
