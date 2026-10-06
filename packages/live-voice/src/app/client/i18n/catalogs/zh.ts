@@ -152,6 +152,12 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.settings.autoSend.countdown': '{remaining} 后发送…',
   'dsh-live-voice.settings.autoSend.delay': '静音后发送',
   'dsh-live-voice.settings.close': '关闭语音设置',
+  'dsh-live-voice.settings.delivery.dshEnterHelp':
+    'Live Voice 根据您的回答，为引导和加入队列选择正确的操作。这不会更改 DSH 设置；请填写当前 DSH 的行为，并在该行为变化时更新此回答。',
+  'dsh-live-voice.settings.delivery.dshEnterQuestion':
+    '在您的 DSH 中，智能体忙碌时按 Enter 会怎样？',
+  'dsh-live-voice.settings.delivery.dshEnterQueue': '将消息加入队列',
+  'dsh-live-voice.settings.delivery.dshEnterSteer': '发送消息以引导智能体',
   'dsh-live-voice.settings.delivery.label': '发送模式',
   'dsh-live-voice.settings.delivery.manualLabel': '关闭 — 审阅后手动发送',
   'dsh-live-voice.settings.delivery.queueLabel': '队列 — 静音后自动加入队列',

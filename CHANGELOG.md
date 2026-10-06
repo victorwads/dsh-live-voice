@@ -22,6 +22,7 @@ This version adds the optional Live Voice Debugger and a two-package workspace, 
 
 ### Bug Fixes
 
+- Fix Steer and Queue delivery for either DSH busy-Enter policy. Add a persisted, translated question asking what Enter currently does in the user’s DSH; the answer controls Live Voice’s normal-versus-Ctrl+Enter mapping without changing DSH settings. Keep Queue as the compatibility default and apply changes at delivery time to automatic sends, spoken commands, and hold-to-talk. Expose this non-sensitive enum in the debugger’s existing settings snapshot without enabling text-content inspection. Add normalization, mounted settings, composer gesture, and debugger regressions.
 - Preserve the composer caret, forward/backward selection, focus, and scroll position when appending final dictation. Restore selection after DSH rebuilds editor nodes and notify its selection bridge; explicit Clear remains a separate action.
 - Keep spoken Send and Queue commands as one-shot delivery actions. They no longer enable automatic sending, change its mode, or persist a different sending preference. Manual sending remains manual after a spoken command; existing automatic modes remain unchanged.
 - Add regressions for spoken delivery in Manual, Queue, and Steer modes, including unchanged preferences, no settings writes, and subsequent dictation behavior.

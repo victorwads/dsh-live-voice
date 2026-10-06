@@ -68,6 +68,7 @@ With headphones, the microphone remains open during playback:
 | Setting | Default | Description |
 | --- | --- | --- |
 | **Sending Mode** | `Manual` | `Manual` (review before sending), `Automatic` (sends after silence countdown), or `Steer` (send directly to running agent). |
+| **What does Enter do in your DSH when the agent is busy?** | `Queue` | Report your existing DSH behavior (`Steer` or `Queue`). This changes only how Live Voice chooses normal submission versus Ctrl+Enter; it does not change DSH settings. Update this answer whenever you change that behavior in DSH. Queue preserves the previous plugin mapping. |
 | **Auto-Send Delay** | `4 seconds` | Silence countdown before automatically submitting your draft (configurable from 2 to 10 seconds). |
 | **Assistant Response Delay** | `3 seconds` | Continuous silence required after you stop speaking before the assistant begins automatic audio playback. |
 | **Automatic Assistant Speech** | `Enabled` | Automatically reads new assistant responses aloud as they stream in. |

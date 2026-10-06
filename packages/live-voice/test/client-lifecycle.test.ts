@@ -613,7 +613,18 @@ test('steer delivery dispatches an accelerated composer gesture instead of norma
   assert.deepEqual(calls, [['Enter', true, false]]);
   controller.composer.submit('queue');
   assert.deepEqual(calls, [['Enter', true, false], ['normal-submit']]);
+  // Changing the reported DSH policy takes effect without remounting the composer.
+  await act(async () => controller.updateSettings({ dshBusyEnterBehavior: 'steer' }));
+  calls.length = 0;
+  controller.composer.submit('steer');
+  controller.composer.submit('queue');
+  assert.deepEqual(calls, [['normal-submit'], ['Enter', true, false]]);
+
+  // A missing accelerated editor must not fall back to the wrong delivery mode.
   editor.remove();
+  calls.length = 0;
+  controller.composer.submit('queue');
+  assert.deepEqual(calls, []);
 });
 
 test('voice controls mount when DSH omits the legacy pending-interaction store', async (t) => {

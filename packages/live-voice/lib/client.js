@@ -168,6 +168,7 @@ var defaultSettings = Object.freeze({
   agentVoiceContext: defaultAgentVoiceContext,
   interruptSpeechOnUserMessage: false,
   sendingMode: "manual",
+  dshBusyEnterBehavior: "queue",
   autoSendDelaySeconds: 4,
   assistantSpeechDelaySeconds: 3,
   mode: "speaker",
@@ -213,6 +214,7 @@ function normalizeSettings(value) {
     agentVoiceContextEnabled: typeof source.agentVoiceContextEnabled === "boolean" ? source.agentVoiceContextEnabled : defaultSettings.agentVoiceContextEnabled,
     agentVoiceContext: typeof source.agentVoiceContext === "string" && source.agentVoiceContext.length <= 4e3 && !source.agentVoiceContext.includes("\0") ? source.agentVoiceContext.trim() : defaultSettings.agentVoiceContext,
     interruptSpeechOnUserMessage: typeof source.interruptSpeechOnUserMessage === "boolean" ? source.interruptSpeechOnUserMessage : defaultSettings.interruptSpeechOnUserMessage,
+    dshBusyEnterBehavior: ["queue", "steer"].includes(source.dshBusyEnterBehavior) ? source.dshBusyEnterBehavior : defaultSettings.dshBusyEnterBehavior,
     sendingMode: source.sendingMode === "automatic" ? "queue" : ["manual", "queue", "steer"].includes(source.sendingMode) ? source.sendingMode : defaultSettings.sendingMode,
     autoSendDelaySeconds: Number.isInteger(source.autoSendDelaySeconds) && source.autoSendDelaySeconds >= 2 && source.autoSendDelaySeconds <= 10 ? source.autoSendDelaySeconds : defaultSettings.autoSendDelaySeconds,
     assistantSpeechDelaySeconds: Number.isInteger(source.assistantSpeechDelaySeconds) && source.assistantSpeechDelaySeconds >= 1 && source.assistantSpeechDelaySeconds <= 10 ? source.assistantSpeechDelaySeconds : defaultSettings.assistantSpeechDelaySeconds,
@@ -1410,6 +1412,10 @@ var en = {
   "dsh-live-voice.settings.autoSend.countdown": "Sending in {remaining}\u2026",
   "dsh-live-voice.settings.autoSend.delay": "Send after silence",
   "dsh-live-voice.settings.close": "Close voice settings",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice uses your answer to choose the correct action for Steer and Queue. This does not change DSH settings; match your current DSH configuration and update this answer if it changes.",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "In your DSH, what does Enter do when the agent is busy?",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "Puts the message in the queue",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "Sends the message as steer",
   "dsh-live-voice.settings.delivery.label": "Sending mode",
   "dsh-live-voice.settings.delivery.manualLabel": "Off \u2014 review and send manually",
   "dsh-live-voice.settings.delivery.queueLabel": "Queue \u2014 automatically add after silence",
@@ -1633,6 +1639,10 @@ var es = {
   "dsh-live-voice.settings.autoSend.countdown": "Enviando en {remaining}\u2026",
   "dsh-live-voice.settings.autoSend.delay": "Enviar despu\xE9s del silencio",
   "dsh-live-voice.settings.close": "Cerrar configuraci\xF3n de voz",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice usa tu respuesta para elegir la acci\xF3n correcta para Redirigir y Cola. Esto no cambia la configuraci\xF3n de DSH; indica el comportamiento que ya usas y actualiza esta respuesta si cambia.",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "En tu DSH, \xBFqu\xE9 hace Enter cuando el agente est\xE1 ocupado?",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "A\xF1ade el mensaje a la cola",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "Env\xEDa el mensaje para redirigir al agente",
   "dsh-live-voice.settings.delivery.label": "Modo de env\xEDo",
   "dsh-live-voice.settings.delivery.manualLabel": "Desactivado \u2014 revisar y enviar manualmente",
   "dsh-live-voice.settings.delivery.queueLabel": "Cola \u2014 a\xF1adir autom\xE1ticamente tras un silencio",
@@ -1856,6 +1866,10 @@ var fr = {
   "dsh-live-voice.settings.autoSend.countdown": "Envoi dans {remaining}\u2026",
   "dsh-live-voice.settings.autoSend.delay": "Envoyer apr\xE8s le silence",
   "dsh-live-voice.settings.close": "Fermer les param\xE8tres vocaux",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice utilise votre r\xE9ponse pour choisir la bonne action pour R\xE9orienter et File d\u2019attente. Cela ne modifie pas les param\xE8tres de DSH ; indiquez le comportement actuel et mettez cette r\xE9ponse \xE0 jour s\u2019il change.",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "Dans votre DSH, que fait Entr\xE9e lorsque l\u2019agent est occup\xE9 ?",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "Place le message dans la file d\u2019attente",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "Envoie le message pour r\xE9orienter l\u2019agent",
   "dsh-live-voice.settings.delivery.label": "Mode d\u2019envoi",
   "dsh-live-voice.settings.delivery.manualLabel": "D\xE9sactiv\xE9 \u2014 v\xE9rifier et envoyer manuellement",
   "dsh-live-voice.settings.delivery.queueLabel": "File d\u2019attente \u2014 ajout automatique apr\xE8s un silence",
@@ -2079,6 +2093,10 @@ var hi = {
   "dsh-live-voice.settings.autoSend.countdown": "{remaining} \u092E\u0947\u0902 \u092D\u0947\u091C\u093E \u091C\u093E\u090F\u0917\u093E\u2026",
   "dsh-live-voice.settings.autoSend.delay": "\u092E\u094C\u0928 \u0915\u0947 \u092C\u093E\u0926 \u092D\u0947\u091C\u0947\u0902",
   "dsh-live-voice.settings.close": "\u0935\u0949\u0907\u0938 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice \u0906\u092A\u0915\u0947 \u0909\u0924\u094D\u0924\u0930 \u0938\u0947 \u0926\u093F\u0936\u093E \u0926\u0947\u0928\u0947 \u0914\u0930 \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u0921\u093E\u0932\u0928\u0947 \u0915\u0940 \u0938\u0939\u0940 \u0915\u094D\u0930\u093F\u092F\u093E \u091A\u0941\u0928\u0924\u093E \u0939\u0948\u0964 \u0907\u0938\u0938\u0947 DSH \u0915\u0940 \u0938\u0947\u091F\u093F\u0902\u0917 \u0928\u0939\u0940\u0902 \u092C\u0926\u0932\u0924\u0940; \u0905\u092A\u0928\u093E \u0935\u0930\u094D\u0924\u092E\u093E\u0928 DSH \u0935\u094D\u092F\u0935\u0939\u093E\u0930 \u092C\u0924\u093E\u090F\u0902 \u0914\u0930 \u0909\u0938\u0915\u0947 \u092C\u0926\u0932\u0928\u0947 \u092A\u0930 \u092F\u0939 \u0909\u0924\u094D\u0924\u0930 \u0905\u092A\u0921\u0947\u091F \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "\u0906\u092A\u0915\u0947 DSH \u092E\u0947\u0902, \u090F\u091C\u0947\u0902\u091F \u0935\u094D\u092F\u0938\u094D\u0924 \u0939\u094B\u0928\u0947 \u092A\u0930 Enter \u0915\u094D\u092F\u093E \u0915\u0930\u0924\u093E \u0939\u0948?",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "\u0938\u0902\u0926\u0947\u0936 \u0915\u094B \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u0921\u093E\u0932\u0924\u093E \u0939\u0948",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "\u0938\u0902\u0926\u0947\u0936 \u0938\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u0926\u093F\u0936\u093E \u0926\u0947\u0924\u093E \u0939\u0948",
   "dsh-live-voice.settings.delivery.label": "\u092D\u0947\u091C\u0928\u0947 \u0915\u093E \u092E\u094B\u0921",
   "dsh-live-voice.settings.delivery.manualLabel": "\u092C\u0902\u0926 \u2014 \u0938\u092E\u0940\u0915\u094D\u0937\u093E \u0915\u0930\u0915\u0947 \u092E\u0948\u0928\u094D\u092F\u0941\u0905\u0932 \u0930\u0942\u092A \u0938\u0947 \u092D\u0947\u091C\u0947\u0902",
   "dsh-live-voice.settings.delivery.queueLabel": "\u0915\u0924\u093E\u0930 \u2014 \u092E\u094C\u0928 \u0915\u0947 \u092C\u093E\u0926 \u0905\u092A\u0928\u0947 \u0906\u092A \u091C\u094B\u0921\u093C\u0947\u0902",
@@ -2302,6 +2320,10 @@ var ptBR = {
   "dsh-live-voice.settings.autoSend.countdown": "Enviando em {remaining}\u2026",
   "dsh-live-voice.settings.autoSend.delay": "Enviar ap\xF3s o sil\xEAncio",
   "dsh-live-voice.settings.close": "Fechar configura\xE7\xF5es de voz",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "O Live Voice usa sua resposta para escolher a a\xE7\xE3o correta ao enviar como Steer ou colocar na Fila. Isto n\xE3o altera as configura\xE7\xF5es do DSH; informe o comportamento que voc\xEA j\xE1 usa nele e atualize esta resposta se ele mudar.",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "No seu DSH, quando o agente est\xE1 ocupado, o Enter faz o qu\xEA?",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "Coloca a mensagem na fila",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "Envia a mensagem como steer",
   "dsh-live-voice.settings.delivery.label": "Modo de envio",
   "dsh-live-voice.settings.delivery.manualLabel": "Desativado \u2014 revisar e enviar manualmente",
   "dsh-live-voice.settings.delivery.queueLabel": "Fila \u2014 adicionar automaticamente ap\xF3s o sil\xEAncio",
@@ -2525,6 +2547,10 @@ var zh = {
   "dsh-live-voice.settings.autoSend.countdown": "{remaining} \u540E\u53D1\u9001\u2026",
   "dsh-live-voice.settings.autoSend.delay": "\u9759\u97F3\u540E\u53D1\u9001",
   "dsh-live-voice.settings.close": "\u5173\u95ED\u8BED\u97F3\u8BBE\u7F6E",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice \u6839\u636E\u60A8\u7684\u56DE\u7B54\uFF0C\u4E3A\u5F15\u5BFC\u548C\u52A0\u5165\u961F\u5217\u9009\u62E9\u6B63\u786E\u7684\u64CD\u4F5C\u3002\u8FD9\u4E0D\u4F1A\u66F4\u6539 DSH \u8BBE\u7F6E\uFF1B\u8BF7\u586B\u5199\u5F53\u524D DSH \u7684\u884C\u4E3A\uFF0C\u5E76\u5728\u8BE5\u884C\u4E3A\u53D8\u5316\u65F6\u66F4\u65B0\u6B64\u56DE\u7B54\u3002",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "\u5728\u60A8\u7684 DSH \u4E2D\uFF0C\u667A\u80FD\u4F53\u5FD9\u788C\u65F6\u6309 Enter \u4F1A\u600E\u6837\uFF1F",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "\u5C06\u6D88\u606F\u52A0\u5165\u961F\u5217",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "\u53D1\u9001\u6D88\u606F\u4EE5\u5F15\u5BFC\u667A\u80FD\u4F53",
   "dsh-live-voice.settings.delivery.label": "\u53D1\u9001\u6A21\u5F0F",
   "dsh-live-voice.settings.delivery.manualLabel": "\u5173\u95ED \u2014 \u5BA1\u9605\u540E\u624B\u52A8\u53D1\u9001",
   "dsh-live-voice.settings.delivery.queueLabel": "\u961F\u5217 \u2014 \u9759\u97F3\u540E\u81EA\u52A8\u52A0\u5165\u961F\u5217",
@@ -4134,6 +4160,7 @@ function DeliverySettings({
   const { scoped } = useLanguage((ctx) => ctx.settings);
   const mode = settings.sendingMode || "manual";
   const seconds = [2, 3, 4, 5, 6, 8, 10];
+  const busyEnterHelpId = import_react25.default.useId();
   return /* @__PURE__ */ import_react25.default.createElement(import_react25.default.Fragment, null, /* @__PURE__ */ import_react25.default.createElement(
     SelectField,
     {
@@ -4146,7 +4173,19 @@ function DeliverySettings({
       ],
       onChange: (event) => updateSettings({ sendingMode: event.target.value })
     }
-  ), mode !== "manual" ? /* @__PURE__ */ import_react25.default.createElement(
+  ), /* @__PURE__ */ import_react25.default.createElement(
+    SelectField,
+    {
+      label: scoped.delivery.dshEnterQuestion(),
+      "aria-describedby": busyEnterHelpId,
+      value: settings.dshBusyEnterBehavior || "queue",
+      options: [
+        { value: "steer", label: scoped.delivery.dshEnterSteer() },
+        { value: "queue", label: scoped.delivery.dshEnterQueue() }
+      ],
+      onChange: (event) => updateSettings({ dshBusyEnterBehavior: event.target.value })
+    }
+  ), /* @__PURE__ */ import_react25.default.createElement("p", { id: busyEnterHelpId, className: "dlv-setting-description" }, scoped.delivery.dshEnterHelp()), mode !== "manual" ? /* @__PURE__ */ import_react25.default.createElement(
     SelectField,
     {
       label: scoped.autoSend.delay(),
@@ -5571,6 +5610,7 @@ function readCoordinatorDiagnostics(controller, includeContent = false) {
     "recognitionEngine",
     "voiceDetectionPreset",
     "sendingMode",
+    "dshBusyEnterBehavior",
     "mode",
     "lang",
     "recognitionLang"
@@ -5858,7 +5898,8 @@ function apply(ctx) {
         submit: (mode = "queue") => {
           const owner = [...entry.composers.values()].at(-1);
           if (!owner) return;
-          if (mode === "steer") {
+          const busyEnter = entry.controller.getSnapshot().settings.dshBusyEnterBehavior;
+          if (mode !== busyEnter) {
             owner.submitAccelerated?.();
             return;
           }

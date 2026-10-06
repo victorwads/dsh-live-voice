@@ -161,6 +161,12 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.settings.autoSend.countdown': '{remaining} में भेजा जाएगा…',
   'dsh-live-voice.settings.autoSend.delay': 'मौन के बाद भेजें',
   'dsh-live-voice.settings.close': 'वॉइस सेटिंग्स बंद करें',
+  'dsh-live-voice.settings.delivery.dshEnterHelp':
+    'Live Voice आपके उत्तर से दिशा देने और कतार में डालने की सही क्रिया चुनता है। इससे DSH की सेटिंग नहीं बदलती; अपना वर्तमान DSH व्यवहार बताएं और उसके बदलने पर यह उत्तर अपडेट करें।',
+  'dsh-live-voice.settings.delivery.dshEnterQuestion':
+    'आपके DSH में, एजेंट व्यस्त होने पर Enter क्या करता है?',
+  'dsh-live-voice.settings.delivery.dshEnterQueue': 'संदेश को कतार में डालता है',
+  'dsh-live-voice.settings.delivery.dshEnterSteer': 'संदेश से एजेंट को दिशा देता है',
   'dsh-live-voice.settings.delivery.label': 'भेजने का मोड',
   'dsh-live-voice.settings.delivery.manualLabel': 'बंद — समीक्षा करके मैन्युअल रूप से भेजें',
   'dsh-live-voice.settings.delivery.queueLabel': 'कतार — मौन के बाद अपने आप जोड़ें',

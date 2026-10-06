@@ -131,6 +131,10 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.settings.autoSend.countdown': string;
   'dsh-live-voice.settings.autoSend.delay': string;
   'dsh-live-voice.settings.close': string;
+  'dsh-live-voice.settings.delivery.dshEnterHelp': string;
+  'dsh-live-voice.settings.delivery.dshEnterQuestion': string;
+  'dsh-live-voice.settings.delivery.dshEnterQueue': string;
+  'dsh-live-voice.settings.delivery.dshEnterSteer': string;
   'dsh-live-voice.settings.delivery.label': string;
   'dsh-live-voice.settings.delivery.manualLabel': string;
   'dsh-live-voice.settings.delivery.queueLabel': string;

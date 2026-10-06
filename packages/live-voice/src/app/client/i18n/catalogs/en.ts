@@ -158,6 +158,12 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.settings.autoSend.countdown': 'Sending in {remaining}…',
   'dsh-live-voice.settings.autoSend.delay': 'Send after silence',
   'dsh-live-voice.settings.close': 'Close voice settings',
+  'dsh-live-voice.settings.delivery.dshEnterHelp':
+    'Live Voice uses your answer to choose the correct action for Steer and Queue. This does not change DSH settings; match your current DSH configuration and update this answer if it changes.',
+  'dsh-live-voice.settings.delivery.dshEnterQuestion':
+    'In your DSH, what does Enter do when the agent is busy?',
+  'dsh-live-voice.settings.delivery.dshEnterQueue': 'Puts the message in the queue',
+  'dsh-live-voice.settings.delivery.dshEnterSteer': 'Sends the message as steer',
   'dsh-live-voice.settings.delivery.label': 'Sending mode',
   'dsh-live-voice.settings.delivery.manualLabel': 'Off — review and send manually',
   'dsh-live-voice.settings.delivery.queueLabel': 'Queue — automatically add after silence',

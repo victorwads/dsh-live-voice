@@ -49,6 +49,7 @@ export const defaultSettings = Object.freeze({
   agentVoiceContext: defaultAgentVoiceContext,
   interruptSpeechOnUserMessage: false,
   sendingMode: 'manual',
+  dshBusyEnterBehavior: 'queue',
   autoSendDelaySeconds: 4,
   assistantSpeechDelaySeconds: 3,
   mode: 'speaker',
@@ -153,6 +154,9 @@ export function normalizeSettings(value) {
       typeof source.interruptSpeechOnUserMessage === 'boolean'
         ? source.interruptSpeechOnUserMessage
         : defaultSettings.interruptSpeechOnUserMessage,
+    dshBusyEnterBehavior: ['queue', 'steer'].includes(source.dshBusyEnterBehavior)
+      ? source.dshBusyEnterBehavior
+      : defaultSettings.dshBusyEnterBehavior,
     sendingMode:
       source.sendingMode === 'automatic'
         ? 'queue'

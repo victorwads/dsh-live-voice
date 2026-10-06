@@ -33,6 +33,7 @@ export function readCoordinatorDiagnostics(
     'recognitionEngine',
     'voiceDetectionPreset',
     'sendingMode',
+    'dshBusyEnterBehavior',
     'mode',
     'lang',
     'recognitionLang',

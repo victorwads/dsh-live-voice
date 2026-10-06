@@ -236,12 +236,12 @@ export function apply(ctx) {
         submit: (mode = 'queue') => {
           const owner = [...entry.composers.values()].at(-1);
           if (!owner) return;
-          if (mode === 'steer') {
-            // InputActions deliberately exposes no delivery-mode argument. Dispatch the
-            // DSH accelerated composer gesture instead: Ctrl/Cmd+Enter resolves to the
-            // opposite of the normal busy-enter policy, which is direct steering when
-            // the ordinary action queues. Never fall back to inputActions.submit() here:
-            // it would silently turn an explicit steer request into a queued message.
+          const busyEnter = entry.controller.getSnapshot().settings.dshBusyEnterBehavior;
+          if (mode !== busyEnter) {
+            // InputActions exposes no delivery-mode argument. Ctrl/Cmd+Enter selects
+            // the opposite of the user's reported busy-Enter behavior. Read the
+            // current preference at delivery time, including pending auto-send.
+            // Never fall back to normal submit: that would deliver the wrong mode.
             owner.submitAccelerated?.();
             return;
           }

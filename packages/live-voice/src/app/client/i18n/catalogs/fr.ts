@@ -172,6 +172,12 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.settings.autoSend.countdown': 'Envoi dans {remaining}…',
   'dsh-live-voice.settings.autoSend.delay': 'Envoyer après le silence',
   'dsh-live-voice.settings.close': 'Fermer les paramètres vocaux',
+  'dsh-live-voice.settings.delivery.dshEnterHelp':
+    'Live Voice utilise votre réponse pour choisir la bonne action pour Réorienter et File d’attente. Cela ne modifie pas les paramètres de DSH ; indiquez le comportement actuel et mettez cette réponse à jour s’il change.',
+  'dsh-live-voice.settings.delivery.dshEnterQuestion':
+    'Dans votre DSH, que fait Entrée lorsque l’agent est occupé ?',
+  'dsh-live-voice.settings.delivery.dshEnterQueue': 'Place le message dans la file d’attente',
+  'dsh-live-voice.settings.delivery.dshEnterSteer': 'Envoie le message pour réorienter l’agent',
   'dsh-live-voice.settings.delivery.label': 'Mode d’envoi',
   'dsh-live-voice.settings.delivery.manualLabel': 'Désactivé — vérifier et envoyer manuellement',
   'dsh-live-voice.settings.delivery.queueLabel':

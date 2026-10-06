@@ -11,6 +11,7 @@ export function DeliverySettings({
   const { scoped } = useLanguage((ctx) => ctx.settings);
   const mode = settings.sendingMode || 'manual';
   const seconds = [2, 3, 4, 5, 6, 8, 10];
+  const busyEnterHelpId = React.useId();
   return (
     <>
       <SelectField
@@ -23,6 +24,19 @@ export function DeliverySettings({
         ]}
         onChange={(event) => updateSettings({ sendingMode: event.target.value })}
       />
+      <SelectField
+        label={(scoped as any).delivery.dshEnterQuestion()}
+        aria-describedby={busyEnterHelpId}
+        value={settings.dshBusyEnterBehavior || 'queue'}
+        options={[
+          { value: 'steer', label: (scoped as any).delivery.dshEnterSteer() },
+          { value: 'queue', label: (scoped as any).delivery.dshEnterQueue() },
+        ]}
+        onChange={(event) => updateSettings({ dshBusyEnterBehavior: event.target.value })}
+      />
+      <p id={busyEnterHelpId} className="dlv-setting-description">
+        {(scoped as any).delivery.dshEnterHelp()}
+      </p>
       {mode !== 'manual' ? (
         <SelectField
           label={(scoped as any).autoSend.delay()}

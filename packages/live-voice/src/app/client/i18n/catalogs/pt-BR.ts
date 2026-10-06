@@ -164,6 +164,12 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.settings.autoSend.countdown': 'Enviando em {remaining}…',
   'dsh-live-voice.settings.autoSend.delay': 'Enviar após o silêncio',
   'dsh-live-voice.settings.close': 'Fechar configurações de voz',
+  'dsh-live-voice.settings.delivery.dshEnterHelp':
+    'O Live Voice usa sua resposta para escolher a ação correta ao enviar como Steer ou colocar na Fila. Isto não altera as configurações do DSH; informe o comportamento que você já usa nele e atualize esta resposta se ele mudar.',
+  'dsh-live-voice.settings.delivery.dshEnterQuestion':
+    'No seu DSH, quando o agente está ocupado, o Enter faz o quê?',
+  'dsh-live-voice.settings.delivery.dshEnterQueue': 'Coloca a mensagem na fila',
+  'dsh-live-voice.settings.delivery.dshEnterSteer': 'Envia a mensagem como steer',
   'dsh-live-voice.settings.delivery.label': 'Modo de envio',
   'dsh-live-voice.settings.delivery.manualLabel': 'Desativado — revisar e enviar manualmente',
   'dsh-live-voice.settings.delivery.queueLabel': 'Fila — adicionar automaticamente após o silêncio',

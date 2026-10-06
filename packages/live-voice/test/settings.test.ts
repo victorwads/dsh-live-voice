@@ -6,6 +6,22 @@ import {
   defaultSettings,
   voiceDetectionSilenceMs,
 } from '../src/modules/core/settings.ts';
+test('reported DSH busy-Enter behavior survives normalization and defaults to legacy queue', () => {
+  assert.equal(normalizeSettings({}).dshBusyEnterBehavior, 'queue');
+  for (const behavior of ['steer', 'queue']) {
+    const settings = normalizeSettings({ dshBusyEnterBehavior: behavior });
+    assert.equal(
+      normalizeSettings(JSON.parse(JSON.stringify(settings))).dshBusyEnterBehavior,
+      behavior,
+    );
+  }
+  for (const behavior of [null, '', 'automatic', true, 1])
+    assert.equal(
+      normalizeSettings({ dshBusyEnterBehavior: behavior }).dshBusyEnterBehavior,
+      'queue',
+    );
+});
+
 test('malformed persisted preferences cannot select remote engines or invalid options', () => {
   for (const input of [
     null,
@@ -100,6 +116,7 @@ test('valid local options survive normalization', () => {
     interruptSpeechOnUserMessage: true,
     recognitionLang: 'en-US',
     sendingMode: 'steer',
+    dshBusyEnterBehavior: 'steer',
     autoSendDelaySeconds: 5,
     assistantSpeechDelaySeconds: 5,
     mode: 'headphones',

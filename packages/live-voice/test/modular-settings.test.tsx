@@ -94,6 +94,23 @@ test('modular settings composes speech, recognition, and conversation tabs', asy
     delivery.dispatchEvent(new window.Event('change', { bubbles: true }));
   });
   assert.deepEqual(calls, [{ sendingMode: 'queue' }]);
+  const policyLabel = [...general.querySelectorAll('label')].find((label) =>
+    label.textContent.includes('In your DSH, what does Enter do when the agent is busy?'),
+  );
+  const policy = policyLabel.querySelector('select');
+  assert.equal(policy.value, 'queue');
+  assert.deepEqual(
+    [...policy.options].map((option) => option.value),
+    ['steer', 'queue'],
+  );
+  const help = document.getElementById(policy.getAttribute('aria-describedby'));
+  assert.match(help.textContent, /uses your answer to choose the correct action/);
+  assert.match(help.textContent, /does not change DSH settings/);
+  await act(async () => {
+    policy.value = 'steer';
+    policy.dispatchEvent(new window.Event('change', { bubbles: true }));
+  });
+  assert.deepEqual(calls.at(-1), { dshBusyEnterBehavior: 'steer' });
   let removeDeveloper;
   await act(async () => {
     removeDeveloper = publishDeveloperExtension(window, {

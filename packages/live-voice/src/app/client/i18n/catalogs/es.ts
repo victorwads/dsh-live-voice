@@ -170,6 +170,12 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.settings.autoSend.countdown': 'Enviando en {remaining}…',
   'dsh-live-voice.settings.autoSend.delay': 'Enviar después del silencio',
   'dsh-live-voice.settings.close': 'Cerrar configuración de voz',
+  'dsh-live-voice.settings.delivery.dshEnterHelp':
+    'Live Voice usa tu respuesta para elegir la acción correcta para Redirigir y Cola. Esto no cambia la configuración de DSH; indica el comportamiento que ya usas y actualiza esta respuesta si cambia.',
+  'dsh-live-voice.settings.delivery.dshEnterQuestion':
+    'En tu DSH, ¿qué hace Enter cuando el agente está ocupado?',
+  'dsh-live-voice.settings.delivery.dshEnterQueue': 'Añade el mensaje a la cola',
+  'dsh-live-voice.settings.delivery.dshEnterSteer': 'Envía el mensaje para redirigir al agente',
   'dsh-live-voice.settings.delivery.label': 'Modo de envío',
   'dsh-live-voice.settings.delivery.manualLabel': 'Desactivado — revisar y enviar manualmente',
   'dsh-live-voice.settings.delivery.queueLabel': 'Cola — añadir automáticamente tras un silencio',

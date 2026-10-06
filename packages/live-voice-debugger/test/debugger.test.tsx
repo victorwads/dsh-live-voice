@@ -61,6 +61,18 @@ function fixture(t) {
   };
 }
 
+test('reported DSH Enter behavior is visible without exposing private settings text', async (t) => {
+  const f = fixture(t);
+  const inspector = createInspector(f.source);
+  t.after(() => inspector.dispose());
+  for (const behavior of ['queue', 'steer']) {
+    await f.coordinator.updateSettings({ dshBusyEnterBehavior: behavior });
+    const settings = inspector.read().state.sessions.example.settings;
+    assert.equal(settings.dshBusyEnterBehavior, behavior);
+    assert.equal(typeof settings.voiceCommandSend, 'object');
+  }
+});
+
 test('simulated recognition events expose real cross-domain transitions without leaking text', async (t) => {
   const f = fixture(t);
   const inspector = createInspector(f.source, () => 123, 8);
