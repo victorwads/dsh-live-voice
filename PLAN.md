@@ -2,6 +2,10 @@
 
 This document describes the product plan and local implementation progress. The published npm version is a documentation placeholder; the working tree now contains an initial plugin undergoing integration validation. Features below describe intended behavior unless verified in the progress section.
 
+## Shared blur-only settings editing
+
+Text inputs, textareas, and numeric fields now share `forms/DraftField.tsx`, which keeps raw edits local until blur. Voice commands preserve spaces, commas, line breaks, and incomplete phrases while typing; normalization and server persistence run only through `onCommit`. Active drafts survive parent updates and delayed server responses. Empty voice-command fields no longer restore fallback phrases. Invalid numeric drafts restore the saved value on blur. Qwen and Whisper connection fields use the same component and save on blur. Automated regression coverage exercises the shared controls and a mounted settings controller using the real settings normalizer. Validation: `npm test` passed all 190 automated tests, including TypeScript and rebuilt runtime bundles; `npm run format:check` and `git diff --check` passed. The maintainer reports the updated editing behavior is working; this is not physical-microphone or authenticated-runtime automation.
+
 ## Server-side Live Voice preferences
 
 All plugin preferences now use an authenticated GET/PUT settings route and an atomic, owner-only host file at `~/.dsh/dsh-live-voice.settings.json`. Browsers load the same host-wide preferences; legacy browser settings are intentionally ignored without migration. Save requests merge normalized patches serially to preserve unrelated concurrent edits. All browser-storage access was removed from plugin source, including the release metadata cache (now memory-only). Load/save failures use translated messages in all six catalogs. The built client and server bundles were regenerated and reviewed.

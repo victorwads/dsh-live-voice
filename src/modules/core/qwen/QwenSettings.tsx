@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { TextField, NumberField } from '../../../shared/design-system/index.js';
 import { useLanguage } from '../../../app/client/i18n/index.js';
 
 const BASE = '/api/dsh-live-voice/qwen';
@@ -56,7 +57,7 @@ export function QwenSettings({ controller }) {
       'dsh-live-voice.speak.qwen.healthFailed': speak.qwen.healthFailed(),
     })[value] ?? value;
 
-  async function run(action) {
+  async function run(action, config = draft) {
     active.current?.abort();
     const abort = new AbortController();
     active.current = abort;
@@ -74,7 +75,7 @@ export function QwenSettings({ controller }) {
         await controller.endConversation?.();
         const value = await qwenSettingsRequest('/config', {
           method: 'PUT',
-          config: { ...draft, timeoutMs: Number(draft.timeoutMs) },
+          config: { ...config, timeoutMs: Number(config.timeoutMs) },
           signal: abort.signal,
         });
         if (!abort.signal.aborted) {
@@ -85,7 +86,7 @@ export function QwenSettings({ controller }) {
       } else {
         const value = await qwenSettingsRequest('/test', {
           method: 'POST',
-          config: { ...draft, timeoutMs: Number(draft.timeoutMs) },
+          config: { ...config, timeoutMs: Number(config.timeoutMs) },
           signal: abort.signal,
         });
         if (!abort.signal.aborted) {
@@ -104,23 +105,23 @@ export function QwenSettings({ controller }) {
     void run('load');
     return () => active.current?.abort();
   }, []);
-  const field = (label, key, type = 'text') => (
-    <label>
-      {label}
-      <input
-        type={type}
+  const field = (label, key, type = 'text') => {
+    const Field = type === 'number' ? NumberField : TextField;
+    return (
+      <Field
+        label={label}
         value={draft[key]}
         disabled={busy || !loaded}
         autoComplete="off"
         {...(type === 'number' ? { min: 1000, max: 600000, step: 1 } : {})}
-        onChange={(event) => {
-          setDraft({ ...draft, [key]: event.target.value });
-          setMessage('dsh-live-voice.commons.connection.unsaved');
-          setError('');
+        onCommit={(value) => {
+          const config = { ...draft, [key]: value };
+          setDraft(config);
+          void run('save', config);
         }}
       />
-    </label>
-  );
+    );
+  };
   return (
     <>
       <p>{recognition.qwen.hostHelp()}</p>

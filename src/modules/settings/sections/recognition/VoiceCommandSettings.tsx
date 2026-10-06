@@ -31,9 +31,9 @@ export function VoiceCommandSettings({ settings, updateSettings }: any) {
           rows={2}
           maxLength={1000}
           label={(recognition as any).commands[label]()}
-          value={settings[key] || fallback}
+          value={settings[key] ?? fallback}
           disabled={!enabled}
-          onChange={(event) => updateSettings({ [key]: event.target.value })}
+          onCommit={(value) => updateSettings({ [key]: value })}
         />
       ))}
     </SettingsSubcard>

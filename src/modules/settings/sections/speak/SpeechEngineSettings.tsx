@@ -59,7 +59,7 @@ export function SpeechEngineSettings({ settings, capabilities, updateSettings }:
         max={3}
         step={0.1}
         value={settings.rate ?? 1}
-        onChange={(event) => updateSettings({ rate: Number(event.target.value) })}
+        onCommit={(value) => updateSettings({ rate: Number(value) })}
       />
       <NumberField
         label={(speak as any).segmentGap.label()}
@@ -67,7 +67,7 @@ export function SpeechEngineSettings({ settings, capabilities, updateSettings }:
         max={2000}
         step={50}
         value={settings.segmentGapMs ?? 400}
-        onChange={(event) => updateSettings({ segmentGapMs: Number(event.target.value) })}
+        onCommit={(value) => updateSettings({ segmentGapMs: Number(value) })}
       />
       {capabilities?.[engine === 'qwen-http' ? 'qwen' : engine]?.supported === false && (
         <p role="status">

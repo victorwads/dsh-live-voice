@@ -22,17 +22,17 @@ export function OutputFilterSettings({ settings, updateSettings }: any) {
         max={100}
         value={settings.outputCodeMaxLines ?? 5}
         disabled={!enabled}
-        onChange={(event) => {
-          const value = Number(event.target.value);
+        onCommit={(raw) => {
+          const value = Number(raw);
           if (Number.isInteger(value) && value >= 0 && value <= 100)
             updateSettings({ outputCodeMaxLines: value });
         }}
       />
       <TextField
         label={(speak as any).filters.code.replacement()}
-        defaultValue={settings.outputCodeNotice || (speak as any).filters.code.notice()}
+        value={settings.outputCodeNotice ?? (speak as any).filters.code.notice()}
         disabled={!enabled}
-        onBlur={(event) => updateSettings({ outputCodeNotice: event.target.value })}
+        onCommit={(value) => updateSettings({ outputCodeNotice: value })}
       />
     </SettingsSubcard>
   );

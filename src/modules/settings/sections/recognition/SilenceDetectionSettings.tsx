@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
 import {
   defaultSettings,
@@ -13,8 +13,6 @@ import { NumberField, SettingsSubcard } from '../../../../shared/design-system/i
 export function SilenceDetectionSettings({ settings, updateSettings }: any) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const savedCustomMs = normalizeCustomSilenceMs(settings.voiceDetectionCustomSilenceMs);
-  const [customDraft, setCustomDraft] = useState(String(savedCustomMs));
-  useEffect(() => setCustomDraft(String(savedCustomMs)), [savedCustomMs]);
   if (!usesPluginVoiceDetection(settings.recognitionEngine)) return null;
   const selected = settings.voiceDetectionPreset || defaultSettings.voiceDetectionPreset;
   return (
@@ -30,8 +28,8 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
         max={300}
         step={1}
         value={settings.recognitionMaxUtteranceSeconds ?? 60}
-        onChange={(event) => {
-          const value = Number(event.target.value);
+        onCommit={(raw) => {
+          const value = Number(raw);
           if (Number.isInteger(value) && value >= 10 && value <= 300)
             updateSettings({ recognitionMaxUtteranceSeconds: value });
         }}
@@ -65,10 +63,8 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
             min={customSilenceMinMs}
             max={customSilenceMaxMs}
             step={1}
-            value={customDraft}
-            onInput={(event) => setCustomDraft(event.currentTarget.value)}
-            onBlur={(event) => {
-              const draft = event.currentTarget.value;
+            value={savedCustomMs}
+            onCommit={(draft) => {
               const value = Number(draft);
               if (
                 draft.trim() &&
@@ -77,7 +73,6 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
                 value <= customSilenceMaxMs
               )
                 updateSettings({ voiceDetectionCustomSilenceMs: value });
-              else setCustomDraft(String(savedCustomMs));
             }}
           />
           <small>{(recognition as any).silenceDetection.customHelp()}</small>

@@ -22,8 +22,8 @@ export function RecognitionFilterSettings({ settings, updateSettings }: any) {
         max={20}
         value={settings.recognitionMinimumWords ?? 2}
         disabled={!enabled}
-        onChange={(event) => {
-          const value = Number(event.target.value);
+        onCommit={(raw) => {
+          const value = Number(raw);
           if (Number.isInteger(value) && value >= 1 && value <= 20)
             updateSettings({ recognitionMinimumWords: value });
         }}

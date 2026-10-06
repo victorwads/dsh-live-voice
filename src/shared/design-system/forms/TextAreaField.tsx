@@ -1,12 +1,6 @@
 import React from 'react';
-export type TextAreaFieldProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
-  label: string;
-};
-export function TextAreaField({ label, ...props }: TextAreaFieldProps) {
-  return (
-    <label>
-      {label}
-      <textarea {...props} />
-    </label>
-  );
+import { DraftField, type DraftFieldProps } from './DraftField.js';
+export type TextAreaFieldProps = Omit<DraftFieldProps, 'type' | 'multiline'>;
+export function TextAreaField(props: TextAreaFieldProps) {
+  return <DraftField {...props} multiline />;
 }

@@ -51,9 +51,9 @@ export function SpeechAdvancedSettings({
         />
         <TextAreaField
           label={(speak as any).agentContext.label()}
-          value={settings.agentVoiceContext || defaultAgentVoiceContext}
+          value={settings.agentVoiceContext ?? defaultAgentVoiceContext}
           disabled={settings.agentVoiceContextEnabled === false}
-          onChange={(event) => updateSettings({ agentVoiceContext: event.target.value })}
+          onCommit={(value) => updateSettings({ agentVoiceContext: value })}
         />
         <button
           type="button"

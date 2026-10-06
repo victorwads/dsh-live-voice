@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { TextField, NumberField } from '../../../../shared/design-system/index.js';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
 
 const BASE = '/api/dsh-live-voice/whisper';
@@ -55,7 +56,7 @@ export function WhisperSettings({ controller }) {
       'dsh-live-voice.recognition.whisper.requestFailed': recognition.whisper.requestFailed(),
       'dsh-live-voice.recognition.whisper.healthFailed': recognition.whisper.healthFailed(),
     })[value] ?? value;
-  async function run(action) {
+  async function run(action, config = draft) {
     active.current?.abort();
     const abort = new AbortController();
     active.current = abort;
@@ -73,7 +74,7 @@ export function WhisperSettings({ controller }) {
         await controller.endConversation?.();
         const value = await whisperSettingsRequest('/config', {
           method: 'PUT',
-          config: { ...draft, timeoutMs: Number(draft.timeoutMs) },
+          config: { ...config, timeoutMs: Number(config.timeoutMs) },
           signal: abort.signal,
         });
         if (!abort.signal.aborted) {
@@ -84,7 +85,7 @@ export function WhisperSettings({ controller }) {
       } else {
         const value = await whisperSettingsRequest('/test', {
           method: 'POST',
-          config: { ...draft, timeoutMs: Number(draft.timeoutMs) },
+          config: { ...config, timeoutMs: Number(config.timeoutMs) },
           signal: abort.signal,
         });
         if (!abort.signal.aborted) {
@@ -103,25 +104,23 @@ export function WhisperSettings({ controller }) {
     void run('load');
     return () => active.current?.abort();
   }, []);
-  function field(label, key, type = 'text') {
+  const field = (label, key, type = 'text') => {
+    const Field = type === 'number' ? NumberField : TextField;
     return (
-      <label>
-        {label}
-        <input
-          type={type}
-          value={draft[key]}
-          disabled={busy || !loaded}
-          autoComplete="off"
-          {...(type === 'number' ? { min: 100, max: 300000, step: 1 } : {})}
-          onChange={(event) => {
-            setDraft({ ...draft, [key]: event.target.value });
-            setMessage('dsh-live-voice.commons.connection.unsaved');
-            setError('');
-          }}
-        />
-      </label>
+      <Field
+        label={label}
+        value={draft[key]}
+        disabled={busy || !loaded}
+        autoComplete="off"
+        {...(type === 'number' ? { min: 100, max: 300000, step: 1 } : {})}
+        onCommit={(value) => {
+          const config = { ...draft, [key]: value };
+          setDraft(config);
+          void run('save', config);
+        }}
+      />
     );
-  }
+  };
   return (
     <>
       <p>{settings.whisper.hostHelp()}</p>

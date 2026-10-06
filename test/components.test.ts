@@ -7,6 +7,7 @@ import { JSDOM } from 'jsdom';
 import { createConversationComponents } from '../src/modules/conversation/components/createConversationComponents.tsx';
 import { createLiveVoiceSettings } from '../src/modules/settings/components/createLiveVoiceSettings.tsx';
 import { withAppLanguage } from '../src/app/client/i18n/index.ts';
+import { normalizeSettings } from '../src/modules/core/settings.ts';
 import { CURRENT_VERSION } from '../src/modules/settings/services/releases.ts';
 const [major, minor, patch] = CURRENT_VERSION.split('.').map(Number);
 const NEXT_RELEASE_VERSION = `${major}.${minor}.${patch + 1}`;
@@ -69,7 +70,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     speak: (text) => calls.push(['speak', text]),
     updateSettings: (value) => {
       calls.push(['settings', value]);
-      state = { ...state, settings: { ...state.settings, ...value } };
+      state = { ...state, settings: normalizeSettings({ ...state.settings, ...value }) };
       callbacks.forEach((cb) => cb());
     },
     clearError: () => calls.push('clear'),
@@ -221,6 +222,26 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       ).checked,
       false,
     );
+    const command = [...document.querySelectorAll('textarea')].find((field) =>
+      field.closest('label').textContent.includes('Send to running agent'),
+    );
+    const beforeTyping = calls.length;
+    for (const raw of ['send ', 'send,', 'send, ', 'send, another command ']) {
+      await act(async () => {
+        Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set.call(
+          command,
+          raw,
+        );
+        command.dispatchEvent(new window.Event('input', { bubbles: true }));
+      });
+      assert.equal(command.value, raw);
+      assert.equal(calls.length, beforeTyping, 'typing must not normalize or save voice commands');
+    }
+    await act(async () =>
+      command.dispatchEvent(new window.FocusEvent('focusout', { bubbles: true })),
+    );
+    assert.deepEqual(calls.at(-1), ['settings', { voiceCommandSend: 'send, another command ' }]);
+    assert.equal(command.value, 'send, another command');
     const localRecognition = checks.find((input) =>
       input.parentElement.textContent.includes('Process recognition locally'),
     );
@@ -367,6 +388,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       calls.map((item) => (Array.isArray(item) ? item[0] : item)),
       [
         'conversation',
+        'settings',
         'settings',
         'speak',
         'settings',

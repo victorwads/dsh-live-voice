@@ -18,6 +18,13 @@ Voice control feels more immediate: the new default Short profile sends captured
 - Add translated server load/save errors in all six interface languages, with no browser-storage fallback.
 - Add regression coverage for persistence across host-store recreation and independent clients, concurrent updates, file permissions, invalid requests, corrupted storage, and ignored legacy browser preferences.
 
+### Bug Fixes
+
+- Preserve spaces, commas, line breaks, and unfinished entries while editing voice commands and other settings. Normalize and save text only when the field loses focus, not on every keystroke.
+- Centralize text inputs, textareas, and numeric inputs on one shared draft-field component. Parent updates and delayed server responses no longer overwrite an active edit; invalid numeric drafts restore the saved value on blur.
+- Apply the same blur-only saving behavior to Qwen and Whisper connection fields, and allow empty voice-command fields without restoring fallback phrases.
+- Add regressions for raw typing, comma-separated commands, blur-only commits, late parent updates, empty text, numeric validation, and restored defaults.
+
 ### Upgrade Notes
 
 - Legacy browser preferences are not imported. The first load without saved server preferences uses defaults; configure Live Voice once again. Qwen and Whisper connection settings already stored on the host remain unchanged.

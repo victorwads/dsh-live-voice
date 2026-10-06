@@ -5,6 +5,9 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
 import {
+  TextField,
+  TextAreaField,
+  NumberField,
   CheckboxField,
   ErrorMessage,
   IconButton,
@@ -108,3 +111,82 @@ test('design-system feedback and settings layout preserve semantic contracts', a
   await act(async () => root.querySelector('[role="alert"] button').click());
   assert.deepEqual(calls, ['speech', 'dismiss']);
 });
+
+for (const Field of [TextField, TextAreaField, NumberField]) {
+  test(
+    Field.name + ' preserves raw editing through parent updates and commits only on blur',
+    async (t) => {
+      const calls = [];
+      let publish;
+      function Parent() {
+        const [saved, setSaved] = React.useState(Field === NumberField ? '1000' : 'send');
+        publish = setSaved;
+        return (
+          <Field
+            label="Draft"
+            value={saved}
+            min={100}
+            max={10000}
+            onCommit={(raw) => {
+              calls.push(raw);
+              setSaved(
+                Field === NumberField
+                  ? String(Number(raw))
+                  : raw
+                      .split(',')
+                      .map((part) => part.trim())
+                      .filter(Boolean)
+                      .join(', '),
+              );
+            }}
+          />
+        );
+      }
+      const root = await fixture(t, <Parent />);
+      const input = root.querySelector('input,textarea');
+      const enter = async (raw) =>
+        act(async () => {
+          const prototype =
+            input.tagName === 'TEXTAREA'
+              ? window.HTMLTextAreaElement.prototype
+              : window.HTMLInputElement.prototype;
+          Object.getOwnPropertyDescriptor(prototype, 'value').set.call(input, raw);
+          input.dispatchEvent(new window.Event('input', { bubbles: true }));
+        });
+      const blur = async () =>
+        act(async () => input.dispatchEvent(new window.FocusEvent('focusout', { bubbles: true })));
+      const samples =
+        Field === NumberField
+          ? ['', '3', '350']
+          : ['send ', 'send,', 'send, ', 'send, new command '];
+      for (const raw of samples) {
+        await enter(raw);
+        assert.equal(input.value, raw);
+        assert.equal(calls.length, 0);
+      }
+      await act(async () => publish(Field === NumberField ? '2000' : 'older server response'));
+      assert.equal(
+        input.value,
+        samples.at(-1),
+        'a late parent response must not overwrite the active draft',
+      );
+      await blur();
+      assert.deepEqual(calls, [samples.at(-1)]);
+      assert.equal(input.value, Field === NumberField ? '350' : 'send, new command');
+      await blur();
+      assert.equal(calls.length, 1, 'unchanged blur must not save again');
+      if (Field === NumberField) {
+        await enter('');
+        await blur();
+        assert.equal(input.value, '350');
+        assert.equal(calls.length, 1);
+      } else {
+        await enter('');
+        await blur();
+        assert.equal(input.value, '', 'empty text must not restore a fallback');
+      }
+      await act(async () => publish(Field === NumberField ? '600' : 'restored default'));
+      assert.equal(input.value, Field === NumberField ? '600' : 'restored default');
+    },
+  );
+}
