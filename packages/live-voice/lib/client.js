@@ -1753,6 +1753,19 @@ function splitSpeechOutput(text, options = {}) {
   if (!filtered) return [];
   return filtered.split(/\r?\n+/u).map((segment) => segment.trim()).filter(Boolean);
 }
+function splitInitialSpeechItem(text) {
+  const result = [];
+  let start = 0;
+  for (const match of text.matchAll(/[.!?:]+(?:["”’)]*)?(?=\s|$)/gu)) {
+    const end = match.index + match[0].length;
+    const part = text.slice(start, end).trim();
+    if (part) result.push(part);
+    start = end;
+  }
+  const tail = text.slice(start).trim();
+  if (tail) result.push(tail);
+  return result.length ? result : [text];
+}
 function hasUnclosedCodeFence(text) {
   return (String(text || "").match(/```/g) || []).length % 2 === 1;
 }
@@ -2490,8 +2503,11 @@ var VoiceCoordinator = class _VoiceCoordinator {
       codeBlockNotice: this.snapshot.settings.outputCodeNotice,
       lang: this.snapshot.settings.lang
     });
-    const first = segments.shift();
-    if (!first) return;
+    const initial = segments.shift();
+    if (!initial) return;
+    const parts = splitInitialSpeechItem(initial);
+    const first = parts.shift();
+    segments.unshift(...parts);
     this.queue.push(...segments.map((segment) => ({ text: segment, id: messageId, manual: true })));
     this._prefetchSpeech();
     this._syncSpeechSegments();
@@ -2646,7 +2662,9 @@ var VoiceCoordinator = class _VoiceCoordinator {
     }).trim();
     this.consumed.set(id2, offset + boundary);
     if (chunk) {
-      this.queue.push({ text: chunk, id: id2 });
+      const initial = !this.snapshot.speaking && !this.queue.some((item) => item.prepared);
+      const parts = initial ? splitInitialSpeechItem(chunk) : [chunk];
+      this.queue.push(...parts.map((text2) => ({ text: text2, id: id2 })));
       this._prefetchSpeech();
       this._syncSpeechSegments();
       this._drain();

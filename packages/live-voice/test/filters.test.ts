@@ -8,6 +8,7 @@ import {
   matchVoiceCommand,
   normalizeVoiceCommand,
   splitSpeechOutput,
+  splitInitialSpeechItem,
 } from '../src/modules/core/filters.ts';
 
 test('voice commands match the whole normalized chunk', () => {
@@ -116,4 +117,23 @@ test('default code notice follows TTS language including persisted legacy text',
     filterSpeechOutput(code, { codeBlockMaxLines: 1, lang: 'en' }),
     'You can see the code in our conversation history.',
   );
+});
+
+test('initial speech item splits on sentence punctuation and colon regardless of word count', () => {
+  const prefix =
+    'one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen';
+  assert.deepEqual(splitInitialSpeechItem('Short sentence. Next sentence!'), [
+    'Short sentence.',
+    'Next sentence!',
+  ]);
+  assert.deepEqual(
+    splitInitialSpeechItem(prefix + '. Next phrase! Question? Details: Last phrase.'),
+    [prefix + '.', 'Next phrase!', 'Question?', 'Details:', 'Last phrase.'],
+  );
+  assert.deepEqual(splitInitialSpeechItem(prefix + ', sixteen seventeen'), [
+    prefix + ', sixteen seventeen',
+  ]);
+  assert.deepEqual(splitInitialSpeechItem(prefix + ' version 0.3.3 file.ts:42.'), [
+    prefix + ' version 0.3.3 file.ts:42.',
+  ]);
 });

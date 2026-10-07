@@ -8,6 +8,7 @@ import {
   hasIncompleteSpeechMarkdown,
   matchVoiceCommand,
   splitSpeechOutput,
+  splitInitialSpeechItem,
 } from './filters.ts';
 
 const message = (error) => error?.message || String(error);
@@ -856,8 +857,11 @@ export class VoiceCoordinator {
       codeBlockNotice: this.snapshot.settings.outputCodeNotice,
       lang: this.snapshot.settings.lang,
     });
-    const first = segments.shift();
-    if (!first) return;
+    const initial = segments.shift();
+    if (!initial) return;
+    const parts = splitInitialSpeechItem(initial);
+    const first = parts.shift();
+    segments.unshift(...parts);
     this.queue.push(...segments.map((segment) => ({ text: segment, id: messageId, manual: true })));
     this._prefetchSpeech();
     this._syncSpeechSegments();
@@ -1047,7 +1051,9 @@ export class VoiceCoordinator {
     }).trim();
     this.consumed.set(id, offset + boundary);
     if (chunk) {
-      this.queue.push({ text: chunk, id });
+      const initial = !this.snapshot.speaking && !this.queue.some((item) => item.prepared);
+      const parts = initial ? splitInitialSpeechItem(chunk) : [chunk];
+      this.queue.push(...parts.map((text) => ({ text, id })));
       this._prefetchSpeech();
       this._syncSpeechSegments();
       this._drain();

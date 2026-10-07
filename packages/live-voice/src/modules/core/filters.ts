@@ -43,6 +43,22 @@ export function splitSpeechOutput(text, options = {}) {
     .filter(Boolean);
 }
 
+/** Split only the initial item at sentence punctuation or colons, never commas. */
+export function splitInitialSpeechItem(text) {
+  const result = [];
+  let start = 0;
+  // Require whitespace/end after punctuation to preserve decimals, URLs and file names.
+  for (const match of text.matchAll(/[.!?:]+(?:["”’)]*)?(?=\s|$)/gu)) {
+    const end = match.index + match[0].length;
+    const part = text.slice(start, end).trim();
+    if (part) result.push(part);
+    start = end;
+  }
+  const tail = text.slice(start).trim();
+  if (tail) result.push(tail);
+  return result.length ? result : [text];
+}
+
 export function hasUnclosedCodeFence(text) {
   return (String(text || '').match(/```/g) || []).length % 2 === 1;
 }
