@@ -1,2 +1,8 @@
 packages:
   - 'packages/*'
+
+# Approve only the esbuild versions reviewed in the frozen lockfile.
+# Unlisted dependency install scripts remain blocked by pnpm.
+allowBuilds:
+  esbuild@0.25.12: true
+  esbuild@0.28.2: true
