@@ -1,10 +1,10 @@
 # DSH Live Voice
 
 [![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
-[![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.0--rc.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.0-rc.2)
+[![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.1--alpha.1-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.1)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
-**Tested and working with DeepSeek Harness v0.2.0-rc.2.** This is the current tested DSH version, recorded in the `dshTestedVersion` field in [package.json](package.json).
+**Tested and working with DeepSeek Harness v0.2.1-alpha.1.** This is the current tested DSH version, recorded in the `dshTestedVersion` field in [package.json](package.json).
 
 **A local-first, hands-free voice assistant plugin for DeepSeek Harness (DSH).**
 *Built in Brazil 🇧🇷 and tested daily with Brazilian Portuguese on macOS.*
@@ -66,10 +66,13 @@ Detailed guides for deep-diving into engines and configurations:
 - 🎙️ **Voice Typing:** Append final recognized speech to the end of the DSH composer without replacing manual edits.
 - 👐 **Hands-Free Conversation:** Continuous dialogue that stays active across chat sessions.
 - ❓ **Spoken Structured Questions:** Narrates DSH prompt questions and submits your spoken answer.
-- ⌨️ **Hold-to-Talk (Push-to-Talk):** Hold `Control` anywhere on the page to speak; release to send.
+- ⌨️ **Optional Hold-to-Talk (Push-to-Talk):** Enable it in Settings, then hold `Control` anywhere on the page to speak; release to queue the message after the configured send delay. Disabled by default.
 - 🎧 **Acoustic Mode Isolation:** Gated listening for speakers (no echo) and open-mic interruption for headphones.
 - 🗣️ **Spoken Commands:** Control the chat using phrases like *"send"*, *"mute"*, *"clear"*, and *"stop speaking"*.
-- 🧹 **Smart Code Filtering:** Automatically skips or summarizes large code blocks instead of reading syntax out loud.
+- ⭐ **Dedicated Speech Bar:** Smoothly scrolling approximate captions, a moving highlight, previous/next navigation, pause/resume, stop, and a current/total segment counter. Captions show the text sent to the speech engine, without claiming word-level alignment.
+- 🧹 **Markdown-Aware Speech:** Remove formatting, announce links without reading full URLs, shorten file paths and line references, read checkbox states and table rows, and replace long code blocks with a localized notice. Preserve custom notices.
+- ⚡ **Responsive Conversation Settings:** Automatic-send delays of 600 ms, 800 ms, or 1–6 seconds (4 seconds by default), plus an assistant response delay of zero to 4 seconds (no delay by default). Recognition and synthesis still contribute to overall latency.
+- 🛠️ **Optional Live Voice Debugger:** Install `dsh-live-voice-debugger` separately to inspect runtime state and queues from the Developer tab in Live Voice Settings. The main plugin works without it.
 - 🏠 **Local-First & Private:** Audio runs locally on your machine (via Browser APIs, Apple MLX, or whisper.cpp); no external voice telemetry.
 - 🌐 **Remote-Ready Host Audio:** Qwen and macOS Say synthesize on the DSH host, then DSH delivers compact audio to your browser—so playback works over remote and LAN connections.
 

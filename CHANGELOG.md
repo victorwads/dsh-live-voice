@@ -2,11 +2,11 @@
 
 All notable changes to DSH Live Voice are documented in this file.
 
-## [0.3.3] - Unreleased
+## [0.4.0] - Unreleased
 
 ### Release Changes
 
-This version adds the optional Live Voice Debugger and a two-package workspace, keeps spoken Send and Queue commands independent of automatic-send preferences, and preserves the composer caret and selection while final dictation is appended. Both plugin packages are versioned together at 0.3.3; this section remains unreleased until publication.
+This minor release introduces a dedicated speech bar with smoothly scrolling approximate captions, queue navigation, Markdown-aware speech, and faster playback startup. It also adds the optional Live Voice Debugger and a two-package workspace, improves delivery and microphone recovery, and refines conversation defaults. Both plugin packages are versioned together at 0.4.0; this section remains unreleased until publication.
 
 ### Features
 
@@ -14,13 +14,16 @@ This version adds the optional Live Voice Debugger and a two-package workspace, 
 - ⭐ **Dedicated Speech Bar with Live Captions** — a new 52px bar above recognition controls.
   - Show approximate captions on one clipped line, using host audio timing or a pause-aware native-synthesis estimate; captions are not word-aligned.
   - Place previous/next controls on opposite sides of the text, with pause/resume, stop, and a current/total segment counter. Keep microphone takeover in the recognition bar.
-  - Show a thin playback progress line and an indeterminate loading animation while audio is prepared or downloaded, respecting reduced-motion preferences.
+  - Show smoothly scrolling captions with an approximate moving highlight. Display the thin progress line only during indeterminate audio loading, reserving its space during playback to avoid layout shifts and respecting reduced-motion preferences.
+  - Split startup speech items at sentence punctuation or colons, never commas, while preparing subsequent audio in parallel.
   - Keep the bar visible between segments and retain message-grouped history and prepared audio until playback finishes or is stopped.
 - Add Live Voice Debugger as a separate, optional package in the same repository. Installing it contributes a Developer tab inside Live Voice Settings; the main plugin works without the debugger and does not bundle its interface.
 - Open the read-only inspector in a separate browser window, with independently scrolling state and event panes, queue inspection, module filtering, event pause/resume and clearing, and selectable 1–20 Hz refresh (10 Hz by default). Keep diagnostic history bounded and text content hidden unless explicitly enabled.
 - Add fake-adapter and DOM regressions for state transitions, segmentation, optional activation, popup handling, event controls, and refresh frequency.
 
 ### Configuration Changes
+
+- Default the assistant response delay to zero and offer only no delay or 1–4 seconds. Preserve supported saved values and reset unsupported values to zero.
 
 - Disable Control hold-to-talk by default; keep it available as an opt-in and preserve saved preferences.
 - Offer automatic-send delays of 600 ms, 800 ms, and 1–6 seconds with localized duration labels. Keep 4 seconds as the default and reset unsupported saved delays to that default.

@@ -5719,8 +5719,8 @@ function useConversationController(controller) {
 var import_react24 = __toESM(require("react"), 1);
 
 // src/modules/settings/services/releases.ts
-var CURRENT_VERSION = "0.3.3";
-var TESTED_DSH_VERSION = "0.2.0-rc.2";
+var CURRENT_VERSION = "0.4.0";
+var TESTED_DSH_VERSION = "0.2.1-alpha.1";
 var REPOSITORY_URL = "https://github.com/victorwads/dsh-live-voice";
 var RELEASES_URL = `${REPOSITORY_URL}/releases`;
 var LATEST_RELEASE_API_URL = "https://api.github.com/repos/victorwads/dsh-live-voice/releases/latest";
