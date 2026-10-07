@@ -227,6 +227,7 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.speak.rate.label': string;
   'dsh-live-voice.speak.responseDelay.help': string;
   'dsh-live-voice.speak.responseDelay.label': string;
+  'dsh-live-voice.speak.responseDelay.none': string;
   'dsh-live-voice.speak.segmentGap.help': string;
   'dsh-live-voice.speak.segmentGap.label': string;
   'dsh-live-voice.speak.status.paused': string;

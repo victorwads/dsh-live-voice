@@ -118,7 +118,7 @@ test('valid local options survive normalization', () => {
     sendingMode: 'steer',
     dshBusyEnterBehavior: 'steer',
     autoSendDelaySeconds: 5,
-    assistantSpeechDelaySeconds: 5,
+    assistantSpeechDelaySeconds: 4,
     mode: 'headphones',
     lang: 'en-US',
     voice: 'Samantha',
@@ -210,4 +210,18 @@ test('automatic send delay supports 600ms and 800ms with a six second maximum', 
   for (const value of [0.5, 0.9, 7, 8, 10, NaN])
     assert.equal(normalizeSettings({ autoSendDelaySeconds: value }).autoSendDelaySeconds, 4);
   assert.equal(defaultSettings.autoSendDelaySeconds, 4);
+});
+
+test('assistant response delay defaults to zero and accepts only zero through four seconds', () => {
+  assert.equal(defaultSettings.assistantSpeechDelaySeconds, 0);
+  for (const value of [0, 1, 2, 3, 4])
+    assert.equal(
+      normalizeSettings({ assistantSpeechDelaySeconds: value }).assistantSpeechDelaySeconds,
+      value,
+    );
+  for (const value of [-1, 5, 10, 0.5])
+    assert.equal(
+      normalizeSettings({ assistantSpeechDelaySeconds: value }).assistantSpeechDelaySeconds,
+      0,
+    );
 });

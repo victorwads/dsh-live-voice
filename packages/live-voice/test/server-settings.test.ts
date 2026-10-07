@@ -57,7 +57,7 @@ test('all normalized preferences survive a host restart and another browser', as
     agentVoiceContext: 'Keep answers short.',
     voiceDetectionPreset: 'custom',
     voiceDetectionCustomSilenceMs: 350,
-    assistantSpeechDelaySeconds: 5,
+    assistantSpeechDelaySeconds: 3,
     autoSendDelaySeconds: 6,
     inputDeviceId: 'mic',
     outputDeviceId: 'speaker',
@@ -79,13 +79,13 @@ test('concurrent browser patches preserve unrelated preferences and rapid saves 
   await Promise.all([a.ready, b.ready]);
   await Promise.all([
     a.save({ voiceCommandSend: 'send it' }),
-    b.save({ assistantSpeechDelaySeconds: 7 }),
+    b.save({ assistantSpeechDelaySeconds: 4 }),
     a.save({ voiceDetectionCustomSilenceMs: 400 }),
     a.save({ voiceDetectionCustomSilenceMs: 500 }),
   ]);
   const saved = await f.store.load();
   assert.equal(saved.voiceCommandSend, 'send it');
-  assert.equal(saved.assistantSpeechDelaySeconds, 7);
+  assert.equal(saved.assistantSpeechDelaySeconds, 4);
   assert.equal(saved.voiceDetectionCustomSilenceMs, 500);
 });
 

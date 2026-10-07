@@ -295,6 +295,7 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.speak.responseDelay.help':
     'Après que vous avez cessé de parler, la lecture automatique de l’assistant attend cette durée de silence continu. Si vous reparlez, l’attente recommence.',
   'dsh-live-voice.speak.responseDelay.label': 'Délai de réponse de l’assistant',
+  'dsh-live-voice.speak.responseDelay.none': 'Sans délai',
   'dsh-live-voice.speak.segmentGap.help':
     'Attend ce nombre de millisecondes entre des segments vocaux consécutifs. La valeur par défaut est 400 ms.',
   'dsh-live-voice.speak.segmentGap.label': 'Pause entre les segments vocaux',

@@ -54,7 +54,7 @@ export const defaultSettings = Object.freeze({
   sendingMode: 'manual',
   dshBusyEnterBehavior: 'queue',
   autoSendDelaySeconds: 4,
-  assistantSpeechDelaySeconds: 3,
+  assistantSpeechDelaySeconds: 0,
   mode: 'speaker',
   lang: 'pt-BR',
   recognitionLang: 'pt-BR',
@@ -171,8 +171,8 @@ export function normalizeSettings(value) {
       : defaultSettings.autoSendDelaySeconds,
     assistantSpeechDelaySeconds:
       Number.isInteger(source.assistantSpeechDelaySeconds) &&
-      source.assistantSpeechDelaySeconds >= 1 &&
-      source.assistantSpeechDelaySeconds <= 10
+      source.assistantSpeechDelaySeconds >= 0 &&
+      source.assistantSpeechDelaySeconds <= 4
         ? source.assistantSpeechDelaySeconds
         : defaultSettings.assistantSpeechDelaySeconds,
     mode: ['speaker', 'headphones'].includes(source.mode) ? source.mode : defaultSettings.mode,

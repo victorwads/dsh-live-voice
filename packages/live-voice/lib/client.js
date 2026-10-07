@@ -191,7 +191,7 @@ var defaultSettings = Object.freeze({
   sendingMode: "manual",
   dshBusyEnterBehavior: "queue",
   autoSendDelaySeconds: 4,
-  assistantSpeechDelaySeconds: 3,
+  assistantSpeechDelaySeconds: 0,
   mode: "speaker",
   lang: "pt-BR",
   recognitionLang: "pt-BR",
@@ -238,7 +238,7 @@ function normalizeSettings(value) {
     dshBusyEnterBehavior: ["queue", "steer"].includes(source.dshBusyEnterBehavior) ? source.dshBusyEnterBehavior : defaultSettings.dshBusyEnterBehavior,
     sendingMode: source.sendingMode === "automatic" ? "queue" : ["manual", "queue", "steer"].includes(source.sendingMode) ? source.sendingMode : defaultSettings.sendingMode,
     autoSendDelaySeconds: autoSendDelayOptions.includes(source.autoSendDelaySeconds) ? source.autoSendDelaySeconds : defaultSettings.autoSendDelaySeconds,
-    assistantSpeechDelaySeconds: Number.isInteger(source.assistantSpeechDelaySeconds) && source.assistantSpeechDelaySeconds >= 1 && source.assistantSpeechDelaySeconds <= 10 ? source.assistantSpeechDelaySeconds : defaultSettings.assistantSpeechDelaySeconds,
+    assistantSpeechDelaySeconds: Number.isInteger(source.assistantSpeechDelaySeconds) && source.assistantSpeechDelaySeconds >= 0 && source.assistantSpeechDelaySeconds <= 4 ? source.assistantSpeechDelaySeconds : defaultSettings.assistantSpeechDelaySeconds,
     mode: ["speaker", "headphones"].includes(source.mode) ? source.mode : defaultSettings.mode,
     lang: typeof source.lang === "string" && /^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/.test(source.lang) ? source.lang : defaultSettings.lang,
     recognitionLang: source.recognitionLang === "auto" || typeof source.recognitionLang === "string" && /^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/.test(source.recognitionLang) ? source.recognitionLang : typeof source.lang === "string" && /^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/.test(source.lang) ? source.lang : defaultSettings.recognitionLang,
@@ -3099,6 +3099,7 @@ var en = {
   "dsh-live-voice.speak.rate.label": "Speech rate",
   "dsh-live-voice.speak.responseDelay.help": "After you stop speaking, automatic assistant playback waits for this much continuous silence. Speaking again restarts the wait.",
   "dsh-live-voice.speak.responseDelay.label": "Assistant response delay",
+  "dsh-live-voice.speak.responseDelay.none": "No delay",
   "dsh-live-voice.speak.segmentGap.help": "Wait this many milliseconds between consecutive spoken segments. 400 ms is the default.",
   "dsh-live-voice.speak.segmentGap.label": "Pause between speech segments",
   "dsh-live-voice.speak.status.paused": "Speech paused",
@@ -3334,6 +3335,7 @@ var es = {
   "dsh-live-voice.speak.rate.label": "Velocidad de habla",
   "dsh-live-voice.speak.responseDelay.help": "Cuando dejas de hablar, la reproducci\xF3n autom\xE1tica del asistente espera este intervalo de silencio continuo. Si vuelves a hablar, la espera se reinicia.",
   "dsh-live-voice.speak.responseDelay.label": "Demora de respuesta del asistente",
+  "dsh-live-voice.speak.responseDelay.none": "Sin retraso",
   "dsh-live-voice.speak.segmentGap.help": "Espera esta cantidad de milisegundos entre segmentos hablados consecutivos. El valor predeterminado es 400 ms.",
   "dsh-live-voice.speak.segmentGap.label": "Pausa entre segmentos de voz",
   "dsh-live-voice.speak.status.paused": "Lectura en pausa",
@@ -3569,6 +3571,7 @@ var fr = {
   "dsh-live-voice.speak.rate.label": "D\xE9bit de parole",
   "dsh-live-voice.speak.responseDelay.help": "Apr\xE8s que vous avez cess\xE9 de parler, la lecture automatique de l\u2019assistant attend cette dur\xE9e de silence continu. Si vous reparlez, l\u2019attente recommence.",
   "dsh-live-voice.speak.responseDelay.label": "D\xE9lai de r\xE9ponse de l\u2019assistant",
+  "dsh-live-voice.speak.responseDelay.none": "Sans d\xE9lai",
   "dsh-live-voice.speak.segmentGap.help": "Attend ce nombre de millisecondes entre des segments vocaux cons\xE9cutifs. La valeur par d\xE9faut est 400 ms.",
   "dsh-live-voice.speak.segmentGap.label": "Pause entre les segments vocaux",
   "dsh-live-voice.speak.status.paused": "Lecture en pause",
@@ -3804,6 +3807,7 @@ var hi = {
   "dsh-live-voice.speak.rate.label": "\u092C\u094B\u0932\u0928\u0947 \u0915\u0940 \u0917\u0924\u093F",
   "dsh-live-voice.speak.responseDelay.help": "\u0906\u092A\u0915\u0947 \u092C\u094B\u0932\u0928\u093E \u092C\u0902\u0926 \u0915\u0930\u0928\u0947 \u0915\u0947 \u092C\u093E\u0926 \u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0907\u0924\u0928\u0940 \u0926\u0947\u0930 \u0924\u0915 \u0932\u0917\u093E\u0924\u093E\u0930 \u092E\u094C\u0928 \u0930\u0939\u0928\u0947 \u0915\u0940 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0915\u0930\u0924\u093E \u0939\u0948\u0964 \u0926\u094B\u092C\u093E\u0930\u093E \u092C\u094B\u0932\u0928\u0947 \u092A\u0930 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u092B\u093F\u0930 \u0938\u0947 \u0936\u0941\u0930\u0942 \u0939\u094B\u0924\u0940 \u0939\u0948\u0964",
   "dsh-live-voice.speak.responseDelay.label": "\u0938\u0939\u093E\u092F\u0915 \u0915\u0947 \u091C\u0935\u093E\u092C \u0915\u093E \u0935\u093F\u0932\u0902\u092C",
+  "dsh-live-voice.speak.responseDelay.none": "\u0915\u094B\u0908 \u0935\u093F\u0932\u0902\u092C \u0928\u0939\u0940\u0902",
   "dsh-live-voice.speak.segmentGap.help": "\u0932\u0917\u093E\u0924\u093E\u0930 \u092C\u094B\u0932\u0947 \u0917\u090F \u0939\u093F\u0938\u094D\u0938\u094B\u0902 \u0915\u0947 \u092C\u0940\u091A \u0907\u0924\u0928\u0947 \u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921 \u0930\u0941\u0915\u0947\u0902\u0964 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F 400 ms \u0939\u0948\u0964",
   "dsh-live-voice.speak.segmentGap.label": "\u092C\u094B\u0932\u0947 \u0917\u090F \u0939\u093F\u0938\u094D\u0938\u094B\u0902 \u0915\u0947 \u092C\u0940\u091A \u0935\u093F\u0930\u093E\u092E",
   "dsh-live-voice.speak.status.paused": "\u0935\u093E\u091A\u0928 \u0920\u0939\u0930\u093E \u0939\u0941\u0906 \u0939\u0948",
@@ -4039,6 +4043,7 @@ var ptBR = {
   "dsh-live-voice.speak.rate.label": "Velocidade da fala",
   "dsh-live-voice.speak.responseDelay.help": "Depois que voc\xEA parar de falar, a reprodu\xE7\xE3o autom\xE1tica do assistente aguardar\xE1 esse tempo de sil\xEAncio cont\xEDnuo. Falar novamente reinicia a contagem.",
   "dsh-live-voice.speak.responseDelay.label": "Atraso da resposta do assistente",
+  "dsh-live-voice.speak.responseDelay.none": "Sem atraso",
   "dsh-live-voice.speak.segmentGap.help": "Aguarde esta quantidade de milissegundos entre trechos falados consecutivos. O padr\xE3o \xE9 400 ms.",
   "dsh-live-voice.speak.segmentGap.label": "Pausa entre trechos de fala",
   "dsh-live-voice.speak.status.paused": "Fala pausada",
@@ -4274,6 +4279,7 @@ var zh = {
   "dsh-live-voice.speak.rate.label": "\u8BED\u901F",
   "dsh-live-voice.speak.responseDelay.help": "\u4F60\u505C\u6B62\u8BF4\u8BDD\u540E\uFF0C\u52A9\u624B\u4F1A\u7B49\u5F85\u6B64\u65F6\u957F\u7684\u8FDE\u7EED\u9759\u97F3\uFF0C\u7136\u540E\u81EA\u52A8\u64AD\u653E\u8BED\u97F3\u3002\u518D\u6B21\u8BF4\u8BDD\u4F1A\u91CD\u65B0\u5F00\u59CB\u7B49\u5F85\u3002",
   "dsh-live-voice.speak.responseDelay.label": "\u52A9\u624B\u54CD\u5E94\u5EF6\u8FDF",
+  "dsh-live-voice.speak.responseDelay.none": "\u65E0\u5EF6\u8FDF",
   "dsh-live-voice.speak.segmentGap.help": "\u5728\u8FDE\u7EED\u8BED\u97F3\u7247\u6BB5\u4E4B\u95F4\u7B49\u5F85\u6B64\u6BEB\u79D2\u6570\u3002\u9ED8\u8BA4\u503C\u4E3A 400 ms\u3002",
   "dsh-live-voice.speak.segmentGap.label": "\u8BED\u97F3\u7247\u6BB5\u4E4B\u95F4\u7684\u505C\u987F",
   "dsh-live-voice.speak.status.paused": "\u8BED\u97F3\u5DF2\u6682\u505C",
@@ -5923,7 +5929,7 @@ function VoiceModeSettings({
 
 // src/modules/settings/sections/conversation/ConversationDelaySettings.tsx
 var import_react28 = __toESM(require("react"), 1);
-var DELAYS = [1, 2, 3, 4, 5, 6, 8, 10];
+var DELAYS = [0, 1, 2, 3, 4];
 function ConversationDelaySettings({ settings, updateSettings }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
@@ -5931,10 +5937,10 @@ function ConversationDelaySettings({ settings, updateSettings }) {
     SelectField,
     {
       label: speak.responseDelay.label(),
-      value: String(settings.assistantSpeechDelaySeconds ?? 3),
+      value: String(settings.assistantSpeechDelaySeconds ?? 0),
       options: DELAYS.map((seconds) => ({
         value: String(seconds),
-        label: commons.seconds({ seconds })
+        label: seconds === 0 ? speak.responseDelay.none() : seconds === 1 ? commons.second() : commons.seconds({ seconds })
       })),
       onChange: (event) => updateSettings({ assistantSpeechDelaySeconds: Number(event.target.value) })
     }
