@@ -17,6 +17,12 @@ export const CLIENT_SLOT_DEFINITIONS = Object.freeze([
     component: 'Dock',
   }),
   Object.freeze({
+    name: 'conversation.composer.dock',
+    id: 'live-voice-recognition-status',
+    order: -100,
+    component: 'RecognitionDock',
+  }),
+  Object.freeze({
     name: 'conversation.session.header.utilities',
     id: 'live-voice-question-status',
     order: 100,

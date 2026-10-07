@@ -17,6 +17,7 @@ import { createLiveVoiceSettings } from '../../modules/settings/index.js';
 import {
   ConversationControls,
   ConversationStatusBar,
+  SpeechStatusBar,
   SpeakButton as ModularSpeakButton,
 } from '../../modules/conversation/index.js';
 import { registerLiveVoiceLocales } from './i18n/index.js';
@@ -610,7 +611,15 @@ export function apply(ctx) {
   function Dock(props) {
     const entry = useEntry(props.sessionId, 'dock');
     useComposer(entry, props);
-    return entry ? <ConversationStatusBar controller={entry.controller} /> : null;
+    return entry ? <SpeechStatusBar controller={entry.controller} /> : null;
+  }
+  function RecognitionDock(props) {
+    const entry = useEntry(props.sessionId, 'recognition-dock');
+    return entry ? (
+      <div className="dlv-recognition-dock">
+        <ConversationStatusBar controller={entry.controller} includeSpeech={false} />
+      </div>
+    ) : null;
   }
   function QuestionStatusView({ entry }) {
     const snapshot = React.useSyncExternalStore(
@@ -695,7 +704,7 @@ export function apply(ctx) {
     document.head.appendChild(style);
     return () => style.remove();
   });
-  registerConversationSlots(ctx, { Buttons, Dock, QuestionStatus, Action }, () =>
+  registerConversationSlots(ctx, { Buttons, Dock, RecognitionDock, QuestionStatus, Action }, () =>
     t('dsh-live-voice.commons.pluginName'),
   );
   ctx.effect(() => {

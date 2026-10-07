@@ -12,12 +12,14 @@ export type ConversationStatusBarProps = {
   questionOnly?: boolean;
   overlay?: boolean;
   overlayStyle?: React.CSSProperties;
+  includeSpeech?: boolean;
 };
 export function ConversationStatusBar({
   controller,
   questionOnly = false,
   overlay = false,
   overlayStyle,
+  includeSpeech = true,
 }: ConversationStatusBarProps) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
@@ -71,7 +73,7 @@ export function ConversationStatusBar({
       className={overlay ? 'dlv-bar-wrap dlv-question-overlay' : 'dlv-bar-wrap'}
       style={overlay ? overlayStyle : undefined}
     >
-      <SpeechStatusBar controller={controller} />
+      {includeSpeech && <SpeechStatusBar controller={controller} />}
       {(state.conversation || capture || state.error || error) && (
         <div className="dlv-pill" role="group" aria-label={(commons as any).controls.title()}>
           {capture && !state.conversation ? (

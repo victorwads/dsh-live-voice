@@ -11,23 +11,35 @@ export function ConversationControls({ controller }: ConversationControlsProps) 
   const state = useConversationController<any>(controller);
   const { invoke, error, clearError } = useConversationActions(controller);
   const busy = state.conversation || state.listening || state.starting || state.recognizing;
-  if (busy) return null;
   const capability = state.capabilities?.recognition;
   const capture = state.capabilities?.capture;
   const pending = !capability || !capture;
   const unavailable = capability?.supported === false || capture?.supported === false;
   const reason = capture?.supported === false ? capture.reason : capability?.reason;
-  const label = pending
-    ? (recognition as any).microphone.checking()
-    : unavailable
-      ? reason || (recognition as any).status.unavailable()
-      : (commons as any).conversation.start();
+  const label = busy
+    ? (commons as any).conversation.end()
+    : pending
+      ? (recognition as any).microphone.checking()
+      : unavailable
+        ? reason || (recognition as any).status.unavailable()
+        : (commons as any).conversation.start();
   return (
     <>
       <MicrophoneButton
         label={label}
-        disabled={pending}
-        onClick={() => invoke(unavailable ? 'explainRecognition' : 'startConversation')}
+        disabled={!busy && pending}
+        active={Boolean(busy)}
+        onClick={() =>
+          invoke(
+            busy
+              ? state.conversation
+                ? 'endConversation'
+                : 'cancelDictation'
+              : unavailable
+                ? 'explainRecognition'
+                : 'startConversation',
+          )
+        }
       />
       <ErrorMessage
         error={error}
