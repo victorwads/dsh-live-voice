@@ -10,6 +10,7 @@ This version adds the optional Live Voice Debugger and a two-package workspace, 
 
 ### Features
 
+- Normalize Markdown for speech using the Marked parser: remove visual formatting, announce links and images without reading full URLs, shorten file paths with line references, read task lists and table headers/rows, and abbreviate long identifiers. Feed the same normalized text to playback and live captions, preserving the existing code-block line limit.
 - ⭐ **Dedicated Speech Bar with Live Captions** — a new 52px bar above recognition controls.
   - Show approximate captions on one clipped line, using host audio timing or a pause-aware native-synthesis estimate; captions are not word-aligned.
   - Place previous/next controls on opposite sides of the text, with pause/resume, stop, and a current/total segment counter. Keep microphone takeover in the recognition bar.

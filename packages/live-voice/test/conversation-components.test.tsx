@@ -17,7 +17,7 @@ import {
 } from '../src/modules/conversation/index.ts';
 
 async function fixture(t, element) {
-  const dom = new JSDOM('<div id="root"></div>');
+  const dom = new JSDOM('<div id="root"></div>', { pretendToBeVisual: true });
   const previous = {
     window: globalThis.window,
     document: globalThis.document,

@@ -95,7 +95,8 @@ test('overconstrained selected microphone is persisted as system default and ret
   const devices = [];
   f.meter.start = async () => {
     devices.push(f.meter.deviceId);
-    if (devices.length === 1) throw Object.assign(new Error('unavailable'), { name: 'OverconstrainedError' });
+    if (devices.length === 1)
+      throw Object.assign(new Error('unavailable'), { name: 'OverconstrainedError' });
     return true;
   };
   await f.coordinator.startDictation();
@@ -122,7 +123,10 @@ test('default microphone failure is not retried and permission denial preserves 
     };
     await f.coordinator.startDictation();
     assert.equal(calls, expectedCalls);
-    assert.equal(f.coordinator.snapshot.settings.inputDeviceId, expectedCalls === 2 ? '' : deviceId);
+    assert.equal(
+      f.coordinator.snapshot.settings.inputDeviceId,
+      expectedCalls === 2 ? '' : deviceId,
+    );
     assert.equal(f.coordinator.snapshot.listening, false);
     assert.match(f.coordinator.snapshot.error, /capture failed/);
     await f.coordinator.dispose();
@@ -1025,6 +1029,16 @@ test('speech run remains visible through manual segment gaps', async () => {
   assert.equal(f.coordinator.snapshot.speaking, false);
   assert.equal(f.coordinator.snapshot.speechRunActive, true);
   assert.ok(f.coordinator.snapshot.speechText);
+  await f.coordinator.stopSpeech();
+  await playing;
+});
+
+test('manual speech and captions share the normalized Markdown text', async () => {
+  const f = fixture();
+  const playing = f.coordinator.speak('**Hello** [guide](https://example.com/private)', 'markdown');
+  await turn();
+  assert.equal(f.coordinator.snapshot.speechText, 'Hello Link para guide');
+  assert.equal(f.spoken[0].text, f.coordinator.snapshot.speechText);
   await f.coordinator.stopSpeech();
   await playing;
 });

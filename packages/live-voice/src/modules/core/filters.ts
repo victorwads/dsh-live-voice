@@ -1,4 +1,6 @@
 // @ts-nocheck
+import { markdownSpeech } from './markdownSpeech.js';
+export { hasIncompleteSpeechMarkdown } from './markdownSpeech.js';
 const words = (text) =>
   String(text || '')
     .trim()
@@ -45,19 +47,6 @@ export function hasUnclosedCodeFence(text) {
   return (String(text || '').match(/```/g) || []).length % 2 === 1;
 }
 
-export function filterSpeechOutput(
-  text,
-  {
-    filterCodeBlocks = true,
-    codeBlockMaxLines = 5,
-    codeBlockNotice = 'Look the code on out conversation',
-  } = {},
-) {
-  const source = String(text || '');
-  if (!filterCodeBlocks) return source;
-  return source.replace(/```[^\n]*\n?([\s\S]*?)```/g, (block, body) => {
-    const normalized = body.replace(/\n$/, '');
-    const lineCount = normalized ? normalized.split(/\r?\n/).length : 0;
-    return lineCount <= codeBlockMaxLines ? normalized : codeBlockNotice;
-  });
+export function filterSpeechOutput(text, options = {}) {
+  return markdownSpeech(text, options);
 }

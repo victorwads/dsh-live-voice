@@ -46,7 +46,7 @@ test('host progress follows audio position, remains stable during pause, and cle
 });
 
 test('separate speech bar advances captions, pauses without hiding, stops and preserves recognition bar', async (t) => {
-  const dom = new JSDOM('<div id="root"></div>');
+  const dom = new JSDOM('<div id="root"></div>', { pretendToBeVisual: true });
   const previous = { window: globalThis.window, document: globalThis.document };
   Object.assign(globalThis, {
     window: dom.window,
@@ -124,14 +124,14 @@ test('separate speech bar advances captions, pauses without hiding, stops and pr
   position = 5;
   await act(async () => t.mock.timers.tick(100));
   assert.equal(speech.querySelector('[role="progressbar"]').getAttribute('aria-valuenow'), '50');
-  assert.equal(speech.querySelector('.dlv-caption').textContent, 'third fourth');
+  assert.equal(speech.querySelector('.dlv-caption').textContent, 'First second third fourth');
   await act(async () => speech.querySelector('[aria-label="Pause speech"]').click());
   assert.ok(speech.querySelector('[aria-label="Resume speech"]'));
   position = 8;
   await act(async () => t.mock.timers.tick(500));
-  assert.equal(speech.querySelector('.dlv-caption').textContent, 'third fourth');
+  assert.equal(speech.querySelector('.dlv-caption').textContent, 'First second third fourth');
   await act(async () => speech.querySelector('[aria-label="Resume speech"]').click());
-  assert.equal(speech.querySelector('.dlv-caption').textContent, 'fourth');
+  assert.equal(speech.querySelector('.dlv-caption').textContent, 'First second third fourth');
   await act(async () => speech.querySelector('[aria-label="Stop all speech"]').click());
   assert.equal(document.querySelector('.dlv-speech-bar'), null);
   assert.ok(document.querySelector('[aria-label="Voice controls"]'));

@@ -2,6 +2,7 @@ import { build, context, type BuildOptions } from 'esbuild';
 import { mkdir, readFile, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
+import { createRequire } from 'node:module';
 import { checkVersions } from './check-versions.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 await checkVersions();
@@ -69,6 +70,19 @@ for (const name of names) {
         target: ['node22'],
         packages: 'external',
         logLevel: 'silent',
+        plugins: [
+          {
+            name: 'speech-parser-tests',
+            setup(build) {
+              build.onResolve({ filter: /^marked$/ }, () => ({
+                path: createRequire(join(root, 'packages/live-voice/package.json')).resolve(
+                  'marked',
+                ),
+                external: true,
+              }));
+            },
+          },
+        ],
       }),
     ]);
   }

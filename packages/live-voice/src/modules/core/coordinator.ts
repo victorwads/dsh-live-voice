@@ -5,6 +5,7 @@ import {
   filterSpeechOutput,
   hasMinimumWords,
   hasUnclosedCodeFence,
+  hasIncompleteSpeechMarkdown,
   matchVoiceCommand,
   splitSpeechOutput,
 } from './filters.ts';
@@ -292,14 +293,20 @@ export class VoiceCoordinator {
               !valid() ||
               controller.signal.aborted ||
               this.snapshot.settings.inputDeviceId !== deviceId
-            ) throw error;
+            )
+              throw error;
             // Repair only the obsolete input preference, without ending this input operation.
             VoiceCoordinator.prototype.updateSettings.call(this, { inputDeviceId: '' });
             await cancellable(
               Promise.resolve(this.persistSettings?.({ inputDeviceId: '' })),
               controller.signal,
             );
-            if (!valid() || controller.signal.aborted || this.snapshot.settings.inputDeviceId !== '') return;
+            if (
+              !valid() ||
+              controller.signal.aborted ||
+              this.snapshot.settings.inputDeviceId !== ''
+            )
+              return;
             started = await this.meter.start({ signal: controller.signal });
           }
         } catch (error) {
@@ -847,6 +854,7 @@ export class VoiceCoordinator {
       filterCodeBlocks: this.snapshot.settings.outputCodeFilterEnabled,
       codeBlockMaxLines: this.snapshot.settings.outputCodeMaxLines,
       codeBlockNotice: this.snapshot.settings.outputCodeNotice,
+      lang: this.snapshot.settings.lang,
     });
     const first = segments.shift();
     if (!first) return;
@@ -1029,16 +1037,13 @@ export class VoiceCoordinator {
     const remaining = text.slice(offset);
     const boundary = complete ? remaining.length : remaining.lastIndexOf('\n') + 1;
     if (boundary <= 0) return;
-    if (
-      this.snapshot.settings.outputCodeFilterEnabled &&
-      hasUnclosedCodeFence(remaining.slice(0, boundary)) &&
-      !complete
-    )
-      return;
+    if (!complete && hasIncompleteSpeechMarkdown(remaining.slice(0, boundary))) return;
+    if (hasUnclosedCodeFence(remaining.slice(0, boundary)) && !complete) return;
     const chunk = filterSpeechOutput(remaining.slice(0, boundary).trim(), {
       filterCodeBlocks: this.snapshot.settings.outputCodeFilterEnabled,
       codeBlockMaxLines: this.snapshot.settings.outputCodeMaxLines,
       codeBlockNotice: this.snapshot.settings.outputCodeNotice,
+      lang: this.snapshot.settings.lang,
     }).trim();
     this.consumed.set(id, offset + boundary);
     if (chunk) {
