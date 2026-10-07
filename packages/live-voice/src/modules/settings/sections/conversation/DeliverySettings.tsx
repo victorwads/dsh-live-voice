@@ -1,4 +1,5 @@
 import React from 'react';
+import { autoSendDelayOptions } from '../../../core/settings.js';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
 import { SelectField } from '../../../../shared/design-system/index.js';
 export function DeliverySettings({
@@ -10,7 +11,7 @@ export function DeliverySettings({
 }) {
   const { scoped } = useLanguage((ctx) => ctx.settings);
   const mode = settings.sendingMode || 'manual';
-  const seconds = [2, 3, 4, 5, 6, 8, 10];
+  const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const busyEnterHelpId = React.useId();
   return (
     <>
@@ -41,7 +42,15 @@ export function DeliverySettings({
         <SelectField
           label={(scoped as any).autoSend.delay()}
           value={String(settings.autoSendDelaySeconds || 4)}
-          options={seconds.map((value) => ({ value: String(value), label: String(value) }))}
+          options={autoSendDelayOptions.map((value) => ({
+            value: String(value),
+            label:
+              value < 1
+                ? (commons as any).milliseconds({ milliseconds: value * 1000 })
+                : value === 1
+                  ? (commons as any).second()
+                  : (commons as any).seconds({ seconds: value }),
+          }))}
           onChange={(event) => updateSettings({ autoSendDelaySeconds: Number(event.target.value) })}
         />
       ) : (

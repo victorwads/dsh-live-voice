@@ -20,6 +20,11 @@ This version adds the optional Live Voice Debugger and a two-package workspace, 
 - Open the read-only inspector in a separate browser window, with independently scrolling state and event panes, queue inspection, module filtering, event pause/resume and clearing, and selectable 1–20 Hz refresh (10 Hz by default). Keep diagnostic history bounded and text content hidden unless explicitly enabled.
 - Add fake-adapter and DOM regressions for state transitions, segmentation, optional activation, popup handling, event controls, and refresh frequency.
 
+### Configuration Changes
+
+- Disable Control hold-to-talk by default; keep it available as an opt-in and preserve saved preferences.
+- Offer automatic-send delays of 600 ms, 800 ms, and 1–6 seconds with localized duration labels. Keep 4 seconds as the default and reset unsupported saved delays to that default.
+
 ### Build and Release Checks
 
 - Reorganize the repository as a pnpm workspace with two complete plugin packages under `packages/live-voice` and `packages/live-voice-debugger`, each with separate source, tests, manifests and runtime bundles. Update builds, local-link paths, CI and publication paths for the monorepo.

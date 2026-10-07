@@ -183,9 +183,9 @@ test('filter settings use safe defaults and reject malformed values', () => {
 
 test('microphone preference is global-state compatible and safely normalized', () => {
   assert.equal(defaultSettings.microphoneEnabled, true);
-  assert.equal(defaultSettings.holdToTalkEnabled, true);
+  assert.equal(defaultSettings.holdToTalkEnabled, false);
   assert.equal(normalizeSettings({ holdToTalkEnabled: false }).holdToTalkEnabled, false);
-  assert.equal(normalizeSettings({ holdToTalkEnabled: 'no' }).holdToTalkEnabled, true);
+  assert.equal(normalizeSettings({ holdToTalkEnabled: 'no' }).holdToTalkEnabled, false);
   assert.equal(normalizeSettings({ microphoneEnabled: false }).microphoneEnabled, false);
   assert.equal(normalizeSettings({ microphoneEnabled: 'no' }).microphoneEnabled, true);
 });
@@ -202,4 +202,12 @@ test('audio device preferences default to the system devices and reject malforme
   );
   assert.equal(normalizeSettings({ inputDeviceId: 'bad\0device' }).inputDeviceId, '');
   assert.equal(normalizeSettings({ outputDeviceId: 42 }).outputDeviceId, '');
+});
+
+test('automatic send delay supports 600ms and 800ms with a six second maximum', () => {
+  for (const value of [0.6, 0.8, 1, 2, 3, 4, 5, 6])
+    assert.equal(normalizeSettings({ autoSendDelaySeconds: value }).autoSendDelaySeconds, value);
+  for (const value of [0.5, 0.9, 7, 8, 10, NaN])
+    assert.equal(normalizeSettings({ autoSendDelaySeconds: value }).autoSendDelaySeconds, 4);
+  assert.equal(defaultSettings.autoSendDelaySeconds, 4);
 });

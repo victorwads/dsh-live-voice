@@ -73,6 +73,7 @@ test('catalogs preserve placeholders and contain no unreviewed English copies', 
   const shared = new Set([
     'dsh-live-voice.commons.device.numberedLabel',
     'dsh-live-voice.commons.engine.failure',
+    'dsh-live-voice.commons.milliseconds',
     'dsh-live-voice.commons.pluginName',
     'dsh-live-voice.commons.version.label',
     'dsh-live-voice.speak.macos.name',

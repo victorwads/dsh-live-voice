@@ -339,6 +339,7 @@ test('composer detach is immediate while action owner survives, updates use late
 test('holding Control globally starts one temporary capture and release finishes it', async (t) => {
   const f = await fixture(t);
   await f.render(h(f.Buttons, f.props('a')));
+  f.controllers[0].updateSettings({ holdToTalkEnabled: true });
   const key = (type) =>
     document.dispatchEvent(
       new window.KeyboardEvent(type, {

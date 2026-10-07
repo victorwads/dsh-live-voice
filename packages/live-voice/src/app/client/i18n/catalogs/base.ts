@@ -23,12 +23,14 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.commons.input.listening': string;
   'dsh-live-voice.commons.input.listeningBadge': string;
   'dsh-live-voice.commons.manual': string;
+  'dsh-live-voice.commons.milliseconds': string;
   'dsh-live-voice.commons.off': string;
   'dsh-live-voice.commons.on': string;
   'dsh-live-voice.commons.pluginName': string;
   'dsh-live-voice.commons.queue': string;
   'dsh-live-voice.commons.repository.starLabel': string;
   'dsh-live-voice.commons.repository.starLink': string;
+  'dsh-live-voice.commons.second': string;
   'dsh-live-voice.commons.seconds': string;
   'dsh-live-voice.commons.send': string;
   'dsh-live-voice.commons.status.ready': string;

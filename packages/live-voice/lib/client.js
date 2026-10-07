@@ -173,6 +173,7 @@ var defaultQwenVoice = qwenVoices[0].value;
 var defaultAgentVoiceContext = `Live Voice output is active. Your entire user-facing response will be spoken aloud.
 Be concise and conversational. Lead with the answer or next action. Avoid unnecessary repetition, long preambles, dense lists, raw code, paths, and verbose status narration.
 Do not narrate routine tool activity by default. If the user explicitly asks you to keep them informed while working, provide brief spoken progress updates only at meaningful milestones.`;
+var autoSendDelayOptions = Object.freeze([0.6, 0.8, 1, 2, 3, 4, 5, 6]);
 var defaultSettings = Object.freeze({
   engine: "browser",
   recognitionEngine: "browser",
@@ -182,7 +183,7 @@ var defaultSettings = Object.freeze({
   voiceDetectionCustomSilenceMs: 1e3,
   recognitionMaxUtteranceSeconds: 60,
   microphoneEnabled: true,
-  holdToTalkEnabled: true,
+  holdToTalkEnabled: false,
   announceAssistantMessages: true,
   agentVoiceContextEnabled: true,
   agentVoiceContext: defaultAgentVoiceContext,
@@ -236,7 +237,7 @@ function normalizeSettings(value) {
     interruptSpeechOnUserMessage: typeof source.interruptSpeechOnUserMessage === "boolean" ? source.interruptSpeechOnUserMessage : defaultSettings.interruptSpeechOnUserMessage,
     dshBusyEnterBehavior: ["queue", "steer"].includes(source.dshBusyEnterBehavior) ? source.dshBusyEnterBehavior : defaultSettings.dshBusyEnterBehavior,
     sendingMode: source.sendingMode === "automatic" ? "queue" : ["manual", "queue", "steer"].includes(source.sendingMode) ? source.sendingMode : defaultSettings.sendingMode,
-    autoSendDelaySeconds: Number.isInteger(source.autoSendDelaySeconds) && source.autoSendDelaySeconds >= 2 && source.autoSendDelaySeconds <= 10 ? source.autoSendDelaySeconds : defaultSettings.autoSendDelaySeconds,
+    autoSendDelaySeconds: autoSendDelayOptions.includes(source.autoSendDelaySeconds) ? source.autoSendDelaySeconds : defaultSettings.autoSendDelaySeconds,
     assistantSpeechDelaySeconds: Number.isInteger(source.assistantSpeechDelaySeconds) && source.assistantSpeechDelaySeconds >= 1 && source.assistantSpeechDelaySeconds <= 10 ? source.assistantSpeechDelaySeconds : defaultSettings.assistantSpeechDelaySeconds,
     mode: ["speaker", "headphones"].includes(source.mode) ? source.mode : defaultSettings.mode,
     lang: typeof source.lang === "string" && /^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/.test(source.lang) ? source.lang : defaultSettings.lang,
@@ -2876,12 +2877,14 @@ var en = {
   "dsh-live-voice.commons.input.listening": "listening",
   "dsh-live-voice.commons.input.listeningBadge": "LISTENING",
   "dsh-live-voice.commons.manual": "manual",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
   "dsh-live-voice.commons.off": "off",
   "dsh-live-voice.commons.on": "on",
   "dsh-live-voice.commons.pluginName": "Live Voice",
   "dsh-live-voice.commons.queue": "queue",
   "dsh-live-voice.commons.repository.starLabel": "Star Us on GitHub",
   "dsh-live-voice.commons.repository.starLink": "Star DSH Live Voice on GitHub",
+  "dsh-live-voice.commons.second": "1 second",
   "dsh-live-voice.commons.seconds": "{seconds} seconds",
   "dsh-live-voice.commons.send": "SEND",
   "dsh-live-voice.commons.status.ready": "Voice ready",
@@ -3109,12 +3112,14 @@ var es = {
   "dsh-live-voice.commons.input.listening": "escuchando",
   "dsh-live-voice.commons.input.listeningBadge": "ESCUCHANDO",
   "dsh-live-voice.commons.manual": "manual",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
   "dsh-live-voice.commons.off": "desactivado",
   "dsh-live-voice.commons.on": "activado",
   "dsh-live-voice.commons.pluginName": "Live Voice",
   "dsh-live-voice.commons.queue": "cola",
   "dsh-live-voice.commons.repository.starLabel": "Danos una estrella en GitHub",
   "dsh-live-voice.commons.repository.starLink": "Dar una estrella a DSH Live Voice en GitHub",
+  "dsh-live-voice.commons.second": "1 segundo",
   "dsh-live-voice.commons.seconds": "{seconds} segundos",
   "dsh-live-voice.commons.send": "ENVIAR",
   "dsh-live-voice.commons.status.ready": "Funciones de voz listas",
@@ -3342,12 +3347,14 @@ var fr = {
   "dsh-live-voice.commons.input.listening": "\xE0 l\u2019\xE9coute",
   "dsh-live-voice.commons.input.listeningBadge": "\xC0 L\u2019\xC9COUTE",
   "dsh-live-voice.commons.manual": "manuel",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
   "dsh-live-voice.commons.off": "d\xE9sactiv\xE9",
   "dsh-live-voice.commons.on": "activ\xE9",
   "dsh-live-voice.commons.pluginName": "Live Voice",
   "dsh-live-voice.commons.queue": "file d\u2019attente",
   "dsh-live-voice.commons.repository.starLabel": "Soutenez-nous avec une \xE9toile sur GitHub",
   "dsh-live-voice.commons.repository.starLink": "Attribuer une \xE9toile \xE0 DSH Live Voice sur GitHub",
+  "dsh-live-voice.commons.second": "1 seconde",
   "dsh-live-voice.commons.seconds": "{seconds} secondes",
   "dsh-live-voice.commons.send": "ENVOYER",
   "dsh-live-voice.commons.status.ready": "Fonctions vocales pr\xEAtes",
@@ -3575,12 +3582,14 @@ var hi = {
   "dsh-live-voice.commons.input.listening": "\u0938\u0941\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948",
   "dsh-live-voice.commons.input.listeningBadge": "\u0938\u0941\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948",
   "dsh-live-voice.commons.manual": "\u092E\u0948\u0928\u094D\u092F\u0941\u0905\u0932",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} \u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921",
   "dsh-live-voice.commons.off": "\u092C\u0902\u0926",
   "dsh-live-voice.commons.on": "\u091A\u093E\u0932\u0942",
   "dsh-live-voice.commons.pluginName": "Live Voice",
   "dsh-live-voice.commons.queue": "\u0915\u0924\u093E\u0930",
   "dsh-live-voice.commons.repository.starLabel": "GitHub \u092A\u0930 \u0939\u092E\u0947\u0902 \u0938\u094D\u091F\u093E\u0930 \u0926\u0947\u0902",
   "dsh-live-voice.commons.repository.starLink": "GitHub \u092A\u0930 DSH Live Voice \u0915\u094B \u0938\u094D\u091F\u093E\u0930 \u0926\u0947\u0902",
+  "dsh-live-voice.commons.second": "1 \u0938\u0947\u0915\u0902\u0921",
   "dsh-live-voice.commons.seconds": "{seconds} \u0938\u0947\u0915\u0902\u0921",
   "dsh-live-voice.commons.send": "\u092D\u0947\u091C\u0947\u0902",
   "dsh-live-voice.commons.status.ready": "\u0935\u0949\u0907\u0938 \u0924\u0948\u092F\u093E\u0930 \u0939\u0948",
@@ -3808,12 +3817,14 @@ var ptBR = {
   "dsh-live-voice.commons.input.listening": "escutando",
   "dsh-live-voice.commons.input.listeningBadge": "ESCUTANDO",
   "dsh-live-voice.commons.manual": "manual",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
   "dsh-live-voice.commons.off": "desativado",
   "dsh-live-voice.commons.on": "ativada",
   "dsh-live-voice.commons.pluginName": "Live Voice",
   "dsh-live-voice.commons.queue": "fila",
   "dsh-live-voice.commons.repository.starLabel": "D\xEA uma estrela no GitHub",
   "dsh-live-voice.commons.repository.starLink": "Dar estrela ao DSH Live Voice no GitHub",
+  "dsh-live-voice.commons.second": "1 segundo",
   "dsh-live-voice.commons.seconds": "{seconds} segundos",
   "dsh-live-voice.commons.send": "ENVIAR",
   "dsh-live-voice.commons.status.ready": "Voz pronta",
@@ -4041,12 +4052,14 @@ var zh = {
   "dsh-live-voice.commons.input.listening": "\u6B63\u5728\u8046\u542C",
   "dsh-live-voice.commons.input.listeningBadge": "\u8046\u542C\u4E2D",
   "dsh-live-voice.commons.manual": "\u624B\u52A8",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} \u6BEB\u79D2",
   "dsh-live-voice.commons.off": "\u5173\u95ED",
   "dsh-live-voice.commons.on": "\u5F00\u542F",
   "dsh-live-voice.commons.pluginName": "Live Voice",
   "dsh-live-voice.commons.queue": "\u961F\u5217",
   "dsh-live-voice.commons.repository.starLabel": "\u5728 GitHub \u4E0A\u4E3A\u6211\u4EEC\u52A0\u661F",
   "dsh-live-voice.commons.repository.starLink": "\u5728 GitHub \u4E0A\u4E3A DSH Live Voice \u52A0\u661F",
+  "dsh-live-voice.commons.second": "1 \u79D2",
   "dsh-live-voice.commons.seconds": "{seconds} \u79D2",
   "dsh-live-voice.commons.send": "\u53D1\u9001",
   "dsh-live-voice.commons.status.ready": "\u8BED\u97F3\u5DF2\u5C31\u7EEA",
@@ -5810,7 +5823,7 @@ function DeliverySettings({
 }) {
   const { scoped } = useLanguage((ctx) => ctx.settings);
   const mode = settings.sendingMode || "manual";
-  const seconds = [2, 3, 4, 5, 6, 8, 10];
+  const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const busyEnterHelpId = import_react25.default.useId();
   return /* @__PURE__ */ import_react25.default.createElement(import_react25.default.Fragment, null, /* @__PURE__ */ import_react25.default.createElement(
     SelectField,
@@ -5841,7 +5854,10 @@ function DeliverySettings({
     {
       label: scoped.autoSend.delay(),
       value: String(settings.autoSendDelaySeconds || 4),
-      options: seconds.map((value) => ({ value: String(value), label: String(value) })),
+      options: autoSendDelayOptions.map((value) => ({
+        value: String(value),
+        label: value < 1 ? commons.milliseconds({ milliseconds: value * 1e3 }) : value === 1 ? commons.second() : commons.seconds({ seconds: value })
+      })),
       onChange: (event) => updateSettings({ autoSendDelaySeconds: Number(event.target.value) })
     }
   ) : /* @__PURE__ */ import_react25.default.createElement("p", { className: "dlv-setting-description" }, scoped.delivery.manualLabel()));

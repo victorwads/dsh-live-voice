@@ -58,6 +58,7 @@ var isQwenVoice = (value) => qwenVoices.some((voice) => voice.value === value);
 var defaultAgentVoiceContext = `Live Voice output is active. Your entire user-facing response will be spoken aloud.
 Be concise and conversational. Lead with the answer or next action. Avoid unnecessary repetition, long preambles, dense lists, raw code, paths, and verbose status narration.
 Do not narrate routine tool activity by default. If the user explicitly asks you to keep them informed while working, provide brief spoken progress updates only at meaningful milestones.`;
+var autoSendDelayOptions = Object.freeze([0.6, 0.8, 1, 2, 3, 4, 5, 6]);
 var defaultSettings = Object.freeze({
   engine: "browser",
   recognitionEngine: "browser",
@@ -67,7 +68,7 @@ var defaultSettings = Object.freeze({
   voiceDetectionCustomSilenceMs: 1e3,
   recognitionMaxUtteranceSeconds: 60,
   microphoneEnabled: true,
-  holdToTalkEnabled: true,
+  holdToTalkEnabled: false,
   announceAssistantMessages: true,
   agentVoiceContextEnabled: true,
   agentVoiceContext: defaultAgentVoiceContext,
@@ -120,7 +121,7 @@ function normalizeSettings(value) {
     interruptSpeechOnUserMessage: typeof source.interruptSpeechOnUserMessage === "boolean" ? source.interruptSpeechOnUserMessage : defaultSettings.interruptSpeechOnUserMessage,
     dshBusyEnterBehavior: ["queue", "steer"].includes(source.dshBusyEnterBehavior) ? source.dshBusyEnterBehavior : defaultSettings.dshBusyEnterBehavior,
     sendingMode: source.sendingMode === "automatic" ? "queue" : ["manual", "queue", "steer"].includes(source.sendingMode) ? source.sendingMode : defaultSettings.sendingMode,
-    autoSendDelaySeconds: Number.isInteger(source.autoSendDelaySeconds) && source.autoSendDelaySeconds >= 2 && source.autoSendDelaySeconds <= 10 ? source.autoSendDelaySeconds : defaultSettings.autoSendDelaySeconds,
+    autoSendDelaySeconds: autoSendDelayOptions.includes(source.autoSendDelaySeconds) ? source.autoSendDelaySeconds : defaultSettings.autoSendDelaySeconds,
     assistantSpeechDelaySeconds: Number.isInteger(source.assistantSpeechDelaySeconds) && source.assistantSpeechDelaySeconds >= 1 && source.assistantSpeechDelaySeconds <= 10 ? source.assistantSpeechDelaySeconds : defaultSettings.assistantSpeechDelaySeconds,
     mode: ["speaker", "headphones"].includes(source.mode) ? source.mode : defaultSettings.mode,
     lang: typeof source.lang === "string" && /^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/.test(source.lang) ? source.lang : defaultSettings.lang,

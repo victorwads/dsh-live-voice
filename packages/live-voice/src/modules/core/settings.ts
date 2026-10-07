@@ -35,6 +35,8 @@ export const defaultAgentVoiceContext = `Live Voice output is active. Your entir
 Be concise and conversational. Lead with the answer or next action. Avoid unnecessary repetition, long preambles, dense lists, raw code, paths, and verbose status narration.
 Do not narrate routine tool activity by default. If the user explicitly asks you to keep them informed while working, provide brief spoken progress updates only at meaningful milestones.`;
 
+export const autoSendDelayOptions = Object.freeze([0.6, 0.8, 1, 2, 3, 4, 5, 6]);
+
 export const defaultSettings = Object.freeze({
   engine: 'browser',
   recognitionEngine: 'browser',
@@ -44,7 +46,7 @@ export const defaultSettings = Object.freeze({
   voiceDetectionCustomSilenceMs: 1000,
   recognitionMaxUtteranceSeconds: 60,
   microphoneEnabled: true,
-  holdToTalkEnabled: true,
+  holdToTalkEnabled: false,
   announceAssistantMessages: true,
   agentVoiceContextEnabled: true,
   agentVoiceContext: defaultAgentVoiceContext,
@@ -164,12 +166,9 @@ export function normalizeSettings(value) {
         : ['manual', 'queue', 'steer'].includes(source.sendingMode)
           ? source.sendingMode
           : defaultSettings.sendingMode,
-    autoSendDelaySeconds:
-      Number.isInteger(source.autoSendDelaySeconds) &&
-      source.autoSendDelaySeconds >= 2 &&
-      source.autoSendDelaySeconds <= 10
-        ? source.autoSendDelaySeconds
-        : defaultSettings.autoSendDelaySeconds,
+    autoSendDelaySeconds: autoSendDelayOptions.includes(source.autoSendDelaySeconds)
+      ? source.autoSendDelaySeconds
+      : defaultSettings.autoSendDelaySeconds,
     assistantSpeechDelaySeconds:
       Number.isInteger(source.assistantSpeechDelaySeconds) &&
       source.assistantSpeechDelaySeconds >= 1 &&
