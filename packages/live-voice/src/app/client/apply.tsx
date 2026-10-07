@@ -229,6 +229,7 @@ export function apply(ctx) {
     const meter = new MicrophoneMeter();
     const recognition = recognitionFor(settings, meter);
     entry.controller = new VoiceCoordinator({
+      persistSettings: (next) => savePreferences(entry.controller, next),
       recognition,
       engines: { browser: engineBrowser, say: engineSay, 'qwen-http': engineQwen },
       meter,
@@ -529,6 +530,7 @@ export function apply(ctx) {
       const meter = new MicrophoneMeter();
       const recognition = recognitionFor(settings, meter);
       const c = new VoiceCoordinator({
+        persistSettings: (next) => savePreferences(c, next),
         recognition,
         engines: {
           browser,

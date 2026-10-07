@@ -315,9 +315,9 @@ function cancellable(promise, signal) {
     Promise.resolve(promise).then(resolve, reject).finally(() => signal.removeEventListener("abort", abort));
   });
 }
-var VoiceCoordinator = class {
-  constructor({ recognition, engines, meter, composer, settings = {} }) {
-    Object.assign(this, { recognition, engines, meter, composer });
+var VoiceCoordinator = class _VoiceCoordinator {
+  constructor({ recognition, engines, meter, composer, settings = {}, persistSettings }) {
+    Object.assign(this, { recognition, engines, meter, composer, persistSettings });
     this.listeners = /* @__PURE__ */ new Set();
     this.transcript = new TranscriptDraft();
     this.epoch = 0;
@@ -561,7 +561,19 @@ var VoiceCoordinator = class {
           throw new Error(capability.reason || "Local browser recognition is unavailable.");
         let started;
         try {
-          started = await this.meter.start({ signal: controller.signal });
+          const deviceId = this.snapshot.settings.inputDeviceId;
+          try {
+            started = await this.meter.start({ signal: controller.signal });
+          } catch (error) {
+            if (error?.name !== "OverconstrainedError" || !deviceId || !valid() || controller.signal.aborted || this.snapshot.settings.inputDeviceId !== deviceId) throw error;
+            _VoiceCoordinator.prototype.updateSettings.call(this, { inputDeviceId: "" });
+            await cancellable(
+              Promise.resolve(this.persistSettings?.({ inputDeviceId: "" })),
+              controller.signal
+            );
+            if (!valid() || controller.signal.aborted || this.snapshot.settings.inputDeviceId !== "") return;
+            started = await this.meter.start({ signal: controller.signal });
+          }
         } catch (error) {
           if (valid())
             this.patch({
@@ -6276,6 +6288,7 @@ function apply(ctx) {
     const meter = new MicrophoneMeter();
     const recognition = recognitionFor(settings, meter);
     entry.controller = new VoiceCoordinator({
+      persistSettings: (next) => savePreferences(entry.controller, next),
       recognition,
       engines: { browser: engineBrowser, say: engineSay, "qwen-http": engineQwen },
       meter,
@@ -6536,6 +6549,7 @@ function apply(ctx) {
       const meter = new MicrophoneMeter();
       const recognition = recognitionFor(settings, meter);
       const c = new VoiceCoordinator({
+        persistSettings: (next) => savePreferences(c, next),
         recognition,
         engines: {
           browser,

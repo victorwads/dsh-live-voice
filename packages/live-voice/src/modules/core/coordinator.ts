@@ -26,8 +26,8 @@ function cancellable(promise, signal) {
 
 /** Session-owned policy. Input transitions are serialized; generations invalidate late work. */
 export class VoiceCoordinator {
-  constructor({ recognition, engines, meter, composer, settings = {} }) {
-    Object.assign(this, { recognition, engines, meter, composer });
+  constructor({ recognition, engines, meter, composer, settings = {}, persistSettings }) {
+    Object.assign(this, { recognition, engines, meter, composer, persistSettings });
     this.listeners = new Set();
     this.transcript = new TranscriptDraft();
     this.epoch = 0;
@@ -282,7 +282,26 @@ export class VoiceCoordinator {
           throw new Error(capability.reason || 'Local browser recognition is unavailable.');
         let started;
         try {
-          started = await this.meter.start({ signal: controller.signal });
+          const deviceId = this.snapshot.settings.inputDeviceId;
+          try {
+            started = await this.meter.start({ signal: controller.signal });
+          } catch (error) {
+            if (
+              error?.name !== 'OverconstrainedError' ||
+              !deviceId ||
+              !valid() ||
+              controller.signal.aborted ||
+              this.snapshot.settings.inputDeviceId !== deviceId
+            ) throw error;
+            // Repair only the obsolete input preference, without ending this input operation.
+            VoiceCoordinator.prototype.updateSettings.call(this, { inputDeviceId: '' });
+            await cancellable(
+              Promise.resolve(this.persistSettings?.({ inputDeviceId: '' })),
+              controller.signal,
+            );
+            if (!valid() || controller.signal.aborted || this.snapshot.settings.inputDeviceId !== '') return;
+            started = await this.meter.start({ signal: controller.signal });
+          }
         } catch (error) {
           if (valid())
             this.patch({

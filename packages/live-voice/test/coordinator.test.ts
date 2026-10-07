@@ -88,6 +88,83 @@ function fixture(settings = {}) {
   return { coordinator, recognition, meter, engine, spoken, sessions, log, draft: () => draft };
 }
 
+test('overconstrained selected microphone is persisted as system default and retried once', async () => {
+  const f = fixture({ inputDeviceId: 'disconnected', recognitionLang: 'pt-BR' });
+  const saved = [];
+  f.coordinator.persistSettings = async (next) => saved.push(next);
+  const devices = [];
+  f.meter.start = async () => {
+    devices.push(f.meter.deviceId);
+    if (devices.length === 1) throw Object.assign(new Error('unavailable'), { name: 'OverconstrainedError' });
+    return true;
+  };
+  await f.coordinator.startDictation();
+  assert.deepEqual(devices, ['disconnected', '']);
+  assert.deepEqual(saved, [{ inputDeviceId: '' }]);
+  assert.equal(f.coordinator.snapshot.settings.inputDeviceId, '');
+  assert.equal(f.coordinator.snapshot.settings.recognitionLang, 'pt-BR');
+  assert.equal(f.coordinator.snapshot.listening, true);
+  assert.equal(f.coordinator.snapshot.error, null);
+  await f.coordinator.dispose();
+});
+
+test('default microphone failure is not retried and permission denial preserves selection', async () => {
+  for (const [deviceId, name, expectedCalls] of [
+    ['', 'OverconstrainedError', 1],
+    ['selected', 'NotAllowedError', 1],
+    ['selected', 'OverconstrainedError', 2],
+  ]) {
+    const f = fixture({ inputDeviceId: deviceId });
+    let calls = 0;
+    f.meter.start = async () => {
+      calls++;
+      throw Object.assign(new Error('capture failed'), { name });
+    };
+    await f.coordinator.startDictation();
+    assert.equal(calls, expectedCalls);
+    assert.equal(f.coordinator.snapshot.settings.inputDeviceId, expectedCalls === 2 ? '' : deviceId);
+    assert.equal(f.coordinator.snapshot.listening, false);
+    assert.match(f.coordinator.snapshot.error, /capture failed/);
+    await f.coordinator.dispose();
+  }
+});
+
+test('obsolete constraint failure cannot reset a newer microphone selection', async () => {
+  const f = fixture({ inputDeviceId: 'old' });
+  const pending = deferred();
+  let saved = 0;
+  f.coordinator.persistSettings = () => saved++;
+  f.meter.start = () => pending.promise;
+  const starting = f.coordinator.startDictation();
+  await turn();
+  f.coordinator.updateSettings({ inputDeviceId: 'new' });
+  pending.reject(Object.assign(new Error('obsolete'), { name: 'OverconstrainedError' }));
+  await starting;
+  assert.equal(f.coordinator.snapshot.settings.inputDeviceId, 'new');
+  assert.equal(saved, 0);
+  await f.coordinator.dispose();
+});
+
+test('cancellation during default preference persistence prevents capture retry', async () => {
+  const f = fixture({ inputDeviceId: 'old' });
+  const pending = deferred();
+  let calls = 0;
+  f.coordinator.persistSettings = () => pending.promise;
+  f.meter.start = async () => {
+    calls++;
+    throw Object.assign(new Error('unavailable'), { name: 'OverconstrainedError' });
+  };
+  const starting = f.coordinator.startDictation();
+  await turn();
+  await f.coordinator.stopListening();
+  await starting;
+  pending.resolve();
+  await turn();
+  assert.equal(calls, 1);
+  assert.equal(f.coordinator.snapshot.listening, false);
+  await f.coordinator.dispose();
+});
+
 test('speech capability publishes before pending recognition discovery', async () => {
   const f = fixture();
   const pending = deferred();
