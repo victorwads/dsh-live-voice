@@ -63,6 +63,7 @@ export function SpeechStatusBar({ controller }: { controller: any }) {
             className="dlv-caption-progress"
             data-loading={loading ? 'true' : 'false'}
             role="progressbar"
+            aria-hidden={!loading}
             aria-label={
               loading ? (speak as any).captions.loading() : (speak as any).captions.progress()
             }
