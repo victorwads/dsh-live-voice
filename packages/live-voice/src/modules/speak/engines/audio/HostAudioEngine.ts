@@ -96,7 +96,7 @@ export class HostAudioSpeakingEngine {
     }
   }
   async playPrepared(prepared, options = {}) {
-    const { signal, outputDeviceId = '', rate = 1 } = options;
+    const { signal, outputDeviceId = '', rate = 1, retainPrepared = false } = options;
     const playbackRate = this.playbackRate(rate);
     if (!prepared?.audio) throw new TypeError('Prepared speech audio is required.');
     await this.stop();
@@ -104,20 +104,25 @@ export class HostAudioSpeakingEngine {
     const operation = { prepared, audio: prepared.audio };
     this.current = operation;
     const audio = operation.audio;
+    if (retainPrepared) audio.currentTime = 0;
     audio.playbackRate = playbackRate;
     if (outputDeviceId && typeof audio.setSinkId === 'function')
       await audio.setSinkId(outputDeviceId);
     return new Promise((resolve, reject) => {
       const cleanup = () => {
+        audio.removeEventListener('playing', started);
         audio.removeEventListener('ended', done);
         audio.removeEventListener('error', failed);
         signal?.removeEventListener('abort', aborted);
         if (this.current === operation) this.current = null;
-        prepared.dispose();
+        if (!retainPrepared) prepared.dispose();
       };
       const done = () => {
         cleanup();
         resolve();
+      };
+      const started = () => {
+        if (this.current === operation) options.onPlaybackStart?.();
       };
       const failed = () => {
         cleanup();
@@ -129,6 +134,7 @@ export class HostAudioSpeakingEngine {
         reject(cancelled());
       };
       operation.cancel = aborted;
+      audio.addEventListener('playing', started, { once: true });
       audio.addEventListener('ended', done, { once: true });
       audio.addEventListener('error', failed, { once: true });
       signal?.addEventListener('abort', aborted, { once: true });
@@ -153,6 +159,17 @@ export class HostAudioSpeakingEngine {
       operation.audio.pause();
       operation.prepared.dispose();
     }
+  }
+  getPlaybackProgress() {
+    const audio = this.current?.audio;
+    if (
+      !audio ||
+      !Number.isFinite(audio.duration) ||
+      audio.duration <= 0 ||
+      !Number.isFinite(audio.currentTime)
+    )
+      return null;
+    return { positionSeconds: audio.currentTime, durationSeconds: audio.duration };
   }
   pause() {
     if (!this.current?.audio || this.current.audio.paused) return false;

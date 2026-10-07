@@ -50,7 +50,7 @@ export class BrowserSpeakingEngine {
     };
   }
 
-  async speak(text, { voice, rate = 1, signal } = {}) {
+  async speak(text, { voice, rate = 1, signal, onPlaybackStart } = {}) {
     // No await before replacement: concurrent calls cannot enqueue obsolete utterances.
     this.stop();
     if (signal?.aborted) throw abortError();
@@ -79,6 +79,7 @@ export class BrowserSpeakingEngine {
       const finish = (error) => {
         if (this.current !== job) return;
         this.current = null;
+        utterance.onstart = null;
         utterance.onend = null;
         utterance.onerror = null;
         signal?.removeEventListener('abort', cancel);
@@ -87,8 +88,22 @@ export class BrowserSpeakingEngine {
       const cancel = () => {
         if (this.current === job) this.stop();
       };
-      const job = { finish, utterance };
+      const job = {
+        finish,
+        utterance,
+        startedAt: null,
+        elapsedMs: 0,
+        hasStarted: false,
+        estimatedDurationSeconds: Math.max(1, Array.from(text).length / (14 * rate)),
+      };
       this.current = job;
+      utterance.onstart = () => {
+        if (this.current === job && !job.hasStarted) {
+          job.hasStarted = true;
+          onPlaybackStart?.();
+          job.startedAt = Date.now();
+        }
+      };
       utterance.onend = () => finish();
       utterance.onerror = (event) =>
         finish(
@@ -123,14 +138,30 @@ export class BrowserSpeakingEngine {
     }
   }
 
+  getPlaybackProgress() {
+    const job = this.current;
+    if (!job || !job.hasStarted) return null;
+    return {
+      positionSeconds:
+        (job.elapsedMs + (job.startedAt === null ? 0 : Date.now() - job.startedAt)) / 1000,
+      durationSeconds: job.estimatedDurationSeconds,
+      approximate: true,
+    };
+  }
   pause() {
     if (!this.current || typeof this.globals.speechSynthesis.pause !== 'function') return false;
     this.globals.speechSynthesis.pause();
+    if (this.current.startedAt !== null) {
+      this.current.elapsedMs += Date.now() - this.current.startedAt;
+      this.current.startedAt = null;
+    }
     return true;
   }
   resume() {
     if (!this.current || typeof this.globals.speechSynthesis.resume !== 'function') return false;
     this.globals.speechSynthesis.resume();
+    if (this.current.startedAt === null && this.current.hasStarted)
+      this.current.startedAt = Date.now();
     return true;
   }
 }

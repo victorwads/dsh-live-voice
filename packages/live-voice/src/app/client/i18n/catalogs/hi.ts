@@ -209,6 +209,11 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.speak.browser.outputHelp':
     'ब्राउज़र का वाक् संश्लेषण चुने गए आउटपुट डिवाइस को अनदेखा कर सकता है; यह ब्राउज़र API सामान्यतः सिस्टम के डिफ़ॉल्ट का उपयोग करता है।',
   'dsh-live-voice.speak.browser.voice': 'ब्राउज़र की स्थानीय आवाज़',
+  'dsh-live-voice.speak.captions.approximate': 'अनुमानित वाणी कैप्शन',
+  'dsh-live-voice.speak.captions.loading': 'वाणी ऑडियो तैयार हो रहा है',
+  'dsh-live-voice.speak.captions.position': 'वाणी खंड {index} / {total}',
+  'dsh-live-voice.speak.captions.progress': 'अनुमानित वाणी प्रगति',
+  'dsh-live-voice.speak.captions.title': 'वाणी और लाइव कैप्शन',
   'dsh-live-voice.speak.engine.label': 'वाक् संश्लेषण इंजन',
   'dsh-live-voice.speak.engine.playbackHelp':
     'Qwen और macOS say DSH होस्ट पर आवाज़ बनाते हैं; कॉम्पैक्ट AAC/M4A ऑडियो इस ब्राउज़र में चलता है। ब्राउज़र स्पीच इसी डिवाइस पर बनती और चलती है।',
@@ -236,6 +241,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.speak.playback.message': 'संदेश पढ़कर सुनाएँ',
   'dsh-live-voice.speak.playback.next': 'अगले वाणी खंड पर जाएँ',
   'dsh-live-voice.speak.playback.pause': 'वाचन ठहराएँ',
+  'dsh-live-voice.speak.playback.previous': 'पिछला वाणी खंड',
   'dsh-live-voice.speak.playback.resume': 'वाचन फिर शुरू करें',
   'dsh-live-voice.speak.playback.stop': 'वाचन बंद करें',
   'dsh-live-voice.speak.playback.stopAll': 'सभी वाचन बंद करें',

@@ -206,6 +206,11 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.speak.browser.outputHelp':
     'Browser speech synthesis may ignore the selected output device; this browser API normally follows the system default.',
   'dsh-live-voice.speak.browser.voice': 'Local browser voice',
+  'dsh-live-voice.speak.captions.approximate': 'Approximate speech captions',
+  'dsh-live-voice.speak.captions.loading': 'Preparing speech audio',
+  'dsh-live-voice.speak.captions.position': 'Speech segment {index} of {total}',
+  'dsh-live-voice.speak.captions.progress': 'Approximate speech progress',
+  'dsh-live-voice.speak.captions.title': 'Speech and live captions',
   'dsh-live-voice.speak.engine.label': 'Speech engine',
   'dsh-live-voice.speak.engine.playbackHelp':
     'Qwen and macOS say synthesize on the DSH host; compact AAC/M4A audio plays in this browser. Browser speech synthesizes and plays on this device.',
@@ -232,6 +237,7 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.speak.playback.message': 'Speak message',
   'dsh-live-voice.speak.playback.next': 'Skip to next speech segment',
   'dsh-live-voice.speak.playback.pause': 'Pause speech',
+  'dsh-live-voice.speak.playback.previous': 'Previous speech segment',
   'dsh-live-voice.speak.playback.resume': 'Resume speech',
   'dsh-live-voice.speak.playback.stop': 'Stop speaking',
   'dsh-live-voice.speak.playback.stopAll': 'Stop all speech',

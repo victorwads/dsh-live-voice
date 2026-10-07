@@ -2,7 +2,7 @@
 
 This is an information router. Read the relevant local `AGENTS.md` and `ARCHITECTURE.md` before changing code; consult [the architecture map](docs/ARCHITECTURE.md) and [voice lifecycle](docs/VOICE-LIFECYCLE.md) for contracts.
 
-- Start with `README.md`, `HISTORY.md`, and `packages/live-voice/package.json` before project changes. `package.json` is the sole source for the plugin version and tested DSH version; `PLAN.md` records progress and validation still needed.
+- Start with `README.md`, `HISTORY.md`, and `packages/live-voice/package.json` before project changes. `package.json` is the sole source for the plugin version and tested DSH version.
 - Application integration, routes, slots, and i18n: [app guidance](packages/live-voice/src/app/AGENTS.md) and [architecture](packages/live-voice/src/app/ARCHITECTURE.md).
 - Product behavior and provider adapters: [module guidance](packages/live-voice/src/modules/AGENTS.md); then the local architecture file in [core](packages/live-voice/src/modules/core/ARCHITECTURE.md), [conversation](packages/live-voice/src/modules/conversation/ARCHITECTURE.md), [settings](packages/live-voice/src/modules/settings/ARCHITECTURE.md), [recognition](packages/live-voice/src/modules/recognition/ARCHITECTURE.md), or [speaking](packages/live-voice/src/modules/speak/ARCHITECTURE.md).
 - Reusable UI: [shared architecture](packages/live-voice/src/shared/ARCHITECTURE.md). Native local engine work also consults `.local-voice/qwen3-asr-swift/AGENTS.md` when inside that subtree.

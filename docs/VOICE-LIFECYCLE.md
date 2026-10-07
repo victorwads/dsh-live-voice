@@ -47,6 +47,12 @@ Capture, recognition, user speech activity, message delivery, agent generation, 
 | Unmount/dispose/pagehide | Invalidate pending work and release every owned resource |
 | Late async result | Ignore it unless its session and operation generation are still current |
 
+## Speech bar and approximate captions
+
+The speech bar is separate from the recognition pill, with the same 52px pill geometry and shared buttons. It displays the active speech segment on one clipped line and owns playback pause/resume, next, stop and microphone takeover during speaker gating. Stop clears pending speech and closes the speech bar without ending voice conversation; pause preserves it. The recognition pill retains capture, delivery and automatic-speech preferences.
+
+Host-audio captions estimate character position from actual media currentTime/duration. Browser synthesis has no reliable duration, so its fallback estimates 14 characters/second adjusted by rate, starts only on the native start event and excludes paused time. Neither mode claims word alignment. Unknown duration keeps the full segment visible; cancelled/completed operations clear caption state. Session navigation retains the existing lifecycle semantics; this UI change does not implement the future global queue.
+
 ## Append-only dictation contract
 
 Recognition is append-only at the end of the current composer. Only final recognized chunks are committed; provisional hypotheses affect recognition/activity status but never insert, replace, or remove composer text. Each final chunk appends after the latest published manual text, regardless of caret position. Appending must preserve the existing caret or selection (including its direction), keyboard focus, and composer scroll position; dictation must not move the caret to the appended text. Live Voice must not restore an older full-draft snapshot over a manual edit, even when React skips the exact echo of a previous voice write. Muting, cancellation, rejected short phrases, and voice-command recognition do not rewrite the composer. The explicit Clear command and ordinary user submission remain intentional exceptions; they are not dictation writes.

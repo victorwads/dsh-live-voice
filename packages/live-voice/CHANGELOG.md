@@ -10,6 +10,11 @@ This version adds the optional Live Voice Debugger and a two-package workspace, 
 
 ### Features
 
+- ⭐ **Dedicated Speech Bar with Live Captions** — a new 52px bar above recognition controls.
+  - Show approximate captions on one clipped line, using host audio timing or a pause-aware native-synthesis estimate; captions are not word-aligned.
+  - Place previous/next controls on opposite sides of the text, with pause/resume, stop, and a current/total segment counter. Keep microphone takeover in the recognition bar.
+  - Show a thin playback progress line and an indeterminate loading animation while audio is prepared or downloaded, respecting reduced-motion preferences.
+  - Keep the bar visible between segments and retain message-grouped history and prepared audio until playback finishes or is stopped.
 - Add Live Voice Debugger as a separate, optional package in the same repository. Installing it contributes a Developer tab inside Live Voice Settings; the main plugin works without the debugger and does not bundle its interface.
 - Open the read-only inspector in a separate browser window, with independently scrolling state and event panes, queue inspection, module filtering, event pause/resume and clearing, and selectable 1–20 Hz refresh (10 Hz by default). Keep diagnostic history bounded and text content hidden unless explicitly enabled.
 - Add fake-adapter and DOM regressions for state transitions, segmentation, optional activation, popup handling, event controls, and refresh frequency.

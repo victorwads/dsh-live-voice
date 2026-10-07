@@ -8,6 +8,7 @@ export const iconPaths = {
   play: 'M7 4l13 8-13 8z',
   stop: 'M6 6h12v12H6z',
   skipNext: 'M5 5l10 7-10 7V5M19 5v14',
+  skipPrevious: 'M19 5l-10 7 10 7V5M5 5v14',
   send: 'M3 11.5L21 3l-8.5 18-2-7.5L3 11.5zm7.5 2L21 3',
   queue: 'M5 6h14M5 12h10M5 18h6M18 15v6M15 18h6',
   settings: 'M4 7h16M4 17h16M8 4v6M16 14v6',

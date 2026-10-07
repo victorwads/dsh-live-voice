@@ -214,6 +214,11 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.speak.browser.outputHelp':
     'A síntese de fala do navegador pode ignorar o dispositivo de saída selecionado; esta API normalmente segue o padrão do sistema.',
   'dsh-live-voice.speak.browser.voice': 'Voz local do navegador',
+  'dsh-live-voice.speak.captions.approximate': 'Legendas aproximadas da fala',
+  'dsh-live-voice.speak.captions.loading': 'Preparando áudio da fala',
+  'dsh-live-voice.speak.captions.position': 'Trecho de fala {index} de {total}',
+  'dsh-live-voice.speak.captions.progress': 'Progresso aproximado da fala',
+  'dsh-live-voice.speak.captions.title': 'Fala e legendas ao vivo',
   'dsh-live-voice.speak.engine.label': 'Mecanismo de fala',
   'dsh-live-voice.speak.engine.playbackHelp':
     'Qwen e macOS say sintetizam no host do DSH; o áudio AAC/M4A compacto é reproduzido neste navegador. A fala do navegador é sintetizada e reproduzida neste dispositivo.',
@@ -242,6 +247,7 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.speak.playback.message': 'Falar mensagem',
   'dsh-live-voice.speak.playback.next': 'Pular para o próximo trecho de fala',
   'dsh-live-voice.speak.playback.pause': 'Pausar fala',
+  'dsh-live-voice.speak.playback.previous': 'Voltar ao trecho de fala anterior',
   'dsh-live-voice.speak.playback.resume': 'Retomar fala',
   'dsh-live-voice.speak.playback.stop': 'Parar de falar',
   'dsh-live-voice.speak.playback.stopAll': 'Parar toda a fala',

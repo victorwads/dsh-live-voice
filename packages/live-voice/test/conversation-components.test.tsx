@@ -198,8 +198,8 @@ test('playback controls expose resume only while paused and supported', async (t
   const labels = [...root.querySelectorAll('button')].map((button) =>
     button.getAttribute('aria-label'),
   );
-  assert.deepEqual(labels, ['Pause speech', 'Resume speech', 'Stop all speech']);
-  assert.equal(root.querySelector('button').disabled, true);
+  assert.deepEqual(labels, ['Resume speech', 'Stop all speech']);
+  assert.equal(root.querySelector('button').disabled, false);
 });
 
 test('conversation status bar composes status, delivery, autoplay, microphone, and playback controls', async (t) => {
@@ -224,7 +224,10 @@ test('conversation status bar composes status, delivery, autoplay, microphone, a
       <ConversationStatusBar controller={controller} />
     </LiveVoiceTranslationProvider>,
   );
-  assert.equal(root.querySelector('[role="group"]').getAttribute('aria-label'), 'Voice controls');
+  assert.equal(
+    root.querySelector('[aria-label="Voice controls"]').getAttribute('aria-label'),
+    'Voice controls',
+  );
   assert.equal(root.querySelector('[role="status"]').textContent, 'Listening — waiting for speech');
   assert.ok(root.querySelector('.dlv-wave'));
   assert.equal(root.querySelector('[data-mode="queue"]').getAttribute('aria-pressed'), 'true');

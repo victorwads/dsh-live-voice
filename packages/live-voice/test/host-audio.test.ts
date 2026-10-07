@@ -30,9 +30,13 @@ test('host M4A engine prepares standardized audio and browser owns playback', as
     },
   });
   const prepared = await engine.prepare('hello');
-  const playing = engine.playPrepared(prepared);
+  let started = 0;
+  const playing = engine.playPrepared(prepared, { onPlaybackStart: () => started++ });
+  assert.equal(started, 0);
   await Promise.resolve();
   assert.equal(audio.paused, false);
+  audio.dispatchEvent(new Event('playing'));
+  assert.equal(started, 1);
   audio.dispatchEvent(new Event('ended'));
   await playing;
   assert.deepEqual(revoked, ['blob:test']);

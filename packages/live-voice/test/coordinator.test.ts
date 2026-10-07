@@ -889,3 +889,65 @@ test('host speech prefetch is bounded to three queued segments and cancelled on 
     true,
   );
 });
+
+test('previous replays retained message segments and stop releases the entire run', async () => {
+  const f = fixture({ mode: 'headphones' });
+  const prepared = [],
+    played = [];
+  let active;
+  f.engine.prepare = async (text) => {
+    const item = {
+      text,
+      disposed: false,
+      dispose() {
+        this.disposed = true;
+      },
+    };
+    prepared.push(item);
+    return item;
+  };
+  f.engine.playPrepared = (item, options) => {
+    assert.equal(options.retainPrepared, true);
+    const done = deferred();
+    active = done;
+    played.push({ item, ...done });
+    return done.promise;
+  };
+  f.engine.stop = async () => {
+    active?.reject(Object.assign(new Error('cancel'), { name: 'AbortError' }));
+    active = null;
+  };
+  const playing = f.coordinator.speak(
+    'First sentence.\nSecond sentence.\nThird sentence.',
+    'message',
+  );
+  await turn();
+  assert.ok(played.length);
+  played[0].resolve();
+  await turn();
+  assert.equal(f.coordinator.snapshot.speechHasPrevious, true);
+  assert.equal(prepared[0].disposed, false);
+  await f.coordinator.previousSpeechSegment();
+  await turn();
+  assert.equal(played.at(-1).item, played[0].item);
+  assert.equal(f.coordinator.getSpeechHistory().length, 1);
+  assert.equal(f.coordinator.getSpeechHistory()[0].messageId, 'message');
+  await f.coordinator.stopSpeech();
+  await playing;
+  assert.equal(f.coordinator.speechHistory.length, 0);
+  assert.ok(prepared.every((item) => item.disposed));
+  assert.equal(f.coordinator.snapshot.speechRunActive, false);
+});
+
+test('speech run remains visible through manual segment gaps', async () => {
+  const f = fixture({ segmentGapMs: 10000 });
+  const playing = f.coordinator.speak('First sentence.\nSecond sentence.', 'message');
+  await turn();
+  f.spoken[0].resolve();
+  await turn();
+  assert.equal(f.coordinator.snapshot.speaking, false);
+  assert.equal(f.coordinator.snapshot.speechRunActive, true);
+  assert.ok(f.coordinator.snapshot.speechText);
+  await f.coordinator.stopSpeech();
+  await playing;
+});

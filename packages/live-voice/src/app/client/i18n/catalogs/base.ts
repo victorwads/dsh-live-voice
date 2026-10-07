@@ -168,6 +168,11 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.speak.browser.name': string;
   'dsh-live-voice.speak.browser.outputHelp': string;
   'dsh-live-voice.speak.browser.voice': string;
+  'dsh-live-voice.speak.captions.approximate': string;
+  'dsh-live-voice.speak.captions.loading': string;
+  'dsh-live-voice.speak.captions.position': string;
+  'dsh-live-voice.speak.captions.progress': string;
+  'dsh-live-voice.speak.captions.title': string;
   'dsh-live-voice.speak.engine.label': string;
   'dsh-live-voice.speak.engine.playbackHelp': string;
   'dsh-live-voice.speak.filters.code.enabled': string;
@@ -190,6 +195,7 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.speak.playback.message': string;
   'dsh-live-voice.speak.playback.next': string;
   'dsh-live-voice.speak.playback.pause': string;
+  'dsh-live-voice.speak.playback.previous': string;
   'dsh-live-voice.speak.playback.resume': string;
   'dsh-live-voice.speak.playback.stop': string;
   'dsh-live-voice.speak.playback.stopAll': string;

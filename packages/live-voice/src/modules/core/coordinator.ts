@@ -34,6 +34,8 @@ export class VoiceCoordinator {
     this.speechEpoch = 0;
     this.controlEpoch = 0;
     this.queue = [];
+    this.speechHistory = [];
+    this.speechCursor = -1;
     this.prefetchController = new AbortController();
     this.prefetchItems = new Set();
     this.activeSpeechItem = null;
@@ -56,9 +58,16 @@ export class VoiceCoordinator {
       starting: false,
       error: null,
       activeMessageId: null,
+      speechLoading: false,
+      speechText: null,
+      speechEngine: null,
       answeringQuestion: false,
       autoSendAt: null,
       speechSegmentsRemaining: 0,
+      speechSegmentIndex: 0,
+      speechSegmentsTotal: 0,
+      speechHasPrevious: false,
+      speechRunActive: false,
       capabilities: {},
       settings: normalizeSettings(settings),
     };
@@ -586,8 +595,10 @@ export class VoiceCoordinator {
     this.prefetchController.abort();
     this.prefetchController = new AbortController();
     for (const item of this.prefetchItems) {
-      item.prepared?.dispose?.();
-      item.prepared = null;
+      if (!this.speechHistory.includes(item)) {
+        item.prepared?.dispose?.();
+        item.prepared = null;
+      }
       item.preparing = null;
     }
     this.prefetchItems.clear();
@@ -610,7 +621,10 @@ export class VoiceCoordinator {
         .prepare(item.text, { ...options, signal })
         .then((prepared) => {
           item.preparing = null;
-          if (signal.aborted || !this.queue.includes(item)) {
+          if (
+            signal.aborted ||
+            (!this.queue.includes(item) && !this.speechHistory.includes(item))
+          ) {
             prepared.dispose?.();
             this.prefetchItems.delete(item);
           } else item.prepared = prepared;
@@ -623,10 +637,46 @@ export class VoiceCoordinator {
     }
   }
 
+  _releaseSpeechHistory() {
+    for (const item of this.speechHistory) item.prepared?.dispose?.();
+    this.speechHistory = [];
+    this.speechCursor = -1;
+  }
+  getSpeechHistory() {
+    const groups = [];
+    for (const item of [...this.speechHistory, ...this.queue]) {
+      let group = groups.at(-1);
+      if (!group || group.messageId !== item.id) {
+        group = { messageId: item.id, segments: [] };
+        groups.push(group);
+      }
+      if (!group.segments.includes(item)) group.segments.push(item);
+    }
+    return groups;
+  }
   _syncSpeechSegments() {
     const speechSegmentsRemaining = this.queue.length + (this.snapshot.speaking ? 1 : 0);
-    if (speechSegmentsRemaining !== this.snapshot.speechSegmentsRemaining)
-      this.patch({ speechSegmentsRemaining });
+    const speechHasPrevious = this.speechCursor > 0;
+    const items = [...new Set([...this.speechHistory, ...this.queue])];
+    const speechSegmentsTotal = items.length;
+    const speechSegmentIndex = this.speechCursor >= 0 ? this.speechCursor + 1 : 0;
+    const speechRunActive =
+      speechSegmentsRemaining > 0 ||
+      this.speechHistory.some((item) => !item.manual && this.unfinished.has(item.id));
+    if (
+      speechSegmentsRemaining !== this.snapshot.speechSegmentsRemaining ||
+      speechHasPrevious !== this.snapshot.speechHasPrevious ||
+      speechRunActive !== this.snapshot.speechRunActive ||
+      speechSegmentsTotal !== this.snapshot.speechSegmentsTotal ||
+      speechSegmentIndex !== this.snapshot.speechSegmentIndex
+    )
+      this.patch({
+        speechSegmentsRemaining,
+        speechHasPrevious,
+        speechRunActive,
+        speechSegmentsTotal,
+        speechSegmentIndex,
+      });
   }
 
   _suppressPending() {
@@ -644,7 +694,15 @@ export class VoiceCoordinator {
     ++this.controlEpoch;
     this._cancelSpeechPrefetch();
     this._suppressPending();
-    this.patch({ speaking: false, paused: false, activeMessageId: null });
+    this._releaseSpeechHistory();
+    this.patch({
+      speaking: false,
+      paused: false,
+      activeMessageId: null,
+      speechLoading: false,
+      speechText: null,
+      speechEngine: null,
+    });
     this._syncSpeechSegments();
     const stopped = this.speechBarrier.then(async () => {
       const results = await Promise.allSettled(
@@ -671,50 +729,57 @@ export class VoiceCoordinator {
     )
       await this._startInput(true);
   }
+  async previousSpeechSegment() {
+    if (this.speechCursor <= 0 || this.disposed) return;
+    const replay = this.speechHistory.slice(this.speechCursor - 1);
+    this.queue = [...replay, ...this.queue.filter((item) => !replay.includes(item))];
+    await this._navigateSpeech();
+  }
   async skipSpeechSegment() {
-    // Unlike Stop, Next discards only the active segment. Queued and future
-    // streaming segments remain eligible for playback.
-    if (this.disposed || this.queue.length === 0) return;
-    // During the intentional inter-segment gap there is no active audio. In
-    // that case Next discards the imminent segment and immediately drains the
-    // following one, so the persistent button remains useful.
+    if (this.disposed || !this.queue.length) return;
     if (!this.snapshot.speaking && !this.snapshot.paused) {
       const skipped = this.queue.shift();
-      skipped?.prepared?.dispose?.();
-      this.prefetchItems.delete(skipped);
-      this._cancelAssistantSpeechTimer();
-      this.assistantSpeechNotBefore = 0;
-      this._syncSpeechSegments();
-      this._prefetchSpeech();
-      this._drain();
-      return;
+      if (!this.speechHistory.includes(skipped)) this.speechHistory.push(skipped);
+      this.speechCursor = this.speechHistory.indexOf(skipped);
     }
+    await this._navigateSpeech();
+  }
+  async _navigateSpeech() {
+    const engine = this.engines[this.snapshot.speechEngine || this.snapshot.settings.engine];
     const epoch = ++this.speechEpoch;
     ++this.controlEpoch;
     this._cancelAssistantSpeechTimer();
     this.assistantSpeechNotBefore = 0;
-    this._cancelSpeechPrefetch();
-    this.patch({ speaking: false, paused: false, activeMessageId: null });
+    this.patch({ speaking: false, paused: false, speechLoading: false });
     this._syncSpeechSegments();
-    const stopped = this.speechBarrier.then(() =>
-      Promise.resolve().then(() => this.engines[this.snapshot.settings.engine]?.stop()),
-    );
+    const stopped = this.speechBarrier.then(() => engine?.stop());
     this.speechBarrier = stopped.catch(() => {});
     try {
       await stopped;
     } catch (error) {
+      this.speechStopError = error;
       if (epoch === this.speechEpoch) this.patch({ error: message(error) });
       return;
     }
     if (epoch !== this.speechEpoch || this.disposed) return;
     this._drain();
   }
+  getSpeechProgress() {
+    return this.engines[this.snapshot.speechEngine]?.getPlaybackProgress?.() ?? null;
+  }
   async pauseSpeech() {
-    if (this.disposed || !this.snapshot.speaking || this.snapshot.paused) return;
+    if (this.disposed || this.snapshot.paused) return;
+    if (!this.snapshot.speaking && this.snapshot.speechRunActive) {
+      this._cancelAssistantSpeechTimer();
+      this.patch({ paused: true });
+      return;
+    }
+    if (!this.snapshot.speaking) return;
     const epoch = this.speechEpoch;
     const control = ++this.controlEpoch;
     try {
-      const result = await this.engines[this.snapshot.settings.engine].pause();
+      const result =
+        await this.engines[this.snapshot.speechEngine || this.snapshot.settings.engine].pause();
       if (result !== false) this._cancelSpeechPrefetch();
       if (
         epoch === this.speechEpoch &&
@@ -729,6 +794,12 @@ export class VoiceCoordinator {
   }
   async resumeSpeech() {
     if (this.disposed || !this.snapshot.paused) return;
+    if (!this.snapshot.speaking) {
+      this.patch({ paused: false });
+      this.assistantSpeechNotBefore = 0;
+      this._drain();
+      return;
+    }
     const epoch = this.speechEpoch;
     const control = ++this.controlEpoch;
     try {
@@ -737,7 +808,8 @@ export class VoiceCoordinator {
         if (this.inputReleaseError) throw this.inputReleaseError;
       }
       if (epoch !== this.speechEpoch || control !== this.controlEpoch) return;
-      const result = await this.engines[this.snapshot.settings.engine].resume();
+      const result =
+        await this.engines[this.snapshot.speechEngine || this.snapshot.settings.engine].resume();
       if (epoch === this.speechEpoch && control === this.controlEpoch && result !== false) {
         this.patch({ paused: false });
         this._prefetchSpeech();
@@ -772,15 +844,30 @@ export class VoiceCoordinator {
       this._syncSpeechSegments();
       return;
     }
+    const item =
+      this.activeSpeechItem?.text === text
+        ? this.activeSpeechItem
+        : { text, id: messageId, manual };
+    if (!this.speechHistory.includes(item)) this.speechHistory.push(item);
+    this.speechCursor = this.speechHistory.indexOf(item);
     const epoch = ++this.speechEpoch;
-    const engine = this.engines[this.snapshot.settings.engine];
+    const engine = item.engine || this.engines[this.snapshot.settings.engine];
+    item.engine = engine;
     if (!engine) {
       this.queue = [];
       this.patch({ error: 'Speech engine unavailable.' });
       return;
     }
     // Reserve playback synchronously so incoming stream chunks cannot overtake gating.
-    this.patch({ speaking: true, paused: false, activeMessageId: messageId, error: null });
+    this.patch({
+      speaking: true,
+      paused: false,
+      activeMessageId: messageId,
+      speechLoading: true,
+      speechText: text,
+      speechEngine: this.snapshot.settings.engine,
+      error: null,
+    });
     this._syncSpeechSegments();
     let failed = false;
     try {
@@ -792,20 +879,30 @@ export class VoiceCoordinator {
         if (this.inputReleaseError) throw this.inputReleaseError;
       }
       if (epoch !== this.speechEpoch || this.disposed) return;
-      const queued = this.activeSpeechItem;
+      const queued = item;
       if (queued?.preparing) await queued.preparing;
       if (epoch !== this.speechEpoch || this.disposed) return;
       if (queued?.prepareError) throw queued.prepareError;
       const options = {
+        onPlaybackStart: () => {
+          if (epoch === this.speechEpoch && !this.disposed) this.patch({ speechLoading: false });
+        },
         voice: this.snapshot.settings.voice || undefined,
         rate: this.snapshot.settings.rate,
         outputDeviceId: this.snapshot.settings.outputDeviceId,
       };
+      if (!queued.prepared && typeof engine.prepare === 'function') {
+        const prepared = await engine.prepare(text, options);
+        if (epoch !== this.speechEpoch || this.disposed) {
+          prepared.dispose?.();
+          return;
+        }
+        queued.prepared = prepared;
+      }
       if (queued?.prepared && typeof engine.playPrepared === 'function') {
         const prepared = queued.prepared;
-        queued.prepared = null;
         this.prefetchItems.delete(queued);
-        await engine.playPrepared(prepared, options);
+        await engine.playPrepared(prepared, { ...options, retainPrepared: true });
       } else await engine.speak(text, options);
     } catch (error) {
       if (epoch === this.speechEpoch) {
@@ -815,7 +912,21 @@ export class VoiceCoordinator {
       }
     } finally {
       if (epoch === this.speechEpoch && !this.disposed) {
-        this.patch({ speaking: false, paused: false, activeMessageId: null });
+        this.patch({
+          speaking: false,
+          paused: false,
+          activeMessageId: null,
+          speechLoading: false,
+          speechText: this.queue.length || this.unfinished.has(messageId) ? text : null,
+          speechEngine:
+            this.queue.length || this.unfinished.has(messageId) ? this.snapshot.speechEngine : null,
+        });
+        if (
+          failed ||
+          (!this.queue.length &&
+            !this.speechHistory.some((item) => !item.manual && this.unfinished.has(item.id)))
+        )
+          this._releaseSpeechHistory();
         this._syncSpeechSegments();
         if (!failed && this.queue.length) {
           this.assistantSpeechNotBefore = Date.now() + this.snapshot.settings.segmentGapMs;
@@ -839,6 +950,7 @@ export class VoiceCoordinator {
       (!this.snapshot.conversation && !this.queue[0]?.manual) ||
       (!this.snapshot.settings.announceAssistantMessages && !this.queue[0]?.manual) ||
       this.snapshot.speaking ||
+      this.snapshot.paused ||
       this.snapshot.recognizing ||
       this.snapshot.starting ||
       (!this.queue[0]?.manual &&
@@ -862,7 +974,7 @@ export class VoiceCoordinator {
     this._prefetchSpeech();
     void this.play(next.text, next.id, next.manual === true).finally(() => {
       if (this.activeSpeechItem === next) this.activeSpeechItem = null;
-      next.prepared?.dispose?.();
+      // Audio remains owned by the playback run until completion.
       this.prefetchItems.delete(next);
     });
   }
@@ -871,6 +983,16 @@ export class VoiceCoordinator {
     if (this.disposed) return;
     if (complete) this.unfinished.delete(id);
     else this.unfinished.add(id);
+    if (
+      complete &&
+      !this.snapshot.speaking &&
+      !this.queue.length &&
+      this.speechHistory.some((item) => item.id === id)
+    ) {
+      this._releaseSpeechHistory();
+      this.patch({ speechText: null, speechEngine: null });
+      this._syncSpeechSegments();
+    }
     if (
       baseline ||
       !this.snapshot.conversation ||

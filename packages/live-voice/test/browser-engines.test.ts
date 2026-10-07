@@ -545,3 +545,22 @@ test('recognition no-speech may restart and consumer exceptions do not leak reso
   await engine.stop();
   detached(fake.current());
 });
+
+test('native caption estimate waits for start and excludes paused time', async (t) => {
+  t.mock.timers.enable({ apis: ['Date'], now: 1000 });
+  const f = synthesis();
+  const playing = f.engine.speak('Synthetic speech caption sentence');
+  assert.equal(f.engine.getPlaybackProgress(), null);
+  f.spoken[0].onstart();
+  t.mock.timers.tick(1000);
+  assert.equal(f.engine.getPlaybackProgress().positionSeconds, 1);
+  f.engine.pause();
+  t.mock.timers.tick(3000);
+  assert.equal(f.engine.getPlaybackProgress().positionSeconds, 1);
+  f.engine.resume();
+  t.mock.timers.tick(500);
+  assert.equal(f.engine.getPlaybackProgress().positionSeconds, 1.5);
+  f.spoken[0].onend();
+  await playing;
+  assert.equal(f.engine.getPlaybackProgress(), null);
+});

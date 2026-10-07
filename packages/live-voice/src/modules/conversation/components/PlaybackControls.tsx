@@ -2,19 +2,34 @@ import React from 'react';
 import { useLanguage } from '../../../app/client/i18n/index.js';
 import { IconButton } from '../../../shared/design-system/index.js';
 
-export function PlaybackControls({ state, invoke }: { state: any; invoke(name: string): void }) {
+export function PlaybackControls({
+  state,
+  invoke,
+  navigation = true,
+}: {
+  state: any;
+  invoke(name: string): void;
+  navigation?: boolean;
+}) {
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
-  const capabilities = state.capabilities?.[state.settings?.engine] ?? {};
+  const capabilities = state.capabilities?.[state.speechEngine || state.settings?.engine] ?? {};
   return (
     <>
-      {state.speechSegmentsRemaining > 1 ? (
+      {navigation && state.speechHasPrevious ? (
+        <IconButton
+          label={(speak as any).playback.previous()}
+          icon="skipPrevious"
+          onClick={() => invoke('previousSpeechSegment')}
+        />
+      ) : null}
+      {navigation && state.speechSegmentsRemaining > 1 ? (
         <IconButton
           label={(speak as any).playback.next()}
           icon="skipNext"
           onClick={() => invoke('skipSpeechSegment')}
         />
       ) : null}
-      {state.speechSegmentsRemaining > 0 && capabilities.pause ? (
+      {state.speechSegmentsRemaining > 0 && capabilities.pause && !state.paused ? (
         <IconButton
           label={(speak as any).playback.pause()}
           icon="pause"
@@ -29,7 +44,7 @@ export function PlaybackControls({ state, invoke }: { state: any; invoke(name: s
           onClick={() => invoke('resumeSpeech')}
         />
       ) : null}
-      {state.speechSegmentsRemaining > 0 ? (
+      {state.speechSegmentsRemaining > 0 || state.speechRunActive ? (
         <IconButton
           label={(speak as any).playback.stopAll()}
           icon="stop"

@@ -223,6 +223,11 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.speak.browser.outputHelp':
     'La synthèse vocale du navigateur peut ignorer le périphérique de sortie sélectionné ; cette API du navigateur utilise normalement celui défini par défaut sur le système.',
   'dsh-live-voice.speak.browser.voice': 'Voix locale du navigateur',
+  'dsh-live-voice.speak.captions.approximate': 'Sous-titres vocaux approximatifs',
+  'dsh-live-voice.speak.captions.loading': 'Préparation de l’audio vocal',
+  'dsh-live-voice.speak.captions.position': 'Segment vocal {index} sur {total}',
+  'dsh-live-voice.speak.captions.progress': 'Progression vocale approximative',
+  'dsh-live-voice.speak.captions.title': 'Voix et sous-titres en direct',
   'dsh-live-voice.speak.engine.label': 'Moteur de synthèse vocale',
   'dsh-live-voice.speak.engine.playbackHelp':
     'Qwen et macOS say synthétisent sur l’hôte DSH ; l’audio AAC/M4A compact est lu dans ce navigateur. La synthèse vocale du navigateur est générée et lue sur cet appareil.',
@@ -253,6 +258,7 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.speak.playback.message': 'Lire le message à voix haute',
   'dsh-live-voice.speak.playback.next': 'Passer au segment vocal suivant',
   'dsh-live-voice.speak.playback.pause': 'Mettre la lecture en pause',
+  'dsh-live-voice.speak.playback.previous': 'Segment vocal précédent',
   'dsh-live-voice.speak.playback.resume': 'Reprendre la lecture',
   'dsh-live-voice.speak.playback.stop': 'Arrêter la lecture',
   'dsh-live-voice.speak.playback.stopAll': 'Arrêter toute lecture',

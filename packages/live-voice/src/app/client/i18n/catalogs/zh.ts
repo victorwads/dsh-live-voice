@@ -198,6 +198,11 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.speak.browser.outputHelp':
     '浏览器语音合成可能忽略所选输出设备；此浏览器 API 通常使用系统默认设备。',
   'dsh-live-voice.speak.browser.voice': '浏览器本地语音',
+  'dsh-live-voice.speak.captions.approximate': '近似语音字幕',
+  'dsh-live-voice.speak.captions.loading': '正在准备语音音频',
+  'dsh-live-voice.speak.captions.position': '语音片段 {index}/{total}',
+  'dsh-live-voice.speak.captions.progress': '近似语音进度',
+  'dsh-live-voice.speak.captions.title': '语音与实时字幕',
   'dsh-live-voice.speak.engine.label': '语音合成引擎',
   'dsh-live-voice.speak.engine.playbackHelp':
     'Qwen 和 macOS say 在 DSH 主机上合成语音；压缩的 AAC/M4A 音频在此浏览器中播放。浏览器语音则在此设备上合成并播放。',
@@ -222,6 +227,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.speak.playback.message': '朗读消息',
   'dsh-live-voice.speak.playback.next': '跳至下一语音片段',
   'dsh-live-voice.speak.playback.pause': '暂停朗读',
+  'dsh-live-voice.speak.playback.previous': '上一语音片段',
   'dsh-live-voice.speak.playback.resume': '恢复朗读',
   'dsh-live-voice.speak.playback.stop': '停止朗读',
   'dsh-live-voice.speak.playback.stopAll': '停止全部朗读',

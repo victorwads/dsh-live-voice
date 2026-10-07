@@ -3,7 +3,7 @@ import { useLanguage } from '../../../app/client/i18n/index.js';
 import { ErrorMessage, IconButton } from '../../../shared/design-system/index.js';
 import { useConversationActions, useConversationController } from '../hooks/index.js';
 import { DeliveryModeButton } from './DeliveryModeButton.js';
-import { PlaybackControls } from './PlaybackControls.js';
+import { SpeechStatusBar } from './SpeechStatusBar.js';
 import { Waveform } from './Waveform.js';
 import { resolveConversationStatus } from './conversationStatus.js';
 
@@ -34,7 +34,16 @@ export function ConversationStatusBar({
   }, [state.autoSendAt]);
   const capture = state.starting || state.listening || state.recognizing;
   if (questionOnly && !state.answeringQuestion) return null;
-  if (!state.conversation && !capture && !state.speaking && !state.paused && !state.error && !error)
+  if (
+    !state.conversation &&
+    !capture &&
+    !state.speaking &&
+    !state.paused &&
+    !state.speechRunActive &&
+    !(state.speechSegmentsRemaining > 0) &&
+    !state.error &&
+    !error
+  )
     return null;
   const remaining = state.autoSendAt
     ? Math.max(1, Math.ceil((state.autoSendAt - now) / 1000))
@@ -62,85 +71,87 @@ export function ConversationStatusBar({
       className={overlay ? 'dlv-bar-wrap dlv-question-overlay' : 'dlv-bar-wrap'}
       style={overlay ? overlayStyle : undefined}
     >
-      <div className="dlv-pill" role="group" aria-label={(commons as any).controls.title()}>
-        {capture && !state.conversation ? (
-          <IconButton
-            label={(recognition as any).dictation.cancel()}
-            icon="close"
-            onClick={() => invoke('cancelDictation')}
+      <SpeechStatusBar controller={controller} />
+      {(state.conversation || capture || state.error || error) && (
+        <div className="dlv-pill" role="group" aria-label={(commons as any).controls.title()}>
+          {capture && !state.conversation ? (
+            <IconButton
+              label={(recognition as any).dictation.cancel()}
+              icon="close"
+              onClick={() => invoke('cancelDictation')}
+            />
+          ) : null}
+          {state.conversation ? (
+            <IconButton
+              label={(commons as any).conversation.end()}
+              icon="close"
+              onClick={() => invoke('endConversation')}
+            />
+          ) : null}
+          <Waveform controller={controller} enabled={Boolean(state.listening)} />
+          <span className="dlv-status" role="status" aria-live="polite">
+            {status}
+          </span>
+          <DeliveryModeButton
+            mode={state.settings.sendingMode || 'manual'}
+            onChange={(sendingMode) => invoke('updateSettings', { sendingMode })}
           />
-        ) : null}
-        {state.conversation ? (
           <IconButton
-            label={(commons as any).conversation.end()}
-            icon="close"
-            onClick={() => invoke('endConversation')}
-          />
-        ) : null}
-        <Waveform controller={controller} enabled={Boolean(state.listening)} />
-        <span className="dlv-status" role="status" aria-live="polite">
-          {status}
-        </span>
-        <DeliveryModeButton
-          mode={state.settings.sendingMode || 'manual'}
-          onChange={(sendingMode) => invoke('updateSettings', { sendingMode })}
-        />
-        <IconButton
-          className={`dlv-live-toggle${state.speechSegmentsRemaining > 0 ? ' dlv-live-toggle-expanded' : ''}`}
-          label={(speak as any).autoPlayback.label()}
-          title={playbackTitle}
-          icon={autoPlayback ? 'speaker' : 'speakerOff'}
-          visibleLabel={
-            !autoPlayback
-              ? (commons as any).toggle.offBadge()
-              : state.speechSegmentsRemaining > 0
-                ? String(state.speechSegmentsRemaining)
-                : (commons as any).on()
-          }
-          role="switch"
-          aria-checked={autoPlayback}
-          onClick={() => invoke('updateSettings', { announceAssistantMessages: !autoPlayback })}
-        />
-        {remaining ? (
-          <IconButton
-            label={(settings as any).autoSend.cancel()}
-            icon="close"
-            onClick={() => invoke('cancelAutoSend')}
-          />
-        ) : null}
-        {state.conversation && !capture ? (
-          <IconButton
-            label={(recognition as any).microphone.takeControl()}
-            icon="mic"
-            onClick={() => invoke('startConversation')}
-          />
-        ) : null}
-        {capture ? (
-          <IconButton
-            className="dlv-live-toggle dlv-mic-state"
-            label={
-              state.muted
-                ? (recognition as any).microphone.resume()
-                : (recognition as any).microphone.ignore()
-            }
-            title={(recognition as any).microphone.inputStatus({
-              state: state.muted
-                ? (commons as any).input.ignoring()
-                : (commons as any).input.listening(),
-            })}
-            icon={state.muted ? 'micOff' : 'mic'}
+            className={`dlv-live-toggle${state.speechSegmentsRemaining > 0 ? ' dlv-live-toggle-expanded' : ''}`}
+            label={(speak as any).autoPlayback.label()}
+            title={playbackTitle}
+            icon={autoPlayback ? 'speaker' : 'speakerOff'}
             visibleLabel={
-              state.muted
-                ? (commons as any).input.ignoringBadge()
-                : (commons as any).input.listeningBadge()
+              !autoPlayback
+                ? (commons as any).toggle.offBadge()
+                : state.speechSegmentsRemaining > 0
+                  ? String(state.speechSegmentsRemaining)
+                  : (commons as any).on()
             }
-            aria-pressed={Boolean(state.muted)}
-            data-muted={state.muted ? 'true' : 'false'}
-            onClick={() => invoke(state.muted ? 'resumeListeningInput' : 'muteListening')}
+            role="switch"
+            aria-checked={autoPlayback}
+            onClick={() => invoke('updateSettings', { announceAssistantMessages: !autoPlayback })}
           />
-        ) : null}
-        <PlaybackControls state={state} invoke={invoke} />
-      </div>
+          {remaining ? (
+            <IconButton
+              label={(settings as any).autoSend.cancel()}
+              icon="close"
+              onClick={() => invoke('cancelAutoSend')}
+            />
+          ) : null}
+          {state.conversation && !capture ? (
+            <IconButton
+              label={(recognition as any).microphone.takeControl()}
+              icon="mic"
+              onClick={() => invoke('startConversation')}
+            />
+          ) : null}
+          {capture ? (
+            <IconButton
+              className="dlv-live-toggle dlv-mic-state"
+              label={
+                state.muted
+                  ? (recognition as any).microphone.resume()
+                  : (recognition as any).microphone.ignore()
+              }
+              title={(recognition as any).microphone.inputStatus({
+                state: state.muted
+                  ? (commons as any).input.ignoring()
+                  : (commons as any).input.listening(),
+              })}
+              icon={state.muted ? 'micOff' : 'mic'}
+              visibleLabel={
+                state.muted
+                  ? (commons as any).input.ignoringBadge()
+                  : (commons as any).input.listeningBadge()
+              }
+              aria-pressed={Boolean(state.muted)}
+              data-muted={state.muted ? 'true' : 'false'}
+              onClick={() => invoke(state.muted ? 'resumeListeningInput' : 'muteListening')}
+            />
+          ) : null}
+        </div>
+      )}
       <ErrorMessage
         error={error || state.error}
         dismissLabel={(commons as any).dismissError()}
