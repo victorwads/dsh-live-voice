@@ -28,6 +28,7 @@ This version adds the optional Live Voice Debugger and a two-package workspace, 
 
 ### Bug Fixes
 
+- Fix manual turn playback reading only the closing assistant message. Read all visible assistant responses in the selected turn in step order, including intermediate messages, while excluding user messages, hidden reasoning, and other turns.
 - Recover from `OverconstrainedError` when opening a selected microphone: clear and persist only the input-device selection, then retry once with the system default. Preserve unrelated preferences, permission errors, cancellation, and newer device selections.
 - Fix Steer and Queue delivery for either DSH busy-Enter policy. Add a persisted, translated question asking what Enter currently does in the user’s DSH; the answer controls Live Voice’s normal-versus-Ctrl+Enter mapping without changing DSH settings. Keep Queue as the compatibility default and apply changes at delivery time to automatic sends, spoken commands, and hold-to-talk. Expose this non-sensitive enum in the debugger’s existing settings snapshot without enabling text-content inspection. Add normalization, mounted settings, composer gesture, and debugger regressions.
 - Preserve the composer caret, forward/backward selection, focus, and scroll position when appending final dictation. Restore selection after DSH rebuilds editor nodes and notify its selection bridge; explicit Clear remains a separate action.

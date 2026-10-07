@@ -42,7 +42,19 @@ export function latestUserSequence(snapshot) {
   );
 }
 export function addressedTurn(messages, messageId) {
-  const addressed = messages.find((message) => String(message.messageId) === String(messageId));
+  if (messageId == null) return { text: '', ids: [] };
+  const addressed = messages.find(
+    (message) => message.messageId != null && String(message.messageId) === String(messageId),
+  );
   if (!addressed) return { text: '', ids: [] };
-  return { text: addressed.text, id: addressed.id };
+  const turn = messages
+    .filter((message) => message.turn === addressed.turn)
+    .sort((a, b) => a.step - b.step);
+  return {
+    text: turn
+      .map((message) => message.text)
+      .filter((text) => text.trim())
+      .join('\n\n'),
+    id: addressed.id,
+  };
 }

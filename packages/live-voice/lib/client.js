@@ -7304,9 +7304,16 @@ function latestUserSequence(snapshot) {
   );
 }
 function addressedTurn(messages, messageId) {
-  const addressed = messages.find((message2) => String(message2.messageId) === String(messageId));
+  if (messageId == null) return { text: "", ids: [] };
+  const addressed = messages.find(
+    (message2) => message2.messageId != null && String(message2.messageId) === String(messageId)
+  );
   if (!addressed) return { text: "", ids: [] };
-  return { text: addressed.text, id: addressed.id };
+  const turn = messages.filter((message2) => message2.turn === addressed.turn).sort((a, b) => a.step - b.step);
+  return {
+    text: turn.map((message2) => message2.text).filter((text) => text.trim()).join("\n\n"),
+    id: addressed.id
+  };
 }
 
 // src/app/client/slotDefinitions.ts

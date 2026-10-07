@@ -72,6 +72,21 @@ test('reads public chat store and excludes reasoning and hidden rows', () => {
     },
   };
   const m = assistantMessages(snapshot);
-  assert.deepEqual(addressedTurn(m, 'b'), { text: 'Second', id: '2:1' });
+  assert.deepEqual(addressedTurn(m, 'b'), { text: 'First\n\nSecond', id: '2:1' });
   assert.equal(m.length, 2);
+});
+
+test('manual turn speech includes intermediate responses but never other turns', () => {
+  const messages = [
+    { turn: 1, step: 0, id: '1:0', messageId: 'old', text: 'Other turn' },
+    { turn: 2, step: 2, id: '2:2', messageId: 'last', text: 'Final response' },
+    { turn: 2, step: 0, id: '2:0', messageId: 'first', text: 'Markdown examples' },
+    { turn: 2, step: 1, id: '2:1', messageId: 'middle', text: 'Intermediate response' },
+  ];
+  assert.deepEqual(addressedTurn(messages, 'last'), {
+    id: '2:2',
+    text: 'Markdown examples\n\nIntermediate response\n\nFinal response',
+  });
+  assert.equal(addressedTurn(messages, 'missing').text, '');
+  assert.equal(addressedTurn([{ text: 'Unaddressed' }], undefined).text, '');
 });
