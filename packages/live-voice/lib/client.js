@@ -5325,16 +5325,7 @@ var import_react48 = __toESM(require("react"), 1);
 // src/modules/conversation/components/MicrophoneButton.tsx
 var import_react47 = __toESM(require("react"), 1);
 function MicrophoneButton(props) {
-  const { active = false, ...buttonProps } = props;
-  return /* @__PURE__ */ import_react47.default.createElement(
-    IconButton,
-    {
-      ...buttonProps,
-      "aria-pressed": active,
-      className: "dlv-mic" + (active ? " dlv-mic-active" : ""),
-      icon: "mic"
-    }
-  );
+  return /* @__PURE__ */ import_react47.default.createElement(IconButton, { ...props, className: "dlv-mic", icon: "mic" });
 }
 
 // src/modules/conversation/components/ConversationControls.tsx
@@ -5344,21 +5335,19 @@ function ConversationControls({ controller }) {
   const state = useConversationController(controller);
   const { invoke, error, clearError } = useConversationActions(controller);
   const busy = state.conversation || state.listening || state.starting || state.recognizing;
+  if (busy) return null;
   const capability = state.capabilities?.recognition;
   const capture = state.capabilities?.capture;
   const pending = !capability || !capture;
   const unavailable = capability?.supported === false || capture?.supported === false;
   const reason = capture?.supported === false ? capture.reason : capability?.reason;
-  const label = busy ? commons.conversation.end() : pending ? recognition.microphone.checking() : unavailable ? reason || recognition.status.unavailable() : commons.conversation.start();
+  const label = pending ? recognition.microphone.checking() : unavailable ? reason || recognition.status.unavailable() : commons.conversation.start();
   return /* @__PURE__ */ import_react48.default.createElement(import_react48.default.Fragment, null, /* @__PURE__ */ import_react48.default.createElement(
     MicrophoneButton,
     {
       label,
-      disabled: !busy && pending,
-      active: Boolean(busy),
-      onClick: () => invoke(
-        busy ? state.conversation ? "endConversation" : "cancelDictation" : unavailable ? "explainRecognition" : "startConversation"
-      )
+      disabled: pending,
+      onClick: () => invoke(unavailable ? "explainRecognition" : "startConversation")
     }
   ), /* @__PURE__ */ import_react48.default.createElement(
     ErrorMessage,
@@ -5704,8 +5693,7 @@ function ConversationStatusBar({
   controller,
   questionOnly = false,
   overlay = false,
-  overlayStyle,
-  includeSpeech = true
+  overlayStyle
 }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
@@ -5744,7 +5732,7 @@ function ConversationStatusBar({
       className: overlay ? "dlv-bar-wrap dlv-question-overlay" : "dlv-bar-wrap",
       style: overlay ? overlayStyle : void 0
     },
-    includeSpeech && /* @__PURE__ */ import_react54.default.createElement(SpeechStatusBar, { controller }),
+    /* @__PURE__ */ import_react54.default.createElement(SpeechStatusBar, { controller }),
     (state.conversation || capture || state.error || error) && /* @__PURE__ */ import_react54.default.createElement("div", { className: "dlv-pill", role: "group", "aria-label": commons.controls.title() }, capture && !state.conversation ? /* @__PURE__ */ import_react54.default.createElement(
       IconButton,
       {
@@ -5900,12 +5888,6 @@ var CLIENT_SLOT_DEFINITIONS = Object.freeze([
     component: "Dock"
   }),
   Object.freeze({
-    name: "conversation.composer.dock",
-    id: "live-voice-recognition-status",
-    order: -100,
-    component: "RecognitionDock"
-  }),
-  Object.freeze({
     name: "conversation.session.header.utilities",
     id: "live-voice-question-status",
     order: 100,
@@ -5952,7 +5934,6 @@ var styles = `
 .dlv-icon-button:disabled{opacity:.4;cursor:default}
 .dlv-icon-button:focus-visible,.dlv-settings :is(input,select):focus-visible{outline:2px solid var(--dsw-alias-label-primary);outline-offset:3px}
 .dlv-bar-wrap{width:100%;min-width:0}
-[class*="_dock"]:has(.dlv-recognition-dock){flex-wrap:wrap}.dlv-recognition-dock{width:100%;min-width:0;flex:0 0 100%;margin:8px 0}.dlv-recognition-dock .dlv-pill{max-width:none;flex-wrap:nowrap}.dlv-recognition-dock .dlv-status{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dlv-mic-active{background:var(--dsw-alias-bg-layer-2);box-shadow:inset 0 0 0 1px var(--dsw-alias-label-secondary)}
 .dlv-speech-bar{margin-bottom:8px}.dlv-speech-pill{height:52px;min-height:52px;flex-wrap:nowrap!important}.dlv-caption{flex:1;min-width:0;overflow:hidden;white-space:nowrap;font-size:13px;line-height:1.4;color:var(--dsw-alias-label-primary)}.dlv-caption-stack{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}.dlv-caption-progress{height:2px;border-radius:2px;overflow:hidden;background:var(--dsw-alias-border-l1)}.dlv-caption-progress>span{display:block;height:100%;border-radius:inherit;background:var(--dsw-alias-label-primary);transition:width .1s linear}.dlv-speech-count{flex:none;font-size:11px;color:var(--dsw-alias-label-secondary)}
 .dlv-caption-stage{position:relative;min-width:0;overflow:hidden;height:20px}.dlv-caption-scroll{display:block;width:100%;height:20px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-behavior:auto}.dlv-caption-scroll::-webkit-scrollbar{display:none}.dlv-caption-line{display:inline-block;white-space:pre}.dlv-caption-marker{position:absolute;left:0;top:0;height:20px;width:90px;border-radius:5px;pointer-events:none;background:linear-gradient(to right,transparent,color-mix(in srgb,var(--dsw-alias-label-primary) 15%,transparent) 35%,color-mix(in srgb,var(--dsw-alias-label-primary) 15%,transparent) 65%,transparent);box-shadow:inset 0 -2px 0 color-mix(in srgb,var(--dsw-alias-label-primary) 40%,transparent);will-change:transform}
 .dlv-caption-progress[data-loading=true]>span{width:30%;animation:dlv-caption-loading 1.2s ease-in-out infinite;transition:none}@keyframes dlv-caption-loading{from{transform:translateX(-100%)}to{transform:translateX(350%)}}@media(prefers-reduced-motion:reduce){.dlv-caption-progress[data-loading=true]>span{animation:none;transform:translateX(115%)}}
@@ -6632,11 +6613,7 @@ function apply(ctx) {
   function Dock(props) {
     const entry = useEntry(props.sessionId, "dock");
     useComposer(entry, props);
-    return entry ? /* @__PURE__ */ import_react56.default.createElement(SpeechStatusBar, { controller: entry.controller }) : null;
-  }
-  function RecognitionDock(props) {
-    const entry = useEntry(props.sessionId, "recognition-dock");
-    return entry ? /* @__PURE__ */ import_react56.default.createElement("div", { className: "dlv-recognition-dock" }, /* @__PURE__ */ import_react56.default.createElement(ConversationStatusBar, { controller: entry.controller, includeSpeech: false })) : null;
+    return entry ? /* @__PURE__ */ import_react56.default.createElement(ConversationStatusBar, { controller: entry.controller }) : null;
   }
   function QuestionStatusView({ entry }) {
     const snapshot = import_react56.default.useSyncExternalStore(
@@ -6718,7 +6695,7 @@ function apply(ctx) {
   });
   registerConversationSlots(
     ctx,
-    { Buttons, Dock, RecognitionDock, QuestionStatus, Action },
+    { Buttons, Dock, QuestionStatus, Action },
     () => t("dsh-live-voice.commons.pluginName")
   );
   ctx.effect(() => {
