@@ -94,10 +94,10 @@ export function readCoordinatorDiagnostics(
     recognition: {
       pendingTranscriptions: number(state.pendingTranscriptions),
       activeRequest: Boolean(recognition?.activeRequest),
-      queue: (recognition?.transcriptionQueue ?? []).map((samples: Float32Array) => ({
-        samples: samples.length,
+      queue: (recognition?.transcriptionQueue ?? []).map((chunk: any) => ({
+        samples: (chunk.samples ?? chunk).length,
         durationMs: controller.meter?.context?.sampleRate
-          ? (samples.length / controller.meter.context.sampleRate) * 1000
+          ? ((chunk.samples ?? chunk).length / controller.meter.context.sampleRate) * 1000
           : null,
       })),
     },

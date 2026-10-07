@@ -2,14 +2,24 @@
 
 All notable changes to DSH Live Voice are documented in this file.
 
-## [0.4.0] - Unreleased
+## [Next] - Unreleased
+
+- TODO
+
+## [0.4.0] - 2026-10-07
 
 ### Release Changes
 
-This minor release introduces a dedicated speech bar with smoothly scrolling approximate captions, queue navigation, Markdown-aware speech, and faster playback startup. It also adds the optional Live Voice Debugger and a two-package workspace, improves delivery and microphone recovery, and refines conversation defaults. Both plugin packages are versioned together at 0.4.0; this section remains unreleased until publication.
+This minor release introduces a dedicated speech bar with smoothly scrolling approximate captions, queue navigation, Markdown-aware speech, and faster playback startup. It also adds ⭐⭐ Meeting Mode as independently controlled shared audio alongside normal voice, optional chunk-onset timestamps, the optional Live Voice Debugger and a two-package workspace, improves delivery and microphone recovery, and refines conversation defaults. Both plugin packages are versioned together at 0.4.0.
 
 ### Features
 
+- ⭐⭐ **Meeting Mode** — add explicitly shared audio alongside normal microphone recognition and speech playback.
+  - Open sharing directly from the composer toggle, with independent source lifecycles and a shared recognition-bar component. Browser sharing requires permission and an available audio track.
+  - Merge final chunks with `Me:`/`Them:` labels on source changes when both sources capture; consecutive chunks from the same source continue without repeating the label.
+  - Use configured Qwen/Whisper HTTP settings for shared audio without triggering voice commands or automatic sending; normal microphone delivery and speaking remain unchanged.
+  - Offer optional, default-off timestamps using local chunk-onset time on new source blocks.
+  - Keep the composer microphone visible as a toggle, with reusable state toggles exposing active/inactive styles and hover labels.
 - Normalize Markdown for speech using the Marked parser: remove visual formatting, announce links and images without reading full URLs, shorten file paths with line references, read task lists and table headers/rows, and abbreviate long identifiers. Feed the same normalized text to playback and live captions, preserving the existing code-block line limit.
 - ⭐ **Dedicated Speech Bar with Live Captions** — a new 52px bar above recognition controls.
   - Show approximate captions on one clipped line, using host audio timing or a pause-aware native-synthesis estimate; captions are not word-aligned.
@@ -30,12 +40,15 @@ This minor release introduces a dedicated speech bar with smoothly scrolling app
 
 ### Build and Release Checks
 
+- Keep a single repository-root changelog, linked from the package README, instead of maintaining a duplicate release history inside the package.
+
 - Reorganize the repository as a pnpm workspace with two complete plugin packages under `packages/live-voice` and `packages/live-voice-debugger`, each with separate source, tests, manifests and runtime bundles. Update builds, local-link paths, CI and publication paths for the monorepo.
 
 - Keep the main and debugger package versions aligned. Reject mismatches during builds, CI and the publication workflow. The debugger is a public package. The manual OIDC publication workflow supports both packages or either package individually; no publication is triggered by a push.
 
 ### Bug Fixes
 
+- Unify voice-bar layout: speech/live captions first, shared-audio recognition second, microphone last, with a uniform 2px gap. Move the listening/ignoring toggle to the left without duplicating it, keep queue position only in the speech bar, and make the automatic-speech toggle always available in the composer between shared audio and microphone. Stabilize waveform animation across status updates.
 - Fix voice delivery being queued when DSH uses Steer for normal Enter. Use an unmodified Enter gesture for steering and Ctrl+Enter for the opposite mode instead of assuming the public submit action follows the busy-Enter preference.
 - Fix manual turn playback reading only the closing assistant message. Read all visible assistant responses in the selected turn in step order, including intermediate messages, while excluding user messages, hidden reasoning, and other turns.
 - Recover from `OverconstrainedError` when opening a selected microphone: clear and persist only the input-device selection, then retry once with the system default. Preserve unrelated preferences, permission errors, cancellation, and newer device selections.

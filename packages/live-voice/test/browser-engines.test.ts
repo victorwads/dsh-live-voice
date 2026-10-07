@@ -276,12 +276,15 @@ test('recognition configures local continuous interim recognition, deduplicates 
   r.emit('result', { resultIndex: 0, results: [result('Olá', true), result('mundo')] });
   r.emit('result', { resultIndex: 1, results: [result('Olá', true), result('mundo', true)] });
   r.emit('result', { resultIndex: 1, results: [result('Olá', true), result('mundo', true)] });
-  assert.deepEqual(results, [
-    { interim: 'Olá', final: '' },
-    { interim: 'mundo', final: 'Olá' },
-    { interim: '', final: 'mundo' },
-    { interim: '', final: '' },
-  ]);
+  assert.deepEqual(
+    results.map(({ startedAt, ...text }) => text),
+    [
+      { interim: 'Olá', final: '' },
+      { interim: 'mundo', final: 'Olá' },
+      { interim: '', final: 'mundo' },
+      { interim: '', final: '' },
+    ],
+  );
   const stale = r.onresult;
   await engine.stop();
   stale({ results: [result('ignored', true)] });
@@ -316,10 +319,13 @@ test('recognition reset starts a fresh native result list and ignores the old in
   staleResult({ results: [result('sent phrase', true), result('stale continuation')] });
   fresh.emit('result', { results: [result('new phrase')] });
 
-  assert.deepEqual(results, [
-    { interim: '', final: 'sent phrase' },
-    { interim: 'new phrase', final: '' },
-  ]);
+  assert.deepEqual(
+    results.map(({ startedAt, ...text }) => text),
+    [
+      { interim: '', final: 'sent phrase' },
+      { interim: 'new phrase', final: '' },
+    ],
+  );
   assert.deepEqual(activity, [true, false]);
   await engine.stop();
 });

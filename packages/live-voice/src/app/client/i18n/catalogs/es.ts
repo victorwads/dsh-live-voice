@@ -47,6 +47,23 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.commons.version.label': 'DSH Live Voice v{version}',
   'dsh-live-voice.commons.version.link': 'DSH Live Voice v{version}. Abrir la lista de versiones',
   'dsh-live-voice.commons.version.title': 'Información de versión',
+  'dsh-live-voice.meeting.failed': 'Error de reconocimiento.',
+  'dsh-live-voice.meeting.help':
+    'Fuentes independientes; envía las transcripciones manualmente desde el editor.',
+  'dsh-live-voice.meeting.httpRequired': 'Usa Qwen o Whisper HTTP para el modo reunión.',
+  'dsh-live-voice.meeting.inactive': 'Inactivo',
+  'dsh-live-voice.meeting.listening': 'Escuchando',
+  'dsh-live-voice.meeting.microphone': 'Micrófono',
+  'dsh-live-voice.meeting.noAudio': 'No se compartió audio. Activa el audio en el diálogo.',
+  'dsh-live-voice.meeting.processing': 'Transcribiendo…',
+  'dsh-live-voice.meeting.shared': 'Audio compartido',
+  'dsh-live-voice.meeting.start': 'Iniciar fuente',
+  'dsh-live-voice.meeting.starting': 'Iniciando…',
+  'dsh-live-voice.meeting.stop': 'Detener fuente',
+  'dsh-live-voice.meeting.timestamps': 'Marcas de tiempo de transcripción',
+  'dsh-live-voice.meeting.timestampsBadge': 'Tiempo',
+  'dsh-live-voice.meeting.title': 'Modo reunión',
+  'dsh-live-voice.meeting.unavailable': 'Reconocimiento no disponible.',
   'dsh-live-voice.recognition.autoSend.countdownHelp':
     'La cuenta atrás comienza tras el reconocimiento definitivo de una frase. Hablar de nuevo o editar el texto la cancela.',
   'dsh-live-voice.recognition.browser.autoInstallPack':

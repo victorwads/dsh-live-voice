@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../../../app/client/i18n/index.js';
-import { IconButton } from '../../../shared/design-system/index.js';
+import { ToggleButton } from '../../../shared/design-system/index.js';
 
 type Mode = 'manual' | 'queue' | 'steer';
 export function nextDeliveryMode(mode: Mode | undefined): Mode {
@@ -29,13 +29,13 @@ export function DeliveryModeButton({
         ? (commons as any).delivery.queueBadge()
         : (commons as any).toggle.offBadge();
   return (
-    <IconButton
+    <ToggleButton
       className="dlv-live-toggle"
       label={status}
       title={status}
       icon={mode === 'queue' ? 'queue' : 'send'}
       visibleLabel={visible}
-      aria-pressed={mode !== 'manual'}
+      pressed={mode !== 'manual'}
       data-mode={mode}
       onClick={() => onChange(nextDeliveryMode(mode))}
     />

@@ -46,6 +46,23 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.commons.version.label': 'DSH Live Voice v{version}',
   'dsh-live-voice.commons.version.link': 'DSH Live Voice v{version}. Open releases',
   'dsh-live-voice.commons.version.title': 'Version information',
+  'dsh-live-voice.meeting.failed': 'Recognition failed.',
+  'dsh-live-voice.meeting.help':
+    'Independent sources; transcripts stay in the composer until you send them manually.',
+  'dsh-live-voice.meeting.httpRequired': 'Use Qwen or Whisper HTTP for meeting mode.',
+  'dsh-live-voice.meeting.inactive': 'Inactive',
+  'dsh-live-voice.meeting.listening': 'Listening',
+  'dsh-live-voice.meeting.microphone': 'Microphone',
+  'dsh-live-voice.meeting.noAudio': 'No audio was shared. Enable audio in the sharing dialog.',
+  'dsh-live-voice.meeting.processing': 'Transcribing…',
+  'dsh-live-voice.meeting.shared': 'Shared audio',
+  'dsh-live-voice.meeting.start': 'Start source',
+  'dsh-live-voice.meeting.starting': 'Starting…',
+  'dsh-live-voice.meeting.stop': 'Stop source',
+  'dsh-live-voice.meeting.timestamps': 'Transcript timestamps',
+  'dsh-live-voice.meeting.timestampsBadge': 'Timestamp',
+  'dsh-live-voice.meeting.title': 'Meeting mode',
+  'dsh-live-voice.meeting.unavailable': 'Recognition is unavailable.',
   'dsh-live-voice.recognition.autoSend.countdownHelp':
     'Countdown starts after a final recognized phrase. New speech or edits cancel it.',
   'dsh-live-voice.recognition.browser.autoInstallPack':

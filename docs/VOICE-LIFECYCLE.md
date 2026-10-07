@@ -49,7 +49,7 @@ Capture, recognition, user speech activity, message delivery, agent generation, 
 
 ## Speech bar and approximate captions
 
-The speech bar is separate from the recognition pill, with the same 52px pill geometry and shared buttons. It displays the active speech segment on one clipped line and owns playback pause/resume, next, stop and microphone takeover during speaker gating. Stop clears pending speech and closes the speech bar without ending voice conversation; pause preserves it. The recognition pill retains capture, delivery and automatic-speech preferences.
+The speech bar is separate from the recognition pill, with the same 52px pill geometry and shared buttons. It displays the active speech segment on one clipped line and owns playback pause/resume, next, stop and microphone takeover during speaker gating. Stop clears pending speech and closes the speech bar without ending voice conversation; pause preserves it. The recognition pill retains capture and delivery preferences. The automatic-speech toggle remains available in the composer between shared audio and microphone, even when there is no active playback; it is not duplicated in either bar.
 
 Host-audio captions estimate character position from actual media currentTime/duration. Browser synthesis has no reliable duration, so its fallback estimates 14 characters/second adjusted by rate, starts only on the native start event and excludes paused time. Neither mode claims word alignment. Unknown duration keeps the full segment visible; cancelled/completed operations clear caption state. Session navigation retains the existing lifecycle semantics; this UI change does not implement the future global queue.
 

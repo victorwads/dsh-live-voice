@@ -1,21 +1,23 @@
 import React from 'react';
 import { useLanguage } from '../../../app/client/i18n/index.js';
-import { ErrorMessage, IconButton } from '../../../shared/design-system/index.js';
+import { ErrorMessage, IconButton, ToggleButton } from '../../../shared/design-system/index.js';
 import { useConversationActions, useConversationController } from '../hooks/index.js';
 import { DeliveryModeButton } from './DeliveryModeButton.js';
 import { SpeechStatusBar } from './SpeechStatusBar.js';
-import { Waveform } from './Waveform.js';
+import { RecognitionBar } from './RecognitionBar.js';
 import { resolveConversationStatus } from './conversationStatus.js';
 
 export type ConversationStatusBarProps = {
   controller: any;
   questionOnly?: boolean;
+  includeSpeech?: boolean;
   overlay?: boolean;
   overlayStyle?: React.CSSProperties;
 };
 export function ConversationStatusBar({
   controller,
   questionOnly = false,
+  includeSpeech = true,
   overlay = false,
   overlayStyle,
 }: ConversationStatusBarProps) {
@@ -54,63 +56,59 @@ export function ConversationStatusBar({
     settings,
     speak,
   });
-  const autoPlayback = state.settings.announceAssistantMessages !== false;
-  const playbackTitle =
-    state.speechSegmentsRemaining > 0
-      ? (speak as any).autoPlayback[
-          state.speechSegmentsRemaining === 1 ? 'remainingOne' : 'remainingOther'
-        ]({
-          state: autoPlayback ? (commons as any).on() : (commons as any).off(),
-          count: state.speechSegmentsRemaining,
-        })
-      : (speak as any).autoPlayback.status({
-          state: autoPlayback ? (commons as any).on() : (commons as any).off(),
-        });
   return (
     <div
-      className={overlay ? 'dlv-bar-wrap dlv-question-overlay' : 'dlv-bar-wrap'}
+      className={
+        overlay ? 'dlv-bar-wrap dlv-bar-stack dlv-question-overlay' : 'dlv-bar-wrap dlv-bar-stack'
+      }
       style={overlay ? overlayStyle : undefined}
     >
-      <SpeechStatusBar controller={controller} />
+      {includeSpeech && <SpeechStatusBar controller={controller} />}
       {(state.conversation || capture || state.error || error) && (
-        <div className="dlv-pill" role="group" aria-label={(commons as any).controls.title()}>
-          {capture && !state.conversation ? (
-            <IconButton
-              label={(recognition as any).dictation.cancel()}
-              icon="close"
-              onClick={() => invoke('cancelDictation')}
-            />
-          ) : null}
-          {state.conversation ? (
-            <IconButton
-              label={(commons as any).conversation.end()}
-              icon="close"
-              onClick={() => invoke('endConversation')}
-            />
-          ) : null}
-          <Waveform controller={controller} enabled={Boolean(state.listening)} />
-          <span className="dlv-status" role="status" aria-live="polite">
-            {status}
-          </span>
+        <RecognitionBar
+          controller={controller}
+          listening={state.listening}
+          label={(commons as any).controls.title()}
+          status={status}
+          leading={
+            <>
+              {state.conversation && !capture ? (
+                <IconButton
+                  label={(recognition as any).microphone.takeControl()}
+                  icon="mic"
+                  onClick={() => invoke('startConversation')}
+                />
+              ) : null}
+              {capture ? (
+                <ToggleButton
+                  className="dlv-mic-state"
+                  label={
+                    state.muted
+                      ? (recognition as any).microphone.resume()
+                      : (recognition as any).microphone.ignore()
+                  }
+                  title={(recognition as any).microphone.inputStatus({
+                    state: state.muted
+                      ? (commons as any).input.ignoring()
+                      : (commons as any).input.listening(),
+                  })}
+                  icon={state.muted ? 'micOff' : 'mic'}
+                  visibleLabel={
+                    state.muted
+                      ? (commons as any).input.ignoringBadge()
+                      : (commons as any).input.listeningBadge()
+                  }
+                  pressed={!state.muted}
+                  data-muted={state.muted ? 'true' : 'false'}
+                  onClick={() => invoke(state.muted ? 'resumeListeningInput' : 'muteListening')}
+                />
+              ) : null}
+            </>
+          }
+        >
           <DeliveryModeButton
             mode={state.settings.sendingMode || 'manual'}
             onChange={(sendingMode) => invoke('updateSettings', { sendingMode })}
-          />
-          <IconButton
-            className={`dlv-live-toggle${state.speechSegmentsRemaining > 0 ? ' dlv-live-toggle-expanded' : ''}`}
-            label={(speak as any).autoPlayback.label()}
-            title={playbackTitle}
-            icon={autoPlayback ? 'speaker' : 'speakerOff'}
-            visibleLabel={
-              !autoPlayback
-                ? (commons as any).toggle.offBadge()
-                : state.speechSegmentsRemaining > 0
-                  ? String(state.speechSegmentsRemaining)
-                  : (commons as any).on()
-            }
-            role="switch"
-            aria-checked={autoPlayback}
-            onClick={() => invoke('updateSettings', { announceAssistantMessages: !autoPlayback })}
           />
           {remaining ? (
             <IconButton
@@ -119,38 +117,7 @@ export function ConversationStatusBar({
               onClick={() => invoke('cancelAutoSend')}
             />
           ) : null}
-          {state.conversation && !capture ? (
-            <IconButton
-              label={(recognition as any).microphone.takeControl()}
-              icon="mic"
-              onClick={() => invoke('startConversation')}
-            />
-          ) : null}
-          {capture ? (
-            <IconButton
-              className="dlv-live-toggle dlv-mic-state"
-              label={
-                state.muted
-                  ? (recognition as any).microphone.resume()
-                  : (recognition as any).microphone.ignore()
-              }
-              title={(recognition as any).microphone.inputStatus({
-                state: state.muted
-                  ? (commons as any).input.ignoring()
-                  : (commons as any).input.listening(),
-              })}
-              icon={state.muted ? 'micOff' : 'mic'}
-              visibleLabel={
-                state.muted
-                  ? (commons as any).input.ignoringBadge()
-                  : (commons as any).input.listeningBadge()
-              }
-              aria-pressed={Boolean(state.muted)}
-              data-muted={state.muted ? 'true' : 'false'}
-              onClick={() => invoke(state.muted ? 'resumeListeningInput' : 'muteListening')}
-            />
-          ) : null}
-        </div>
+        </RecognitionBar>
       )}
       <ErrorMessage
         error={error || state.error}

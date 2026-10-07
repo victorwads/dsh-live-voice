@@ -439,7 +439,7 @@ export class VoiceCoordinator {
     }
   }
 
-  onResult({ final = '', interim = '' }) {
+  onResult({ final = '', interim = '', startedAt }) {
     if (this.disposed || (!this.snapshot.listening && !this.snapshot.starting)) return;
     if (
       this.snapshot.speaking &&
@@ -520,8 +520,9 @@ export class VoiceCoordinator {
         this.patch({ recognizing: false });
         return;
       }
-      const next = this.transcript.update(this.composer.getDraft(), final, true);
-      this.composer.setDraft(next);
+      const appended = this.composer.appendFinal?.(final, startedAt);
+      const next = appended ?? this.transcript.update(this.composer.getDraft(), final, true);
+      if (appended == null) this.composer.setDraft(next);
       this.maybeScheduleAutoSend(next);
     }
     if (interim) {

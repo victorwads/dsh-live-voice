@@ -47,7 +47,9 @@ test('Whisper host posts complete WAV multipart and parses final JSON', async ()
   assert.equal(seen[2].options.body.get('language'), 'auto');
 });
 
-test('Whisper browser engine segments speech and sends authenticated complete utterance', async () => {
+test('Whisper browser engine segments speech and sends authenticated complete utterance', async (t) => {
+  let now = 100000;
+  t.mock.method(Date, 'now', () => now);
   const requests = [],
     source = {
       connect(node) {
@@ -87,6 +89,7 @@ test('Whisper browser engine segments speech and sends authenticated complete ut
       inputBuffer: { getChannelData: () => new Float32Array(4096).fill(value) },
     });
   emit(0.1);
+  now += 1000;
   emit(0.1);
   emit(0.1);
   emit(0.1);
@@ -100,7 +103,15 @@ test('Whisper browser engine segments speech and sends authenticated complete ut
   assert.equal(requests.at(-1).url, '/api/dsh-live-voice/whisper/transcribe');
   assert.equal(requests.at(-1).options.credentials, 'same-origin');
   assert.doesNotThrow(() => validateMonoPcm16Wav(requests.at(-1).options.body));
-  assert.deepEqual(results, [{ final: 'Olá do Whisper', interim: '' }]);
+  assert.deepEqual(
+    results.map(({ startedAt, ...text }) => text),
+    [{ final: 'Olá do Whisper', interim: '' }],
+  );
+  assert.equal(
+    results[0].startedAt,
+    100000 - 256,
+    'onset precedes request completion by buffered speech time',
+  );
   await engine.stop();
 });
 

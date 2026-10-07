@@ -74,6 +74,7 @@ function controllerFixture(overrides = {}) {
     listening: false,
     starting: false,
     recognizing: false,
+    settings: { announceAssistantMessages: true },
     capabilities: { recognition: { supported: true }, capture: { supported: true } },
     ...overrides,
   };
@@ -103,7 +104,7 @@ test('conversation controls preserve capability and busy-state policy', async (t
       <ConversationControls controller={controller} />
     </LiveVoiceTranslationProvider>,
   );
-  const button = root.querySelector('button');
+  const button = root.querySelector('.dlv-mic');
   assert.equal(button.getAttribute('aria-label'), 'Start voice conversation');
   await act(async () => button.click());
   assert.deepEqual(controller.calls, ['startConversation']);
@@ -122,20 +123,23 @@ test('conversation controls explain unavailable recognition and hide while busy'
       <ConversationControls controller={unavailable} />
     </LiveVoiceTranslationProvider>,
   );
-  assert.equal(root.querySelector('button').getAttribute('aria-label'), 'No engine');
-  await act(async () => root.querySelector('button').click());
+  assert.equal(root.querySelector('.dlv-mic').getAttribute('aria-label'), 'No engine');
+  await act(async () => root.querySelector('.dlv-mic').click());
   assert.deepEqual(unavailable.calls, ['explainRecognition']);
 });
 
-test('conversation controls hide while the controller is busy', async (t) => {
-  const busy = controllerFixture({ listening: true });
+test('conversation controls retain a pressed microphone toggle while busy', async (t) => {
+  const busy = controllerFixture({ listening: true, conversation: true });
+  busy.endConversation = () => busy.calls.push('endConversation');
   const root = await fixture(
     t,
     <LiveVoiceTranslationProvider>
       <ConversationControls controller={busy} />
     </LiveVoiceTranslationProvider>,
   );
-  assert.equal(root.childElementCount, 0);
+  assert.equal(root.querySelector('.dlv-mic').getAttribute('aria-pressed'), 'true');
+  await act(async () => root.querySelector('.dlv-mic').click());
+  assert.deepEqual(busy.calls, ['endConversation']);
 });
 
 test('delivery mode button cycles manual, queue, and steer with accessible state', async (t) => {
@@ -231,8 +235,12 @@ test('conversation status bar composes status, delivery, autoplay, microphone, a
   assert.equal(root.querySelector('[role="status"]').textContent, 'Listening — waiting for speech');
   assert.ok(root.querySelector('.dlv-wave'));
   assert.equal(root.querySelector('[data-mode="queue"]').getAttribute('aria-pressed'), 'true');
-  assert.equal(root.querySelector('[role="switch"]').getAttribute('aria-checked'), 'true');
-  assert.equal(root.querySelector('[data-muted="false"]').getAttribute('aria-pressed'), 'false');
+  assert.equal(
+    root.querySelector('[role="switch"]'),
+    null,
+    'autoplay belongs to composer, not bars',
+  );
+  assert.equal(root.querySelector('[data-muted="false"]').getAttribute('aria-pressed'), 'true');
 });
 
 test('conversation status bar respects visibility and question overlay contracts', async (t) => {
@@ -245,4 +253,40 @@ test('conversation status bar respects visibility and question overlay contracts
     </LiveVoiceTranslationProvider>,
   );
   assert.equal(hiddenRoot.childElementCount, 0);
+});
+
+test('waveform does not restart or clear canvas on repeated source props and same-size resize', async (t) => {
+  let renders = 0;
+  await fixture(t, <div />);
+  const draw = {
+    setTransform() {},
+    clearRect() {},
+    beginPath() {},
+    moveTo() {},
+    lineTo() {},
+    stroke() {},
+  };
+  t.mock.method(window.HTMLCanvasElement.prototype, 'getContext', () => draw);
+  t.mock.method(window.HTMLCanvasElement.prototype, 'getBoundingClientRect', () => ({
+    width: 180,
+    height: 40,
+  }));
+  t.mock.method(window, 'requestAnimationFrame', () => ++renders);
+  t.mock.method(window, 'cancelAnimationFrame', () => {});
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  await act(async () =>
+    root.render(<Waveform controller={{ meter: { level: () => 0 } }} enabled />),
+  );
+  const canvas = host.querySelector('canvas');
+  assert.equal(renders, 1);
+  await act(async () =>
+    root.render(<Waveform controller={{ meter: { level: () => 0.5 } }} enabled />),
+  );
+  assert.equal(renders, 1, 'processing updates must not reset the animation effect');
+  const width = canvas.width;
+  window.dispatchEvent(new window.Event('resize'));
+  assert.equal(canvas.width, width);
+  await act(async () => root.unmount());
 });

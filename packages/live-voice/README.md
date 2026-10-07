@@ -1,5 +1,7 @@
 # DSH Live Voice
 
+Release history: [repository changelog](https://github.com/victorwads/dsh-live-voice/blob/main/CHANGELOG.md).
+
 [![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
 [![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.1--alpha.1-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.1)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
@@ -52,7 +54,7 @@ Detailed guides for deep-diving into engines and configurations:
 
 | Scenario | Recommendation | RAM | Why |
 | --- | --- | --- | --- |
-| 🇧🇷 **Portuguese on macOS** | **Qwen3 ASR (HTTP API)** | ~3 GB | Best accuracy in daily maintainer use. Whisper is second choice. |
+| 🇧🇷 **Portuguese on macOS** | **Qwen3 ASR (HTTP API)** | ~1.5 GB | Best accuracy in daily maintainer use; current RAM usage reported by the maintainer. Whisper is second choice. |
 | 🇺🇸 **English on macOS** | **Browser SpeechRecognition** | ~0 GB | Built-in macOS/browser API. Fast, zero extra RAM. |
 | 🪟 **Windows** | **Qwen3 ASR** or **Whisper HTTP** | ~2–3 GB | Recommended starting point; Windows browser STT varies. |
 | 🌐 **Multilingual / Other** | **Whisper HTTP (auto)** | ~2 GB | Automatic language detection across dozens of languages. |
@@ -76,11 +78,13 @@ Detailed guides for deep-diving into engines and configurations:
 - 🏠 **Local-First & Private:** Audio runs locally on your machine (via Browser APIs, Apple MLX, or whisper.cpp); no external voice telemetry.
 - 🌐 **Remote-Ready Host Audio:** Qwen and macOS Say synthesize on the DSH host, then DSH delivers compact audio to your browser—so playback works over remote and LAN connections.
 
-### 🧑‍💻 Coming Soon: Meeting Mode
+### 🧑‍💻 Meeting Mode — Shared Audio Alongside Normal Voice
 
-**Meeting Mode** is a planned differentiator for collaborative coding conversations. It will keep two independent live transcription streams in the DSH composer: your microphone as **“Me:”**, and meeting participants from an explicitly shared screen/system-audio stream as **“Them:”**. This creates an editable, real-time record of a code review or technical discussion, so you can manually ask DSH a question with the meeting context already in the composer.
+Select **Qwen HTTP** or **Whisper HTTP** recognition, then click the shared-audio icon beside the composer microphone. The first click opens the browser sharing dialog directly; enable audio in that dialog. The shared source gets its own recognition bar, using the same component as normal microphone recognition, without replacing microphone controls or assistant speech playback. Click the shared-audio toggle again to stop only that source. When all three bars are visible, speech/live captions come first, shared audio second, and microphone recognition last, separated by 2px. The microphone bar has one listening/ignoring toggle on the left; queue position appears only in the speech bar, while the automatic-speech toggle remains available in the composer between shared audio and microphone.
 
-It will never automatically send the transcript or use meeting audio for voice commands. Sharing system audio will always require explicit browser permission and depends on browser and operating-system support.
+Normal microphone behavior, voice commands, delivery settings, and speech output remain available. The composer microphone remains a toggle while capturing, and either source can be stopped independently. The shared-audio bar also has a **Timestamp** clock toggle, off by default: new `Me:`/`Them:` blocks can include `[YYYY/MM/DD HH:MM:SS]` using the local machine time at chunk onset, not recognition completion. Consecutive chunks from the same source retain the existing block, and toggling timestamps never rewrites earlier text. With both sources capturing, source changes introduce **“Me:”** or **“Them:”**; consecutive chunks continue on new lines without repeating labels. Shared audio appends final transcripts but never triggers voice commands or automatic sending itself. Microphone transcripts retain the configured sending behavior.
+
+Browser/OS support and the chosen sharing surface determine whether audio is available. Headphones are recommended to avoid unintended feedback when letting the agent speak into a shared meeting or tab. Automated capture, composer and UI tests do not replace real microphone/shared-audio validation.
 
 ---
 

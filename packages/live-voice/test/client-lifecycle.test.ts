@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
 import { apply } from '../src/app/client/apply.tsx';
 import { VoiceCoordinator } from '../src/modules/core/coordinator.ts';
+import { MeetingController } from '../src/modules/conversation/models/meeting.js';
 
 const h = React.createElement;
 function deferred() {
@@ -192,6 +193,7 @@ async function fixture(t, { pendingStore = true } = {}) {
     render,
     props,
     Buttons,
+    Dock: slots.get('conversation.input.dock'),
     Action,
     Settings: slots.get('settings.section'),
     controllers,
@@ -619,7 +621,10 @@ test('steer delivery dispatches an accelerated composer gesture instead of norma
   calls.length = 0;
   controller.composer.submit('steer');
   controller.composer.submit('queue');
-  assert.deepEqual(calls, [['Enter', false, false], ['Enter', true, false]]);
+  assert.deepEqual(calls, [
+    ['Enter', false, false],
+    ['Enter', true, false],
+  ]);
 
   // A missing accelerated editor must not fall back to the wrong delivery mode.
   editor.remove();
@@ -705,4 +710,106 @@ test('spoken finals answer pending questions as custom text without touching the
     f.calls.filter(([name]) => name === 'speak').map((call) => call[2]),
     ['Which engine?', 'Which voice?'],
   );
+});
+
+test('sharing requests permission on first click without ending normal voice or blocking speech', async (t) => {
+  const f = await fixture(t);
+  let requests = 0;
+  let meeting;
+  navigator.mediaDevices.getDisplayMedia = () => {
+    requests++;
+    return Promise.resolve({ getTracks: () => [] });
+  };
+  t.mock.method(MeetingController.prototype, 'start', async function (source, request) {
+    meeting = this;
+    assert.equal(source, 'shared');
+    await request;
+    this.patch('shared', { listening: true });
+  });
+  await f.render(h(f.Buttons, f.props('a')));
+  const c = f.controllers[0];
+  const before = f.calls.filter(([name]) => name === 'end').length;
+  await act(async () => document.querySelector('[aria-label="Shared audio"]').click());
+  assert.equal(requests, 1);
+  assert.equal(f.calls.filter(([name]) => name === 'end').length, before);
+  await c.speak('Test speech', 'test');
+  assert.equal(f.calls.filter(([name]) => name === 'speak').length, 1);
+  await c.startConversation();
+  assert.equal(f.calls.filter(([name]) => name === 'conversation').length, 1);
+  assert.equal(meeting.getSnapshot().shared.listening, true);
+  const stops = f.calls.filter(([name]) => name === 'stop').length;
+  await act(async () => document.querySelector('[aria-label="Shared audio"]').click());
+  assert.equal(meeting.getSnapshot().shared.listening, false);
+  assert.equal(f.calls.filter(([name]) => name === 'stop').length, stops);
+});
+
+test('all three bars stay ordered captions, shared audio, microphone with no duplicate microphone or autoplay controls', async (t) => {
+  const f = await fixture(t);
+  window.requestAnimationFrame = () => 1;
+  window.cancelAnimationFrame = () => {};
+  let meeting;
+  navigator.mediaDevices.getDisplayMedia = () => Promise.resolve({ getTracks: () => [] });
+  t.mock.method(MeetingController.prototype, 'start', async function (source, request) {
+    meeting = this;
+    await request;
+    this.patch('shared', { listening: true });
+  });
+  await f.render(h(React.Fragment, null, h(f.Buttons, f.props('a')), h(f.Dock, f.props('a'))));
+  const c = f.controllers[0];
+  await act(async () => {
+    c.patch({
+      conversation: true,
+      listening: true,
+      speaking: true,
+      speechText: 'Visible captions',
+      speechSegmentsRemaining: 3,
+      speechSegmentsTotal: 3,
+      speechSegmentIndex: 1,
+    });
+    document.querySelector('[aria-label="Shared audio"]').click();
+  });
+  const bars = [...document.querySelectorAll('.dlv-pill')];
+  assert.equal(bars.length, 3);
+  assert.ok(bars[0].classList.contains('dlv-speech-pill'));
+  assert.equal(bars[1].getAttribute('aria-label'), 'Shared audio');
+  assert.equal(bars[2].getAttribute('aria-label'), 'Voice controls');
+  assert.equal(bars[2].querySelectorAll('.dlv-mic-state').length, 1);
+  assert.equal(bars[2].firstElementChild.classList.contains('dlv-mic-state'), true);
+  assert.equal(bars[2].querySelectorAll('button').length, 2, 'only microphone and delivery mode');
+  assert.equal(bars[2].querySelector('[role="switch"]'), null);
+  assert.equal(bars[2].querySelector('.dlv-speech-count'), null);
+  assert.equal(bars[0].querySelector('[role="switch"]'), null);
+  assert.equal(document.querySelectorAll('[role="switch"]').length, 1);
+  assert.equal(bars[0].querySelector('.dlv-speech-count').textContent, '1/3');
+  await act(async () => {
+    c.patch({ speaking: false, speechSegmentsRemaining: 0, speechRunActive: false });
+  });
+  assert.equal(document.querySelectorAll('.dlv-pill').length, 2);
+  assert.ok(
+    document.querySelector('[role="switch"]'),
+    'autoplay remains accessible without speech',
+  );
+  assert.equal(meeting.getSnapshot().shared.listening, true);
+});
+
+test('composer autoplay remains between shared audio and microphone while idle, toggles settings without stopping either source', async (t) => {
+  const f = await fixture(t);
+  await f.render(h(f.Buttons, f.props('a')));
+  const buttons = [...document.querySelectorAll('button')];
+  assert.equal(buttons[0].getAttribute('aria-label'), 'Shared audio');
+  assert.equal(buttons[1].getAttribute('role'), 'switch');
+  assert.equal(buttons[2].classList.contains('dlv-mic'), true);
+  const c = f.controllers[0];
+  let updates = [];
+  c.updateSettings = (next) => {
+    updates.push(next);
+    c.patch({ settings: { ...c.getSnapshot().settings, ...next } });
+  };
+  const before = f.calls.length;
+  await act(async () => buttons[1].click());
+  assert.deepEqual(updates, [{ announceAssistantMessages: false }]);
+  assert.equal(buttons[1].getAttribute('aria-checked'), 'false');
+  await act(async () => buttons[1].click());
+  assert.equal(buttons[1].getAttribute('aria-checked'), 'true');
+  assert.equal(f.calls.length, before, 'capture and speech lifecycle actions are untouched');
 });

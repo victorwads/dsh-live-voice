@@ -205,10 +205,13 @@ export class BrowserRecognitionEngine {
     recognition.interimResults = true;
     session.recognition = recognition;
     const finals = new Set();
+    const starts = new Map();
+    let speechStartedAt = null;
     const valid = () => this.session === session && session.recognition === recognition;
     recognition.onspeechstart = () => {
       if (!valid()) return;
       session.restarts = 0;
+      speechStartedAt = Date.now();
       this._activity(session, true);
     };
     recognition.onspeechend = () => {
@@ -216,20 +219,24 @@ export class BrowserRecognitionEngine {
     };
     recognition.onresult = (event) => {
       if (!valid()) return;
+      let startedAt = null;
       const interim = [],
         final = [];
       for (let i = 0; i < event.results.length; i++) {
         const result = event.results[i];
         const text = result[0]?.transcript ?? '';
+        if (!finals.has(i) && !starts.has(i) && text.trim())
+          starts.set(i, speechStartedAt ?? Date.now());
         if (text.trim()) session.restarts = 0;
         if (result.isFinal) {
           if (!finals.has(i)) {
             finals.add(i);
+            startedAt ??= starts.get(i);
             final.push(text);
           }
         } else interim.push(text);
       }
-      notify(session.onResult, { interim: interim.join(' '), final: final.join(' ') });
+      notify(session.onResult, { interim: interim.join(' '), final: final.join(' '), startedAt });
     };
     recognition.onerror = (event) => {
       if (!valid()) return;

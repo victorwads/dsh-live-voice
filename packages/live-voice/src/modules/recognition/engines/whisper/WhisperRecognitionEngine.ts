@@ -109,6 +109,7 @@ export class WhisperHttpRecognitionEngine {
       chunks: [],
       samples: 0,
       voiced: false,
+      startedAt: null,
       silence: 0,
       transcriptionQueue: [],
       activeRequest: null,
@@ -131,6 +132,7 @@ export class WhisperHttpRecognitionEngine {
     const enqueue = () => {
       if (!session.voiced || session.samples < context.sampleRate * 0.25) {
         session.chunks = [];
+        session.startedAt = null;
         session.samples = 0;
         session.voiced = false;
         session.silence = 0;
@@ -142,11 +144,13 @@ export class WhisperHttpRecognitionEngine {
         samples.set(chunk, at);
         at += chunk.length;
       }
+      const startedAt = session.startedAt;
+      session.startedAt = null;
       session.chunks = [];
       session.samples = 0;
       session.voiced = false;
       session.silence = 0;
-      session.transcriptionQueue.push(samples);
+      session.transcriptionQueue.push({ samples, startedAt });
       notifyProcessing();
       void drain();
     };
@@ -155,7 +159,7 @@ export class WhisperHttpRecognitionEngine {
       session.draining = true;
       try {
         while (valid() && session.transcriptionQueue.length) {
-          const samples = session.transcriptionQueue.shift();
+          const { samples, startedAt } = session.transcriptionQueue.shift();
           const request = new AbortController();
           session.activeRequest = request;
           notifyProcessing();
@@ -175,7 +179,8 @@ export class WhisperHttpRecognitionEngine {
             const json = await response.json();
             if (!response.ok || !json?.ok)
               throw new Error(json?.error?.message || 'HTTP transcription failed.');
-            if (valid() && json.value.text) onResult?.({ final: json.value.text, interim: '' });
+            if (valid() && json.value.text)
+              onResult?.({ final: json.value.text, interim: '', startedAt });
           } catch (error) {
             if (error.name !== 'AbortError' && valid()) onError?.(error);
           } finally {
@@ -193,6 +198,8 @@ export class WhisperHttpRecognitionEngine {
       const data = new Float32Array(event.inputBuffer.getChannelData(0)),
         rms = Math.sqrt(data.reduce((sum, x) => sum + x * x, 0) / data.length);
       if (rms > 0.012) {
+        if (!session.voiced)
+          session.startedAt = Date.now() - Math.round((data.length / context.sampleRate) * 1000);
         session.voiced = true;
         session.silence = 0;
         onActivity?.(true);

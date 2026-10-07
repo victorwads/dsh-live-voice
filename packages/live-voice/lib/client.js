@@ -34,7 +34,2777 @@ __export(apply_exports, {
   inject: () => inject
 });
 module.exports = __toCommonJS(apply_exports);
-var import_react56 = __toESM(require("react"), 1);
+var import_react59 = __toESM(require("react"), 1);
+
+// src/modules/conversation/components/SpeechStatusBar.tsx
+var import_react24 = __toESM(require("react"), 1);
+
+// src/app/client/i18n/catalogs/en.ts
+var en = {
+  "dsh-live-voice.commons.connection.contactingHost": "Contacting DSH host\u2026",
+  "dsh-live-voice.commons.connection.endpoint": "Endpoint URL",
+  "dsh-live-voice.commons.connection.healthEndpoint": "Health URL or path",
+  "dsh-live-voice.commons.connection.reload": "Reload saved settings",
+  "dsh-live-voice.commons.connection.test": "Test connection",
+  "dsh-live-voice.commons.connection.timeout": "Request timeout (ms)",
+  "dsh-live-voice.commons.connection.title": "Connection settings",
+  "dsh-live-voice.commons.connection.unsaved": "Unsaved changes",
+  "dsh-live-voice.commons.controls.title": "Voice controls",
+  "dsh-live-voice.commons.conversation.end": "End voice conversation",
+  "dsh-live-voice.commons.conversation.idle": "Conversation idle",
+  "dsh-live-voice.commons.conversation.start": "Start voice conversation",
+  "dsh-live-voice.commons.delivery.queueBadge": "QUEUE",
+  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
+  "dsh-live-voice.commons.dismiss": "Dismiss",
+  "dsh-live-voice.commons.dismissError": "Dismiss voice error",
+  "dsh-live-voice.commons.engine.failure": "{engine}: {reason}",
+  "dsh-live-voice.commons.input.ignoring": "ignoring",
+  "dsh-live-voice.commons.input.ignoringBadge": "IGNORING",
+  "dsh-live-voice.commons.input.listening": "listening",
+  "dsh-live-voice.commons.input.listeningBadge": "LISTENING",
+  "dsh-live-voice.commons.manual": "manual",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
+  "dsh-live-voice.commons.off": "off",
+  "dsh-live-voice.commons.on": "on",
+  "dsh-live-voice.commons.pluginName": "Live Voice",
+  "dsh-live-voice.commons.queue": "queue",
+  "dsh-live-voice.commons.repository.starLabel": "Star Us on GitHub",
+  "dsh-live-voice.commons.repository.starLink": "Star DSH Live Voice on GitHub",
+  "dsh-live-voice.commons.second": "1 second",
+  "dsh-live-voice.commons.seconds": "{seconds} seconds",
+  "dsh-live-voice.commons.send": "SEND",
+  "dsh-live-voice.commons.status.ready": "Voice ready",
+  "dsh-live-voice.commons.systemDefault": "System default",
+  "dsh-live-voice.commons.toggle.offBadge": "OFF",
+  "dsh-live-voice.commons.unknownLanguage": "unknown language",
+  "dsh-live-voice.commons.update.label": "Update available",
+  "dsh-live-voice.commons.update.link": "Update available: {version}. Open release",
+  "dsh-live-voice.commons.update.version": "Update available: {version}",
+  "dsh-live-voice.commons.version.compatibility": "Compatible with DSH v{version}",
+  "dsh-live-voice.commons.version.compatibilityLink": "Compatible with DSH v{version}. Open release",
+  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
+  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}. Open releases",
+  "dsh-live-voice.commons.version.title": "Version information",
+  "dsh-live-voice.meeting.failed": "Recognition failed.",
+  "dsh-live-voice.meeting.help": "Independent sources; transcripts stay in the composer until you send them manually.",
+  "dsh-live-voice.meeting.httpRequired": "Use Qwen or Whisper HTTP for meeting mode.",
+  "dsh-live-voice.meeting.inactive": "Inactive",
+  "dsh-live-voice.meeting.listening": "Listening",
+  "dsh-live-voice.meeting.microphone": "Microphone",
+  "dsh-live-voice.meeting.noAudio": "No audio was shared. Enable audio in the sharing dialog.",
+  "dsh-live-voice.meeting.processing": "Transcribing\u2026",
+  "dsh-live-voice.meeting.shared": "Shared audio",
+  "dsh-live-voice.meeting.start": "Start source",
+  "dsh-live-voice.meeting.starting": "Starting\u2026",
+  "dsh-live-voice.meeting.stop": "Stop source",
+  "dsh-live-voice.meeting.timestamps": "Transcript timestamps",
+  "dsh-live-voice.meeting.timestampsBadge": "Timestamp",
+  "dsh-live-voice.meeting.title": "Meeting mode",
+  "dsh-live-voice.meeting.unavailable": "Recognition is unavailable.",
+  "dsh-live-voice.recognition.autoSend.countdownHelp": "Countdown starts after a final recognized phrase. New speech or edits cancel it.",
+  "dsh-live-voice.recognition.browser.autoInstallPack": "Automatically install this browser language pack when needed",
+  "dsh-live-voice.recognition.browser.help": "Uses the browser SpeechRecognition API. This is the default option.",
+  "dsh-live-voice.recognition.browser.label": "Browser SpeechRecognition \u2014 Default option",
+  "dsh-live-voice.recognition.browser.localProcessing": "Process recognition locally on this device",
+  "dsh-live-voice.recognition.browser.microphoneHelp": "Browser SpeechRecognition may use the browser or system default microphone instead of this selection.",
+  "dsh-live-voice.recognition.browser.remoteServiceWarning": "Browser-service recognition is enabled. The browser may send microphone audio to its recognition service.",
+  "dsh-live-voice.recognition.commands.clear": "Clear composer",
+  "dsh-live-voice.recognition.commands.enabled": "Enable exact voice commands",
+  "dsh-live-voice.recognition.commands.mute": "Mute composer input",
+  "dsh-live-voice.recognition.commands.queue": "Put in queue",
+  "dsh-live-voice.recognition.commands.resume": "Resume composer input",
+  "dsh-live-voice.recognition.commands.send": "Send to running agent",
+  "dsh-live-voice.recognition.commands.stopSpeech": "Stop assistant speech",
+  "dsh-live-voice.recognition.commands.title": "Voice commands",
+  "dsh-live-voice.recognition.dictation.cancel": "Cancel dictation",
+  "dsh-live-voice.recognition.engine.label": "Recognition engine",
+  "dsh-live-voice.recognition.headphoneMode.help": "Open microphone keeps listening while responses play. When your speech is detected, playback pauses and resumes only when you choose.",
+  "dsh-live-voice.recognition.headphoneMode.label": "Headphones \u2014 open microphone",
+  "dsh-live-voice.recognition.holdToTalk.enabled": "Hold Control to talk",
+  "dsh-live-voice.recognition.holdToTalk.help": "While a composer is open, hold Control anywhere on the page to capture speech. Release it to flush queued transcription, wait the configured send delay, queue the message, and close voice capture. Press Escape while holding to cancel.",
+  "dsh-live-voice.recognition.language.automatic": "Automatic \u2014 detect language",
+  "dsh-live-voice.recognition.language.label": "Recognition language",
+  "dsh-live-voice.recognition.manualSend.help": "Recognized text stays in the composer until you use the normal DSH Send control.",
+  "dsh-live-voice.recognition.maxUtterance.help": "If speech never pauses, start a new transcription chunk after this duration. Default: 60 seconds.",
+  "dsh-live-voice.recognition.maxUtterance.label": "Maximum continuous speech (seconds)",
+  "dsh-live-voice.recognition.microphone.checking": "Checking microphone availability",
+  "dsh-live-voice.recognition.microphone.device": "Input device",
+  "dsh-live-voice.recognition.microphone.failure": "Microphone: {reason}",
+  "dsh-live-voice.recognition.microphone.ignore": "Ignore composer input",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Microphone input: {state}",
+  "dsh-live-voice.recognition.microphone.label": "Microphone",
+  "dsh-live-voice.recognition.microphone.permissionHelp": "Microphone permission will be requested only when you start dictation or a voice conversation.",
+  "dsh-live-voice.recognition.microphone.resume": "Resume listening",
+  "dsh-live-voice.recognition.microphone.starting": "Starting microphone\u2026",
+  "dsh-live-voice.recognition.microphone.takeControl": "Take microphone",
+  "dsh-live-voice.recognition.minimumWords.enabled": "Ignore short final transcription chunks",
+  "dsh-live-voice.recognition.minimumWords.help": "Final chunks with fewer words are ignored before they reach the composer or automatic delivery.",
+  "dsh-live-voice.recognition.minimumWords.label": "Minimum words per final chunk",
+  "dsh-live-voice.recognition.mode.label": "Listening mode",
+  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 Soon",
+  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx Streaming \u2014 Soon",
+  "dsh-live-voice.recognition.planned.vote": "Coming Soon \u2014 vote on repo issues",
+  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 Soon",
+  "dsh-live-voice.recognition.planned.webGpu": "Browser WebGPU Inference \u2014 Soon",
+  "dsh-live-voice.recognition.presets.custom.description": "Choose your own silence duration.",
+  "dsh-live-voice.recognition.presets.custom.label": "Custom",
+  "dsh-live-voice.recognition.presets.long.description": "Wait through longer thinking pauses.",
+  "dsh-live-voice.recognition.presets.long.label": "Long",
+  "dsh-live-voice.recognition.presets.natural.description": "Allow normal pauses between phrases.",
+  "dsh-live-voice.recognition.presets.natural.label": "Natural",
+  "dsh-live-voice.recognition.presets.short.description": "Send quickly after a short pause.",
+  "dsh-live-voice.recognition.presets.short.label": "Short",
+  "dsh-live-voice.recognition.providerSettings.help": "Provider settings change with the selected recognition engine.",
+  "dsh-live-voice.recognition.qwen.captureHelp": "Audio is segmented into complete WAV utterances and sent through authenticated DSH to the host-local Qwen3 ASR model.",
+  "dsh-live-voice.recognition.qwen.connectionSuccess": "Connection successful. Both Qwen ASR and TTS are loaded. Unsaved edits have not been applied.",
+  "dsh-live-voice.recognition.qwen.endpointHelp": "HTTP API at the configured DSH host URL (default: http://127.0.0.1:8080/inference). Audio uses the authenticated DSH host transcription route.",
+  "dsh-live-voice.recognition.qwen.hostHelp": "Host-wide settings for the Qwen3 ASR + TTS server. Enter any HTTP or HTTPS base URL reachable from the DSH host. The browser accesses it through authenticated DSH routes.",
+  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
+  "dsh-live-voice.recognition.silenceDetection.customHelp": "Enter a whole number from 100 to 10,000 ms. Saved when you leave the field. Short pauses may split speech; recognition adds its own latency.",
+  "dsh-live-voice.recognition.silenceDetection.customLabel": "Custom pause (milliseconds)",
+  "dsh-live-voice.recognition.silenceDetection.duration": "Pause before sending: {milliseconds} ms",
+  "dsh-live-voice.recognition.silenceDetection.help": "Controls how long a pause must last before captured speech is sent for recognition.",
+  "dsh-live-voice.recognition.silenceDetection.label": "Silence detection",
+  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pause before sending",
+  "dsh-live-voice.recognition.silenceDetection.title": "Silence detection settings",
+  "dsh-live-voice.recognition.speakerMode.help": "Gated listening releases the microphone while responses play, preventing speaker audio from being recognized. Use Take microphone to interrupt.",
+  "dsh-live-voice.recognition.speakerMode.label": "Speakers \u2014 gated listening",
+  "dsh-live-voice.recognition.status.answer": "Recognizing answer\u2026",
+  "dsh-live-voice.recognition.status.awaitingAnswer": "Listening for your answer\u2026",
+  "dsh-live-voice.recognition.status.listening": "Listening \u2014 waiting for speech",
+  "dsh-live-voice.recognition.status.processing": "Recognizing speech\u2026",
+  "dsh-live-voice.recognition.status.unavailable": "Speech recognition unavailable",
+  "dsh-live-voice.recognition.voiceCommands.help": "Separate phrases with commas. Matching ignores capitalization, accents, punctuation, and extra spaces. The entire final chunk must match.",
+  "dsh-live-voice.recognition.whisper.captureHelp": "Audio is segmented into complete WAV utterances, sent through authenticated DSH, and processed by loopback whisper.cpp HTTP.",
+  "dsh-live-voice.recognition.whisper.connectionSuccess": "Connection successful. Health endpoint responded; transcription was not tested. Unsaved edits have not been applied.",
+  "dsh-live-voice.recognition.whisper.endpointHelp": "HTTP API at the configured base URL (default: http://127.0.0.1:8080/). Compatible with POST /v1/audio/transcriptions.",
+  "dsh-live-voice.recognition.whisper.healthFailed": "Whisper health check failed.",
+  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 HTTP API",
+  "dsh-live-voice.recognition.whisper.requestFailed": "Whisper settings request failed.",
+  "dsh-live-voice.recognition.whisper.restartRequired": "Whisper settings routes are not loaded. A normal DSH server restart is required to load updated plugin routes; refreshing this page alone is not enough.",
+  "dsh-live-voice.recognition.whisper.save": "Save Whisper settings",
+  "dsh-live-voice.recognition.whisper.saved": "Saved on the DSH host. Active host transcription requests were cancelled.",
+  "dsh-live-voice.recognition.whisper.signInRequired": "Sign in to DSH to manage Whisper settings.",
+  "dsh-live-voice.settings.autoSend.cancel": "Cancel automatic send",
+  "dsh-live-voice.settings.autoSend.countdown": "Sending in {remaining}\u2026",
+  "dsh-live-voice.settings.autoSend.delay": "Send after silence",
+  "dsh-live-voice.settings.close": "Close voice settings",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice uses your answer to choose the correct action for Steer and Queue. This does not change DSH settings; match your current DSH configuration and update this answer if it changes.",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "In your DSH, what does Enter do when the agent is busy?",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "Puts the message in the queue",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "Sends the message as steer",
+  "dsh-live-voice.settings.delivery.label": "Sending mode",
+  "dsh-live-voice.settings.delivery.manualLabel": "Off \u2014 review and send manually",
+  "dsh-live-voice.settings.delivery.queueLabel": "Queue \u2014 automatically add after silence",
+  "dsh-live-voice.settings.delivery.status": "Automatic delivery: {mode}",
+  "dsh-live-voice.settings.delivery.steerDescription": "send to the running agent",
+  "dsh-live-voice.settings.delivery.steerLabel": "Steer \u2014 automatically send to the running agent",
+  "dsh-live-voice.settings.delivery.toggle": "Automatic delivery mode",
+  "dsh-live-voice.settings.engine.refresh": "Refresh available engines",
+  "dsh-live-voice.settings.filters.title": "Filtering",
+  "dsh-live-voice.settings.general.title": "General",
+  "dsh-live-voice.settings.persistence.loadError": "Could not load Live Voice settings from the server. Reload to try again.",
+  "dsh-live-voice.settings.persistence.saveError": "Could not save Live Voice settings on the server. Please try again.",
+  "dsh-live-voice.settings.tabs.conversation": "Conversation",
+  "dsh-live-voice.settings.tabs.recognition": "Speech recognition",
+  "dsh-live-voice.settings.tabs.speak": "Speech",
+  "dsh-live-voice.settings.title": "Live Voice settings",
+  "dsh-live-voice.settings.whisper.hostHelp": "Host-wide settings. Only unauthenticated loopback HTTP URLs (localhost, 127.0.0.1, [::1]) are allowed. Loopback means the DSH host, not this browser. All health checks and audio requests run through the authenticated backend.",
+  "dsh-live-voice.speak.agentContext.enabled": "Enable agent voice context",
+  "dsh-live-voice.speak.agentContext.enabledHelp": "When enabled, the context below tells the agent that its responses will be spoken aloud.",
+  "dsh-live-voice.speak.agentContext.help": "This English instruction is sent to the agent only during an active voice conversation with automatic assistant speech enabled.",
+  "dsh-live-voice.speak.agentContext.label": "Agent voice context",
+  "dsh-live-voice.speak.agentContext.restore": "Restore default",
+  "dsh-live-voice.speak.autoPlayback.enabled": "Automatically speak new assistant messages",
+  "dsh-live-voice.speak.autoPlayback.help": "During a voice conversation, assistant phrases are announced automatically. Playback waits while you are speaking.",
+  "dsh-live-voice.speak.autoPlayback.label": "Automatic assistant speech",
+  "dsh-live-voice.speak.autoPlayback.remainingOne": "Automatic assistant speech: {state} \u2014 {count} speech segment remaining",
+  "dsh-live-voice.speak.autoPlayback.remainingOther": "Automatic assistant speech: {state} \u2014 {count} speech segments remaining",
+  "dsh-live-voice.speak.autoPlayback.status": "Automatic assistant speech: {state}",
+  "dsh-live-voice.speak.browser.automaticVoice": "Automatic local voice",
+  "dsh-live-voice.speak.browser.label": "Browser speech \u2014 device audio",
+  "dsh-live-voice.speak.browser.name": "Browser speech",
+  "dsh-live-voice.speak.browser.outputHelp": "Browser speech synthesis may ignore the selected output device; this browser API normally follows the system default.",
+  "dsh-live-voice.speak.browser.voice": "Local browser voice",
+  "dsh-live-voice.speak.captions.approximate": "Approximate speech captions",
+  "dsh-live-voice.speak.captions.loading": "Preparing speech audio",
+  "dsh-live-voice.speak.captions.position": "Speech segment {index} of {total}",
+  "dsh-live-voice.speak.captions.progress": "Approximate speech progress",
+  "dsh-live-voice.speak.captions.title": "Speech and live captions",
+  "dsh-live-voice.speak.engine.label": "Speech engine",
+  "dsh-live-voice.speak.engine.playbackHelp": "Qwen and macOS say synthesize on the DSH host; compact AAC/M4A audio plays in this browser. Browser speech synthesizes and plays on this device.",
+  "dsh-live-voice.speak.filters.code.enabled": "Filter Markdown code blocks before speaking",
+  "dsh-live-voice.speak.filters.code.maxLines": "Read code blocks up to this many lines",
+  "dsh-live-voice.speak.filters.code.notice": "Look at the code in our conversation",
+  "dsh-live-voice.speak.filters.code.replacement": "Replacement phrase for larger code blocks",
+  "dsh-live-voice.speak.interruption.disabledHelp": "Sending another message does not stop the assistant audio you are already hearing.",
+  "dsh-live-voice.speak.interruption.enabled": "Stop assistant speech when I send a message",
+  "dsh-live-voice.speak.interruption.enabledHelp": "Sending or steering a new user message stops current or paused assistant speech.",
+  "dsh-live-voice.speak.macos.label": "macOS say \u2014 host audio",
+  "dsh-live-voice.speak.macos.name": "macOS say",
+  "dsh-live-voice.speak.macos.outputHelp": "macOS say uses the output selected on the DSH host.",
+  "dsh-live-voice.speak.output.checking": "Checking speech output\u2026",
+  "dsh-live-voice.speak.output.device": "Output device",
+  "dsh-live-voice.speak.output.fallbackName": "Audio output",
+  "dsh-live-voice.speak.output.stopTest": "Stop speech test",
+  "dsh-live-voice.speak.output.test": "Test selected speech output",
+  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice. The selected speech output is working.",
+  "dsh-live-voice.speak.output.testing": "Testing speech\u2026",
+  "dsh-live-voice.speak.playback.message": "Speak message",
+  "dsh-live-voice.speak.playback.next": "Skip to next speech segment",
+  "dsh-live-voice.speak.playback.pause": "Pause speech",
+  "dsh-live-voice.speak.playback.previous": "Previous speech segment",
+  "dsh-live-voice.speak.playback.resume": "Resume speech",
+  "dsh-live-voice.speak.playback.stop": "Stop speaking",
+  "dsh-live-voice.speak.playback.stopAll": "Stop all speech",
+  "dsh-live-voice.speak.qwen.connection": "Qwen server connection",
+  "dsh-live-voice.speak.qwen.endpoint": "Qwen API base URL",
+  "dsh-live-voice.speak.qwen.healthFailed": "Qwen health check failed.",
+  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 local MLX server",
+  "dsh-live-voice.speak.qwen.name": "Qwen3 local",
+  "dsh-live-voice.speak.qwen.requestFailed": "Qwen settings request failed.",
+  "dsh-live-voice.speak.qwen.restartRequired": "Qwen settings routes are not loaded. A normal DSH server restart is required to load updated plugin routes; refreshing this page alone is not enough.",
+  "dsh-live-voice.speak.qwen.save": "Save Qwen settings",
+  "dsh-live-voice.speak.qwen.saved": "Saved on the DSH host. Active Qwen requests were cancelled.",
+  "dsh-live-voice.speak.qwen.signInRequired": "Sign in to DSH to manage Qwen settings.",
+  "dsh-live-voice.speak.qwen.test": "Test Qwen server",
+  "dsh-live-voice.speak.qwen.voice": "Qwen voice",
+  "dsh-live-voice.speak.qwen.voiceHelp": "Aiden is used by default. These preset voices are not native Brazilian Portuguese voices.",
+  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 male, American English",
+  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 male, Beijing Chinese",
+  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 male, Sichuan Chinese",
+  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 female, Japanese",
+  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 male, English",
+  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 female, Chinese",
+  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 female, Korean",
+  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 male, Chinese",
+  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 female, Chinese",
+  "dsh-live-voice.speak.rate.help": "Relative speed: 1 is normal.",
+  "dsh-live-voice.speak.rate.label": "Speech rate",
+  "dsh-live-voice.speak.responseDelay.help": "After you stop speaking, automatic assistant playback waits for this much continuous silence. Speaking again restarts the wait.",
+  "dsh-live-voice.speak.responseDelay.label": "Assistant response delay",
+  "dsh-live-voice.speak.responseDelay.none": "No delay",
+  "dsh-live-voice.speak.segmentGap.help": "Wait this many milliseconds between consecutive spoken segments. 400 ms is the default.",
+  "dsh-live-voice.speak.segmentGap.label": "Pause between speech segments",
+  "dsh-live-voice.speak.status.paused": "Speech paused",
+  "dsh-live-voice.speak.status.playing": "Speaking"
+};
+var en_default = Object.freeze(en);
+
+// src/app/client/i18n/catalogs/es.ts
+var es = {
+  "dsh-live-voice.commons.connection.contactingHost": "Conectando con el host de DSH\u2026",
+  "dsh-live-voice.commons.connection.endpoint": "URL del punto de acceso",
+  "dsh-live-voice.commons.connection.healthEndpoint": "URL o ruta de comprobaci\xF3n de estado",
+  "dsh-live-voice.commons.connection.reload": "Volver a cargar la configuraci\xF3n guardada",
+  "dsh-live-voice.commons.connection.test": "Probar conexi\xF3n",
+  "dsh-live-voice.commons.connection.timeout": "Tiempo de espera de las solicitudes (ms)",
+  "dsh-live-voice.commons.connection.title": "Configuraci\xF3n de conexi\xF3n",
+  "dsh-live-voice.commons.connection.unsaved": "Cambios sin guardar",
+  "dsh-live-voice.commons.controls.title": "Controles de voz",
+  "dsh-live-voice.commons.conversation.end": "Terminar conversaci\xF3n por voz",
+  "dsh-live-voice.commons.conversation.idle": "Conversaci\xF3n inactiva",
+  "dsh-live-voice.commons.conversation.start": "Iniciar conversaci\xF3n por voz",
+  "dsh-live-voice.commons.delivery.queueBadge": "COLA",
+  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
+  "dsh-live-voice.commons.dismiss": "Descartar",
+  "dsh-live-voice.commons.dismissError": "Descartar error de voz",
+  "dsh-live-voice.commons.engine.failure": "{engine}: {reason}",
+  "dsh-live-voice.commons.input.ignoring": "ignorando",
+  "dsh-live-voice.commons.input.ignoringBadge": "IGNORANDO",
+  "dsh-live-voice.commons.input.listening": "escuchando",
+  "dsh-live-voice.commons.input.listeningBadge": "ESCUCHANDO",
+  "dsh-live-voice.commons.manual": "manual",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
+  "dsh-live-voice.commons.off": "desactivado",
+  "dsh-live-voice.commons.on": "activado",
+  "dsh-live-voice.commons.pluginName": "Live Voice",
+  "dsh-live-voice.commons.queue": "cola",
+  "dsh-live-voice.commons.repository.starLabel": "Danos una estrella en GitHub",
+  "dsh-live-voice.commons.repository.starLink": "Dar una estrella a DSH Live Voice en GitHub",
+  "dsh-live-voice.commons.second": "1 segundo",
+  "dsh-live-voice.commons.seconds": "{seconds} segundos",
+  "dsh-live-voice.commons.send": "ENVIAR",
+  "dsh-live-voice.commons.status.ready": "Funciones de voz listas",
+  "dsh-live-voice.commons.systemDefault": "Predeterminado del sistema",
+  "dsh-live-voice.commons.toggle.offBadge": "DESACTIVADO",
+  "dsh-live-voice.commons.unknownLanguage": "idioma desconocido",
+  "dsh-live-voice.commons.update.label": "Actualizaci\xF3n disponible",
+  "dsh-live-voice.commons.update.link": "Actualizaci\xF3n disponible: {version}. Abrir la p\xE1gina de esta versi\xF3n",
+  "dsh-live-voice.commons.update.version": "Actualizaci\xF3n disponible: {version}",
+  "dsh-live-voice.commons.version.compatibility": "Compatible con DSH v{version}",
+  "dsh-live-voice.commons.version.compatibilityLink": "Compatible con DSH v{version}. Abrir la p\xE1gina de esta versi\xF3n",
+  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
+  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}. Abrir la lista de versiones",
+  "dsh-live-voice.commons.version.title": "Informaci\xF3n de versi\xF3n",
+  "dsh-live-voice.meeting.failed": "Error de reconocimiento.",
+  "dsh-live-voice.meeting.help": "Fuentes independientes; env\xEDa las transcripciones manualmente desde el editor.",
+  "dsh-live-voice.meeting.httpRequired": "Usa Qwen o Whisper HTTP para el modo reuni\xF3n.",
+  "dsh-live-voice.meeting.inactive": "Inactivo",
+  "dsh-live-voice.meeting.listening": "Escuchando",
+  "dsh-live-voice.meeting.microphone": "Micr\xF3fono",
+  "dsh-live-voice.meeting.noAudio": "No se comparti\xF3 audio. Activa el audio en el di\xE1logo.",
+  "dsh-live-voice.meeting.processing": "Transcribiendo\u2026",
+  "dsh-live-voice.meeting.shared": "Audio compartido",
+  "dsh-live-voice.meeting.start": "Iniciar fuente",
+  "dsh-live-voice.meeting.starting": "Iniciando\u2026",
+  "dsh-live-voice.meeting.stop": "Detener fuente",
+  "dsh-live-voice.meeting.timestamps": "Marcas de tiempo de transcripci\xF3n",
+  "dsh-live-voice.meeting.timestampsBadge": "Tiempo",
+  "dsh-live-voice.meeting.title": "Modo reuni\xF3n",
+  "dsh-live-voice.meeting.unavailable": "Reconocimiento no disponible.",
+  "dsh-live-voice.recognition.autoSend.countdownHelp": "La cuenta atr\xE1s comienza tras el reconocimiento definitivo de una frase. Hablar de nuevo o editar el texto la cancela.",
+  "dsh-live-voice.recognition.browser.autoInstallPack": "Instalar autom\xE1ticamente este paquete de idioma del navegador cuando sea necesario",
+  "dsh-live-voice.recognition.browser.help": "Utiliza la API SpeechRecognition del navegador. Esta es la opci\xF3n predeterminada.",
+  "dsh-live-voice.recognition.browser.label": "SpeechRecognition del navegador \u2014 Opci\xF3n predeterminada",
+  "dsh-live-voice.recognition.browser.localProcessing": "Procesar el reconocimiento localmente en este dispositivo",
+  "dsh-live-voice.recognition.browser.microphoneHelp": "SpeechRecognition puede utilizar el micr\xF3fono predeterminado del navegador o del sistema en lugar del seleccionado aqu\xED.",
+  "dsh-live-voice.recognition.browser.remoteServiceWarning": "El reconocimiento mediante el servicio del navegador est\xE1 activado. El navegador puede enviar el audio del micr\xF3fono a su servicio de reconocimiento.",
+  "dsh-live-voice.recognition.commands.clear": "Vaciar el cuadro de mensaje",
+  "dsh-live-voice.recognition.commands.enabled": "Activar comandos de voz con coincidencia exacta",
+  "dsh-live-voice.recognition.commands.mute": "Suspender la entrada de voz en el cuadro de mensaje",
+  "dsh-live-voice.recognition.commands.queue": "A\xF1adir a la cola",
+  "dsh-live-voice.recognition.commands.resume": "Reanudar la entrada de voz en el cuadro de mensaje",
+  "dsh-live-voice.recognition.commands.send": "Enviar al agente en ejecuci\xF3n",
+  "dsh-live-voice.recognition.commands.stopSpeech": "Detener la lectura en voz alta del asistente",
+  "dsh-live-voice.recognition.commands.title": "Comandos de voz",
+  "dsh-live-voice.recognition.dictation.cancel": "Cancelar dictado",
+  "dsh-live-voice.recognition.engine.label": "Motor de reconocimiento",
+  "dsh-live-voice.recognition.headphoneMode.help": "El micr\xF3fono abierto sigue escuchando mientras se reproducen las respuestas. Al detectar tu voz, la reproducci\xF3n se pausa y solo se reanuda cuando t\xFA lo decides.",
+  "dsh-live-voice.recognition.headphoneMode.label": "Auriculares \u2014 micr\xF3fono abierto",
+  "dsh-live-voice.recognition.holdToTalk.enabled": "Mantener Control pulsado para hablar",
+  "dsh-live-voice.recognition.holdToTalk.help": "Con un cuadro de mensaje abierto, mant\xE9n Control pulsado en cualquier parte de la p\xE1gina para capturar tu voz. Al soltarlo, se procesa la transcripci\xF3n pendiente, se espera el retraso de env\xEDo configurado, se a\xF1ade el mensaje a la cola y se cierra la captura de voz. Pulsa Escape mientras mantienes Control para cancelar.",
+  "dsh-live-voice.recognition.language.automatic": "Autom\xE1tico \u2014 detectar idioma",
+  "dsh-live-voice.recognition.language.label": "Idioma de reconocimiento",
+  "dsh-live-voice.recognition.manualSend.help": "El texto reconocido permanece en el cuadro de mensaje hasta que utilices el bot\xF3n de env\xEDo habitual de DSH.",
+  "dsh-live-voice.recognition.maxUtterance.help": "Si hablas sin hacer pausas, se inicia un nuevo fragmento de transcripci\xF3n tras este intervalo. Valor predeterminado: 60 segundos.",
+  "dsh-live-voice.recognition.maxUtterance.label": "Duraci\xF3n m\xE1xima del habla continua (segundos)",
+  "dsh-live-voice.recognition.microphone.checking": "Comprobando la disponibilidad del micr\xF3fono",
+  "dsh-live-voice.recognition.microphone.device": "Dispositivo de entrada",
+  "dsh-live-voice.recognition.microphone.failure": "Micr\xF3fono: {reason}",
+  "dsh-live-voice.recognition.microphone.ignore": "Ignorar la entrada de voz en el cuadro de mensaje",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada del micr\xF3fono: {state}",
+  "dsh-live-voice.recognition.microphone.label": "Micr\xF3fono",
+  "dsh-live-voice.recognition.microphone.permissionHelp": "Solo se solicitar\xE1 permiso para usar el micr\xF3fono cuando inicies un dictado o una conversaci\xF3n por voz.",
+  "dsh-live-voice.recognition.microphone.resume": "Reanudar escucha",
+  "dsh-live-voice.recognition.microphone.starting": "Iniciando micr\xF3fono\u2026",
+  "dsh-live-voice.recognition.microphone.takeControl": "Tomar el control del micr\xF3fono",
+  "dsh-live-voice.recognition.minimumWords.enabled": "Ignorar los fragmentos definitivos de transcripci\xF3n demasiado cortos",
+  "dsh-live-voice.recognition.minimumWords.help": "Los fragmentos definitivos con menos palabras se descartan antes de llegar al cuadro de mensaje o al env\xEDo autom\xE1tico.",
+  "dsh-live-voice.recognition.minimumWords.label": "M\xEDnimo de palabras por fragmento definitivo",
+  "dsh-live-voice.recognition.mode.label": "Modo de escucha",
+  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 Pr\xF3ximamente",
+  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx en continuo \u2014 Pr\xF3ximamente",
+  "dsh-live-voice.recognition.planned.vote": "Pr\xF3ximamente \u2014 vota en las incidencias del repositorio",
+  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 Pr\xF3ximamente",
+  "dsh-live-voice.recognition.planned.webGpu": "Inferencia WebGPU en el navegador \u2014 Pr\xF3ximamente",
+  "dsh-live-voice.recognition.presets.custom.description": "Elige la duraci\xF3n del silencio.",
+  "dsh-live-voice.recognition.presets.custom.label": "Personalizada",
+  "dsh-live-voice.recognition.presets.long.description": "Espera durante pausas de reflexi\xF3n m\xE1s largas.",
+  "dsh-live-voice.recognition.presets.long.label": "Larga",
+  "dsh-live-voice.recognition.presets.natural.description": "Permite pausas normales entre frases.",
+  "dsh-live-voice.recognition.presets.natural.label": "Natural",
+  "dsh-live-voice.recognition.presets.short.description": "Env\xEDa r\xE1pidamente despu\xE9s de una pausa corta.",
+  "dsh-live-voice.recognition.presets.short.label": "Corta",
+  "dsh-live-voice.recognition.providerSettings.help": "La configuraci\xF3n del proveedor cambia seg\xFAn el motor de reconocimiento seleccionado.",
+  "dsh-live-voice.recognition.qwen.captureHelp": "El audio se divide en enunciados completos en formato WAV y se env\xEDa a trav\xE9s de DSH con autenticaci\xF3n al modelo Qwen3 ASR ejecutado localmente en el host.",
+  "dsh-live-voice.recognition.qwen.connectionSuccess": "Conexi\xF3n correcta. Qwen ASR y TTS est\xE1n cargados. Los cambios sin guardar no se han aplicado.",
+  "dsh-live-voice.recognition.qwen.endpointHelp": "API HTTP en la URL configurada en el host de DSH (predeterminada: http://127.0.0.1:8080/inference). El audio utiliza la ruta de transcripci\xF3n autenticada del host de DSH.",
+  "dsh-live-voice.recognition.qwen.hostHelp": "Configuraci\xF3n para todo el host del servidor Qwen3 ASR + TTS. Introduce una URL base HTTP o HTTPS accesible desde el host de DSH. El navegador accede a ella mediante las rutas autenticadas de DSH.",
+  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
+  "dsh-live-voice.recognition.silenceDetection.customHelp": "Introduce un n\xFAmero entero de 100 a 10.000 ms. Se guarda al salir del campo. Las pausas cortas pueden dividir el habla; el reconocimiento a\xF1ade su propia latencia.",
+  "dsh-live-voice.recognition.silenceDetection.customLabel": "Pausa personalizada (milisegundos)",
+  "dsh-live-voice.recognition.silenceDetection.duration": "Pausa antes de enviar: {milliseconds} ms",
+  "dsh-live-voice.recognition.silenceDetection.help": "Determina cu\xE1nto debe durar una pausa antes de enviar la voz capturada para su reconocimiento.",
+  "dsh-live-voice.recognition.silenceDetection.label": "Detecci\xF3n de silencio",
+  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pausa antes de enviar",
+  "dsh-live-voice.recognition.silenceDetection.title": "Configuraci\xF3n de detecci\xF3n de silencio",
+  "dsh-live-voice.recognition.speakerMode.help": "La escucha controlada libera el micr\xF3fono mientras se reproducen las respuestas para evitar que se reconozca el audio de los altavoces. Usa \xABTomar el control del micr\xF3fono\xBB para interrumpir la reproducci\xF3n.",
+  "dsh-live-voice.recognition.speakerMode.label": "Altavoces \u2014 escucha controlada",
+  "dsh-live-voice.recognition.status.answer": "Reconociendo respuesta\u2026",
+  "dsh-live-voice.recognition.status.awaitingAnswer": "Escuchando tu respuesta\u2026",
+  "dsh-live-voice.recognition.status.listening": "Escuchando \u2014 esperando voz",
+  "dsh-live-voice.recognition.status.processing": "Reconociendo voz\u2026",
+  "dsh-live-voice.recognition.status.unavailable": "Reconocimiento de voz no disponible",
+  "dsh-live-voice.recognition.voiceCommands.help": "Separa las frases con comas. La comparaci\xF3n ignora may\xFAsculas, acentos, puntuaci\xF3n y espacios adicionales. Debe coincidir todo el fragmento definitivo.",
+  "dsh-live-voice.recognition.whisper.captureHelp": "El audio se divide en enunciados completos en formato WAV, se env\xEDa a trav\xE9s de DSH con autenticaci\xF3n y se procesa mediante el servidor HTTP de whisper.cpp en la interfaz de bucle local.",
+  "dsh-live-voice.recognition.whisper.connectionSuccess": "Conexi\xF3n correcta. El punto de acceso de comprobaci\xF3n de estado ha respondido; no se ha probado la transcripci\xF3n. Los cambios sin guardar no se han aplicado.",
+  "dsh-live-voice.recognition.whisper.endpointHelp": "API HTTP en la URL base configurada (predeterminada: http://127.0.0.1:8080/). Compatible con POST /v1/audio/transcriptions.",
+  "dsh-live-voice.recognition.whisper.healthFailed": "Ha fallado la comprobaci\xF3n de estado de Whisper.",
+  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 API HTTP",
+  "dsh-live-voice.recognition.whisper.requestFailed": "Ha fallado la solicitud de configuraci\xF3n de Whisper.",
+  "dsh-live-voice.recognition.whisper.restartRequired": "Las rutas de configuraci\xF3n de Whisper no est\xE1n cargadas. Es necesario reiniciar normalmente el servidor DSH para cargar las rutas actualizadas del complemento; no basta con actualizar esta p\xE1gina.",
+  "dsh-live-voice.recognition.whisper.save": "Guardar la configuraci\xF3n de Whisper",
+  "dsh-live-voice.recognition.whisper.saved": "Guardado en el host de DSH. Se han cancelado las solicitudes de transcripci\xF3n activas del host.",
+  "dsh-live-voice.recognition.whisper.signInRequired": "Inicia sesi\xF3n en DSH para gestionar la configuraci\xF3n de Whisper.",
+  "dsh-live-voice.settings.autoSend.cancel": "Cancelar env\xEDo autom\xE1tico",
+  "dsh-live-voice.settings.autoSend.countdown": "Enviando en {remaining}\u2026",
+  "dsh-live-voice.settings.autoSend.delay": "Enviar despu\xE9s del silencio",
+  "dsh-live-voice.settings.close": "Cerrar configuraci\xF3n de voz",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice usa tu respuesta para elegir la acci\xF3n correcta para Redirigir y Cola. Esto no cambia la configuraci\xF3n de DSH; indica el comportamiento que ya usas y actualiza esta respuesta si cambia.",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "En tu DSH, \xBFqu\xE9 hace Enter cuando el agente est\xE1 ocupado?",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "A\xF1ade el mensaje a la cola",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "Env\xEDa el mensaje para redirigir al agente",
+  "dsh-live-voice.settings.delivery.label": "Modo de env\xEDo",
+  "dsh-live-voice.settings.delivery.manualLabel": "Desactivado \u2014 revisar y enviar manualmente",
+  "dsh-live-voice.settings.delivery.queueLabel": "Cola \u2014 a\xF1adir autom\xE1ticamente tras un silencio",
+  "dsh-live-voice.settings.delivery.status": "Env\xEDo autom\xE1tico: {mode}",
+  "dsh-live-voice.settings.delivery.steerDescription": "enviar al agente en ejecuci\xF3n",
+  "dsh-live-voice.settings.delivery.steerLabel": "Redirigir \u2014 enviar autom\xE1ticamente al agente en ejecuci\xF3n",
+  "dsh-live-voice.settings.delivery.toggle": "Modo de env\xEDo autom\xE1tico",
+  "dsh-live-voice.settings.engine.refresh": "Actualizar los motores disponibles",
+  "dsh-live-voice.settings.filters.title": "Filtrado",
+  "dsh-live-voice.settings.general.title": "General",
+  "dsh-live-voice.settings.persistence.loadError": "No se pudieron cargar los ajustes de Live Voice del servidor. Recarga para volver a intentarlo.",
+  "dsh-live-voice.settings.persistence.saveError": "No se pudieron guardar los ajustes de Live Voice en el servidor. Int\xE9ntalo de nuevo.",
+  "dsh-live-voice.settings.tabs.conversation": "Conversaci\xF3n",
+  "dsh-live-voice.settings.tabs.recognition": "Reconocimiento de voz",
+  "dsh-live-voice.settings.tabs.speak": "S\xEDntesis de voz",
+  "dsh-live-voice.settings.title": "Configuraci\xF3n de Live Voice",
+  "dsh-live-voice.settings.whisper.hostHelp": "Configuraci\xF3n para todo el host. Solo se permiten URL HTTP sin autenticaci\xF3n en la interfaz de bucle local (localhost, 127.0.0.1, [::1]). El bucle local se refiere al host de DSH, no a este navegador. Todas las comprobaciones de estado y solicitudes de audio pasan por el servidor con autenticaci\xF3n.",
+  "dsh-live-voice.speak.agentContext.enabled": "Activar el contexto de voz del agente",
+  "dsh-live-voice.speak.agentContext.enabledHelp": "Cuando est\xE1 activado, el contexto siguiente informa al agente que sus respuestas se leer\xE1n en voz alta.",
+  "dsh-live-voice.speak.agentContext.help": "Esta instrucci\xF3n en ingl\xE9s se env\xEDa al agente solo durante una conversaci\xF3n de voz activa con habla autom\xE1tica del asistente activada.",
+  "dsh-live-voice.speak.agentContext.label": "Contexto de voz del agente",
+  "dsh-live-voice.speak.agentContext.restore": "Restaurar predeterminado",
+  "dsh-live-voice.speak.autoPlayback.enabled": "Leer autom\xE1ticamente los nuevos mensajes del asistente en voz alta",
+  "dsh-live-voice.speak.autoPlayback.help": "Durante una conversaci\xF3n por voz, las frases del asistente se leen autom\xE1ticamente. La reproducci\xF3n espera mientras hablas.",
+  "dsh-live-voice.speak.autoPlayback.label": "Lectura autom\xE1tica del asistente",
+  "dsh-live-voice.speak.autoPlayback.remainingOne": "Lectura autom\xE1tica del asistente: {state} \u2014 queda {count} segmento de voz",
+  "dsh-live-voice.speak.autoPlayback.remainingOther": "Lectura autom\xE1tica del asistente: {state} \u2014 quedan {count} segmentos de voz",
+  "dsh-live-voice.speak.autoPlayback.status": "Lectura autom\xE1tica del asistente: {state}",
+  "dsh-live-voice.speak.browser.automaticVoice": "Voz local autom\xE1tica",
+  "dsh-live-voice.speak.browser.label": "S\xEDntesis de voz del navegador \u2014 audio en este dispositivo",
+  "dsh-live-voice.speak.browser.name": "S\xEDntesis de voz del navegador",
+  "dsh-live-voice.speak.browser.outputHelp": "La s\xEDntesis de voz del navegador puede ignorar el dispositivo de salida seleccionado; esta API del navegador normalmente utiliza el predeterminado del sistema.",
+  "dsh-live-voice.speak.browser.voice": "Voz local del navegador",
+  "dsh-live-voice.speak.captions.approximate": "Subt\xEDtulos de voz aproximados",
+  "dsh-live-voice.speak.captions.loading": "Preparando audio de voz",
+  "dsh-live-voice.speak.captions.position": "Fragmento de voz {index} de {total}",
+  "dsh-live-voice.speak.captions.progress": "Progreso aproximado de voz",
+  "dsh-live-voice.speak.captions.title": "Voz y subt\xEDtulos en vivo",
+  "dsh-live-voice.speak.engine.label": "Motor de s\xEDntesis de voz",
+  "dsh-live-voice.speak.engine.playbackHelp": "Qwen y macOS say sintetizan en el host de DSH; el audio AAC/M4A compacto se reproduce en este navegador. La voz del navegador se sintetiza y reproduce en este dispositivo.",
+  "dsh-live-voice.speak.filters.code.enabled": "Filtrar los bloques de c\xF3digo Markdown antes de leer en voz alta",
+  "dsh-live-voice.speak.filters.code.maxLines": "M\xE1ximo de l\xEDneas de los bloques de c\xF3digo que se leer\xE1n",
+  "dsh-live-voice.speak.filters.code.notice": "Mira el c\xF3digo en nuestra conversaci\xF3n",
+  "dsh-live-voice.speak.filters.code.replacement": "Frase de reemplazo para los bloques de c\xF3digo m\xE1s largos",
+  "dsh-live-voice.speak.interruption.disabledHelp": "Enviar otro mensaje no detiene el audio del asistente que ya est\xE1s escuchando.",
+  "dsh-live-voice.speak.interruption.enabled": "Detener la lectura en voz alta del asistente cuando env\xEDe un mensaje",
+  "dsh-live-voice.speak.interruption.enabledHelp": "Enviar un nuevo mensaje de usuario, incluso al agente en ejecuci\xF3n, detiene la lectura en voz alta del asistente, tanto si est\xE1 reproduci\xE9ndose como si est\xE1 en pausa.",
+  "dsh-live-voice.speak.macos.label": "macOS say \u2014 audio en el host",
+  "dsh-live-voice.speak.macos.name": "macOS say",
+  "dsh-live-voice.speak.macos.outputHelp": "macOS say utiliza la salida seleccionada en el host de DSH.",
+  "dsh-live-voice.speak.output.checking": "Comprobando la salida de voz\u2026",
+  "dsh-live-voice.speak.output.device": "Dispositivo de salida",
+  "dsh-live-voice.speak.output.fallbackName": "Salida de audio",
+  "dsh-live-voice.speak.output.stopTest": "Detener la prueba de voz",
+  "dsh-live-voice.speak.output.test": "Probar la salida de voz seleccionada",
+  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice. La salida de voz seleccionada funciona.",
+  "dsh-live-voice.speak.output.testing": "Probando la voz\u2026",
+  "dsh-live-voice.speak.playback.message": "Leer el mensaje en voz alta",
+  "dsh-live-voice.speak.playback.next": "Saltar al siguiente segmento de voz",
+  "dsh-live-voice.speak.playback.pause": "Pausar la lectura en voz alta",
+  "dsh-live-voice.speak.playback.previous": "Fragmento de voz anterior",
+  "dsh-live-voice.speak.playback.resume": "Reanudar la lectura en voz alta",
+  "dsh-live-voice.speak.playback.stop": "Detener la lectura en voz alta",
+  "dsh-live-voice.speak.playback.stopAll": "Detener toda la lectura en voz alta",
+  "dsh-live-voice.speak.qwen.connection": "Conexi\xF3n al servidor Qwen",
+  "dsh-live-voice.speak.qwen.endpoint": "URL base de la API de Qwen",
+  "dsh-live-voice.speak.qwen.healthFailed": "Ha fallado la comprobaci\xF3n de estado de Qwen.",
+  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 servidor MLX local",
+  "dsh-live-voice.speak.qwen.name": "Qwen3 local",
+  "dsh-live-voice.speak.qwen.requestFailed": "Ha fallado la solicitud de configuraci\xF3n de Qwen.",
+  "dsh-live-voice.speak.qwen.restartRequired": "Las rutas de configuraci\xF3n de Qwen no est\xE1n cargadas. Es necesario reiniciar normalmente el servidor DSH para cargar las rutas actualizadas del complemento; no basta con actualizar esta p\xE1gina.",
+  "dsh-live-voice.speak.qwen.save": "Guardar la configuraci\xF3n de Qwen",
+  "dsh-live-voice.speak.qwen.saved": "Guardado en el host de DSH. Se han cancelado las solicitudes activas de Qwen.",
+  "dsh-live-voice.speak.qwen.signInRequired": "Inicia sesi\xF3n en DSH para gestionar la configuraci\xF3n de Qwen.",
+  "dsh-live-voice.speak.qwen.test": "Probar el servidor Qwen",
+  "dsh-live-voice.speak.qwen.voice": "Voz de Qwen",
+  "dsh-live-voice.speak.qwen.voiceHelp": "Aiden se utiliza de forma predeterminada. Estas voces predefinidas no son voces nativas de portugu\xE9s brasile\xF1o.",
+  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 masculino, ingl\xE9s estadounidense",
+  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 masculino, chino de Pek\xEDn",
+  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 masculino, chino de Sichuan",
+  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 femenino, japon\xE9s",
+  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 masculino, ingl\xE9s",
+  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 femenino, chino",
+  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 femenino, coreano",
+  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 masculino, chino",
+  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 femenino, chino",
+  "dsh-live-voice.speak.rate.help": "Velocidad relativa: 1 es la velocidad normal.",
+  "dsh-live-voice.speak.rate.label": "Velocidad de habla",
+  "dsh-live-voice.speak.responseDelay.help": "Cuando dejas de hablar, la reproducci\xF3n autom\xE1tica del asistente espera este intervalo de silencio continuo. Si vuelves a hablar, la espera se reinicia.",
+  "dsh-live-voice.speak.responseDelay.label": "Demora de respuesta del asistente",
+  "dsh-live-voice.speak.responseDelay.none": "Sin retraso",
+  "dsh-live-voice.speak.segmentGap.help": "Espera esta cantidad de milisegundos entre segmentos hablados consecutivos. El valor predeterminado es 400 ms.",
+  "dsh-live-voice.speak.segmentGap.label": "Pausa entre segmentos de voz",
+  "dsh-live-voice.speak.status.paused": "Lectura en pausa",
+  "dsh-live-voice.speak.status.playing": "Hablando"
+};
+var es_default = Object.freeze(es);
+
+// src/app/client/i18n/catalogs/fr.ts
+var fr = {
+  "dsh-live-voice.commons.connection.contactingHost": "Connexion \xE0 l\u2019h\xF4te DSH\u2026",
+  "dsh-live-voice.commons.connection.endpoint": "URL du point d\u2019acc\xE8s",
+  "dsh-live-voice.commons.connection.healthEndpoint": "URL ou chemin de v\xE9rification de l\u2019\xE9tat",
+  "dsh-live-voice.commons.connection.reload": "Recharger les param\xE8tres enregistr\xE9s",
+  "dsh-live-voice.commons.connection.test": "Tester la connexion",
+  "dsh-live-voice.commons.connection.timeout": "D\xE9lai d\u2019expiration des requ\xEAtes (ms)",
+  "dsh-live-voice.commons.connection.title": "Param\xE8tres de connexion",
+  "dsh-live-voice.commons.connection.unsaved": "Modifications non enregistr\xE9es",
+  "dsh-live-voice.commons.controls.title": "Contr\xF4les vocaux",
+  "dsh-live-voice.commons.conversation.end": "Terminer la conversation vocale",
+  "dsh-live-voice.commons.conversation.idle": "Conversation inactive",
+  "dsh-live-voice.commons.conversation.start": "D\xE9marrer une conversation vocale",
+  "dsh-live-voice.commons.delivery.queueBadge": "FILE",
+  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
+  "dsh-live-voice.commons.dismiss": "Fermer",
+  "dsh-live-voice.commons.dismissError": "Masquer l\u2019erreur vocale",
+  "dsh-live-voice.commons.engine.failure": "{engine} : {reason}",
+  "dsh-live-voice.commons.input.ignoring": "entr\xE9e ignor\xE9e",
+  "dsh-live-voice.commons.input.ignoringBadge": "ENTR\xC9E IGNOR\xC9E",
+  "dsh-live-voice.commons.input.listening": "\xE0 l\u2019\xE9coute",
+  "dsh-live-voice.commons.input.listeningBadge": "\xC0 L\u2019\xC9COUTE",
+  "dsh-live-voice.commons.manual": "manuel",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
+  "dsh-live-voice.commons.off": "d\xE9sactiv\xE9",
+  "dsh-live-voice.commons.on": "activ\xE9",
+  "dsh-live-voice.commons.pluginName": "Live Voice",
+  "dsh-live-voice.commons.queue": "file d\u2019attente",
+  "dsh-live-voice.commons.repository.starLabel": "Soutenez-nous avec une \xE9toile sur GitHub",
+  "dsh-live-voice.commons.repository.starLink": "Attribuer une \xE9toile \xE0 DSH Live Voice sur GitHub",
+  "dsh-live-voice.commons.second": "1 seconde",
+  "dsh-live-voice.commons.seconds": "{seconds} secondes",
+  "dsh-live-voice.commons.send": "ENVOYER",
+  "dsh-live-voice.commons.status.ready": "Fonctions vocales pr\xEAtes",
+  "dsh-live-voice.commons.systemDefault": "Valeur par d\xE9faut du syst\xE8me",
+  "dsh-live-voice.commons.toggle.offBadge": "D\xC9SACTIV\xC9",
+  "dsh-live-voice.commons.unknownLanguage": "langue inconnue",
+  "dsh-live-voice.commons.update.label": "Mise \xE0 jour disponible",
+  "dsh-live-voice.commons.update.link": "Mise \xE0 jour disponible : {version}. Ouvrir la page de cette version",
+  "dsh-live-voice.commons.update.version": "Mise \xE0 jour disponible : {version}",
+  "dsh-live-voice.commons.version.compatibility": "Compatible avec DSH v{version}",
+  "dsh-live-voice.commons.version.compatibilityLink": "Compatible avec DSH v{version}. Ouvrir la page de cette version",
+  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
+  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}. Ouvrir la liste des versions",
+  "dsh-live-voice.commons.version.title": "Informations de version",
+  "dsh-live-voice.meeting.failed": "\xC9chec de reconnaissance.",
+  "dsh-live-voice.meeting.help": "Sources ind\xE9pendantes ; envoyez les transcriptions manuellement depuis l\u2019\xE9diteur.",
+  "dsh-live-voice.meeting.httpRequired": "Utilisez Qwen ou Whisper HTTP en mode r\xE9union.",
+  "dsh-live-voice.meeting.inactive": "Inactif",
+  "dsh-live-voice.meeting.listening": "\xC9coute",
+  "dsh-live-voice.meeting.microphone": "Microphone",
+  "dsh-live-voice.meeting.noAudio": "Aucun audio partag\xE9. Activez l\u2019audio dans la fen\xEAtre de partage.",
+  "dsh-live-voice.meeting.processing": "Transcription\u2026",
+  "dsh-live-voice.meeting.shared": "Audio partag\xE9",
+  "dsh-live-voice.meeting.start": "D\xE9marrer la source",
+  "dsh-live-voice.meeting.starting": "D\xE9marrage\u2026",
+  "dsh-live-voice.meeting.stop": "Arr\xEAter la source",
+  "dsh-live-voice.meeting.timestamps": "Horodatage des transcriptions",
+  "dsh-live-voice.meeting.timestampsBadge": "Horodatage",
+  "dsh-live-voice.meeting.title": "Mode r\xE9union",
+  "dsh-live-voice.meeting.unavailable": "Reconnaissance indisponible.",
+  "dsh-live-voice.recognition.autoSend.countdownHelp": "Le compte \xE0 rebours d\xE9marre apr\xE8s la reconnaissance d\xE9finitive d\u2019une phrase. Toute nouvelle parole ou modification l\u2019annule.",
+  "dsh-live-voice.recognition.browser.autoInstallPack": "Installer automatiquement ce pack linguistique du navigateur si n\xE9cessaire",
+  "dsh-live-voice.recognition.browser.help": "Utilise l\u2019API SpeechRecognition du navigateur. Il s\u2019agit de l\u2019option par d\xE9faut.",
+  "dsh-live-voice.recognition.browser.label": "SpeechRecognition du navigateur \u2014 Option par d\xE9faut",
+  "dsh-live-voice.recognition.browser.localProcessing": "Effectuer la reconnaissance localement sur cet appareil",
+  "dsh-live-voice.recognition.browser.microphoneHelp": "SpeechRecognition peut utiliser le microphone par d\xE9faut du navigateur ou du syst\xE8me plut\xF4t que celui s\xE9lectionn\xE9 ici.",
+  "dsh-live-voice.recognition.browser.remoteServiceWarning": "La reconnaissance via le service du navigateur est activ\xE9e. Le navigateur peut envoyer le son du microphone \xE0 son service de reconnaissance.",
+  "dsh-live-voice.recognition.commands.clear": "Vider la zone de r\xE9daction",
+  "dsh-live-voice.recognition.commands.enabled": "Activer les commandes vocales par correspondance exacte",
+  "dsh-live-voice.recognition.commands.mute": "Suspendre la saisie vocale dans la zone de r\xE9daction",
+  "dsh-live-voice.recognition.commands.queue": "Mettre en file d\u2019attente",
+  "dsh-live-voice.recognition.commands.resume": "Reprendre la saisie vocale dans la zone de r\xE9daction",
+  "dsh-live-voice.recognition.commands.send": "Envoyer \xE0 l\u2019agent en cours d\u2019ex\xE9cution",
+  "dsh-live-voice.recognition.commands.stopSpeech": "Arr\xEAter la lecture vocale de l\u2019assistant",
+  "dsh-live-voice.recognition.commands.title": "Commandes vocales",
+  "dsh-live-voice.recognition.dictation.cancel": "Annuler la dict\xE9e",
+  "dsh-live-voice.recognition.engine.label": "Moteur de reconnaissance",
+  "dsh-live-voice.recognition.headphoneMode.help": "Le microphone ouvert continue d\u2019\xE9couter pendant la lecture des r\xE9ponses. Lorsque votre voix est d\xE9tect\xE9e, la lecture se met en pause et ne reprend que lorsque vous le d\xE9cidez.",
+  "dsh-live-voice.recognition.headphoneMode.label": "Casque \u2014 microphone ouvert",
+  "dsh-live-voice.recognition.holdToTalk.enabled": "Maintenir Ctrl pour parler",
+  "dsh-live-voice.recognition.holdToTalk.help": "Lorsqu\u2019une zone de r\xE9daction est ouverte, maintenez Ctrl n\u2019importe o\xF9 sur la page pour capturer votre voix. Rel\xE2chez la touche pour traiter la transcription en attente, attendre le d\xE9lai d\u2019envoi configur\xE9, mettre le message en file d\u2019attente et arr\xEAter la capture vocale. Appuyez sur \xC9chap tout en maintenant Ctrl pour annuler.",
+  "dsh-live-voice.recognition.language.automatic": "Automatique \u2014 d\xE9tecter la langue",
+  "dsh-live-voice.recognition.language.label": "Langue de reconnaissance",
+  "dsh-live-voice.recognition.manualSend.help": "Le texte reconnu reste dans la zone de r\xE9daction jusqu\u2019\xE0 ce que vous utilisiez le bouton d\u2019envoi habituel de DSH.",
+  "dsh-live-voice.recognition.maxUtterance.help": "Si vous parlez sans pause, un nouveau segment de transcription commence apr\xE8s cette dur\xE9e. Valeur par d\xE9faut : 60 secondes.",
+  "dsh-live-voice.recognition.maxUtterance.label": "Dur\xE9e maximale de parole continue (secondes)",
+  "dsh-live-voice.recognition.microphone.checking": "V\xE9rification de la disponibilit\xE9 du microphone",
+  "dsh-live-voice.recognition.microphone.device": "P\xE9riph\xE9rique d\u2019entr\xE9e",
+  "dsh-live-voice.recognition.microphone.failure": "Microphone : {reason}",
+  "dsh-live-voice.recognition.microphone.ignore": "Ignorer la saisie vocale dans la zone de r\xE9daction",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Entr\xE9e du microphone : {state}",
+  "dsh-live-voice.recognition.microphone.label": "Microphone",
+  "dsh-live-voice.recognition.microphone.permissionHelp": "L\u2019autorisation d\u2019utiliser le microphone ne sera demand\xE9e que lorsque vous d\xE9marrerez une dict\xE9e ou une conversation vocale.",
+  "dsh-live-voice.recognition.microphone.resume": "Reprendre l\u2019\xE9coute",
+  "dsh-live-voice.recognition.microphone.starting": "D\xE9marrage du microphone\u2026",
+  "dsh-live-voice.recognition.microphone.takeControl": "Prendre le contr\xF4le du microphone",
+  "dsh-live-voice.recognition.minimumWords.enabled": "Ignorer les segments d\xE9finitifs de transcription trop courts",
+  "dsh-live-voice.recognition.minimumWords.help": "Les segments d\xE9finitifs contenant moins de mots sont ignor\xE9s avant d\u2019atteindre la zone de r\xE9daction ou l\u2019envoi automatique.",
+  "dsh-live-voice.recognition.minimumWords.label": "Nombre minimal de mots par segment d\xE9finitif",
+  "dsh-live-voice.recognition.mode.label": "Mode d\u2019\xE9coute",
+  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 Bient\xF4t disponible",
+  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx en continu \u2014 Bient\xF4t disponible",
+  "dsh-live-voice.recognition.planned.vote": "Bient\xF4t disponible \u2014 votez dans les tickets du d\xE9p\xF4t",
+  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 Bient\xF4t disponible",
+  "dsh-live-voice.recognition.planned.webGpu": "Inf\xE9rence WebGPU dans le navigateur \u2014 Bient\xF4t disponible",
+  "dsh-live-voice.recognition.presets.custom.description": "Choisissez la dur\xE9e du silence.",
+  "dsh-live-voice.recognition.presets.custom.label": "Personnalis\xE9e",
+  "dsh-live-voice.recognition.presets.long.description": "Attend pendant les pauses de r\xE9flexion plus longues.",
+  "dsh-live-voice.recognition.presets.long.label": "Longue",
+  "dsh-live-voice.recognition.presets.natural.description": "Autorise des pauses normales entre les phrases.",
+  "dsh-live-voice.recognition.presets.natural.label": "Naturelle",
+  "dsh-live-voice.recognition.presets.short.description": "Envoie rapidement apr\xE8s une courte pause.",
+  "dsh-live-voice.recognition.presets.short.label": "Courte",
+  "dsh-live-voice.recognition.providerSettings.help": "Les param\xE8tres du fournisseur d\xE9pendent du moteur de reconnaissance s\xE9lectionn\xE9.",
+  "dsh-live-voice.recognition.qwen.captureHelp": "Le son est d\xE9coup\xE9 en \xE9nonc\xE9s complets au format WAV, puis envoy\xE9 via DSH avec authentification au mod\xE8le Qwen3 ASR ex\xE9cut\xE9 localement sur l\u2019h\xF4te.",
+  "dsh-live-voice.recognition.qwen.connectionSuccess": "Connexion r\xE9ussie. Qwen ASR et TTS sont tous deux charg\xE9s. Les modifications non enregistr\xE9es n\u2019ont pas \xE9t\xE9 appliqu\xE9es.",
+  "dsh-live-voice.recognition.qwen.endpointHelp": "API HTTP \xE0 l\u2019URL configur\xE9e sur l\u2019h\xF4te DSH (par d\xE9faut : http://127.0.0.1:8080/inference). Le son passe par la route de transcription authentifi\xE9e de l\u2019h\xF4te DSH.",
+  "dsh-live-voice.recognition.qwen.hostHelp": "Param\xE8tres communs \xE0 tout l\u2019h\xF4te pour le serveur Qwen3 ASR + TTS. Saisissez une URL de base HTTP ou HTTPS accessible depuis l\u2019h\xF4te DSH. Le navigateur y acc\xE8de via les routes authentifi\xE9es de DSH.",
+  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
+  "dsh-live-voice.recognition.silenceDetection.customHelp": "Saisissez un entier de 100 \xE0 10 000 ms. Enregistr\xE9 en quittant le champ. Les pauses courtes peuvent couper la parole ; la reconnaissance ajoute sa propre latence.",
+  "dsh-live-voice.recognition.silenceDetection.customLabel": "Pause personnalis\xE9e (millisecondes)",
+  "dsh-live-voice.recognition.silenceDetection.duration": "Pause avant l\u2019envoi : {milliseconds} ms",
+  "dsh-live-voice.recognition.silenceDetection.help": "D\xE9termine la dur\xE9e de pause n\xE9cessaire avant que la parole captur\xE9e soit envoy\xE9e pour reconnaissance.",
+  "dsh-live-voice.recognition.silenceDetection.label": "D\xE9tection du silence",
+  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pause avant l\u2019envoi",
+  "dsh-live-voice.recognition.silenceDetection.title": "Param\xE8tres de d\xE9tection du silence",
+  "dsh-live-voice.recognition.speakerMode.help": "L\u2019\xE9coute contr\xF4l\xE9e lib\xE8re le microphone pendant la lecture des r\xE9ponses pour \xE9viter que le son des haut-parleurs soit reconnu. Utilisez \xAB Prendre le contr\xF4le du microphone \xBB pour interrompre la lecture.",
+  "dsh-live-voice.recognition.speakerMode.label": "Haut-parleurs \u2014 \xE9coute contr\xF4l\xE9e",
+  "dsh-live-voice.recognition.status.answer": "Reconnaissance de la r\xE9ponse\u2026",
+  "dsh-live-voice.recognition.status.awaitingAnswer": "\xC9coute de votre r\xE9ponse\u2026",
+  "dsh-live-voice.recognition.status.listening": "\xC9coute \u2014 en attente de parole",
+  "dsh-live-voice.recognition.status.processing": "Reconnaissance vocale\u2026",
+  "dsh-live-voice.recognition.status.unavailable": "Reconnaissance vocale indisponible",
+  "dsh-live-voice.recognition.voiceCommands.help": "S\xE9parez les expressions par des virgules. La comparaison ignore la casse, les accents, la ponctuation et les espaces superflus. Le segment d\xE9finitif entier doit correspondre.",
+  "dsh-live-voice.recognition.whisper.captureHelp": "Le son est d\xE9coup\xE9 en \xE9nonc\xE9s complets au format WAV, transmis via DSH avec authentification, puis trait\xE9 par le serveur HTTP whisper.cpp sur l\u2019interface de bouclage.",
+  "dsh-live-voice.recognition.whisper.connectionSuccess": "Connexion r\xE9ussie. Le point d\u2019acc\xE8s de v\xE9rification de l\u2019\xE9tat a r\xE9pondu ; la transcription n\u2019a pas \xE9t\xE9 test\xE9e. Les modifications non enregistr\xE9es n\u2019ont pas \xE9t\xE9 appliqu\xE9es.",
+  "dsh-live-voice.recognition.whisper.endpointHelp": "API HTTP \xE0 l\u2019URL de base configur\xE9e (par d\xE9faut : http://127.0.0.1:8080/). Compatible avec POST /v1/audio/transcriptions.",
+  "dsh-live-voice.recognition.whisper.healthFailed": "La v\xE9rification de l\u2019\xE9tat de Whisper a \xE9chou\xE9.",
+  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 API HTTP",
+  "dsh-live-voice.recognition.whisper.requestFailed": "La requ\xEAte relative aux param\xE8tres de Whisper a \xE9chou\xE9.",
+  "dsh-live-voice.recognition.whisper.restartRequired": "Les routes de configuration de Whisper ne sont pas charg\xE9es. Un red\xE9marrage normal du serveur DSH est n\xE9cessaire pour charger les routes mises \xE0 jour du plugin ; actualiser cette page ne suffit pas.",
+  "dsh-live-voice.recognition.whisper.save": "Enregistrer les param\xE8tres de Whisper",
+  "dsh-live-voice.recognition.whisper.saved": "Enregistr\xE9 sur l\u2019h\xF4te DSH. Les requ\xEAtes de transcription actives sur l\u2019h\xF4te ont \xE9t\xE9 annul\xE9es.",
+  "dsh-live-voice.recognition.whisper.signInRequired": "Connectez-vous \xE0 DSH pour g\xE9rer les param\xE8tres de Whisper.",
+  "dsh-live-voice.settings.autoSend.cancel": "Annuler l\u2019envoi automatique",
+  "dsh-live-voice.settings.autoSend.countdown": "Envoi dans {remaining}\u2026",
+  "dsh-live-voice.settings.autoSend.delay": "Envoyer apr\xE8s le silence",
+  "dsh-live-voice.settings.close": "Fermer les param\xE8tres vocaux",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice utilise votre r\xE9ponse pour choisir la bonne action pour R\xE9orienter et File d\u2019attente. Cela ne modifie pas les param\xE8tres de DSH ; indiquez le comportement actuel et mettez cette r\xE9ponse \xE0 jour s\u2019il change.",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "Dans votre DSH, que fait Entr\xE9e lorsque l\u2019agent est occup\xE9 ?",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "Place le message dans la file d\u2019attente",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "Envoie le message pour r\xE9orienter l\u2019agent",
+  "dsh-live-voice.settings.delivery.label": "Mode d\u2019envoi",
+  "dsh-live-voice.settings.delivery.manualLabel": "D\xE9sactiv\xE9 \u2014 v\xE9rifier et envoyer manuellement",
+  "dsh-live-voice.settings.delivery.queueLabel": "File d\u2019attente \u2014 ajout automatique apr\xE8s un silence",
+  "dsh-live-voice.settings.delivery.status": "Envoi automatique : {mode}",
+  "dsh-live-voice.settings.delivery.steerDescription": "envoyer \xE0 l\u2019agent en cours d\u2019ex\xE9cution",
+  "dsh-live-voice.settings.delivery.steerLabel": "R\xE9orienter \u2014 envoyer automatiquement \xE0 l\u2019agent en cours d\u2019ex\xE9cution",
+  "dsh-live-voice.settings.delivery.toggle": "Mode d\u2019envoi automatique",
+  "dsh-live-voice.settings.engine.refresh": "Actualiser les moteurs disponibles",
+  "dsh-live-voice.settings.filters.title": "Filtrage",
+  "dsh-live-voice.settings.general.title": "G\xE9n\xE9ral",
+  "dsh-live-voice.settings.persistence.loadError": "Impossible de charger les param\xE8tres Live Voice depuis le serveur. Rechargez pour r\xE9essayer.",
+  "dsh-live-voice.settings.persistence.saveError": "Impossible de sauvegarder les param\xE8tres Live Voice sur le serveur. R\xE9essayez.",
+  "dsh-live-voice.settings.tabs.conversation": "Conversation",
+  "dsh-live-voice.settings.tabs.recognition": "Reconnaissance vocale",
+  "dsh-live-voice.settings.tabs.speak": "Synth\xE8se vocale",
+  "dsh-live-voice.settings.title": "Param\xE8tres de Live Voice",
+  "dsh-live-voice.settings.whisper.hostHelp": "Param\xE8tres communs \xE0 tout l\u2019h\xF4te. Seules les URL HTTP sans authentification sur l\u2019interface de bouclage (localhost, 127.0.0.1, [::1]) sont autoris\xE9es. Le bouclage d\xE9signe l\u2019h\xF4te DSH, pas ce navigateur. Toutes les v\xE9rifications d\u2019\xE9tat et requ\xEAtes audio passent par le serveur avec authentification.",
+  "dsh-live-voice.speak.agentContext.enabled": "Activer le contexte vocal de l\u2019agent",
+  "dsh-live-voice.speak.agentContext.enabledHelp": "Lorsqu\u2019il est activ\xE9, le contexte ci-dessous indique \xE0 l\u2019agent que ses r\xE9ponses seront lues \xE0 voix haute.",
+  "dsh-live-voice.speak.agentContext.help": "Cette instruction en anglais est envoy\xE9e \xE0 l\u2019agent seulement pendant une conversation vocale active avec la parole automatique de l\u2019assistant activ\xE9e.",
+  "dsh-live-voice.speak.agentContext.label": "Contexte vocal de l\u2019agent",
+  "dsh-live-voice.speak.agentContext.restore": "Restaurer la valeur par d\xE9faut",
+  "dsh-live-voice.speak.autoPlayback.enabled": "Lire automatiquement les nouveaux messages de l\u2019assistant",
+  "dsh-live-voice.speak.autoPlayback.help": "Pendant une conversation vocale, les phrases de l\u2019assistant sont lues automatiquement. La lecture attend pendant que vous parlez.",
+  "dsh-live-voice.speak.autoPlayback.label": "Lecture automatique de l\u2019assistant",
+  "dsh-live-voice.speak.autoPlayback.remainingOne": "Lecture automatique de l\u2019assistant : {state} \u2014 {count} segment vocal restant",
+  "dsh-live-voice.speak.autoPlayback.remainingOther": "Lecture automatique de l\u2019assistant : {state} \u2014 {count} segments vocaux restants",
+  "dsh-live-voice.speak.autoPlayback.status": "Lecture automatique de l\u2019assistant : {state}",
+  "dsh-live-voice.speak.browser.automaticVoice": "Voix locale automatique",
+  "dsh-live-voice.speak.browser.label": "Synth\xE8se vocale du navigateur \u2014 son sur cet appareil",
+  "dsh-live-voice.speak.browser.name": "Synth\xE8se vocale du navigateur",
+  "dsh-live-voice.speak.browser.outputHelp": "La synth\xE8se vocale du navigateur peut ignorer le p\xE9riph\xE9rique de sortie s\xE9lectionn\xE9 ; cette API du navigateur utilise normalement celui d\xE9fini par d\xE9faut sur le syst\xE8me.",
+  "dsh-live-voice.speak.browser.voice": "Voix locale du navigateur",
+  "dsh-live-voice.speak.captions.approximate": "Sous-titres vocaux approximatifs",
+  "dsh-live-voice.speak.captions.loading": "Pr\xE9paration de l\u2019audio vocal",
+  "dsh-live-voice.speak.captions.position": "Segment vocal {index} sur {total}",
+  "dsh-live-voice.speak.captions.progress": "Progression vocale approximative",
+  "dsh-live-voice.speak.captions.title": "Voix et sous-titres en direct",
+  "dsh-live-voice.speak.engine.label": "Moteur de synth\xE8se vocale",
+  "dsh-live-voice.speak.engine.playbackHelp": "Qwen et macOS say synth\xE9tisent sur l\u2019h\xF4te DSH ; l\u2019audio AAC/M4A compact est lu dans ce navigateur. La synth\xE8se vocale du navigateur est g\xE9n\xE9r\xE9e et lue sur cet appareil.",
+  "dsh-live-voice.speak.filters.code.enabled": "Filtrer les blocs de code Markdown avant la lecture vocale",
+  "dsh-live-voice.speak.filters.code.maxLines": "Nombre maximal de lignes des blocs de code \xE0 lire",
+  "dsh-live-voice.speak.filters.code.notice": "Consultez le code dans notre conversation",
+  "dsh-live-voice.speak.filters.code.replacement": "Phrase de remplacement pour les blocs de code plus longs",
+  "dsh-live-voice.speak.interruption.disabledHelp": "L\u2019envoi d\u2019un autre message n\u2019arr\xEAte pas la lecture vocale de l\u2019assistant que vous \xE9coutez d\xE9j\xE0.",
+  "dsh-live-voice.speak.interruption.enabled": "Arr\xEAter la lecture vocale de l\u2019assistant lorsque j\u2019envoie un message",
+  "dsh-live-voice.speak.interruption.enabledHelp": "L\u2019envoi d\u2019un nouveau message utilisateur, y compris \xE0 l\u2019agent en cours d\u2019ex\xE9cution, arr\xEAte la lecture vocale de l\u2019assistant, qu\u2019elle soit en cours ou en pause.",
+  "dsh-live-voice.speak.macos.label": "macOS say \u2014 son sur l\u2019h\xF4te",
+  "dsh-live-voice.speak.macos.name": "macOS say",
+  "dsh-live-voice.speak.macos.outputHelp": "macOS say utilise la sortie s\xE9lectionn\xE9e sur l\u2019h\xF4te DSH.",
+  "dsh-live-voice.speak.output.checking": "V\xE9rification de la sortie vocale\u2026",
+  "dsh-live-voice.speak.output.device": "P\xE9riph\xE9rique de sortie",
+  "dsh-live-voice.speak.output.fallbackName": "Sortie audio",
+  "dsh-live-voice.speak.output.stopTest": "Arr\xEAter le test vocal",
+  "dsh-live-voice.speak.output.test": "Tester la sortie vocale s\xE9lectionn\xE9e",
+  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice. La sortie vocale s\xE9lectionn\xE9e fonctionne.",
+  "dsh-live-voice.speak.output.testing": "Test vocal en cours\u2026",
+  "dsh-live-voice.speak.playback.message": "Lire le message \xE0 voix haute",
+  "dsh-live-voice.speak.playback.next": "Passer au segment vocal suivant",
+  "dsh-live-voice.speak.playback.pause": "Mettre la lecture en pause",
+  "dsh-live-voice.speak.playback.previous": "Segment vocal pr\xE9c\xE9dent",
+  "dsh-live-voice.speak.playback.resume": "Reprendre la lecture",
+  "dsh-live-voice.speak.playback.stop": "Arr\xEAter la lecture",
+  "dsh-live-voice.speak.playback.stopAll": "Arr\xEAter toute lecture",
+  "dsh-live-voice.speak.qwen.connection": "Connexion au serveur Qwen",
+  "dsh-live-voice.speak.qwen.endpoint": "URL de base de l\u2019API Qwen",
+  "dsh-live-voice.speak.qwen.healthFailed": "La v\xE9rification de l\u2019\xE9tat de Qwen a \xE9chou\xE9.",
+  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 serveur MLX local",
+  "dsh-live-voice.speak.qwen.name": "Qwen3 local",
+  "dsh-live-voice.speak.qwen.requestFailed": "La requ\xEAte relative aux param\xE8tres de Qwen a \xE9chou\xE9.",
+  "dsh-live-voice.speak.qwen.restartRequired": "Les routes de configuration de Qwen ne sont pas charg\xE9es. Un red\xE9marrage normal du serveur DSH est n\xE9cessaire pour charger les routes mises \xE0 jour du plugin ; actualiser cette page ne suffit pas.",
+  "dsh-live-voice.speak.qwen.save": "Enregistrer les param\xE8tres de Qwen",
+  "dsh-live-voice.speak.qwen.saved": "Enregistr\xE9 sur l\u2019h\xF4te DSH. Les requ\xEAtes Qwen actives ont \xE9t\xE9 annul\xE9es.",
+  "dsh-live-voice.speak.qwen.signInRequired": "Connectez-vous \xE0 DSH pour g\xE9rer les param\xE8tres de Qwen.",
+  "dsh-live-voice.speak.qwen.test": "Tester le serveur Qwen",
+  "dsh-live-voice.speak.qwen.voice": "Voix Qwen",
+  "dsh-live-voice.speak.qwen.voiceHelp": "Aiden est utilis\xE9 par d\xE9faut. Ces voix pr\xE9d\xE9finies ne sont pas des voix natives du portugais br\xE9silien.",
+  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 homme, anglais am\xE9ricain",
+  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 homme, chinois de P\xE9kin",
+  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 homme, chinois du Sichuan",
+  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 femme, japonais",
+  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 homme, anglais",
+  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 femme, chinois",
+  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 femme, cor\xE9en",
+  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 homme, chinois",
+  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 femme, chinois",
+  "dsh-live-voice.speak.rate.help": "Vitesse relative : 1 correspond \xE0 la vitesse normale.",
+  "dsh-live-voice.speak.rate.label": "D\xE9bit de parole",
+  "dsh-live-voice.speak.responseDelay.help": "Apr\xE8s que vous avez cess\xE9 de parler, la lecture automatique de l\u2019assistant attend cette dur\xE9e de silence continu. Si vous reparlez, l\u2019attente recommence.",
+  "dsh-live-voice.speak.responseDelay.label": "D\xE9lai de r\xE9ponse de l\u2019assistant",
+  "dsh-live-voice.speak.responseDelay.none": "Sans d\xE9lai",
+  "dsh-live-voice.speak.segmentGap.help": "Attend ce nombre de millisecondes entre des segments vocaux cons\xE9cutifs. La valeur par d\xE9faut est 400 ms.",
+  "dsh-live-voice.speak.segmentGap.label": "Pause entre les segments vocaux",
+  "dsh-live-voice.speak.status.paused": "Lecture en pause",
+  "dsh-live-voice.speak.status.playing": "Lecture en cours"
+};
+var fr_default = Object.freeze(fr);
+
+// src/app/client/i18n/catalogs/hi.ts
+var hi = {
+  "dsh-live-voice.commons.connection.contactingHost": "DSH \u0939\u094B\u0938\u094D\u091F \u0938\u0947 \u0938\u0902\u092A\u0930\u094D\u0915 \u0915\u093F\u092F\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
+  "dsh-live-voice.commons.connection.endpoint": "\u090F\u0902\u0921\u092A\u0949\u0907\u0902\u091F URL",
+  "dsh-live-voice.commons.connection.healthEndpoint": "\u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u091C\u093E\u0901\u091A \u0915\u093E URL \u092F\u093E \u092A\u0925",
+  "dsh-live-voice.commons.connection.reload": "\u0938\u0939\u0947\u091C\u0940 \u0917\u0908 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092B\u093F\u0930 \u0932\u094B\u0921 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.commons.connection.test": "\u0915\u0928\u0947\u0915\u094D\u0936\u0928 \u091C\u093E\u0901\u091A\u0947\u0902",
+  "dsh-live-voice.commons.connection.timeout": "\u0905\u0928\u0941\u0930\u094B\u0927 \u0915\u0940 \u0938\u092E\u092F-\u0938\u0940\u092E\u093E (\u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921)",
+  "dsh-live-voice.commons.connection.title": "\u0915\u0928\u0947\u0915\u094D\u0936\u0928 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938",
+  "dsh-live-voice.commons.connection.unsaved": "\u092C\u0926\u0932\u093E\u0935 \u0905\u092D\u0940 \u0938\u0939\u0947\u091C\u0947 \u0928\u0939\u0940\u0902 \u0917\u090F \u0939\u0948\u0902",
+  "dsh-live-voice.commons.controls.title": "\u0935\u0949\u0907\u0938 \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u0923",
+  "dsh-live-voice.commons.conversation.end": "\u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0938\u092E\u093E\u092A\u094D\u0924 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.commons.conversation.idle": "\u092C\u093E\u0924\u091A\u0940\u0924 \u0928\u093F\u0937\u094D\u0915\u094D\u0930\u093F\u092F \u0939\u0948",
+  "dsh-live-voice.commons.conversation.start": "\u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.commons.delivery.queueBadge": "\u0915\u0924\u093E\u0930",
+  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
+  "dsh-live-voice.commons.dismiss": "\u0939\u091F\u093E\u090F\u0901",
+  "dsh-live-voice.commons.dismissError": "\u0935\u0949\u0907\u0938 \u0924\u094D\u0930\u0941\u091F\u093F \u0915\u093E \u0938\u0902\u0926\u0947\u0936 \u0939\u091F\u093E\u090F\u0901",
+  "dsh-live-voice.commons.engine.failure": "{engine}: {reason}",
+  "dsh-live-voice.commons.input.ignoring": "\u0905\u0928\u0926\u0947\u0916\u093E \u0915\u093F\u092F\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948",
+  "dsh-live-voice.commons.input.ignoringBadge": "\u0905\u0928\u0926\u0947\u0916\u093E \u0915\u093F\u092F\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948",
+  "dsh-live-voice.commons.input.listening": "\u0938\u0941\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948",
+  "dsh-live-voice.commons.input.listeningBadge": "\u0938\u0941\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948",
+  "dsh-live-voice.commons.manual": "\u092E\u0948\u0928\u094D\u092F\u0941\u0905\u0932",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} \u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921",
+  "dsh-live-voice.commons.off": "\u092C\u0902\u0926",
+  "dsh-live-voice.commons.on": "\u091A\u093E\u0932\u0942",
+  "dsh-live-voice.commons.pluginName": "Live Voice",
+  "dsh-live-voice.commons.queue": "\u0915\u0924\u093E\u0930",
+  "dsh-live-voice.commons.repository.starLabel": "GitHub \u092A\u0930 \u0939\u092E\u0947\u0902 \u0938\u094D\u091F\u093E\u0930 \u0926\u0947\u0902",
+  "dsh-live-voice.commons.repository.starLink": "GitHub \u092A\u0930 DSH Live Voice \u0915\u094B \u0938\u094D\u091F\u093E\u0930 \u0926\u0947\u0902",
+  "dsh-live-voice.commons.second": "1 \u0938\u0947\u0915\u0902\u0921",
+  "dsh-live-voice.commons.seconds": "{seconds} \u0938\u0947\u0915\u0902\u0921",
+  "dsh-live-voice.commons.send": "\u092D\u0947\u091C\u0947\u0902",
+  "dsh-live-voice.commons.status.ready": "\u0935\u0949\u0907\u0938 \u0924\u0948\u092F\u093E\u0930 \u0939\u0948",
+  "dsh-live-voice.commons.systemDefault": "\u0938\u093F\u0938\u094D\u091F\u092E \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F",
+  "dsh-live-voice.commons.toggle.offBadge": "\u092C\u0902\u0926",
+  "dsh-live-voice.commons.unknownLanguage": "\u0905\u091C\u094D\u091E\u093E\u0924 \u092D\u093E\u0937\u093E",
+  "dsh-live-voice.commons.update.label": "\u0905\u092A\u0921\u0947\u091F \u0909\u092A\u0932\u092C\u094D\u0927 \u0939\u0948",
+  "dsh-live-voice.commons.update.link": "\u0905\u092A\u0921\u0947\u091F \u0909\u092A\u0932\u092C\u094D\u0927 \u0939\u0948: {version}\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0916\u094B\u0932\u0947\u0902",
+  "dsh-live-voice.commons.update.version": "\u0905\u092A\u0921\u0947\u091F \u0909\u092A\u0932\u092C\u094D\u0927 \u0939\u0948: {version}",
+  "dsh-live-voice.commons.version.compatibility": "DSH v{version} \u0915\u0947 \u0938\u093E\u0925 \u0938\u0902\u0917\u0924",
+  "dsh-live-voice.commons.version.compatibilityLink": "DSH v{version} \u0915\u0947 \u0938\u093E\u0925 \u0938\u0902\u0917\u0924\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0916\u094B\u0932\u0947\u0902",
+  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
+  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0938\u0942\u091A\u0940 \u0916\u094B\u0932\u0947\u0902",
+  "dsh-live-voice.commons.version.title": "\u0938\u0902\u0938\u094D\u0915\u0930\u0923 \u091C\u093E\u0928\u0915\u093E\u0930\u0940",
+  "dsh-live-voice.meeting.failed": "\u092A\u0939\u091A\u093E\u0928 \u0935\u093F\u092B\u0932 \u0939\u0941\u0908\u0964",
+  "dsh-live-voice.meeting.help": "\u0938\u094D\u0935\u0924\u0902\u0924\u094D\u0930 \u0938\u094D\u0930\u094B\u0924; \u0938\u0902\u092A\u093E\u0926\u0915 \u0938\u0947 \u0932\u093F\u092A\u094D\u092F\u0902\u0924\u0930\u0923 \u0938\u094D\u0935\u092F\u0902 \u092D\u0947\u091C\u0947\u0902\u0964",
+  "dsh-live-voice.meeting.httpRequired": "\u092C\u0948\u0920\u0915 \u092E\u094B\u0921 \u0915\u0947 \u0932\u093F\u090F Qwen \u092F\u093E Whisper HTTP \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.meeting.inactive": "\u0928\u093F\u0937\u094D\u0915\u094D\u0930\u093F\u092F",
+  "dsh-live-voice.meeting.listening": "\u0938\u0941\u0928 \u0930\u0939\u093E \u0939\u0948",
+  "dsh-live-voice.meeting.microphone": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928",
+  "dsh-live-voice.meeting.noAudio": "\u0915\u094B\u0908 \u0911\u0921\u093F\u092F\u094B \u0938\u093E\u091D\u093E \u0928\u0939\u0940\u0902 \u0939\u0941\u0906\u0964 \u0938\u093E\u091D\u093E\u0915\u0930\u0923 \u0938\u0902\u0935\u093E\u0926 \u092E\u0947\u0902 \u0911\u0921\u093F\u092F\u094B \u091A\u093E\u0932\u0942 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.meeting.processing": "\u0932\u093F\u092A\u094D\u092F\u0902\u0924\u0930\u0923\u2026",
+  "dsh-live-voice.meeting.shared": "\u0938\u093E\u091D\u093E \u0911\u0921\u093F\u092F\u094B",
+  "dsh-live-voice.meeting.start": "\u0938\u094D\u0930\u094B\u0924 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.meeting.starting": "\u0936\u0941\u0930\u0942 \u0939\u094B \u0930\u0939\u093E \u0939\u0948\u2026",
+  "dsh-live-voice.meeting.stop": "\u0938\u094D\u0930\u094B\u0924 \u0930\u094B\u0915\u0947\u0902",
+  "dsh-live-voice.meeting.timestamps": "\u0932\u093F\u092A\u094D\u092F\u0902\u0924\u0930\u0923 \u0938\u092E\u092F \u091A\u093F\u0939\u094D\u0928",
+  "dsh-live-voice.meeting.timestampsBadge": "\u0938\u092E\u092F",
+  "dsh-live-voice.meeting.title": "\u092C\u0948\u0920\u0915 \u092E\u094B\u0921",
+  "dsh-live-voice.meeting.unavailable": "\u092A\u0939\u091A\u093E\u0928 \u0909\u092A\u0932\u092C\u094D\u0927 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.autoSend.countdownHelp": "\u092A\u0939\u091A\u093E\u0928\u0947 \u0917\u090F \u0935\u093E\u0915\u094D\u092F\u093E\u0902\u0936 \u0915\u093E \u0905\u0902\u0924\u093F\u092E \u092A\u0930\u093F\u0923\u093E\u092E \u092E\u093F\u0932\u0928\u0947 \u0915\u0947 \u092C\u093E\u0926 \u0909\u0932\u091F\u0940 \u0917\u093F\u0928\u0924\u0940 \u0936\u0941\u0930\u0942 \u0939\u094B\u0924\u0940 \u0939\u0948\u0964 \u0926\u094B\u092C\u093E\u0930\u093E \u092C\u094B\u0932\u0928\u0947 \u092F\u093E \u0938\u0902\u092A\u093E\u0926\u0928 \u0915\u0930\u0928\u0947 \u092A\u0930 \u092F\u0939 \u0930\u0926\u094D\u0926 \u0939\u094B \u091C\u093E\u0924\u0940 \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.browser.autoInstallPack": "\u091C\u093C\u0930\u0942\u0930\u0924 \u092A\u0921\u093C\u0928\u0947 \u092A\u0930 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0915\u093E \u092F\u0939 \u092D\u093E\u0937\u093E \u092A\u0948\u0915 \u0905\u092A\u0928\u0947 \u0906\u092A \u0907\u0902\u0938\u094D\u091F\u0949\u0932 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.recognition.browser.help": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0915\u0947 SpeechRecognition API \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0924\u093E \u0939\u0948\u0964 \u092F\u0939 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u0935\u093F\u0915\u0932\u094D\u092A \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.browser.label": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 SpeechRecognition \u2014 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u0935\u093F\u0915\u0932\u094D\u092A",
+  "dsh-live-voice.recognition.browser.localProcessing": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0915\u0940 \u092A\u094D\u0930\u094B\u0938\u0947\u0938\u093F\u0902\u0917 \u0907\u0938\u0940 \u0921\u093F\u0935\u093E\u0907\u0938 \u092A\u0930 \u0938\u094D\u0925\u093E\u0928\u0940\u092F \u0930\u0942\u092A \u0938\u0947 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.recognition.browser.microphoneHelp": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0915\u093E SpeechRecognition \u092F\u0939\u093E\u0901 \u091A\u0941\u0928\u0947 \u0917\u090F \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u0947 \u092C\u091C\u093E\u092F \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u092F\u093E \u0938\u093F\u0938\u094D\u091F\u092E \u0915\u0947 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930 \u0938\u0915\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.browser.remoteServiceWarning": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0938\u0947\u0935\u093E \u0915\u0947 \u091C\u093C\u0930\u093F\u090F \u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u091A\u093E\u0932\u0942 \u0939\u0948\u0964 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u093E \u0911\u0921\u093F\u092F\u094B \u0905\u092A\u0928\u0940 \u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0938\u0947\u0935\u093E \u0915\u094B \u092D\u0947\u091C \u0938\u0915\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.commands.clear": "\u0938\u0902\u0926\u0947\u0936 \u0932\u093F\u0916\u0928\u0947 \u0915\u093E \u092C\u0949\u0915\u094D\u0938 \u0916\u093E\u0932\u0940 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.recognition.commands.enabled": "\u0939\u0942\u092C\u0939\u0942 \u092E\u093F\u0932\u093E\u0928 \u0935\u093E\u0932\u0947 \u0935\u0949\u0907\u0938 \u0915\u092E\u093E\u0902\u0921 \u091A\u093E\u0932\u0942 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.recognition.commands.mute": "\u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u092E\u0947\u0902 \u0935\u0949\u0907\u0938 \u0907\u0928\u092A\u0941\u091F \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.recognition.commands.queue": "\u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u091C\u094B\u0921\u093C\u0947\u0902",
+  "dsh-live-voice.recognition.commands.resume": "\u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u092E\u0947\u0902 \u0935\u0949\u0907\u0938 \u0907\u0928\u092A\u0941\u091F \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.recognition.commands.send": "\u091A\u0932 \u0930\u0939\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u092D\u0947\u091C\u0947\u0902",
+  "dsh-live-voice.recognition.commands.stopSpeech": "\u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0935\u093E\u091A\u0928 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.recognition.commands.title": "\u0935\u0949\u0907\u0938 \u0915\u092E\u093E\u0902\u0921",
+  "dsh-live-voice.recognition.dictation.cancel": "\u0921\u093F\u0915\u094D\u091F\u0947\u0936\u0928 \u0930\u0926\u094D\u0926 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.recognition.engine.label": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0907\u0902\u091C\u0928",
+  "dsh-live-voice.recognition.headphoneMode.help": "\u0916\u0941\u0932\u093E \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u091C\u0935\u093E\u092C \u091A\u0932\u0928\u0947 \u0915\u0947 \u0926\u094C\u0930\u093E\u0928 \u092D\u0940 \u0938\u0941\u0928\u0924\u093E \u0930\u0939\u0924\u093E \u0939\u0948\u0964 \u0906\u092A\u0915\u0947 \u092C\u094B\u0932\u0928\u0947 \u0915\u093E \u092A\u0924\u093E \u091A\u0932\u0928\u0947 \u092A\u0930 \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0920\u0939\u0930 \u091C\u093E\u0924\u093E \u0939\u0948 \u0914\u0930 \u0906\u092A\u0915\u0947 \u091A\u0941\u0928\u0928\u0947 \u092A\u0930 \u0939\u0940 \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0939\u094B\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.headphoneMode.label": "\u0939\u0947\u0921\u092B\u093C\u094B\u0928 \u2014 \u0916\u0941\u0932\u093E \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928",
+  "dsh-live-voice.recognition.holdToTalk.enabled": "\u092C\u094B\u0932\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F Control \u0926\u092C\u093E\u090F \u0930\u0916\u0947\u0902",
+  "dsh-live-voice.recognition.holdToTalk.help": "\u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u0916\u0941\u0932\u093E \u0939\u094B\u0928\u0947 \u092A\u0930, \u092A\u0947\u091C \u092A\u0930 \u0915\u0939\u0940\u0902 \u092D\u0940 Control \u0926\u092C\u093E\u090F \u0930\u0916\u0915\u0930 \u0906\u0935\u093E\u091C\u093C \u0930\u093F\u0915\u0949\u0930\u094D\u0921 \u0915\u0930\u0947\u0902\u0964 \u091B\u094B\u0921\u093C\u0928\u0947 \u092A\u0930 \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u092E\u094C\u091C\u0942\u0926 \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u092A\u0942\u0930\u093E \u0915\u093F\u092F\u093E \u091C\u093E\u0924\u093E \u0939\u0948, \u0924\u092F \u092D\u0947\u091C\u0928\u0947 \u0915\u0947 \u0935\u093F\u0932\u0902\u092C \u0924\u0915 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0939\u094B\u0924\u0940 \u0939\u0948, \u0938\u0902\u0926\u0947\u0936 \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u091C\u0941\u0921\u093C\u0924\u093E \u0939\u0948 \u0914\u0930 \u0906\u0935\u093E\u091C\u093C \u0930\u093F\u0915\u0949\u0930\u094D\u0921 \u0915\u0930\u0928\u093E \u092C\u0902\u0926 \u0939\u094B \u091C\u093E\u0924\u093E \u0939\u0948\u0964 \u0930\u0926\u094D\u0926 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F Control \u0926\u092C\u093E\u090F \u0930\u0916\u0924\u0947 \u0939\u0941\u090F Escape \u0926\u092C\u093E\u090F\u0901\u0964",
+  "dsh-live-voice.recognition.language.automatic": "\u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u2014 \u092D\u093E\u0937\u093E \u092A\u0939\u091A\u093E\u0928\u0947\u0902",
+  "dsh-live-voice.recognition.language.label": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0915\u0940 \u092D\u093E\u0937\u093E",
+  "dsh-live-voice.recognition.manualSend.help": "\u092A\u0939\u091A\u093E\u0928\u093E \u0917\u092F\u093E \u092A\u093E\u0920 \u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u092E\u0947\u0902 \u0924\u092C \u0924\u0915 \u0930\u0939\u0924\u093E \u0939\u0948 \u091C\u092C \u0924\u0915 \u0906\u092A DSH \u0915\u0947 \u0938\u093E\u092E\u093E\u0928\u094D\u092F \u092D\u0947\u091C\u0947\u0902 \u092C\u091F\u0928 \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0928\u0939\u0940\u0902 \u0915\u0930\u0924\u0947\u0964",
+  "dsh-live-voice.recognition.maxUtterance.help": "\u092F\u0926\u093F \u092C\u094B\u0932\u0928\u093E \u092C\u093F\u0928\u093E \u0930\u0941\u0915\u0947 \u091C\u093E\u0930\u0940 \u0930\u0939\u0947, \u0924\u094B \u0907\u0938 \u0905\u0935\u0927\u093F \u0915\u0947 \u092C\u093E\u0926 \u0928\u092F\u093E \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u0916\u0902\u0921 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902\u0964 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F: 60 \u0938\u0947\u0915\u0902\u0921\u0964",
+  "dsh-live-voice.recognition.maxUtterance.label": "\u0932\u0917\u093E\u0924\u093E\u0930 \u092C\u094B\u0932\u0928\u0947 \u0915\u0940 \u0905\u0927\u093F\u0915\u0924\u092E \u0905\u0935\u0927\u093F (\u0938\u0947\u0915\u0902\u0921)",
+  "dsh-live-voice.recognition.microphone.checking": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u0940 \u0909\u092A\u0932\u092C\u094D\u0927\u0924\u093E \u091C\u093E\u0901\u091A\u0940 \u091C\u093E \u0930\u0939\u0940 \u0939\u0948",
+  "dsh-live-voice.recognition.microphone.device": "\u0907\u0928\u092A\u0941\u091F \u0921\u093F\u0935\u093E\u0907\u0938",
+  "dsh-live-voice.recognition.microphone.failure": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928: {reason}",
+  "dsh-live-voice.recognition.microphone.ignore": "\u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u0915\u093E \u0935\u0949\u0907\u0938 \u0907\u0928\u092A\u0941\u091F \u0905\u0928\u0926\u0947\u0916\u093E \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.recognition.microphone.inputStatus": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0907\u0928\u092A\u0941\u091F: {state}",
+  "dsh-live-voice.recognition.microphone.label": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928",
+  "dsh-live-voice.recognition.microphone.permissionHelp": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u0940 \u0905\u0928\u0941\u092E\u0924\u093F \u0915\u0947\u0935\u0932 \u0924\u092D\u0940 \u092E\u093E\u0901\u0917\u0940 \u091C\u093E\u090F\u0917\u0940 \u091C\u092C \u0906\u092A \u0921\u093F\u0915\u094D\u091F\u0947\u0936\u0928 \u092F\u093E \u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902\u0917\u0947\u0964",
+  "dsh-live-voice.recognition.microphone.resume": "\u0938\u0941\u0928\u0928\u093E \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.recognition.microphone.starting": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0936\u0941\u0930\u0942 \u0939\u094B \u0930\u0939\u093E \u0939\u0948\u2026",
+  "dsh-live-voice.recognition.microphone.takeControl": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u093E \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u0923 \u0932\u0947\u0902",
+  "dsh-live-voice.recognition.minimumWords.enabled": "\u091B\u094B\u091F\u0947 \u0905\u0902\u0924\u093F\u092E \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u0916\u0902\u0921 \u0905\u0928\u0926\u0947\u0916\u093E \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.recognition.minimumWords.help": "\u0915\u092E \u0936\u092C\u094D\u0926\u094B\u0902 \u0935\u093E\u0932\u0947 \u0905\u0902\u0924\u093F\u092E \u0916\u0902\u0921 \u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u092F\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092D\u0947\u091C\u0928\u0947 \u0915\u0940 \u092A\u094D\u0930\u0915\u094D\u0930\u093F\u092F\u093E \u0924\u0915 \u092A\u0939\u0941\u0901\u091A\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0939\u0940 \u0905\u0928\u0926\u0947\u0916\u0947 \u0915\u0930 \u0926\u093F\u090F \u091C\u093E\u0924\u0947 \u0939\u0948\u0902\u0964",
+  "dsh-live-voice.recognition.minimumWords.label": "\u0939\u0930 \u0905\u0902\u0924\u093F\u092E \u0916\u0902\u0921 \u092E\u0947\u0902 \u0928\u094D\u092F\u0942\u0928\u0924\u092E \u0936\u092C\u094D\u0926",
+  "dsh-live-voice.recognition.mode.label": "\u0938\u0941\u0928\u0928\u0947 \u0915\u093E \u092E\u094B\u0921",
+  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 \u091C\u0932\u094D\u0926 \u0906 \u0930\u0939\u093E \u0939\u0948",
+  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx \u0938\u094D\u091F\u094D\u0930\u0940\u092E\u093F\u0902\u0917 \u2014 \u091C\u0932\u094D\u0926 \u0906 \u0930\u0939\u093E \u0939\u0948",
+  "dsh-live-voice.recognition.planned.vote": "\u091C\u0932\u094D\u0926 \u0906 \u0930\u0939\u093E \u0939\u0948 \u2014 \u0930\u093F\u092A\u0949\u091C\u093C\u093F\u091F\u0930\u0940 \u0915\u0947 \u0907\u0936\u094D\u092F\u0942 \u092E\u0947\u0902 \u0935\u094B\u091F \u0926\u0947\u0902",
+  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 \u091C\u0932\u094D\u0926 \u0906 \u0930\u0939\u093E \u0939\u0948",
+  "dsh-live-voice.recognition.planned.webGpu": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u092E\u0947\u0902 WebGPU \u0907\u0928\u094D\u092B\u093C\u0930\u0947\u0902\u0938 \u2014 \u091C\u0932\u094D\u0926 \u0906 \u0930\u0939\u093E \u0939\u0948",
+  "dsh-live-voice.recognition.presets.custom.description": "\u092E\u094C\u0928 \u0915\u0940 \u0905\u0935\u0927\u093F \u0938\u094D\u0935\u092F\u0902 \u091A\u0941\u0928\u0947\u0902\u0964",
+  "dsh-live-voice.recognition.presets.custom.label": "\u0915\u0938\u094D\u091F\u092E",
+  "dsh-live-voice.recognition.presets.long.description": "\u0932\u0902\u092C\u0947 \u0938\u094B\u091A-\u0935\u093F\u091A\u093E\u0930 \u0935\u093E\u0932\u0947 \u0935\u093F\u0930\u093E\u092E\u094B\u0902 \u0924\u0915 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.recognition.presets.long.label": "\u0932\u0902\u092C\u093E",
+  "dsh-live-voice.recognition.presets.natural.description": "\u0935\u093E\u0915\u094D\u092F\u093E\u0902\u0936\u094B\u0902 \u0915\u0947 \u092C\u0940\u091A \u0938\u093E\u092E\u093E\u0928\u094D\u092F \u0935\u093F\u0930\u093E\u092E \u0915\u0940 \u0905\u0928\u0941\u092E\u0924\u093F \u0926\u0947\u0902\u0964",
+  "dsh-live-voice.recognition.presets.natural.label": "\u0938\u094D\u0935\u093E\u092D\u093E\u0935\u093F\u0915",
+  "dsh-live-voice.recognition.presets.short.description": "\u091B\u094B\u091F\u0947 \u0935\u093F\u0930\u093E\u092E \u0915\u0947 \u092C\u093E\u0926 \u091C\u0932\u094D\u0926\u0940 \u092D\u0947\u091C\u0947\u0902\u0964",
+  "dsh-live-voice.recognition.presets.short.label": "\u091B\u094B\u091F\u093E",
+  "dsh-live-voice.recognition.providerSettings.help": "\u092A\u094D\u0930\u0926\u093E\u0924\u093E \u0915\u0940 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u091A\u0941\u0928\u0947 \u0917\u090F \u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0907\u0902\u091C\u0928 \u0915\u0947 \u0905\u0928\u0941\u0938\u093E\u0930 \u092C\u0926\u0932\u0924\u0940 \u0939\u0948\u0902\u0964",
+  "dsh-live-voice.recognition.qwen.captureHelp": "\u0911\u0921\u093F\u092F\u094B \u0915\u094B \u092A\u0942\u0930\u0947 \u0915\u0925\u0928\u094B\u0902 \u0935\u093E\u0932\u0947 WAV \u0916\u0902\u0921\u094B\u0902 \u092E\u0947\u0902 \u092C\u093E\u0901\u091F\u0915\u0930, \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0943\u0924 DSH \u0915\u0947 \u091C\u093C\u0930\u093F\u090F \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0938\u094D\u0925\u093E\u0928\u0940\u092F \u0930\u0942\u092A \u0938\u0947 \u091A\u0932 \u0930\u0939\u0947 Qwen3 ASR \u092E\u0949\u0921\u0932 \u0915\u094B \u092D\u0947\u091C\u093E \u091C\u093E\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.qwen.connectionSuccess": "\u0915\u0928\u0947\u0915\u094D\u0936\u0928 \u0938\u092B\u0932 \u0930\u0939\u093E\u0964 Qwen ASR \u0914\u0930 TTS \u0926\u094B\u0928\u094B\u0902 \u0932\u094B\u0921 \u0939\u0948\u0902\u0964 \u092C\u093F\u0928\u093E \u0938\u0939\u0947\u091C\u0947 \u092C\u0926\u0932\u093E\u0935 \u0932\u093E\u0917\u0942 \u0928\u0939\u0940\u0902 \u0915\u093F\u090F \u0917\u090F \u0939\u0948\u0902\u0964",
+  "dsh-live-voice.recognition.qwen.endpointHelp": "HTTP API, \u0915\u0949\u0928\u094D\u092B\u093C\u093F\u0917\u0930 \u0915\u093F\u090F \u0917\u090F DSH \u0939\u094B\u0938\u094D\u091F URL \u092A\u0930 \u0939\u0948 (\u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F: http://127.0.0.1:8080/inference)\u0964 \u0911\u0921\u093F\u092F\u094B \u0915\u0947 \u0932\u093F\u090F \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0930\u0923 \u0935\u093E\u0932\u0947 DSH \u0939\u094B\u0938\u094D\u091F \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u0930\u0942\u091F \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0939\u094B\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.qwen.hostHelp": "Qwen3 ASR + TTS \u0938\u0930\u094D\u0935\u0930 \u0915\u0940 \u092A\u0942\u0930\u0947 \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0932\u093E\u0917\u0942 \u0939\u094B\u0928\u0947 \u0935\u093E\u0932\u0940 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938\u0964 \u0915\u094B\u0908 \u092D\u0940 HTTP \u092F\u093E HTTPS \u092C\u0947\u0938 URL \u0926\u0930\u094D\u091C \u0915\u0930\u0947\u0902 \u091C\u093F\u0938 \u0924\u0915 DSH \u0939\u094B\u0938\u094D\u091F \u092A\u0939\u0941\u0901\u091A \u0938\u0915\u0947\u0964 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0930\u0923 \u0935\u093E\u0932\u0947 DSH \u0930\u0942\u091F\u094B\u0902 \u0915\u0947 \u091C\u093C\u0930\u093F\u090F \u0907\u0938\u0947 \u090F\u0915\u094D\u0938\u0947\u0938 \u0915\u0930\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
+  "dsh-live-voice.recognition.silenceDetection.customHelp": "100 \u0938\u0947 10,000 ms \u0924\u0915 \u092A\u0942\u0930\u094D\u0923\u093E\u0902\u0915 \u0926\u0930\u094D\u091C \u0915\u0930\u0947\u0902\u0964 \u092B\u093C\u0940\u0932\u094D\u0921 \u091B\u094B\u0921\u093C\u0928\u0947 \u092A\u0930 \u0938\u0939\u0947\u091C\u093E \u091C\u093E\u0924\u093E \u0939\u0948\u0964 \u091B\u094B\u091F\u0947 \u0935\u093F\u0930\u093E\u092E \u092C\u094B\u0932\u0928\u0947 \u0915\u094B \u0916\u0902\u0921\u094B\u0902 \u092E\u0947\u0902 \u092C\u093E\u0901\u091F \u0938\u0915\u0924\u0947 \u0939\u0948\u0902; \u092A\u0939\u091A\u093E\u0928 \u092E\u0947\u0902 \u0905\u0924\u093F\u0930\u093F\u0915\u094D\u0924 \u0938\u092E\u092F \u0932\u0917\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.silenceDetection.customLabel": "\u0915\u0938\u094D\u091F\u092E \u0935\u093F\u0930\u093E\u092E (\u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921)",
+  "dsh-live-voice.recognition.silenceDetection.duration": "\u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0915\u093E \u0935\u093F\u0930\u093E\u092E: {milliseconds} \u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921",
+  "dsh-live-voice.recognition.silenceDetection.help": "\u0924\u092F \u0915\u0930\u0924\u093E \u0939\u0948 \u0915\u093F \u0930\u093F\u0915\u0949\u0930\u094D\u0921 \u0915\u0940 \u0917\u0908 \u0906\u0935\u093E\u091C\u093C \u0915\u094B \u092A\u0939\u091A\u093E\u0928 \u0915\u0947 \u0932\u093F\u090F \u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0935\u093F\u0930\u093E\u092E \u0915\u093F\u0924\u0928\u0940 \u0926\u0947\u0930 \u0930\u0939\u0928\u093E \u091A\u093E\u0939\u093F\u090F\u0964",
+  "dsh-live-voice.recognition.silenceDetection.label": "\u092E\u094C\u0928 \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u093E",
+  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "\u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0915\u093E \u0935\u093F\u0930\u093E\u092E",
+  "dsh-live-voice.recognition.silenceDetection.title": "\u092E\u094C\u0928 \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u0947 \u0915\u0940 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938",
+  "dsh-live-voice.recognition.speakerMode.help": "\u0928\u093F\u092F\u0902\u0924\u094D\u0930\u093F\u0924 \u0938\u0941\u0928\u0928\u0947 \u0915\u093E \u092E\u094B\u0921 \u091C\u0935\u093E\u092C \u091A\u0932\u0924\u0947 \u0938\u092E\u092F \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u091B\u094B\u0921\u093C \u0926\u0947\u0924\u093E \u0939\u0948, \u0924\u093E\u0915\u093F \u0938\u094D\u092A\u0940\u0915\u0930 \u0915\u093E \u0911\u0921\u093F\u092F\u094B \u092A\u0939\u091A\u093E\u0928\u093E \u0928 \u091C\u093E\u090F\u0964 \u092C\u0940\u091A \u092E\u0947\u0902 \u0930\u094B\u0915\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F \u201C\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u093E \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u0923 \u0932\u0947\u0902\u201D \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.recognition.speakerMode.label": "\u0938\u094D\u092A\u0940\u0915\u0930 \u2014 \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u093F\u0924 \u0938\u0941\u0928\u0928\u093E",
+  "dsh-live-voice.recognition.status.answer": "\u0909\u0924\u094D\u0924\u0930 \u092A\u0939\u091A\u093E\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
+  "dsh-live-voice.recognition.status.awaitingAnswer": "\u0906\u092A\u0915\u093E \u0909\u0924\u094D\u0924\u0930 \u0938\u0941\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
+  "dsh-live-voice.recognition.status.listening": "\u0938\u0941\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948 \u2014 \u0906\u092A\u0915\u0947 \u092C\u094B\u0932\u0928\u0947 \u0915\u0940 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0939\u0948",
+  "dsh-live-voice.recognition.status.processing": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
+  "dsh-live-voice.recognition.status.unavailable": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0909\u092A\u0932\u092C\u094D\u0927 \u0928\u0939\u0940\u0902 \u0939\u0948",
+  "dsh-live-voice.recognition.voiceCommands.help": "\u0935\u093E\u0915\u094D\u092F\u093E\u0902\u0936\u094B\u0902 \u0915\u094B \u0905\u0932\u094D\u092A\u0935\u093F\u0930\u093E\u092E \u0938\u0947 \u0905\u0932\u0917 \u0915\u0930\u0947\u0902\u0964 \u092E\u093F\u0932\u093E\u0928 \u092E\u0947\u0902 \u092C\u0921\u093C\u0947-\u091B\u094B\u091F\u0947 \u0905\u0915\u094D\u0937\u0930, \u0909\u091A\u094D\u091A\u093E\u0930\u0923 \u091A\u093F\u0939\u094D\u0928, \u0935\u093F\u0930\u093E\u092E \u091A\u093F\u0939\u094D\u0928 \u0914\u0930 \u0905\u0924\u093F\u0930\u093F\u0915\u094D\u0924 \u0938\u094D\u092A\u0947\u0938 \u0905\u0928\u0926\u0947\u0916\u0947 \u0915\u093F\u090F \u091C\u093E\u0924\u0947 \u0939\u0948\u0902\u0964 \u092A\u0942\u0930\u093E \u0905\u0902\u0924\u093F\u092E \u0916\u0902\u0921 \u092E\u0947\u0932 \u0916\u093E\u0928\u093E \u091A\u093E\u0939\u093F\u090F\u0964",
+  "dsh-live-voice.recognition.whisper.captureHelp": "\u0911\u0921\u093F\u092F\u094B \u0915\u094B \u092A\u0942\u0930\u0947 \u0915\u0925\u0928\u094B\u0902 \u0935\u093E\u0932\u0947 WAV \u0916\u0902\u0921\u094B\u0902 \u092E\u0947\u0902 \u092C\u093E\u0901\u091F\u0915\u0930 \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0943\u0924 DSH \u0915\u0947 \u091C\u093C\u0930\u093F\u090F \u092D\u0947\u091C\u093E \u091C\u093E\u0924\u093E \u0939\u0948, \u0914\u0930 \u0932\u0942\u092A\u092C\u0948\u0915 \u092A\u0924\u0947 \u092A\u0930 \u091A\u0932 \u0930\u0939\u0940 whisper.cpp HTTP \u0938\u0947\u0935\u093E \u0907\u0938\u0947 \u092A\u094D\u0930\u094B\u0938\u0947\u0938 \u0915\u0930\u0924\u0940 \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.whisper.connectionSuccess": "\u0915\u0928\u0947\u0915\u094D\u0936\u0928 \u0938\u092B\u0932 \u0930\u0939\u093E\u0964 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u091C\u093E\u0901\u091A \u090F\u0902\u0921\u092A\u0949\u0907\u0902\u091F \u0928\u0947 \u091C\u0935\u093E\u092C \u0926\u093F\u092F\u093E; \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u0915\u0940 \u091C\u093E\u0901\u091A \u0928\u0939\u0940\u0902 \u0915\u0940 \u0917\u0908\u0964 \u092C\u093F\u0928\u093E \u0938\u0939\u0947\u091C\u0947 \u092C\u0926\u0932\u093E\u0935 \u0932\u093E\u0917\u0942 \u0928\u0939\u0940\u0902 \u0915\u093F\u090F \u0917\u090F \u0939\u0948\u0902\u0964",
+  "dsh-live-voice.recognition.whisper.endpointHelp": "HTTP API, \u0915\u0949\u0928\u094D\u092B\u093C\u093F\u0917\u0930 \u0915\u093F\u090F \u0917\u090F \u092C\u0947\u0938 URL \u092A\u0930 \u0939\u0948 (\u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F: http://127.0.0.1:8080/)\u0964 POST /v1/audio/transcriptions \u0915\u0947 \u0938\u093E\u0925 \u0938\u0902\u0917\u0924 \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.whisper.healthFailed": "Whisper \u0915\u0940 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u091C\u093E\u0901\u091A \u0935\u093F\u092B\u0932 \u0930\u0939\u0940\u0964",
+  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 HTTP API",
+  "dsh-live-voice.recognition.whisper.requestFailed": "Whisper \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0915\u093E \u0905\u0928\u0941\u0930\u094B\u0927 \u0935\u093F\u092B\u0932 \u0930\u0939\u093E\u0964",
+  "dsh-live-voice.recognition.whisper.restartRequired": "Whisper \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0915\u0947 \u0930\u0942\u091F \u0932\u094B\u0921 \u0928\u0939\u0940\u0902 \u0939\u0948\u0902\u0964 \u0905\u092A\u0921\u0947\u091F \u0915\u093F\u090F \u0917\u090F \u092A\u094D\u0932\u0917\u0907\u0928 \u0930\u0942\u091F \u0932\u094B\u0921 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F DSH \u0938\u0930\u094D\u0935\u0930 \u0915\u094B \u0938\u093E\u092E\u093E\u0928\u094D\u092F \u0930\u0942\u092A \u0938\u0947 \u092A\u0941\u0928\u0903 \u0936\u0941\u0930\u0942 \u0915\u0930\u0928\u093E \u0939\u094B\u0917\u093E; \u0915\u0947\u0935\u0932 \u092F\u0939 \u092A\u0947\u091C \u0930\u0940\u092B\u093C\u094D\u0930\u0947\u0936 \u0915\u0930\u0928\u093E \u092A\u0930\u094D\u092F\u093E\u092A\u094D\u0924 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.whisper.save": "Whisper \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0938\u0939\u0947\u091C\u0947\u0902",
+  "dsh-live-voice.recognition.whisper.saved": "DSH \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0938\u0939\u0947\u091C\u093E \u0917\u092F\u093E\u0964 \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u091A\u0932 \u0930\u0939\u0947 \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u0905\u0928\u0941\u0930\u094B\u0927 \u0930\u0926\u094D\u0926 \u0915\u0930 \u0926\u093F\u090F \u0917\u090F\u0964",
+  "dsh-live-voice.recognition.whisper.signInRequired": "Whisper \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092A\u094D\u0930\u092C\u0902\u0927\u093F\u0924 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F DSH \u092E\u0947\u0902 \u0938\u093E\u0907\u0928 \u0907\u0928 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.settings.autoSend.cancel": "\u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092D\u0947\u091C\u0928\u093E \u0930\u0926\u094D\u0926 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.settings.autoSend.countdown": "{remaining} \u092E\u0947\u0902 \u092D\u0947\u091C\u093E \u091C\u093E\u090F\u0917\u093E\u2026",
+  "dsh-live-voice.settings.autoSend.delay": "\u092E\u094C\u0928 \u0915\u0947 \u092C\u093E\u0926 \u092D\u0947\u091C\u0947\u0902",
+  "dsh-live-voice.settings.close": "\u0935\u0949\u0907\u0938 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice \u0906\u092A\u0915\u0947 \u0909\u0924\u094D\u0924\u0930 \u0938\u0947 \u0926\u093F\u0936\u093E \u0926\u0947\u0928\u0947 \u0914\u0930 \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u0921\u093E\u0932\u0928\u0947 \u0915\u0940 \u0938\u0939\u0940 \u0915\u094D\u0930\u093F\u092F\u093E \u091A\u0941\u0928\u0924\u093E \u0939\u0948\u0964 \u0907\u0938\u0938\u0947 DSH \u0915\u0940 \u0938\u0947\u091F\u093F\u0902\u0917 \u0928\u0939\u0940\u0902 \u092C\u0926\u0932\u0924\u0940; \u0905\u092A\u0928\u093E \u0935\u0930\u094D\u0924\u092E\u093E\u0928 DSH \u0935\u094D\u092F\u0935\u0939\u093E\u0930 \u092C\u0924\u093E\u090F\u0902 \u0914\u0930 \u0909\u0938\u0915\u0947 \u092C\u0926\u0932\u0928\u0947 \u092A\u0930 \u092F\u0939 \u0909\u0924\u094D\u0924\u0930 \u0905\u092A\u0921\u0947\u091F \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "\u0906\u092A\u0915\u0947 DSH \u092E\u0947\u0902, \u090F\u091C\u0947\u0902\u091F \u0935\u094D\u092F\u0938\u094D\u0924 \u0939\u094B\u0928\u0947 \u092A\u0930 Enter \u0915\u094D\u092F\u093E \u0915\u0930\u0924\u093E \u0939\u0948?",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "\u0938\u0902\u0926\u0947\u0936 \u0915\u094B \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u0921\u093E\u0932\u0924\u093E \u0939\u0948",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "\u0938\u0902\u0926\u0947\u0936 \u0938\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u0926\u093F\u0936\u093E \u0926\u0947\u0924\u093E \u0939\u0948",
+  "dsh-live-voice.settings.delivery.label": "\u092D\u0947\u091C\u0928\u0947 \u0915\u093E \u092E\u094B\u0921",
+  "dsh-live-voice.settings.delivery.manualLabel": "\u092C\u0902\u0926 \u2014 \u0938\u092E\u0940\u0915\u094D\u0937\u093E \u0915\u0930\u0915\u0947 \u092E\u0948\u0928\u094D\u092F\u0941\u0905\u0932 \u0930\u0942\u092A \u0938\u0947 \u092D\u0947\u091C\u0947\u0902",
+  "dsh-live-voice.settings.delivery.queueLabel": "\u0915\u0924\u093E\u0930 \u2014 \u092E\u094C\u0928 \u0915\u0947 \u092C\u093E\u0926 \u0905\u092A\u0928\u0947 \u0906\u092A \u091C\u094B\u0921\u093C\u0947\u0902",
+  "dsh-live-voice.settings.delivery.status": "\u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092D\u0947\u091C\u0928\u093E: {mode}",
+  "dsh-live-voice.settings.delivery.steerDescription": "\u091A\u0932 \u0930\u0939\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u092D\u0947\u091C\u0947\u0902",
+  "dsh-live-voice.settings.delivery.steerLabel": "\u0926\u093F\u0936\u093E \u0926\u0947\u0902 \u2014 \u091A\u0932 \u0930\u0939\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u0905\u092A\u0928\u0947 \u0906\u092A \u092D\u0947\u091C\u0947\u0902",
+  "dsh-live-voice.settings.delivery.toggle": "\u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092D\u0947\u091C\u0928\u0947 \u0915\u093E \u092E\u094B\u0921",
+  "dsh-live-voice.settings.engine.refresh": "\u0909\u092A\u0932\u092C\u094D\u0927 \u0907\u0902\u091C\u0928 \u0930\u0940\u092B\u093C\u094D\u0930\u0947\u0936 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.settings.filters.title": "\u092B\u093C\u093F\u0932\u094D\u091F\u0930\u093F\u0902\u0917",
+  "dsh-live-voice.settings.general.title": "\u0938\u093E\u092E\u093E\u0928\u094D\u092F",
+  "dsh-live-voice.settings.persistence.loadError": "\u0938\u0930\u094D\u0935\u0930 \u0938\u0947 Live Voice \u0938\u0947\u091F\u093F\u0902\u0917 \u0932\u094B\u0921 \u0928\u0939\u0940\u0902 \u0939\u094B \u0938\u0915\u0940\u0902\u0964 \u092B\u093F\u0930 \u092A\u094D\u0930\u092F\u093E\u0938 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F \u092A\u0947\u091C \u0930\u0940\u0932\u094B\u0921 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.settings.persistence.saveError": "\u0938\u0930\u094D\u0935\u0930 \u092A\u0930 Live Voice \u0938\u0947\u091F\u093F\u0902\u0917 \u0938\u0947\u0935 \u0928\u0939\u0940\u0902 \u0939\u094B \u0938\u0915\u0940\u0902\u0964 \u092B\u093F\u0930 \u092A\u094D\u0930\u092F\u093E\u0938 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.settings.tabs.conversation": "\u092C\u093E\u0924\u091A\u0940\u0924",
+  "dsh-live-voice.settings.tabs.recognition": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928",
+  "dsh-live-voice.settings.tabs.speak": "\u0935\u093E\u091A\u0928",
+  "dsh-live-voice.settings.title": "Live Voice \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938",
+  "dsh-live-voice.settings.whisper.hostHelp": "\u092A\u0942\u0930\u0947 \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0932\u093E\u0917\u0942 \u0939\u094B\u0928\u0947 \u0935\u093E\u0932\u0940 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938\u0964 \u0915\u0947\u0935\u0932 \u092C\u093F\u0928\u093E \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0930\u0923 \u0935\u093E\u0932\u0947 \u0932\u0942\u092A\u092C\u0948\u0915 HTTP URL (localhost, 127.0.0.1, [::1]) \u0938\u094D\u0935\u0940\u0915\u093E\u0930\u094D\u092F \u0939\u0948\u0902\u0964 \u0932\u0942\u092A\u092C\u0948\u0915 \u0915\u093E \u0905\u0930\u094D\u0925 DSH \u0939\u094B\u0938\u094D\u091F \u0939\u0948, \u092F\u0939 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0928\u0939\u0940\u0902\u0964 \u0938\u092D\u0940 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u091C\u093E\u0901\u091A \u0914\u0930 \u0911\u0921\u093F\u092F\u094B \u0905\u0928\u0941\u0930\u094B\u0927 \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0930\u0923 \u0935\u093E\u0932\u0947 \u092C\u0948\u0915\u090F\u0902\u0921 \u0915\u0947 \u091C\u093C\u0930\u093F\u090F \u091A\u0932\u0924\u0947 \u0939\u0948\u0902\u0964",
+  "dsh-live-voice.speak.agentContext.enabled": "\u090F\u091C\u0947\u0902\u091F \u0935\u0949\u0907\u0938 \u0938\u0902\u0926\u0930\u094D\u092D \u0938\u0915\u094D\u0937\u092E \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.speak.agentContext.enabledHelp": "\u0938\u0915\u094D\u0937\u092E \u0939\u094B\u0928\u0947 \u092A\u0930, \u0928\u0940\u091A\u0947 \u0926\u093F\u092F\u093E \u0917\u092F\u093E \u0938\u0902\u0926\u0930\u094D\u092D \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u092C\u0924\u093E\u0924\u093E \u0939\u0948 \u0915\u093F \u0909\u0938\u0915\u0947 \u0909\u0924\u094D\u0924\u0930 \u091C\u093C\u094B\u0930 \u0938\u0947 \u092C\u094B\u0932\u0947 \u091C\u093E\u090F\u0902\u0917\u0947\u0964",
+  "dsh-live-voice.speak.agentContext.help": "\u092F\u0939 \u0905\u0902\u0917\u094D\u0930\u0947\u091C\u093C\u0940 \u0928\u093F\u0930\u094D\u0926\u0947\u0936 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u0915\u0947\u0935\u0932 \u0938\u0915\u094D\u0930\u093F\u092F \u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0915\u0947 \u0926\u094C\u0930\u093E\u0928 \u092D\u0947\u091C\u093E \u091C\u093E\u0924\u093E \u0939\u0948, \u091C\u092C \u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092D\u093E\u0937\u0923 \u0938\u0915\u094D\u0937\u092E \u0939\u094B.",
+  "dsh-live-voice.speak.agentContext.label": "\u090F\u091C\u0947\u0902\u091F \u0935\u0949\u0907\u0938 \u0938\u0902\u0926\u0930\u094D\u092D",
+  "dsh-live-voice.speak.agentContext.restore": "\u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u092C\u0939\u093E\u0932 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.speak.autoPlayback.enabled": "\u0938\u0939\u093E\u092F\u0915 \u0915\u0947 \u0928\u090F \u0938\u0902\u0926\u0947\u0936 \u0905\u092A\u0928\u0947 \u0906\u092A \u092A\u0922\u093C\u0915\u0930 \u0938\u0941\u0928\u093E\u090F\u0901",
+  "dsh-live-voice.speak.autoPlayback.help": "\u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0915\u0947 \u0926\u094C\u0930\u093E\u0928 \u0938\u0939\u093E\u092F\u0915 \u0915\u0947 \u0935\u093E\u0915\u094D\u092F\u093E\u0902\u0936 \u0905\u092A\u0928\u0947 \u0906\u092A \u092A\u0922\u093C\u0915\u0930 \u0938\u0941\u0928\u093E\u090F \u091C\u093E\u0924\u0947 \u0939\u0948\u0902\u0964 \u091C\u092C \u0906\u092A \u092C\u094B\u0932 \u0930\u0939\u0947 \u0939\u094B\u0902, \u0924\u094B \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0915\u0930\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.speak.autoPlayback.label": "\u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u0935\u093E\u091A\u0928",
+  "dsh-live-voice.speak.autoPlayback.remainingOne": "\u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u0935\u093E\u091A\u0928: {state} \u2014 {count} \u0935\u093E\u0915\u094D \u0916\u0902\u0921 \u0936\u0947\u0937 \u0939\u0948",
+  "dsh-live-voice.speak.autoPlayback.remainingOther": "\u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u0935\u093E\u091A\u0928: {state} \u2014 {count} \u0935\u093E\u0915\u094D \u0916\u0902\u0921 \u0936\u0947\u0937 \u0939\u0948\u0902",
+  "dsh-live-voice.speak.autoPlayback.status": "\u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u0935\u093E\u091A\u0928: {state}",
+  "dsh-live-voice.speak.browser.automaticVoice": "\u0938\u094D\u0925\u093E\u0928\u0940\u092F \u0906\u0935\u093E\u091C\u093C \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u091A\u092F\u0928",
+  "dsh-live-voice.speak.browser.label": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0935\u093E\u091A\u0928 \u2014 \u0907\u0938 \u0921\u093F\u0935\u093E\u0907\u0938 \u092A\u0930 \u0911\u0921\u093F\u092F\u094B",
+  "dsh-live-voice.speak.browser.name": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0935\u093E\u091A\u0928",
+  "dsh-live-voice.speak.browser.outputHelp": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0915\u093E \u0935\u093E\u0915\u094D \u0938\u0902\u0936\u094D\u0932\u0947\u0937\u0923 \u091A\u0941\u0928\u0947 \u0917\u090F \u0906\u0909\u091F\u092A\u0941\u091F \u0921\u093F\u0935\u093E\u0907\u0938 \u0915\u094B \u0905\u0928\u0926\u0947\u0916\u093E \u0915\u0930 \u0938\u0915\u0924\u093E \u0939\u0948; \u092F\u0939 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 API \u0938\u093E\u092E\u093E\u0928\u094D\u092F\u0924\u0903 \u0938\u093F\u0938\u094D\u091F\u092E \u0915\u0947 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.speak.browser.voice": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0915\u0940 \u0938\u094D\u0925\u093E\u0928\u0940\u092F \u0906\u0935\u093E\u091C\u093C",
+  "dsh-live-voice.speak.captions.approximate": "\u0905\u0928\u0941\u092E\u093E\u0928\u093F\u0924 \u0935\u093E\u0923\u0940 \u0915\u0948\u092A\u094D\u0936\u0928",
+  "dsh-live-voice.speak.captions.loading": "\u0935\u093E\u0923\u0940 \u0911\u0921\u093F\u092F\u094B \u0924\u0948\u092F\u093E\u0930 \u0939\u094B \u0930\u0939\u093E \u0939\u0948",
+  "dsh-live-voice.speak.captions.position": "\u0935\u093E\u0923\u0940 \u0916\u0902\u0921 {index} / {total}",
+  "dsh-live-voice.speak.captions.progress": "\u0905\u0928\u0941\u092E\u093E\u0928\u093F\u0924 \u0935\u093E\u0923\u0940 \u092A\u094D\u0930\u0917\u0924\u093F",
+  "dsh-live-voice.speak.captions.title": "\u0935\u093E\u0923\u0940 \u0914\u0930 \u0932\u093E\u0907\u0935 \u0915\u0948\u092A\u094D\u0936\u0928",
+  "dsh-live-voice.speak.engine.label": "\u0935\u093E\u0915\u094D \u0938\u0902\u0936\u094D\u0932\u0947\u0937\u0923 \u0907\u0902\u091C\u0928",
+  "dsh-live-voice.speak.engine.playbackHelp": "Qwen \u0914\u0930 macOS say DSH \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0906\u0935\u093E\u091C\u093C \u092C\u0928\u093E\u0924\u0947 \u0939\u0948\u0902; \u0915\u0949\u092E\u094D\u092A\u0948\u0915\u094D\u091F AAC/M4A \u0911\u0921\u093F\u092F\u094B \u0907\u0938 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u092E\u0947\u0902 \u091A\u0932\u0924\u093E \u0939\u0948\u0964 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0938\u094D\u092A\u0940\u091A \u0907\u0938\u0940 \u0921\u093F\u0935\u093E\u0907\u0938 \u092A\u0930 \u092C\u0928\u0924\u0940 \u0914\u0930 \u091A\u0932\u0924\u0940 \u0939\u0948\u0964",
+  "dsh-live-voice.speak.filters.code.enabled": "\u092A\u0922\u093C\u0915\u0930 \u0938\u0941\u0928\u093E\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 Markdown \u0915\u094B\u0921 \u092C\u094D\u0932\u0949\u0915 \u092B\u093C\u093F\u0932\u094D\u091F\u0930 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.speak.filters.code.maxLines": "\u0905\u0927\u093F\u0915\u0924\u092E \u0907\u0924\u0928\u0940 \u092A\u0902\u0915\u094D\u0924\u093F\u092F\u094B\u0902 \u0935\u093E\u0932\u0947 \u0915\u094B\u0921 \u092C\u094D\u0932\u0949\u0915 \u092A\u0922\u093C\u0947\u0902",
+  "dsh-live-voice.speak.filters.code.notice": "\u0939\u092E\u093E\u0930\u0940 \u092C\u093E\u0924\u091A\u0940\u0924 \u092E\u0947\u0902 \u0926\u093F\u092F\u093E \u0917\u092F\u093E \u0915\u094B\u0921 \u0926\u0947\u0916\u0947\u0902",
+  "dsh-live-voice.speak.filters.code.replacement": "\u092C\u0921\u093C\u0947 \u0915\u094B\u0921 \u092C\u094D\u0932\u0949\u0915 \u0915\u0940 \u091C\u0917\u0939 \u092A\u0922\u093C\u093E \u091C\u093E\u0928\u0947 \u0935\u093E\u0932\u093E \u0935\u093E\u0915\u094D\u092F\u093E\u0902\u0936",
+  "dsh-live-voice.speak.interruption.disabledHelp": "\u0926\u0942\u0938\u0930\u093E \u0938\u0902\u0926\u0947\u0936 \u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0935\u0939 \u0911\u0921\u093F\u092F\u094B \u092C\u0902\u0926 \u0928\u0939\u0940\u0902 \u0939\u094B\u0924\u093E \u091C\u093F\u0938\u0947 \u0906\u092A \u0905\u092D\u0940 \u0938\u0941\u0928 \u0930\u0939\u0947 \u0939\u0948\u0902\u0964",
+  "dsh-live-voice.speak.interruption.enabled": "\u092E\u0947\u0930\u0947 \u0938\u0902\u0926\u0947\u0936 \u092D\u0947\u091C\u0928\u0947 \u092A\u0930 \u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0935\u093E\u091A\u0928 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.speak.interruption.enabledHelp": "\u0928\u092F\u093E \u0909\u092A\u092F\u094B\u0917\u0915\u0930\u094D\u0924\u093E \u0938\u0902\u0926\u0947\u0936 \u092D\u0947\u091C\u0928\u0947 \u092F\u093E \u0909\u0938\u0938\u0947 \u091A\u0932 \u0930\u0939\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u0926\u093F\u0936\u093E \u0926\u0947\u0928\u0947 \u092A\u0930 \u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u091A\u093E\u0932\u0942 \u092F\u093E \u0920\u0939\u0930\u093E \u0939\u0941\u0906 \u0935\u093E\u091A\u0928 \u092C\u0902\u0926 \u0939\u094B \u091C\u093E\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.speak.macos.label": "macOS say \u2014 \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0911\u0921\u093F\u092F\u094B",
+  "dsh-live-voice.speak.macos.name": "macOS say",
+  "dsh-live-voice.speak.macos.outputHelp": "macOS say, DSH \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u091A\u0941\u0928\u0947 \u0917\u090F \u0906\u0909\u091F\u092A\u0941\u091F \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.speak.output.checking": "\u0935\u093E\u0915\u094D \u0906\u0909\u091F\u092A\u0941\u091F \u091C\u093E\u0901\u091A\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
+  "dsh-live-voice.speak.output.device": "\u0906\u0909\u091F\u092A\u0941\u091F \u0921\u093F\u0935\u093E\u0907\u0938",
+  "dsh-live-voice.speak.output.fallbackName": "\u0911\u0921\u093F\u092F\u094B \u0906\u0909\u091F\u092A\u0941\u091F",
+  "dsh-live-voice.speak.output.stopTest": "\u0935\u093E\u091A\u0928 \u092A\u0930\u0940\u0915\u094D\u0937\u0923 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.speak.output.test": "\u091A\u0941\u0928\u0947 \u0917\u090F \u0935\u093E\u0915\u094D \u0906\u0909\u091F\u092A\u0941\u091F \u0915\u0940 \u091C\u093E\u0901\u091A \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice\u0964 \u091A\u0941\u0928\u093E \u0917\u092F\u093E \u0935\u093E\u0915\u094D \u0906\u0909\u091F\u092A\u0941\u091F \u0915\u093E\u092E \u0915\u0930 \u0930\u0939\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.speak.output.testing": "\u0935\u093E\u091A\u0928 \u0915\u093E \u092A\u0930\u0940\u0915\u094D\u0937\u0923 \u0939\u094B \u0930\u0939\u093E \u0939\u0948\u2026",
+  "dsh-live-voice.speak.playback.message": "\u0938\u0902\u0926\u0947\u0936 \u092A\u0922\u093C\u0915\u0930 \u0938\u0941\u0928\u093E\u090F\u0901",
+  "dsh-live-voice.speak.playback.next": "\u0905\u0917\u0932\u0947 \u0935\u093E\u0923\u0940 \u0916\u0902\u0921 \u092A\u0930 \u091C\u093E\u090F\u0901",
+  "dsh-live-voice.speak.playback.pause": "\u0935\u093E\u091A\u0928 \u0920\u0939\u0930\u093E\u090F\u0901",
+  "dsh-live-voice.speak.playback.previous": "\u092A\u093F\u091B\u0932\u093E \u0935\u093E\u0923\u0940 \u0916\u0902\u0921",
+  "dsh-live-voice.speak.playback.resume": "\u0935\u093E\u091A\u0928 \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.speak.playback.stop": "\u0935\u093E\u091A\u0928 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.speak.playback.stopAll": "\u0938\u092D\u0940 \u0935\u093E\u091A\u0928 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.speak.qwen.connection": "Qwen \u0938\u0930\u094D\u0935\u0930 \u0915\u0928\u0947\u0915\u094D\u0936\u0928",
+  "dsh-live-voice.speak.qwen.endpoint": "Qwen API \u0915\u093E \u092C\u0947\u0938 URL",
+  "dsh-live-voice.speak.qwen.healthFailed": "Qwen \u0915\u0940 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u091C\u093E\u0901\u091A \u0935\u093F\u092B\u0932 \u0930\u0939\u0940\u0964",
+  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 \u0938\u094D\u0925\u093E\u0928\u0940\u092F MLX \u0938\u0930\u094D\u0935\u0930",
+  "dsh-live-voice.speak.qwen.name": "\u0938\u094D\u0925\u093E\u0928\u0940\u092F Qwen3",
+  "dsh-live-voice.speak.qwen.requestFailed": "Qwen \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0915\u093E \u0905\u0928\u0941\u0930\u094B\u0927 \u0935\u093F\u092B\u0932 \u0930\u0939\u093E\u0964",
+  "dsh-live-voice.speak.qwen.restartRequired": "Qwen \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0915\u0947 \u0930\u0942\u091F \u0932\u094B\u0921 \u0928\u0939\u0940\u0902 \u0939\u0948\u0902\u0964 \u0905\u092A\u0921\u0947\u091F \u0915\u093F\u090F \u0917\u090F \u092A\u094D\u0932\u0917\u0907\u0928 \u0930\u0942\u091F \u0932\u094B\u0921 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F DSH \u0938\u0930\u094D\u0935\u0930 \u0915\u094B \u0938\u093E\u092E\u093E\u0928\u094D\u092F \u0930\u0942\u092A \u0938\u0947 \u092A\u0941\u0928\u0903 \u0936\u0941\u0930\u0942 \u0915\u0930\u0928\u093E \u0939\u094B\u0917\u093E; \u0915\u0947\u0935\u0932 \u092F\u0939 \u092A\u0947\u091C \u0930\u0940\u092B\u093C\u094D\u0930\u0947\u0936 \u0915\u0930\u0928\u093E \u092A\u0930\u094D\u092F\u093E\u092A\u094D\u0924 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964",
+  "dsh-live-voice.speak.qwen.save": "Qwen \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0938\u0939\u0947\u091C\u0947\u0902",
+  "dsh-live-voice.speak.qwen.saved": "DSH \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0938\u0939\u0947\u091C\u093E \u0917\u092F\u093E\u0964 \u091A\u0932 \u0930\u0939\u0947 Qwen \u0905\u0928\u0941\u0930\u094B\u0927 \u0930\u0926\u094D\u0926 \u0915\u0930 \u0926\u093F\u090F \u0917\u090F\u0964",
+  "dsh-live-voice.speak.qwen.signInRequired": "Qwen \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092A\u094D\u0930\u092C\u0902\u0927\u093F\u0924 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F DSH \u092E\u0947\u0902 \u0938\u093E\u0907\u0928 \u0907\u0928 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.speak.qwen.test": "Qwen \u0938\u0930\u094D\u0935\u0930 \u0915\u0940 \u091C\u093E\u0901\u091A \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.speak.qwen.voice": "Qwen \u0915\u0940 \u0906\u0935\u093E\u091C\u093C",
+  "dsh-live-voice.speak.qwen.voiceHelp": "\u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u0930\u0942\u092A \u0938\u0947 Aiden \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0939\u094B\u0924\u093E \u0939\u0948\u0964 \u092F\u0947 \u092A\u0939\u0932\u0947 \u0938\u0947 \u0924\u092F \u0906\u0935\u093E\u091C\u093C\u0947\u0902 \u092C\u094D\u0930\u093E\u091C\u093C\u0940\u0932\u093F\u092F\u093E\u0908 \u092A\u0941\u0930\u094D\u0924\u0917\u093E\u0932\u0940 \u0915\u0947 \u092E\u0942\u0932 \u0935\u0915\u094D\u0924\u093E\u0913\u0902 \u0915\u0940 \u0906\u0935\u093E\u091C\u093C\u0947\u0902 \u0928\u0939\u0940\u0902 \u0939\u0948\u0902\u0964",
+  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 \u092A\u0941\u0930\u0941\u0937, \u0905\u092E\u0947\u0930\u093F\u0915\u0940 \u0905\u0902\u0917\u094D\u0930\u0947\u091C\u093C\u0940",
+  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 \u092A\u0941\u0930\u0941\u0937, \u092C\u0940\u091C\u093F\u0902\u0917 \u091A\u0940\u0928\u0940",
+  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 \u092A\u0941\u0930\u0941\u0937, \u0938\u093F\u091A\u0941\u0906\u0928 \u091A\u0940\u0928\u0940",
+  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 \u092E\u0939\u093F\u0932\u093E, \u091C\u093E\u092A\u093E\u0928\u0940",
+  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 \u092A\u0941\u0930\u0941\u0937, \u0905\u0902\u0917\u094D\u0930\u0947\u091C\u093C\u0940",
+  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 \u092E\u0939\u093F\u0932\u093E, \u091A\u0940\u0928\u0940",
+  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 \u092E\u0939\u093F\u0932\u093E, \u0915\u094B\u0930\u093F\u092F\u093E\u0908",
+  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 \u092A\u0941\u0930\u0941\u0937, \u091A\u0940\u0928\u0940",
+  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 \u092E\u0939\u093F\u0932\u093E, \u091A\u0940\u0928\u0940",
+  "dsh-live-voice.speak.rate.help": "\u0938\u093E\u092A\u0947\u0915\u094D\u0937 \u0917\u0924\u093F: 1 \u0938\u093E\u092E\u093E\u0928\u094D\u092F \u0939\u0948\u0964",
+  "dsh-live-voice.speak.rate.label": "\u092C\u094B\u0932\u0928\u0947 \u0915\u0940 \u0917\u0924\u093F",
+  "dsh-live-voice.speak.responseDelay.help": "\u0906\u092A\u0915\u0947 \u092C\u094B\u0932\u0928\u093E \u092C\u0902\u0926 \u0915\u0930\u0928\u0947 \u0915\u0947 \u092C\u093E\u0926 \u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0907\u0924\u0928\u0940 \u0926\u0947\u0930 \u0924\u0915 \u0932\u0917\u093E\u0924\u093E\u0930 \u092E\u094C\u0928 \u0930\u0939\u0928\u0947 \u0915\u0940 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0915\u0930\u0924\u093E \u0939\u0948\u0964 \u0926\u094B\u092C\u093E\u0930\u093E \u092C\u094B\u0932\u0928\u0947 \u092A\u0930 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u092B\u093F\u0930 \u0938\u0947 \u0936\u0941\u0930\u0942 \u0939\u094B\u0924\u0940 \u0939\u0948\u0964",
+  "dsh-live-voice.speak.responseDelay.label": "\u0938\u0939\u093E\u092F\u0915 \u0915\u0947 \u091C\u0935\u093E\u092C \u0915\u093E \u0935\u093F\u0932\u0902\u092C",
+  "dsh-live-voice.speak.responseDelay.none": "\u0915\u094B\u0908 \u0935\u093F\u0932\u0902\u092C \u0928\u0939\u0940\u0902",
+  "dsh-live-voice.speak.segmentGap.help": "\u0932\u0917\u093E\u0924\u093E\u0930 \u092C\u094B\u0932\u0947 \u0917\u090F \u0939\u093F\u0938\u094D\u0938\u094B\u0902 \u0915\u0947 \u092C\u0940\u091A \u0907\u0924\u0928\u0947 \u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921 \u0930\u0941\u0915\u0947\u0902\u0964 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F 400 ms \u0939\u0948\u0964",
+  "dsh-live-voice.speak.segmentGap.label": "\u092C\u094B\u0932\u0947 \u0917\u090F \u0939\u093F\u0938\u094D\u0938\u094B\u0902 \u0915\u0947 \u092C\u0940\u091A \u0935\u093F\u0930\u093E\u092E",
+  "dsh-live-voice.speak.status.paused": "\u0935\u093E\u091A\u0928 \u0920\u0939\u0930\u093E \u0939\u0941\u0906 \u0939\u0948",
+  "dsh-live-voice.speak.status.playing": "\u092A\u0922\u093C\u0915\u0930 \u0938\u0941\u0928\u093E\u092F\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948"
+};
+var hi_default = Object.freeze(hi);
+
+// src/app/client/i18n/catalogs/pt-BR.ts
+var ptBR = {
+  "dsh-live-voice.commons.connection.contactingHost": "Conectando ao host DSH\u2026",
+  "dsh-live-voice.commons.connection.endpoint": "URL do endpoint",
+  "dsh-live-voice.commons.connection.healthEndpoint": "URL ou caminho de verifica\xE7\xE3o de integridade",
+  "dsh-live-voice.commons.connection.reload": "Recarregar configura\xE7\xF5es salvas",
+  "dsh-live-voice.commons.connection.test": "Testar conex\xE3o",
+  "dsh-live-voice.commons.connection.timeout": "Tempo limite da requisi\xE7\xE3o (ms)",
+  "dsh-live-voice.commons.connection.title": "Configura\xE7\xF5es de conex\xE3o",
+  "dsh-live-voice.commons.connection.unsaved": "Altera\xE7\xF5es n\xE3o salvas",
+  "dsh-live-voice.commons.controls.title": "Controles de voz",
+  "dsh-live-voice.commons.conversation.end": "Encerrar conversa por voz",
+  "dsh-live-voice.commons.conversation.idle": "Conversa inativa",
+  "dsh-live-voice.commons.conversation.start": "Iniciar conversa por voz",
+  "dsh-live-voice.commons.delivery.queueBadge": "FILA",
+  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
+  "dsh-live-voice.commons.dismiss": "Dispensar",
+  "dsh-live-voice.commons.dismissError": "Dispensar erro de voz",
+  "dsh-live-voice.commons.engine.failure": "{engine}: {reason}",
+  "dsh-live-voice.commons.input.ignoring": "ignorando",
+  "dsh-live-voice.commons.input.ignoringBadge": "IGNORANDO",
+  "dsh-live-voice.commons.input.listening": "escutando",
+  "dsh-live-voice.commons.input.listeningBadge": "ESCUTANDO",
+  "dsh-live-voice.commons.manual": "manual",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
+  "dsh-live-voice.commons.off": "desativado",
+  "dsh-live-voice.commons.on": "ativada",
+  "dsh-live-voice.commons.pluginName": "Live Voice",
+  "dsh-live-voice.commons.queue": "fila",
+  "dsh-live-voice.commons.repository.starLabel": "D\xEA uma estrela no GitHub",
+  "dsh-live-voice.commons.repository.starLink": "Dar estrela ao DSH Live Voice no GitHub",
+  "dsh-live-voice.commons.second": "1 segundo",
+  "dsh-live-voice.commons.seconds": "{seconds} segundos",
+  "dsh-live-voice.commons.send": "ENVIAR",
+  "dsh-live-voice.commons.status.ready": "Voz pronta",
+  "dsh-live-voice.commons.systemDefault": "Padr\xE3o do sistema",
+  "dsh-live-voice.commons.toggle.offBadge": "DESATIVADO",
+  "dsh-live-voice.commons.unknownLanguage": "idioma desconhecido",
+  "dsh-live-voice.commons.update.label": "Atualiza\xE7\xE3o dispon\xEDvel",
+  "dsh-live-voice.commons.update.link": "Atualiza\xE7\xE3o dispon\xEDvel: {version}. Abrir lan\xE7amento",
+  "dsh-live-voice.commons.update.version": "Atualiza\xE7\xE3o dispon\xEDvel: {version}",
+  "dsh-live-voice.commons.version.compatibility": "Compat\xEDvel com DSH v{version}",
+  "dsh-live-voice.commons.version.compatibilityLink": "Compat\xEDvel com DSH v{version}. Abrir lan\xE7amento",
+  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
+  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}. Abrir vers\xF5es",
+  "dsh-live-voice.commons.version.title": "Informa\xE7\xF5es da vers\xE3o",
+  "dsh-live-voice.meeting.failed": "Falha no reconhecimento.",
+  "dsh-live-voice.meeting.help": "Fontes independentes; as transcri\xE7\xF5es ficam no composer at\xE9 voc\xEA envi\xE1-las manualmente.",
+  "dsh-live-voice.meeting.httpRequired": "Use Qwen ou Whisper HTTP no modo reuni\xE3o.",
+  "dsh-live-voice.meeting.inactive": "Inativo",
+  "dsh-live-voice.meeting.listening": "Ouvindo",
+  "dsh-live-voice.meeting.microphone": "Microfone",
+  "dsh-live-voice.meeting.noAudio": "Nenhum \xE1udio foi compartilhado. Ative o \xE1udio na janela de compartilhamento.",
+  "dsh-live-voice.meeting.processing": "Transcrevendo\u2026",
+  "dsh-live-voice.meeting.shared": "\xC1udio compartilhado",
+  "dsh-live-voice.meeting.start": "Iniciar fonte",
+  "dsh-live-voice.meeting.starting": "Iniciando\u2026",
+  "dsh-live-voice.meeting.stop": "Parar fonte",
+  "dsh-live-voice.meeting.timestamps": "Hor\xE1rio das transcri\xE7\xF5es",
+  "dsh-live-voice.meeting.timestampsBadge": "Timestamp",
+  "dsh-live-voice.meeting.title": "Modo reuni\xE3o",
+  "dsh-live-voice.meeting.unavailable": "Reconhecimento indispon\xEDvel.",
+  "dsh-live-voice.recognition.autoSend.countdownHelp": "A contagem regressiva inicia ap\xF3s a frase final reconhecida. Nova fala ou edi\xE7\xF5es cancelam o envio.",
+  "dsh-live-voice.recognition.browser.autoInstallPack": "Instalar automaticamente este pacote de idioma do navegador quando necess\xE1rio",
+  "dsh-live-voice.recognition.browser.help": "Usa a API SpeechRecognition do navegador. Esta \xE9 a op\xE7\xE3o padr\xE3o.",
+  "dsh-live-voice.recognition.browser.label": "SpeechRecognition do navegador \u2014 Op\xE7\xE3o padr\xE3o",
+  "dsh-live-voice.recognition.browser.localProcessing": "Processar reconhecimento localmente neste dispositivo",
+  "dsh-live-voice.recognition.browser.microphoneHelp": "O SpeechRecognition do navegador pode usar o microfone padr\xE3o do sistema ou do navegador em vez desta sele\xE7\xE3o.",
+  "dsh-live-voice.recognition.browser.remoteServiceWarning": "O reconhecimento pelo servi\xE7o do navegador est\xE1 ativado. O navegador pode enviar o \xE1udio do microfone para o servi\xE7o remoto.",
+  "dsh-live-voice.recognition.commands.clear": "Limpar editor de mensagens",
+  "dsh-live-voice.recognition.commands.enabled": "Ativar comandos de voz exatos",
+  "dsh-live-voice.recognition.commands.mute": "Silenciar entrada do editor de mensagens",
+  "dsh-live-voice.recognition.commands.queue": "Adicionar \xE0 fila",
+  "dsh-live-voice.recognition.commands.resume": "Retomar entrada do editor de mensagens",
+  "dsh-live-voice.recognition.commands.send": "Enviar ao agente em execu\xE7\xE3o",
+  "dsh-live-voice.recognition.commands.stopSpeech": "Parar fala do assistente",
+  "dsh-live-voice.recognition.commands.title": "Comandos de voz",
+  "dsh-live-voice.recognition.dictation.cancel": "Cancelar ditado",
+  "dsh-live-voice.recognition.engine.label": "Mecanismo de reconhecimento",
+  "dsh-live-voice.recognition.headphoneMode.help": "O microfone aberto continua ouvindo enquanto as respostas s\xE3o reproduzidas. Ao detectar sua fala, a reprodu\xE7\xE3o pausa e s\xF3 continua quando voc\xEA escolher.",
+  "dsh-live-voice.recognition.headphoneMode.label": "Fones de ouvido \u2014 microfone aberto",
+  "dsh-live-voice.recognition.holdToTalk.enabled": "Segure Control para falar",
+  "dsh-live-voice.recognition.holdToTalk.help": "Com o editor aberto, segure Control em qualquer lugar da p\xE1gina para capturar a fala. Solte para concluir as transcri\xE7\xF5es pendentes, aguardar o atraso configurado, enfileirar a mensagem e encerrar a captura. Pressione Escape enquanto segura para cancelar.",
+  "dsh-live-voice.recognition.language.automatic": "Autom\xE1tico \u2014 detectar idioma",
+  "dsh-live-voice.recognition.language.label": "Idioma de reconhecimento",
+  "dsh-live-voice.recognition.manualSend.help": "O texto reconhecido permanece no editor at\xE9 que voc\xEA use o bot\xE3o normal de envio do DSH.",
+  "dsh-live-voice.recognition.maxUtterance.help": "Se a fala nunca pausar, inicia um novo trecho de transcri\xE7\xE3o ap\xF3s esta dura\xE7\xE3o. Padr\xE3o: 60 segundos.",
+  "dsh-live-voice.recognition.maxUtterance.label": "Fala cont\xEDnua m\xE1xima (segundos)",
+  "dsh-live-voice.recognition.microphone.checking": "Verificando disponibilidade do microfone",
+  "dsh-live-voice.recognition.microphone.device": "Dispositivo de entrada",
+  "dsh-live-voice.recognition.microphone.failure": "Microfone: {reason}",
+  "dsh-live-voice.recognition.microphone.ignore": "Ignorar entrada do editor de mensagens",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada do microfone: {state}",
+  "dsh-live-voice.recognition.microphone.label": "Microfone",
+  "dsh-live-voice.recognition.microphone.permissionHelp": "A permiss\xE3o do microfone ser\xE1 solicitada apenas quando voc\xEA iniciar a ditado ou uma conversa por voz.",
+  "dsh-live-voice.recognition.microphone.resume": "Retomar escuta",
+  "dsh-live-voice.recognition.microphone.starting": "Iniciando microfone\u2026",
+  "dsh-live-voice.recognition.microphone.takeControl": "Assumir microfone",
+  "dsh-live-voice.recognition.minimumWords.enabled": "Ignorar trechos curtos de transcri\xE7\xE3o final",
+  "dsh-live-voice.recognition.minimumWords.help": "Trechos finais com menos palavras s\xE3o ignorados antes de chegarem ao editor ou ao envio autom\xE1tico.",
+  "dsh-live-voice.recognition.minimumWords.label": "M\xEDnimo de palavras por trecho final",
+  "dsh-live-voice.recognition.mode.label": "Modo de escuta",
+  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 Em breve",
+  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx Streaming \u2014 Em breve",
+  "dsh-live-voice.recognition.planned.vote": "Em breve \u2014 vote nas issues do reposit\xF3rio",
+  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 Em breve",
+  "dsh-live-voice.recognition.planned.webGpu": "Infer\xEAncia WebGPU no navegador \u2014 Em breve",
+  "dsh-live-voice.recognition.presets.custom.description": "Escolha a dura\xE7\xE3o do sil\xEAncio.",
+  "dsh-live-voice.recognition.presets.custom.label": "Personalizada",
+  "dsh-live-voice.recognition.presets.long.description": "Aguarda durante pausas de pensamento mais longas.",
+  "dsh-live-voice.recognition.presets.long.label": "Longa",
+  "dsh-live-voice.recognition.presets.natural.description": "Permite pausas normais entre frases.",
+  "dsh-live-voice.recognition.presets.natural.label": "Natural",
+  "dsh-live-voice.recognition.presets.short.description": "Envia rapidamente ap\xF3s uma pausa curta.",
+  "dsh-live-voice.recognition.presets.short.label": "Curta",
+  "dsh-live-voice.recognition.providerSettings.help": "As configura\xE7\xF5es do provedor mudam com o mecanismo de reconhecimento selecionado.",
+  "dsh-live-voice.recognition.qwen.captureHelp": "O \xE1udio \xE9 segmentado em trechos completos de fala em WAV e enviado pelo DSH autenticado para o modelo Qwen3 ASR local do host.",
+  "dsh-live-voice.recognition.qwen.connectionSuccess": "Conex\xE3o bem-sucedida. O Qwen ASR e TTS est\xE3o carregados. Edi\xE7\xF5es n\xE3o salvas n\xE3o foram aplicadas.",
+  "dsh-live-voice.recognition.qwen.endpointHelp": "API HTTP na URL configurada do host DSH (padr\xE3o: http://127.0.0.1:8080/inference). O \xE1udio usa a rota de transcri\xE7\xE3o autenticada do host DSH.",
+  "dsh-live-voice.recognition.qwen.hostHelp": "Configura\xE7\xF5es de todo o host para o servidor Qwen3 ASR + TTS. Insira qualquer URL base HTTP ou HTTPS acess\xEDvel a partir do host DSH. O navegador acessa atrav\xE9s de rotas autenticadas do DSH.",
+  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
+  "dsh-live-voice.recognition.silenceDetection.customHelp": "Insira um n\xFAmero inteiro de 100 a 10.000 ms. Salvo ao sair do campo. Pausas curtas podem dividir a fala; o reconhecimento acrescenta sua pr\xF3pria lat\xEAncia.",
+  "dsh-live-voice.recognition.silenceDetection.customLabel": "Pausa personalizada (milissegundos)",
+  "dsh-live-voice.recognition.silenceDetection.duration": "Pausa antes de enviar: {milliseconds} ms",
+  "dsh-live-voice.recognition.silenceDetection.help": "Controla a dura\xE7\xE3o m\xEDnima da pausa antes de enviar a fala capturada para reconhecimento.",
+  "dsh-live-voice.recognition.silenceDetection.label": "Detec\xE7\xE3o de sil\xEAncio",
+  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pausa antes de enviar",
+  "dsh-live-voice.recognition.silenceDetection.title": "Configura\xE7\xF5es de detec\xE7\xE3o de sil\xEAncio",
+  "dsh-live-voice.recognition.speakerMode.help": 'A escuta controlada libera o microfone enquanto as respostas s\xE3o reproduzidas, evitando que o som dos alto-falantes seja reconhecido. Use "Assumir microfone" para interromper.',
+  "dsh-live-voice.recognition.speakerMode.label": "Alto-falantes \u2014 escuta controlada",
+  "dsh-live-voice.recognition.status.answer": "Reconhecendo resposta\u2026",
+  "dsh-live-voice.recognition.status.awaitingAnswer": "Ouvindo sua resposta\u2026",
+  "dsh-live-voice.recognition.status.listening": "Ouvindo \u2014 aguardando fala",
+  "dsh-live-voice.recognition.status.processing": "Reconhecendo fala\u2026",
+  "dsh-live-voice.recognition.status.unavailable": "Reconhecimento de voz indispon\xEDvel",
+  "dsh-live-voice.recognition.voiceCommands.help": "Separe as frases por v\xEDrgulas. A correspond\xEAncia ignora mai\xFAsculas, acentos, pontua\xE7\xE3o e espa\xE7os extras. Todo o trecho final deve coincidir.",
+  "dsh-live-voice.recognition.whisper.captureHelp": "O \xE1udio \xE9 segmentado em trechos completos de fala em WAV, enviado atrav\xE9s do DSH autenticado e processado pelo whisper.cpp HTTP em loopback.",
+  "dsh-live-voice.recognition.whisper.connectionSuccess": "Conex\xE3o bem-sucedida. O endpoint de verifica\xE7\xE3o respondeu; a transcri\xE7\xE3o n\xE3o foi testada. Edi\xE7\xF5es n\xE3o salvas n\xE3o foram aplicadas.",
+  "dsh-live-voice.recognition.whisper.endpointHelp": "API HTTP na URL base configurada (padr\xE3o: http://127.0.0.1:8080/). Compat\xEDvel com POST /v1/audio/transcriptions.",
+  "dsh-live-voice.recognition.whisper.healthFailed": "Falha na verifica\xE7\xE3o de integridade do Whisper.",
+  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 API HTTP",
+  "dsh-live-voice.recognition.whisper.requestFailed": "Falha na requisi\xE7\xE3o de configura\xE7\xF5es do Whisper.",
+  "dsh-live-voice.recognition.whisper.restartRequired": "As rotas de configura\xE7\xE3o do Whisper n\xE3o est\xE3o carregadas. \xC9 necess\xE1rio reiniciar o servidor DSH normalmente para carregar rotas atualizadas do plugin; atualizar apenas esta p\xE1gina n\xE3o \xE9 suficiente.",
+  "dsh-live-voice.recognition.whisper.save": "Salvar configura\xE7\xF5es do Whisper",
+  "dsh-live-voice.recognition.whisper.saved": "Salvo no host DSH. Requisi\xE7\xF5es ativas de transcri\xE7\xE3o do host foram canceladas.",
+  "dsh-live-voice.recognition.whisper.signInRequired": "Fa\xE7a login no DSH para gerenciar as configura\xE7\xF5es do Whisper.",
+  "dsh-live-voice.settings.autoSend.cancel": "Cancelar envio autom\xE1tico",
+  "dsh-live-voice.settings.autoSend.countdown": "Enviando em {remaining}\u2026",
+  "dsh-live-voice.settings.autoSend.delay": "Enviar ap\xF3s o sil\xEAncio",
+  "dsh-live-voice.settings.close": "Fechar configura\xE7\xF5es de voz",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "O Live Voice usa sua resposta para escolher a a\xE7\xE3o correta ao enviar como Steer ou colocar na Fila. Isto n\xE3o altera as configura\xE7\xF5es do DSH; informe o comportamento que voc\xEA j\xE1 usa nele e atualize esta resposta se ele mudar.",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "No seu DSH, quando o agente est\xE1 ocupado, o Enter faz o qu\xEA?",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "Coloca a mensagem na fila",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "Envia a mensagem como steer",
+  "dsh-live-voice.settings.delivery.label": "Modo de envio",
+  "dsh-live-voice.settings.delivery.manualLabel": "Desativado \u2014 revisar e enviar manualmente",
+  "dsh-live-voice.settings.delivery.queueLabel": "Fila \u2014 adicionar automaticamente ap\xF3s o sil\xEAncio",
+  "dsh-live-voice.settings.delivery.status": "Entrega autom\xE1tica: {mode}",
+  "dsh-live-voice.settings.delivery.steerDescription": "enviar ao agente em execu\xE7\xE3o",
+  "dsh-live-voice.settings.delivery.steerLabel": "Enviar \u2014 encaminhar automaticamente ao agente em execu\xE7\xE3o",
+  "dsh-live-voice.settings.delivery.toggle": "Modo de entrega autom\xE1tica",
+  "dsh-live-voice.settings.engine.refresh": "Atualizar mecanismos dispon\xEDveis",
+  "dsh-live-voice.settings.filters.title": "Filtragem",
+  "dsh-live-voice.settings.general.title": "Gerais",
+  "dsh-live-voice.settings.persistence.loadError": "N\xE3o foi poss\xEDvel carregar as configura\xE7\xF5es do Live Voice do servidor. Recarregue para tentar novamente.",
+  "dsh-live-voice.settings.persistence.saveError": "N\xE3o foi poss\xEDvel salvar as configura\xE7\xF5es do Live Voice no servidor. Tente novamente.",
+  "dsh-live-voice.settings.tabs.conversation": "Conversa",
+  "dsh-live-voice.settings.tabs.recognition": "Reconhecimento de voz",
+  "dsh-live-voice.settings.tabs.speak": "Fala",
+  "dsh-live-voice.settings.title": "Configura\xE7\xF5es do Live Voice",
+  "dsh-live-voice.settings.whisper.hostHelp": "Configura\xE7\xF5es para todo o host. Apenas URLs HTTP loopback n\xE3o autenticadas (localhost, 127.0.0.1, [::1]) s\xE3o permitidas. Loopback refere-se ao host DSH, n\xE3o a este navegador. Todas as verifica\xE7\xF5es de integridade e requisi\xE7\xF5es de \xE1udio passam pelo backend autenticado.",
+  "dsh-live-voice.speak.agentContext.enabled": "Ativar contexto de voz do agente",
+  "dsh-live-voice.speak.agentContext.enabledHelp": "Quando ativado, o contexto abaixo informa ao agente que suas respostas ser\xE3o faladas em voz alta.",
+  "dsh-live-voice.speak.agentContext.help": "Esta instru\xE7\xE3o em ingl\xEAs \xE9 enviada ao agente somente durante uma conversa por voz ativa com fala autom\xE1tica do assistente ativada.",
+  "dsh-live-voice.speak.agentContext.label": "Contexto de voz do agente",
+  "dsh-live-voice.speak.agentContext.restore": "Restaurar padr\xE3o",
+  "dsh-live-voice.speak.autoPlayback.enabled": "Falar automaticamente novas mensagens do assistente",
+  "dsh-live-voice.speak.autoPlayback.help": "Durante uma conversa por voz, as frases do assistente s\xE3o anunciadas automaticamente. A reprodu\xE7\xE3o aguarda enquanto voc\xEA fala.",
+  "dsh-live-voice.speak.autoPlayback.label": "Fala autom\xE1tica do assistente",
+  "dsh-live-voice.speak.autoPlayback.remainingOne": "Fala autom\xE1tica do assistente: {state} \u2014 resta {count} segmento de fala",
+  "dsh-live-voice.speak.autoPlayback.remainingOther": "Fala autom\xE1tica do assistente: {state} \u2014 restam {count} segmentos de fala",
+  "dsh-live-voice.speak.autoPlayback.status": "Fala autom\xE1tica do assistente: {state}",
+  "dsh-live-voice.speak.browser.automaticVoice": "Voz local autom\xE1tica",
+  "dsh-live-voice.speak.browser.label": "Fala do navegador \u2014 \xE1udio neste dispositivo",
+  "dsh-live-voice.speak.browser.name": "Fala do navegador",
+  "dsh-live-voice.speak.browser.outputHelp": "A s\xEDntese de fala do navegador pode ignorar o dispositivo de sa\xEDda selecionado; esta API normalmente segue o padr\xE3o do sistema.",
+  "dsh-live-voice.speak.browser.voice": "Voz local do navegador",
+  "dsh-live-voice.speak.captions.approximate": "Legendas aproximadas da fala",
+  "dsh-live-voice.speak.captions.loading": "Preparando \xE1udio da fala",
+  "dsh-live-voice.speak.captions.position": "Trecho de fala {index} de {total}",
+  "dsh-live-voice.speak.captions.progress": "Progresso aproximado da fala",
+  "dsh-live-voice.speak.captions.title": "Fala e legendas ao vivo",
+  "dsh-live-voice.speak.engine.label": "Mecanismo de fala",
+  "dsh-live-voice.speak.engine.playbackHelp": "Qwen e macOS say sintetizam no host do DSH; o \xE1udio AAC/M4A compacto \xE9 reproduzido neste navegador. A fala do navegador \xE9 sintetizada e reproduzida neste dispositivo.",
+  "dsh-live-voice.speak.filters.code.enabled": "Filtrar blocos de c\xF3digo Markdown antes de falar",
+  "dsh-live-voice.speak.filters.code.maxLines": "Ler blocos de c\xF3digo at\xE9 esta quantidade de linhas",
+  "dsh-live-voice.speak.filters.code.notice": "Veja o c\xF3digo na nossa conversa",
+  "dsh-live-voice.speak.filters.code.replacement": "Frase substituta para blocos de c\xF3digo maiores",
+  "dsh-live-voice.speak.interruption.disabledHelp": "Enviar outra mensagem n\xE3o interrompe o \xE1udio do assistente que voc\xEA j\xE1 est\xE1 ouvindo.",
+  "dsh-live-voice.speak.interruption.enabled": "Parar fala do assistente quando eu enviar uma mensagem",
+  "dsh-live-voice.speak.interruption.enabledHelp": "Enviar ou direcionar uma nova mensagem interrompe a fala atual ou pausada do assistente.",
+  "dsh-live-voice.speak.macos.label": "macOS say \u2014 \xE1udio no host",
+  "dsh-live-voice.speak.macos.name": "macOS say",
+  "dsh-live-voice.speak.macos.outputHelp": "O macOS say usa a sa\xEDda selecionada no host DSH.",
+  "dsh-live-voice.speak.output.checking": "Verificando sa\xEDda de fala\u2026",
+  "dsh-live-voice.speak.output.device": "Dispositivo de sa\xEDda",
+  "dsh-live-voice.speak.output.fallbackName": "Sa\xEDda de \xE1udio",
+  "dsh-live-voice.speak.output.stopTest": "Parar teste de fala",
+  "dsh-live-voice.speak.output.test": "Testar sa\xEDda de fala selecionada",
+  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice. A sa\xEDda de fala selecionada est\xE1 funcionando.",
+  "dsh-live-voice.speak.output.testing": "Testando fala\u2026",
+  "dsh-live-voice.speak.playback.message": "Falar mensagem",
+  "dsh-live-voice.speak.playback.next": "Pular para o pr\xF3ximo trecho de fala",
+  "dsh-live-voice.speak.playback.pause": "Pausar fala",
+  "dsh-live-voice.speak.playback.previous": "Voltar ao trecho de fala anterior",
+  "dsh-live-voice.speak.playback.resume": "Retomar fala",
+  "dsh-live-voice.speak.playback.stop": "Parar de falar",
+  "dsh-live-voice.speak.playback.stopAll": "Parar toda a fala",
+  "dsh-live-voice.speak.qwen.connection": "Conex\xE3o com servidor Qwen",
+  "dsh-live-voice.speak.qwen.endpoint": "URL base da API Qwen",
+  "dsh-live-voice.speak.qwen.healthFailed": "Falha na verifica\xE7\xE3o de integridade do Qwen.",
+  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 servidor MLX local",
+  "dsh-live-voice.speak.qwen.name": "Qwen3 local",
+  "dsh-live-voice.speak.qwen.requestFailed": "Falha na requisi\xE7\xE3o de configura\xE7\xF5es do Qwen.",
+  "dsh-live-voice.speak.qwen.restartRequired": "As rotas de configura\xE7\xE3o do Qwen n\xE3o est\xE3o carregadas. \xC9 necess\xE1rio reiniciar o servidor DSH normalmente para carregar rotas atualizadas do plugin; atualizar apenas esta p\xE1gina n\xE3o \xE9 suficiente.",
+  "dsh-live-voice.speak.qwen.save": "Salvar configura\xE7\xF5es do Qwen",
+  "dsh-live-voice.speak.qwen.saved": "Salvo no host DSH. Requisi\xE7\xF5es ativas do Qwen foram canceladas.",
+  "dsh-live-voice.speak.qwen.signInRequired": "Fa\xE7a login no DSH para gerenciar as configura\xE7\xF5es do Qwen.",
+  "dsh-live-voice.speak.qwen.test": "Testar servidor Qwen",
+  "dsh-live-voice.speak.qwen.voice": "Voz Qwen",
+  "dsh-live-voice.speak.qwen.voiceHelp": "Aiden \xE9 usado por padr\xE3o. Estas vozes predefinidas n\xE3o s\xE3o vozes nativas em Portugu\xEAs do Brasil.",
+  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 masculino, ingl\xEAs americano",
+  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 masculino, chin\xEAs de Pequim",
+  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 masculino, chin\xEAs de Sichuan",
+  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 feminino, japon\xEAs",
+  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 masculino, ingl\xEAs",
+  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 feminino, chin\xEAs",
+  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 feminino, coreano",
+  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 masculino, chin\xEAs",
+  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 feminino, chin\xEAs",
+  "dsh-live-voice.speak.rate.help": "A velocidade relativa 1 \xE9 normal.",
+  "dsh-live-voice.speak.rate.label": "Velocidade da fala",
+  "dsh-live-voice.speak.responseDelay.help": "Depois que voc\xEA parar de falar, a reprodu\xE7\xE3o autom\xE1tica do assistente aguardar\xE1 esse tempo de sil\xEAncio cont\xEDnuo. Falar novamente reinicia a contagem.",
+  "dsh-live-voice.speak.responseDelay.label": "Atraso da resposta do assistente",
+  "dsh-live-voice.speak.responseDelay.none": "Sem atraso",
+  "dsh-live-voice.speak.segmentGap.help": "Aguarde esta quantidade de milissegundos entre trechos falados consecutivos. O padr\xE3o \xE9 400 ms.",
+  "dsh-live-voice.speak.segmentGap.label": "Pausa entre trechos de fala",
+  "dsh-live-voice.speak.status.paused": "Fala pausada",
+  "dsh-live-voice.speak.status.playing": "Falando"
+};
+var pt_BR_default = Object.freeze(ptBR);
+
+// src/app/client/i18n/catalogs/zh.ts
+var zh = {
+  "dsh-live-voice.commons.connection.contactingHost": "\u6B63\u5728\u8054\u7CFB DSH \u4E3B\u673A\u2026",
+  "dsh-live-voice.commons.connection.endpoint": "\u7AEF\u70B9 URL",
+  "dsh-live-voice.commons.connection.healthEndpoint": "\u5065\u5EB7\u68C0\u67E5 URL \u6216\u8DEF\u5F84",
+  "dsh-live-voice.commons.connection.reload": "\u91CD\u65B0\u52A0\u8F7D\u5DF2\u4FDD\u5B58\u7684\u8BBE\u7F6E",
+  "dsh-live-voice.commons.connection.test": "\u6D4B\u8BD5\u8FDE\u63A5",
+  "dsh-live-voice.commons.connection.timeout": "\u8BF7\u6C42\u8D85\u65F6\uFF08\u6BEB\u79D2\uFF09",
+  "dsh-live-voice.commons.connection.title": "\u8FDE\u63A5\u8BBE\u7F6E",
+  "dsh-live-voice.commons.connection.unsaved": "\u6709\u672A\u4FDD\u5B58\u7684\u66F4\u6539",
+  "dsh-live-voice.commons.controls.title": "\u8BED\u97F3\u63A7\u5236",
+  "dsh-live-voice.commons.conversation.end": "\u7ED3\u675F\u8BED\u97F3\u5BF9\u8BDD",
+  "dsh-live-voice.commons.conversation.idle": "\u5BF9\u8BDD\u7A7A\u95F2",
+  "dsh-live-voice.commons.conversation.start": "\u5F00\u59CB\u8BED\u97F3\u5BF9\u8BDD",
+  "dsh-live-voice.commons.delivery.queueBadge": "\u961F\u5217",
+  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
+  "dsh-live-voice.commons.dismiss": "\u5173\u95ED",
+  "dsh-live-voice.commons.dismissError": "\u5173\u95ED\u8BED\u97F3\u9519\u8BEF\u63D0\u793A",
+  "dsh-live-voice.commons.engine.failure": "{engine}\uFF1A{reason}",
+  "dsh-live-voice.commons.input.ignoring": "\u6B63\u5728\u5FFD\u7565",
+  "dsh-live-voice.commons.input.ignoringBadge": "\u5FFD\u7565\u4E2D",
+  "dsh-live-voice.commons.input.listening": "\u6B63\u5728\u8046\u542C",
+  "dsh-live-voice.commons.input.listeningBadge": "\u8046\u542C\u4E2D",
+  "dsh-live-voice.commons.manual": "\u624B\u52A8",
+  "dsh-live-voice.commons.milliseconds": "{milliseconds} \u6BEB\u79D2",
+  "dsh-live-voice.commons.off": "\u5173\u95ED",
+  "dsh-live-voice.commons.on": "\u5F00\u542F",
+  "dsh-live-voice.commons.pluginName": "Live Voice",
+  "dsh-live-voice.commons.queue": "\u961F\u5217",
+  "dsh-live-voice.commons.repository.starLabel": "\u5728 GitHub \u4E0A\u4E3A\u6211\u4EEC\u52A0\u661F",
+  "dsh-live-voice.commons.repository.starLink": "\u5728 GitHub \u4E0A\u4E3A DSH Live Voice \u52A0\u661F",
+  "dsh-live-voice.commons.second": "1 \u79D2",
+  "dsh-live-voice.commons.seconds": "{seconds} \u79D2",
+  "dsh-live-voice.commons.send": "\u53D1\u9001",
+  "dsh-live-voice.commons.status.ready": "\u8BED\u97F3\u5DF2\u5C31\u7EEA",
+  "dsh-live-voice.commons.systemDefault": "\u7CFB\u7EDF\u9ED8\u8BA4",
+  "dsh-live-voice.commons.toggle.offBadge": "\u5173\u95ED",
+  "dsh-live-voice.commons.unknownLanguage": "\u672A\u77E5\u8BED\u8A00",
+  "dsh-live-voice.commons.update.label": "\u6709\u53EF\u7528\u66F4\u65B0",
+  "dsh-live-voice.commons.update.link": "\u6709\u53EF\u7528\u66F4\u65B0\uFF1A{version}\u3002\u6253\u5F00\u53D1\u5E03\u9875\u9762",
+  "dsh-live-voice.commons.update.version": "\u6709\u53EF\u7528\u66F4\u65B0\uFF1A{version}",
+  "dsh-live-voice.commons.version.compatibility": "\u517C\u5BB9 DSH v{version}",
+  "dsh-live-voice.commons.version.compatibilityLink": "\u517C\u5BB9 DSH v{version}\u3002\u6253\u5F00\u53D1\u5E03\u9875\u9762",
+  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
+  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}\u3002\u6253\u5F00\u7248\u672C\u53D1\u5E03\u5217\u8868",
+  "dsh-live-voice.commons.version.title": "\u7248\u672C\u4FE1\u606F",
+  "dsh-live-voice.meeting.failed": "\u8BED\u97F3\u8BC6\u522B\u5931\u8D25\u3002",
+  "dsh-live-voice.meeting.help": "\u72EC\u7ACB\u6765\u6E90\uFF1B\u8BF7\u4ECE\u7F16\u8F91\u5668\u624B\u52A8\u53D1\u9001\u8F6C\u5199\u5185\u5BB9\u3002",
+  "dsh-live-voice.meeting.httpRequired": "\u4F1A\u8BAE\u6A21\u5F0F\u9700\u8981 Qwen \u6216 Whisper HTTP\u3002",
+  "dsh-live-voice.meeting.inactive": "\u672A\u542F\u7528",
+  "dsh-live-voice.meeting.listening": "\u6B63\u5728\u8046\u542C",
+  "dsh-live-voice.meeting.microphone": "\u9EA6\u514B\u98CE",
+  "dsh-live-voice.meeting.noAudio": "\u672A\u5171\u4EAB\u97F3\u9891\u3002\u8BF7\u5728\u5171\u4EAB\u5BF9\u8BDD\u6846\u4E2D\u542F\u7528\u97F3\u9891\u3002",
+  "dsh-live-voice.meeting.processing": "\u6B63\u5728\u8F6C\u5199\u2026",
+  "dsh-live-voice.meeting.shared": "\u5171\u4EAB\u97F3\u9891",
+  "dsh-live-voice.meeting.start": "\u542F\u52A8\u6765\u6E90",
+  "dsh-live-voice.meeting.starting": "\u6B63\u5728\u542F\u52A8\u2026",
+  "dsh-live-voice.meeting.stop": "\u505C\u6B62\u6765\u6E90",
+  "dsh-live-voice.meeting.timestamps": "\u8F6C\u5199\u65F6\u95F4\u6233",
+  "dsh-live-voice.meeting.timestampsBadge": "\u65F6\u95F4\u6233",
+  "dsh-live-voice.meeting.title": "\u4F1A\u8BAE\u6A21\u5F0F",
+  "dsh-live-voice.meeting.unavailable": "\u8BED\u97F3\u8BC6\u522B\u4E0D\u53EF\u7528\u3002",
+  "dsh-live-voice.recognition.autoSend.countdownHelp": "\u8BC6\u522B\u51FA\u6700\u7EC8\u8BED\u53E5\u540E\u5F00\u59CB\u5012\u8BA1\u65F6\u3002\u518D\u6B21\u8BF4\u8BDD\u6216\u7F16\u8F91\u6587\u672C\u4F1A\u53D6\u6D88\u5012\u8BA1\u65F6\u3002",
+  "dsh-live-voice.recognition.browser.autoInstallPack": "\u9700\u8981\u65F6\u81EA\u52A8\u5B89\u88C5\u6B64\u6D4F\u89C8\u5668\u8BED\u8A00\u5305",
+  "dsh-live-voice.recognition.browser.help": "\u4F7F\u7528\u6D4F\u89C8\u5668\u7684 SpeechRecognition API\u3002\u8FD9\u662F\u9ED8\u8BA4\u9009\u9879\u3002",
+  "dsh-live-voice.recognition.browser.label": "\u6D4F\u89C8\u5668 SpeechRecognition \u2014 \u9ED8\u8BA4\u9009\u9879",
+  "dsh-live-voice.recognition.browser.localProcessing": "\u5728\u6B64\u8BBE\u5907\u4E0A\u672C\u5730\u5904\u7406\u8BED\u97F3\u8BC6\u522B",
+  "dsh-live-voice.recognition.browser.microphoneHelp": "\u6D4F\u89C8\u5668 SpeechRecognition \u53EF\u80FD\u4F7F\u7528\u6D4F\u89C8\u5668\u6216\u7CFB\u7EDF\u9ED8\u8BA4\u9EA6\u514B\u98CE\uFF0C\u800C\u975E\u6B64\u5904\u9009\u62E9\u7684\u8BBE\u5907\u3002",
+  "dsh-live-voice.recognition.browser.remoteServiceWarning": "\u5DF2\u542F\u7528\u6D4F\u89C8\u5668\u670D\u52A1\u8BED\u97F3\u8BC6\u522B\u3002\u6D4F\u89C8\u5668\u53EF\u80FD\u4F1A\u5C06\u9EA6\u514B\u98CE\u97F3\u9891\u53D1\u9001\u81F3\u5176\u8BED\u97F3\u8BC6\u522B\u670D\u52A1\u3002",
+  "dsh-live-voice.recognition.commands.clear": "\u6E05\u7A7A\u6D88\u606F\u8F93\u5165\u6846",
+  "dsh-live-voice.recognition.commands.enabled": "\u542F\u7528\u7CBE\u786E\u5339\u914D\u7684\u8BED\u97F3\u547D\u4EE4",
+  "dsh-live-voice.recognition.commands.mute": "\u505C\u6B62\u5411\u6D88\u606F\u8F93\u5165\u6846\u8F93\u5165\u8BED\u97F3",
+  "dsh-live-voice.recognition.commands.queue": "\u52A0\u5165\u961F\u5217",
+  "dsh-live-voice.recognition.commands.resume": "\u6062\u590D\u5411\u6D88\u606F\u8F93\u5165\u6846\u8F93\u5165\u8BED\u97F3",
+  "dsh-live-voice.recognition.commands.send": "\u53D1\u9001\u7ED9\u8FD0\u884C\u4E2D\u7684\u667A\u80FD\u4F53",
+  "dsh-live-voice.recognition.commands.stopSpeech": "\u505C\u6B62\u52A9\u624B\u6717\u8BFB",
+  "dsh-live-voice.recognition.commands.title": "\u8BED\u97F3\u547D\u4EE4",
+  "dsh-live-voice.recognition.dictation.cancel": "\u53D6\u6D88\u542C\u5199",
+  "dsh-live-voice.recognition.engine.label": "\u8BC6\u522B\u5F15\u64CE",
+  "dsh-live-voice.recognition.headphoneMode.help": "\u5F00\u653E\u9EA6\u514B\u98CE\u4F1A\u5728\u64AD\u653E\u56DE\u590D\u65F6\u7EE7\u7EED\u8046\u542C\u3002\u68C0\u6D4B\u5230\u4F60\u8BF4\u8BDD\u65F6\uFF0C\u64AD\u653E\u4F1A\u6682\u505C\uFF0C\u5E76\u4EC5\u5728\u4F60\u9009\u62E9\u6062\u590D\u65F6\u7EE7\u7EED\u3002",
+  "dsh-live-voice.recognition.headphoneMode.label": "\u8033\u673A \u2014 \u5F00\u653E\u9EA6\u514B\u98CE",
+  "dsh-live-voice.recognition.holdToTalk.enabled": "\u6309\u4F4F Control \u952E\u8BF4\u8BDD",
+  "dsh-live-voice.recognition.holdToTalk.help": "\u6D88\u606F\u8F93\u5165\u6846\u6253\u5F00\u65F6\uFF0C\u5728\u9875\u9762\u4EFB\u610F\u4F4D\u7F6E\u6309\u4F4F Control \u952E\u5373\u53EF\u91C7\u96C6\u8BED\u97F3\u3002\u677E\u5F00\u540E\u4F1A\u5904\u7406\u5B8C\u961F\u5217\u4E2D\u7684\u8F6C\u5199\uFF0C\u7B49\u5F85\u8BBE\u5B9A\u7684\u53D1\u9001\u5EF6\u8FDF\uFF0C\u5C06\u6D88\u606F\u52A0\u5165\u961F\u5217\uFF0C\u7136\u540E\u5173\u95ED\u8BED\u97F3\u91C7\u96C6\u3002\u6309\u4F4F\u671F\u95F4\u6309 Escape \u952E\u53EF\u53D6\u6D88\u3002",
+  "dsh-live-voice.recognition.language.automatic": "\u81EA\u52A8 \u2014 \u68C0\u6D4B\u8BED\u8A00",
+  "dsh-live-voice.recognition.language.label": "\u8BC6\u522B\u8BED\u8A00",
+  "dsh-live-voice.recognition.manualSend.help": "\u8BC6\u522B\u51FA\u7684\u6587\u672C\u4F1A\u4FDD\u7559\u5728\u6D88\u606F\u8F93\u5165\u6846\u4E2D\uFF0C\u76F4\u5230\u4F60\u4F7F\u7528 DSH \u7684\u5E38\u89C4\u53D1\u9001\u6309\u94AE\u3002",
+  "dsh-live-voice.recognition.maxUtterance.help": "\u5982\u679C\u8BF4\u8BDD\u4E00\u76F4\u6CA1\u6709\u505C\u987F\uFF0C\u5219\u5728\u6B64\u65F6\u957F\u540E\u5F00\u59CB\u65B0\u7684\u8F6C\u5199\u7247\u6BB5\u3002\u9ED8\u8BA4\u503C\uFF1A60 \u79D2\u3002",
+  "dsh-live-voice.recognition.maxUtterance.label": "\u6700\u957F\u8FDE\u7EED\u8BED\u97F3\uFF08\u79D2\uFF09",
+  "dsh-live-voice.recognition.microphone.checking": "\u6B63\u5728\u68C0\u67E5\u9EA6\u514B\u98CE\u53EF\u7528\u6027",
+  "dsh-live-voice.recognition.microphone.device": "\u8F93\u5165\u8BBE\u5907",
+  "dsh-live-voice.recognition.microphone.failure": "\u9EA6\u514B\u98CE\uFF1A{reason}",
+  "dsh-live-voice.recognition.microphone.ignore": "\u5FFD\u7565\u6D88\u606F\u8F93\u5165\u6846\u7684\u8BED\u97F3\u8F93\u5165",
+  "dsh-live-voice.recognition.microphone.inputStatus": "\u9EA6\u514B\u98CE\u8F93\u5165\uFF1A{state}",
+  "dsh-live-voice.recognition.microphone.label": "\u9EA6\u514B\u98CE",
+  "dsh-live-voice.recognition.microphone.permissionHelp": "\u4EC5\u5728\u4F60\u5F00\u59CB\u542C\u5199\u6216\u8BED\u97F3\u5BF9\u8BDD\u65F6\u624D\u4F1A\u8BF7\u6C42\u9EA6\u514B\u98CE\u6743\u9650\u3002",
+  "dsh-live-voice.recognition.microphone.resume": "\u6062\u590D\u8046\u542C",
+  "dsh-live-voice.recognition.microphone.starting": "\u6B63\u5728\u542F\u52A8\u9EA6\u514B\u98CE\u2026",
+  "dsh-live-voice.recognition.microphone.takeControl": "\u63A5\u7BA1\u9EA6\u514B\u98CE",
+  "dsh-live-voice.recognition.minimumWords.enabled": "\u5FFD\u7565\u8FC7\u77ED\u7684\u6700\u7EC8\u8F6C\u5199\u7247\u6BB5",
+  "dsh-live-voice.recognition.minimumWords.help": "\u5B57\u8BCD\u6570\u4E0D\u8DB3\u7684\u6700\u7EC8\u8F6C\u5199\u7247\u6BB5\u4F1A\u88AB\u5FFD\u7565\uFF0C\u4E0D\u4F1A\u8FDB\u5165\u6D88\u606F\u8F93\u5165\u6846\u6216\u81EA\u52A8\u53D1\u9001\u6D41\u7A0B\u3002",
+  "dsh-live-voice.recognition.minimumWords.label": "\u6BCF\u4E2A\u6700\u7EC8\u7247\u6BB5\u7684\u6700\u5C11\u5B57\u8BCD\u6570",
+  "dsh-live-voice.recognition.mode.label": "\u8046\u542C\u6A21\u5F0F",
+  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 \u5373\u5C06\u63A8\u51FA",
+  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx \u6D41\u5F0F\u8BC6\u522B \u2014 \u5373\u5C06\u63A8\u51FA",
+  "dsh-live-voice.recognition.planned.vote": "\u5373\u5C06\u63A8\u51FA \u2014 \u8BF7\u5728\u4ED3\u5E93\u8BAE\u9898\u4E2D\u6295\u7968",
+  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 \u5373\u5C06\u63A8\u51FA",
+  "dsh-live-voice.recognition.planned.webGpu": "\u6D4F\u89C8\u5668 WebGPU \u63A8\u7406 \u2014 \u5373\u5C06\u63A8\u51FA",
+  "dsh-live-voice.recognition.presets.custom.description": "\u81EA\u884C\u9009\u62E9\u9759\u97F3\u65F6\u957F\u3002",
+  "dsh-live-voice.recognition.presets.custom.label": "\u81EA\u5B9A\u4E49",
+  "dsh-live-voice.recognition.presets.long.description": "\u7B49\u5F85\u8F83\u957F\u7684\u601D\u8003\u505C\u987F\u3002",
+  "dsh-live-voice.recognition.presets.long.label": "\u957F",
+  "dsh-live-voice.recognition.presets.natural.description": "\u5141\u8BB8\u77ED\u8BED\u4E4B\u95F4\u51FA\u73B0\u81EA\u7136\u505C\u987F\u3002",
+  "dsh-live-voice.recognition.presets.natural.label": "\u81EA\u7136",
+  "dsh-live-voice.recognition.presets.short.description": "\u77ED\u6682\u505C\u987F\u540E\u5FEB\u901F\u53D1\u9001\u3002",
+  "dsh-live-voice.recognition.presets.short.label": "\u77ED",
+  "dsh-live-voice.recognition.providerSettings.help": "\u670D\u52A1\u63D0\u4F9B\u65B9\u8BBE\u7F6E\u4F1A\u968F\u6240\u9009\u8BC6\u522B\u5F15\u64CE\u800C\u53D8\u5316\u3002",
+  "dsh-live-voice.recognition.qwen.captureHelp": "\u97F3\u9891\u4F1A\u6309\u5B8C\u6574\u8BED\u53E5\u5206\u5272\u4E3A WAV \u7247\u6BB5\uFF0C\u5E76\u901A\u8FC7\u7ECF\u8FC7\u8EAB\u4EFD\u9A8C\u8BC1\u7684 DSH \u53D1\u9001\u81F3\u4E3B\u673A\u672C\u5730\u7684 Qwen3 ASR \u6A21\u578B\u3002",
+  "dsh-live-voice.recognition.qwen.connectionSuccess": "\u8FDE\u63A5\u6210\u529F\u3002Qwen ASR \u548C TTS \u5747\u5DF2\u52A0\u8F7D\u3002\u672A\u4FDD\u5B58\u7684\u66F4\u6539\u5C1A\u672A\u5E94\u7528\u3002",
+  "dsh-live-voice.recognition.qwen.endpointHelp": "HTTP API \u4F4D\u4E8E\u914D\u7F6E\u7684 DSH \u4E3B\u673A URL\uFF08\u9ED8\u8BA4\uFF1Ahttp://127.0.0.1:8080/inference\uFF09\u3002\u97F3\u9891\u901A\u8FC7\u9700\u8981\u8EAB\u4EFD\u9A8C\u8BC1\u7684 DSH \u4E3B\u673A\u8F6C\u5199\u8DEF\u7531\u53D1\u9001\u3002",
+  "dsh-live-voice.recognition.qwen.hostHelp": "Qwen3 ASR + TTS \u670D\u52A1\u5668\u7684\u4E3B\u673A\u7EA7\u8BBE\u7F6E\u3002\u8BF7\u8F93\u5165 DSH \u4E3B\u673A\u53EF\u8BBF\u95EE\u7684\u4EFB\u610F HTTP \u6216 HTTPS \u57FA\u7840 URL\u3002\u6D4F\u89C8\u5668\u901A\u8FC7\u9700\u8981\u8EAB\u4EFD\u9A8C\u8BC1\u7684 DSH \u8DEF\u7531\u8BBF\u95EE\u8BE5\u670D\u52A1\u5668\u3002",
+  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
+  "dsh-live-voice.recognition.silenceDetection.customHelp": "\u8BF7\u8F93\u5165 100 \u81F3 10,000 ms \u7684\u6574\u6570\u3002\u79BB\u5F00\u8F93\u5165\u6846\u65F6\u4FDD\u5B58\u3002\u77ED\u505C\u987F\u53EF\u80FD\u5207\u5206\u8BED\u97F3\uFF1B\u8BC6\u522B\u8FD8\u9700\u8981\u989D\u5916\u65F6\u95F4\u3002",
+  "dsh-live-voice.recognition.silenceDetection.customLabel": "\u81EA\u5B9A\u4E49\u505C\u987F\uFF08\u6BEB\u79D2\uFF09",
+  "dsh-live-voice.recognition.silenceDetection.duration": "\u53D1\u9001\u524D\u505C\u987F\uFF1A{milliseconds} \u6BEB\u79D2",
+  "dsh-live-voice.recognition.silenceDetection.help": "\u8BBE\u7F6E\u505C\u987F\u6301\u7EED\u591A\u4E45\u540E\uFF0C\u5C06\u91C7\u96C6\u7684\u8BED\u97F3\u53D1\u9001\u8FDB\u884C\u8BC6\u522B\u3002",
+  "dsh-live-voice.recognition.silenceDetection.label": "\u9759\u97F3\u68C0\u6D4B",
+  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "\u53D1\u9001\u524D\u505C\u987F",
+  "dsh-live-voice.recognition.silenceDetection.title": "\u9759\u97F3\u68C0\u6D4B\u8BBE\u7F6E",
+  "dsh-live-voice.recognition.speakerMode.help": "\u95E8\u63A7\u8046\u542C\u4F1A\u5728\u64AD\u653E\u56DE\u590D\u65F6\u91CA\u653E\u9EA6\u514B\u98CE\uFF0C\u9632\u6B62\u626C\u58F0\u5668\u97F3\u9891\u88AB\u8BC6\u522B\u3002\u4F7F\u7528\u201C\u63A5\u7BA1\u9EA6\u514B\u98CE\u201D\u53EF\u6253\u65AD\u64AD\u653E\u3002",
+  "dsh-live-voice.recognition.speakerMode.label": "\u626C\u58F0\u5668 \u2014 \u95E8\u63A7\u8046\u542C",
+  "dsh-live-voice.recognition.status.answer": "\u6B63\u5728\u8BC6\u522B\u56DE\u7B54\u2026",
+  "dsh-live-voice.recognition.status.awaitingAnswer": "\u6B63\u5728\u8046\u542C\u4F60\u7684\u56DE\u7B54\u2026",
+  "dsh-live-voice.recognition.status.listening": "\u6B63\u5728\u8046\u542C \u2014 \u7B49\u5F85\u8BED\u97F3",
+  "dsh-live-voice.recognition.status.processing": "\u6B63\u5728\u8BC6\u522B\u8BED\u97F3\u2026",
+  "dsh-live-voice.recognition.status.unavailable": "\u8BED\u97F3\u8BC6\u522B\u4E0D\u53EF\u7528",
+  "dsh-live-voice.recognition.voiceCommands.help": "\u7528\u9017\u53F7\u5206\u9694\u77ED\u8BED\u3002\u5339\u914D\u65F6\u5FFD\u7565\u5927\u5C0F\u5199\u3001\u91CD\u97F3\u7B26\u53F7\u3001\u6807\u70B9\u548C\u591A\u4F59\u7A7A\u683C\u3002\u6574\u4E2A\u6700\u7EC8\u7247\u6BB5\u5FC5\u987B\u5B8C\u5168\u5339\u914D\u3002",
+  "dsh-live-voice.recognition.whisper.captureHelp": "\u97F3\u9891\u4F1A\u6309\u5B8C\u6574\u8BED\u53E5\u5206\u5272\u4E3A WAV \u7247\u6BB5\uFF0C\u901A\u8FC7\u7ECF\u8FC7\u8EAB\u4EFD\u9A8C\u8BC1\u7684 DSH \u53D1\u9001\uFF0C\u5E76\u7531\u56DE\u73AF\u5730\u5740\u4E0A\u7684 whisper.cpp HTTP \u670D\u52A1\u5904\u7406\u3002",
+  "dsh-live-voice.recognition.whisper.connectionSuccess": "\u8FDE\u63A5\u6210\u529F\u3002\u5065\u5EB7\u68C0\u67E5\u7AEF\u70B9\u5DF2\u54CD\u5E94\uFF1B\u5C1A\u672A\u6D4B\u8BD5\u8F6C\u5199\u529F\u80FD\u3002\u672A\u4FDD\u5B58\u7684\u66F4\u6539\u5C1A\u672A\u5E94\u7528\u3002",
+  "dsh-live-voice.recognition.whisper.endpointHelp": "HTTP API \u4F4D\u4E8E\u914D\u7F6E\u7684\u57FA\u7840 URL\uFF08\u9ED8\u8BA4\uFF1Ahttp://127.0.0.1:8080/\uFF09\u3002\u517C\u5BB9 POST /v1/audio/transcriptions\u3002",
+  "dsh-live-voice.recognition.whisper.healthFailed": "Whisper \u5065\u5EB7\u68C0\u67E5\u5931\u8D25\u3002",
+  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 HTTP API",
+  "dsh-live-voice.recognition.whisper.requestFailed": "Whisper \u8BBE\u7F6E\u8BF7\u6C42\u5931\u8D25\u3002",
+  "dsh-live-voice.recognition.whisper.restartRequired": "Whisper \u8BBE\u7F6E\u8DEF\u7531\u5C1A\u672A\u52A0\u8F7D\u3002\u9700\u8981\u6B63\u5E38\u91CD\u542F DSH \u670D\u52A1\u5668\u624D\u80FD\u52A0\u8F7D\u66F4\u65B0\u540E\u7684\u63D2\u4EF6\u8DEF\u7531\uFF1B\u4EC5\u5237\u65B0\u6B64\u9875\u9762\u662F\u4E0D\u591F\u7684\u3002",
+  "dsh-live-voice.recognition.whisper.save": "\u4FDD\u5B58 Whisper \u8BBE\u7F6E",
+  "dsh-live-voice.recognition.whisper.saved": "\u5DF2\u4FDD\u5B58\u5230 DSH \u4E3B\u673A\u3002\u4E3B\u673A\u4E0A\u6B63\u5728\u8FDB\u884C\u7684\u8F6C\u5199\u8BF7\u6C42\u5DF2\u53D6\u6D88\u3002",
+  "dsh-live-voice.recognition.whisper.signInRequired": "\u8BF7\u767B\u5F55 DSH \u4EE5\u7BA1\u7406 Whisper \u8BBE\u7F6E\u3002",
+  "dsh-live-voice.settings.autoSend.cancel": "\u53D6\u6D88\u81EA\u52A8\u53D1\u9001",
+  "dsh-live-voice.settings.autoSend.countdown": "{remaining} \u540E\u53D1\u9001\u2026",
+  "dsh-live-voice.settings.autoSend.delay": "\u9759\u97F3\u540E\u53D1\u9001",
+  "dsh-live-voice.settings.close": "\u5173\u95ED\u8BED\u97F3\u8BBE\u7F6E",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice \u6839\u636E\u60A8\u7684\u56DE\u7B54\uFF0C\u4E3A\u5F15\u5BFC\u548C\u52A0\u5165\u961F\u5217\u9009\u62E9\u6B63\u786E\u7684\u64CD\u4F5C\u3002\u8FD9\u4E0D\u4F1A\u66F4\u6539 DSH \u8BBE\u7F6E\uFF1B\u8BF7\u586B\u5199\u5F53\u524D DSH \u7684\u884C\u4E3A\uFF0C\u5E76\u5728\u8BE5\u884C\u4E3A\u53D8\u5316\u65F6\u66F4\u65B0\u6B64\u56DE\u7B54\u3002",
+  "dsh-live-voice.settings.delivery.dshEnterQuestion": "\u5728\u60A8\u7684 DSH \u4E2D\uFF0C\u667A\u80FD\u4F53\u5FD9\u788C\u65F6\u6309 Enter \u4F1A\u600E\u6837\uFF1F",
+  "dsh-live-voice.settings.delivery.dshEnterQueue": "\u5C06\u6D88\u606F\u52A0\u5165\u961F\u5217",
+  "dsh-live-voice.settings.delivery.dshEnterSteer": "\u53D1\u9001\u6D88\u606F\u4EE5\u5F15\u5BFC\u667A\u80FD\u4F53",
+  "dsh-live-voice.settings.delivery.label": "\u53D1\u9001\u6A21\u5F0F",
+  "dsh-live-voice.settings.delivery.manualLabel": "\u5173\u95ED \u2014 \u5BA1\u9605\u540E\u624B\u52A8\u53D1\u9001",
+  "dsh-live-voice.settings.delivery.queueLabel": "\u961F\u5217 \u2014 \u9759\u97F3\u540E\u81EA\u52A8\u52A0\u5165\u961F\u5217",
+  "dsh-live-voice.settings.delivery.status": "\u81EA\u52A8\u53D1\u9001\uFF1A{mode}",
+  "dsh-live-voice.settings.delivery.steerDescription": "\u53D1\u9001\u7ED9\u8FD0\u884C\u4E2D\u7684\u667A\u80FD\u4F53",
+  "dsh-live-voice.settings.delivery.steerLabel": "\u5F15\u5BFC \u2014 \u81EA\u52A8\u53D1\u9001\u7ED9\u8FD0\u884C\u4E2D\u7684\u667A\u80FD\u4F53",
+  "dsh-live-voice.settings.delivery.toggle": "\u81EA\u52A8\u53D1\u9001\u6A21\u5F0F",
+  "dsh-live-voice.settings.engine.refresh": "\u5237\u65B0\u53EF\u7528\u5F15\u64CE",
+  "dsh-live-voice.settings.filters.title": "\u8FC7\u6EE4",
+  "dsh-live-voice.settings.general.title": "\u5E38\u89C4",
+  "dsh-live-voice.settings.persistence.loadError": "\u65E0\u6CD5\u4ECE\u670D\u52A1\u5668\u52A0\u8F7D Live Voice \u8BBE\u7F6E\u3002\u8BF7\u5237\u65B0\u540E\u91CD\u8BD5\u3002",
+  "dsh-live-voice.settings.persistence.saveError": "\u65E0\u6CD5\u5728\u670D\u52A1\u5668\u4E0A\u4FDD\u5B58 Live Voice \u8BBE\u7F6E\u3002\u8BF7\u91CD\u8BD5\u3002",
+  "dsh-live-voice.settings.tabs.conversation": "\u5BF9\u8BDD",
+  "dsh-live-voice.settings.tabs.recognition": "\u8BED\u97F3\u8BC6\u522B",
+  "dsh-live-voice.settings.tabs.speak": "\u8BED\u97F3\u5408\u6210",
+  "dsh-live-voice.settings.title": "Live Voice \u8BBE\u7F6E",
+  "dsh-live-voice.settings.whisper.hostHelp": "\u4E3B\u673A\u7EA7\u8BBE\u7F6E\u3002\u4EC5\u5141\u8BB8\u65E0\u9700\u8EAB\u4EFD\u9A8C\u8BC1\u7684\u56DE\u73AF HTTP URL\uFF08localhost\u3001127.0.0.1\u3001[::1]\uFF09\u3002\u56DE\u73AF\u5730\u5740\u6307 DSH \u4E3B\u673A\uFF0C\u800C\u975E\u6B64\u6D4F\u89C8\u5668\u3002\u6240\u6709\u5065\u5EB7\u68C0\u67E5\u548C\u97F3\u9891\u8BF7\u6C42\u90FD\u901A\u8FC7\u9700\u8981\u8EAB\u4EFD\u9A8C\u8BC1\u7684\u540E\u7AEF\u6267\u884C\u3002",
+  "dsh-live-voice.speak.agentContext.enabled": "\u542F\u7528\u4EE3\u7406\u8BED\u97F3\u4E0A\u4E0B\u6587",
+  "dsh-live-voice.speak.agentContext.enabledHelp": "\u542F\u7528\u540E\uFF0C\u4E0B\u65B9\u7684\u4E0A\u4E0B\u6587\u4F1A\u544A\u77E5\u4EE3\u7406\u5176\u56DE\u590D\u5C06\u88AB\u6717\u8BFB\u3002",
+  "dsh-live-voice.speak.agentContext.help": "\u6B64\u82F1\u6587\u6307\u4EE4\u4EC5\u5728\u8BED\u97F3\u5BF9\u8BDD\u5904\u4E8E\u6D3B\u52A8\u72B6\u6001\u4E14\u542F\u7528\u81EA\u52A8\u6717\u8BFB\u52A9\u624B\u56DE\u590D\u65F6\u53D1\u9001\u7ED9\u4EE3\u7406\u3002",
+  "dsh-live-voice.speak.agentContext.label": "\u4EE3\u7406\u8BED\u97F3\u4E0A\u4E0B\u6587",
+  "dsh-live-voice.speak.agentContext.restore": "\u6062\u590D\u9ED8\u8BA4\u503C",
+  "dsh-live-voice.speak.autoPlayback.enabled": "\u81EA\u52A8\u6717\u8BFB\u65B0\u7684\u52A9\u624B\u6D88\u606F",
+  "dsh-live-voice.speak.autoPlayback.help": "\u8BED\u97F3\u5BF9\u8BDD\u671F\u95F4\uFF0C\u52A9\u624B\u7684\u8BED\u53E5\u4F1A\u81EA\u52A8\u6717\u8BFB\u3002\u4F60\u8BF4\u8BDD\u65F6\u4F1A\u7B49\u5F85\uFF0C\u4E0D\u4F1A\u64AD\u653E\u3002",
+  "dsh-live-voice.speak.autoPlayback.label": "\u52A9\u624B\u81EA\u52A8\u6717\u8BFB",
+  "dsh-live-voice.speak.autoPlayback.remainingOne": "\u52A9\u624B\u81EA\u52A8\u6717\u8BFB\uFF1A{state} \u2014 \u5269\u4F59 {count} \u4E2A\u8BED\u97F3\u7247\u6BB5",
+  "dsh-live-voice.speak.autoPlayback.remainingOther": "\u52A9\u624B\u81EA\u52A8\u6717\u8BFB\uFF1A{state} \u2014 \u5269\u4F59 {count} \u4E2A\u8BED\u97F3\u7247\u6BB5",
+  "dsh-live-voice.speak.autoPlayback.status": "\u52A9\u624B\u81EA\u52A8\u6717\u8BFB\uFF1A{state}",
+  "dsh-live-voice.speak.browser.automaticVoice": "\u81EA\u52A8\u9009\u62E9\u672C\u5730\u8BED\u97F3",
+  "dsh-live-voice.speak.browser.label": "\u6D4F\u89C8\u5668\u8BED\u97F3\u5408\u6210 \u2014 \u5728\u6B64\u8BBE\u5907\u64AD\u653E",
+  "dsh-live-voice.speak.browser.name": "\u6D4F\u89C8\u5668\u8BED\u97F3\u5408\u6210",
+  "dsh-live-voice.speak.browser.outputHelp": "\u6D4F\u89C8\u5668\u8BED\u97F3\u5408\u6210\u53EF\u80FD\u5FFD\u7565\u6240\u9009\u8F93\u51FA\u8BBE\u5907\uFF1B\u6B64\u6D4F\u89C8\u5668 API \u901A\u5E38\u4F7F\u7528\u7CFB\u7EDF\u9ED8\u8BA4\u8BBE\u5907\u3002",
+  "dsh-live-voice.speak.browser.voice": "\u6D4F\u89C8\u5668\u672C\u5730\u8BED\u97F3",
+  "dsh-live-voice.speak.captions.approximate": "\u8FD1\u4F3C\u8BED\u97F3\u5B57\u5E55",
+  "dsh-live-voice.speak.captions.loading": "\u6B63\u5728\u51C6\u5907\u8BED\u97F3\u97F3\u9891",
+  "dsh-live-voice.speak.captions.position": "\u8BED\u97F3\u7247\u6BB5 {index}/{total}",
+  "dsh-live-voice.speak.captions.progress": "\u8FD1\u4F3C\u8BED\u97F3\u8FDB\u5EA6",
+  "dsh-live-voice.speak.captions.title": "\u8BED\u97F3\u4E0E\u5B9E\u65F6\u5B57\u5E55",
+  "dsh-live-voice.speak.engine.label": "\u8BED\u97F3\u5408\u6210\u5F15\u64CE",
+  "dsh-live-voice.speak.engine.playbackHelp": "Qwen \u548C macOS say \u5728 DSH \u4E3B\u673A\u4E0A\u5408\u6210\u8BED\u97F3\uFF1B\u538B\u7F29\u7684 AAC/M4A \u97F3\u9891\u5728\u6B64\u6D4F\u89C8\u5668\u4E2D\u64AD\u653E\u3002\u6D4F\u89C8\u5668\u8BED\u97F3\u5219\u5728\u6B64\u8BBE\u5907\u4E0A\u5408\u6210\u5E76\u64AD\u653E\u3002",
+  "dsh-live-voice.speak.filters.code.enabled": "\u6717\u8BFB\u524D\u8FC7\u6EE4 Markdown \u4EE3\u7801\u5757",
+  "dsh-live-voice.speak.filters.code.maxLines": "\u4EC5\u6717\u8BFB\u4E0D\u8D85\u8FC7\u6B64\u884C\u6570\u7684\u4EE3\u7801\u5757",
+  "dsh-live-voice.speak.filters.code.notice": "\u8BF7\u67E5\u770B\u6211\u4EEC\u5BF9\u8BDD\u4E2D\u7684\u4EE3\u7801",
+  "dsh-live-voice.speak.filters.code.replacement": "\u8F83\u5927\u4EE3\u7801\u5757\u7684\u66FF\u4EE3\u6717\u8BFB\u8BED\u53E5",
+  "dsh-live-voice.speak.interruption.disabledHelp": "\u53D1\u9001\u53E6\u4E00\u6761\u6D88\u606F\u4E0D\u4F1A\u505C\u6B62\u4F60\u6B63\u5728\u6536\u542C\u7684\u52A9\u624B\u97F3\u9891\u3002",
+  "dsh-live-voice.speak.interruption.enabled": "\u53D1\u9001\u6D88\u606F\u65F6\u505C\u6B62\u52A9\u624B\u6717\u8BFB",
+  "dsh-live-voice.speak.interruption.enabledHelp": "\u53D1\u9001\u65B0\u7684\u7528\u6237\u6D88\u606F\u6216\u7528\u65B0\u6D88\u606F\u5F15\u5BFC\u667A\u80FD\u4F53\u65F6\uFF0C\u4F1A\u505C\u6B62\u5F53\u524D\u6B63\u5728\u64AD\u653E\u6216\u5DF2\u6682\u505C\u7684\u52A9\u624B\u8BED\u97F3\u3002",
+  "dsh-live-voice.speak.macos.label": "macOS say \u2014 \u5728\u4E3B\u673A\u64AD\u653E",
+  "dsh-live-voice.speak.macos.name": "macOS say",
+  "dsh-live-voice.speak.macos.outputHelp": "macOS say \u4F7F\u7528 DSH \u4E3B\u673A\u4E0A\u9009\u5B9A\u7684\u8F93\u51FA\u8BBE\u5907\u3002",
+  "dsh-live-voice.speak.output.checking": "\u6B63\u5728\u68C0\u67E5\u8BED\u97F3\u8F93\u51FA\u2026",
+  "dsh-live-voice.speak.output.device": "\u8F93\u51FA\u8BBE\u5907",
+  "dsh-live-voice.speak.output.fallbackName": "\u97F3\u9891\u8F93\u51FA",
+  "dsh-live-voice.speak.output.stopTest": "\u505C\u6B62\u8BED\u97F3\u6D4B\u8BD5",
+  "dsh-live-voice.speak.output.test": "\u6D4B\u8BD5\u6240\u9009\u8BED\u97F3\u8F93\u51FA",
+  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice\u3002\u6240\u9009\u8BED\u97F3\u8F93\u51FA\u5DE5\u4F5C\u6B63\u5E38\u3002",
+  "dsh-live-voice.speak.output.testing": "\u6B63\u5728\u6D4B\u8BD5\u8BED\u97F3\u2026",
+  "dsh-live-voice.speak.playback.message": "\u6717\u8BFB\u6D88\u606F",
+  "dsh-live-voice.speak.playback.next": "\u8DF3\u81F3\u4E0B\u4E00\u8BED\u97F3\u7247\u6BB5",
+  "dsh-live-voice.speak.playback.pause": "\u6682\u505C\u6717\u8BFB",
+  "dsh-live-voice.speak.playback.previous": "\u4E0A\u4E00\u8BED\u97F3\u7247\u6BB5",
+  "dsh-live-voice.speak.playback.resume": "\u6062\u590D\u6717\u8BFB",
+  "dsh-live-voice.speak.playback.stop": "\u505C\u6B62\u6717\u8BFB",
+  "dsh-live-voice.speak.playback.stopAll": "\u505C\u6B62\u5168\u90E8\u6717\u8BFB",
+  "dsh-live-voice.speak.qwen.connection": "Qwen \u670D\u52A1\u5668\u8FDE\u63A5",
+  "dsh-live-voice.speak.qwen.endpoint": "Qwen API \u57FA\u7840 URL",
+  "dsh-live-voice.speak.qwen.healthFailed": "Qwen \u5065\u5EB7\u68C0\u67E5\u5931\u8D25\u3002",
+  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 \u672C\u5730 MLX \u670D\u52A1\u5668",
+  "dsh-live-voice.speak.qwen.name": "\u672C\u5730 Qwen3",
+  "dsh-live-voice.speak.qwen.requestFailed": "Qwen \u8BBE\u7F6E\u8BF7\u6C42\u5931\u8D25\u3002",
+  "dsh-live-voice.speak.qwen.restartRequired": "Qwen \u8BBE\u7F6E\u8DEF\u7531\u5C1A\u672A\u52A0\u8F7D\u3002\u9700\u8981\u6B63\u5E38\u91CD\u542F DSH \u670D\u52A1\u5668\u624D\u80FD\u52A0\u8F7D\u66F4\u65B0\u540E\u7684\u63D2\u4EF6\u8DEF\u7531\uFF1B\u4EC5\u5237\u65B0\u6B64\u9875\u9762\u662F\u4E0D\u591F\u7684\u3002",
+  "dsh-live-voice.speak.qwen.save": "\u4FDD\u5B58 Qwen \u8BBE\u7F6E",
+  "dsh-live-voice.speak.qwen.saved": "\u5DF2\u4FDD\u5B58\u5230 DSH \u4E3B\u673A\u3002\u6B63\u5728\u8FDB\u884C\u7684 Qwen \u8BF7\u6C42\u5DF2\u53D6\u6D88\u3002",
+  "dsh-live-voice.speak.qwen.signInRequired": "\u8BF7\u767B\u5F55 DSH \u4EE5\u7BA1\u7406 Qwen \u8BBE\u7F6E\u3002",
+  "dsh-live-voice.speak.qwen.test": "\u6D4B\u8BD5 Qwen \u670D\u52A1\u5668",
+  "dsh-live-voice.speak.qwen.voice": "Qwen \u97F3\u8272",
+  "dsh-live-voice.speak.qwen.voiceHelp": "\u9ED8\u8BA4\u4F7F\u7528 Aiden\u3002\u8FD9\u4E9B\u9884\u8BBE\u97F3\u8272\u5E76\u975E\u4EE5\u5DF4\u897F\u8461\u8404\u7259\u8BED\u4E3A\u6BCD\u8BED\u7684\u97F3\u8272\u3002",
+  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 \u7537\u58F0\uFF0C\u7F8E\u5F0F\u82F1\u8BED",
+  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 \u7537\u58F0\uFF0C\u5317\u4EAC\u8BDD",
+  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 \u7537\u58F0\uFF0C\u56DB\u5DDD\u8BDD",
+  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 \u5973\u58F0\uFF0C\u65E5\u8BED",
+  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 \u7537\u58F0\uFF0C\u82F1\u8BED",
+  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 \u5973\u58F0\uFF0C\u4E2D\u6587",
+  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 \u5973\u58F0\uFF0C\u97E9\u8BED",
+  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 \u7537\u58F0\uFF0C\u4E2D\u6587",
+  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 \u5973\u58F0\uFF0C\u4E2D\u6587",
+  "dsh-live-voice.speak.rate.help": "\u76F8\u5BF9\u901F\u5EA6\uFF1A1 \u4E3A\u6B63\u5E38\u901F\u5EA6\u3002",
+  "dsh-live-voice.speak.rate.label": "\u8BED\u901F",
+  "dsh-live-voice.speak.responseDelay.help": "\u4F60\u505C\u6B62\u8BF4\u8BDD\u540E\uFF0C\u52A9\u624B\u4F1A\u7B49\u5F85\u6B64\u65F6\u957F\u7684\u8FDE\u7EED\u9759\u97F3\uFF0C\u7136\u540E\u81EA\u52A8\u64AD\u653E\u8BED\u97F3\u3002\u518D\u6B21\u8BF4\u8BDD\u4F1A\u91CD\u65B0\u5F00\u59CB\u7B49\u5F85\u3002",
+  "dsh-live-voice.speak.responseDelay.label": "\u52A9\u624B\u54CD\u5E94\u5EF6\u8FDF",
+  "dsh-live-voice.speak.responseDelay.none": "\u65E0\u5EF6\u8FDF",
+  "dsh-live-voice.speak.segmentGap.help": "\u5728\u8FDE\u7EED\u8BED\u97F3\u7247\u6BB5\u4E4B\u95F4\u7B49\u5F85\u6B64\u6BEB\u79D2\u6570\u3002\u9ED8\u8BA4\u503C\u4E3A 400 ms\u3002",
+  "dsh-live-voice.speak.segmentGap.label": "\u8BED\u97F3\u7247\u6BB5\u4E4B\u95F4\u7684\u505C\u987F",
+  "dsh-live-voice.speak.status.paused": "\u8BED\u97F3\u5DF2\u6682\u505C",
+  "dsh-live-voice.speak.status.playing": "\u6B63\u5728\u6717\u8BFB"
+};
+var zh_default = Object.freeze(zh);
+
+// src/app/client/i18n/catalogs/base.ts
+var liveVoiceLanguageDefinitions = Object.freeze([
+  { id: "pt-BR", label: "Portugu\xEAs (Brasil)", fallback: "en" },
+  { id: "fr", label: "Fran\xE7ais", fallback: "en" },
+  { id: "es", label: "Espa\xF1ol", fallback: "en" },
+  { id: "hi", label: "\u0939\u093F\u0928\u094D\u0926\u0940", fallback: "en" }
+]);
+
+// src/app/client/i18n/catalogs/index.ts
+var appDictionaries = Object.freeze({
+  en: en_default,
+  es: es_default,
+  fr: fr_default,
+  hi: hi_default,
+  "pt-BR": pt_BR_default,
+  zh: zh_default
+});
+
+// src/app/client/i18n/DshLanguageBoundary.tsx
+var import_react2 = __toESM(require("react"), 1);
+
+// ../../node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
+var import_react = require("react");
+
+// ../../node_modules/.pnpm/@wads.dev+i18n-ts@0.0.1-alpha.0_typescript@7.0.2/node_modules/@wads.dev/i18n-ts/dist/runtime/language.js
+function detectLanguage() {
+  if (typeof navigator !== "undefined" && typeof navigator.language === "string")
+    return navigator.language;
+  if (typeof Intl !== "undefined")
+    return Intl.DateTimeFormat().resolvedOptions().locale;
+  return void 0;
+}
+async function loadLanguage(availableLangs2, defaultLang, language) {
+  if (!language || !availableLangs2[language]) {
+    const browserLang = (detectLanguage() || "").replace("-", "").toLowerCase();
+    const languageKeys = Object.keys(availableLangs2).map((key) => key.toLowerCase());
+    language = languageKeys.find((key) => key === browserLang) || languageKeys.find((key) => browserLang.startsWith(key)) || defaultLang;
+  }
+  const info = availableLangs2[language];
+  const lang = typeof info.lang === "function" ? await info.lang().then(({ default: loadedLang }) => loadedLang) : info.lang;
+  return { ...info, lang: deepFreeze(lang) };
+}
+function deepFreeze(value) {
+  Object.freeze(value);
+  Object.getOwnPropertyNames(value).forEach((property) => {
+    const nestedValue = value[property];
+    if (nestedValue && (typeof nestedValue === "object" || typeof nestedValue === "function") && !Object.isFrozen(nestedValue)) {
+      deepFreeze(nestedValue);
+    }
+  });
+  return value;
+}
+
+// ../../node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
+function createTranslationRuntime({ availableLangs: availableLangs2, defaultLang, onLanguageLoaded }) {
+  const context = (0, import_react.createContext)({});
+  function useTranslation(selector) {
+    const value = (0, import_react.useContext)(context);
+    if (!value.current)
+      throw new Error("useTranslation must be used within TranslationProvider.");
+    return { ...value, scoped: selector ? selector(value.current.lang) : value.current.lang };
+  }
+  function TranslationProvider({ children }) {
+    const [saved, setSaved] = (0, import_react.useState)();
+    const [language, setCurrentLanguage] = (0, import_react.useState)();
+    function setLanguage(nextLanguage, save) {
+      if (save)
+        setSaved(nextLanguage);
+    }
+    (0, import_react.useEffect)(() => {
+      void loadLanguage(availableLangs2, defaultLang, saved).then((loadedLanguage) => {
+        setCurrentLanguage(loadedLanguage);
+        onLanguageLoaded?.(loadedLanguage);
+      });
+    }, [saved]);
+    if (!language)
+      return null;
+    return (0, import_react.createElement)(context.Provider, { value: { setLanguage, available: availableLangs2, current: language, saved } }, children);
+  }
+  return { TranslationProvider, useTranslation };
+}
+
+// src/app/client/i18n/registerDshLocales.ts
+var LIVE_VOICE_LOCALE_NAMESPACE = "dsh-live-voice";
+var LIVE_VOICE_LANGUAGES = liveVoiceLanguageDefinitions;
+var liveVoiceDictionaries = appDictionaries;
+function createFallbackTranslator(locale = "en") {
+  return (key, params = {}) => {
+    const template = liveVoiceDictionaries[locale]?.[key] ?? liveVoiceDictionaries.en[key] ?? key;
+    return String(template).replace(
+      /\{([A-Za-z0-9_]+)\}/g,
+      (_2, name) => String(params[name] ?? "{" + name + "}")
+    );
+  };
+}
+function registerDshLocales(ctx) {
+  if (!ctx.locale) return createFallbackTranslator();
+  const registeredLanguages = new Set(
+    (ctx.locale.getSnapshot?.().locales || []).map(
+      (language) => language.id.toLowerCase()
+    )
+  );
+  for (const language of LIVE_VOICE_LANGUAGES) {
+    if (registeredLanguages.has(language.id.toLowerCase())) continue;
+    ctx.effect(
+      () => ctx.locale.addLanguage(language),
+      "dsh-live-voice: " + language.id + " language"
+    );
+    registeredLanguages.add(language.id.toLowerCase());
+  }
+  for (const [locale, dictionary] of Object.entries(liveVoiceDictionaries))
+    ctx.effect(
+      () => ctx.locale.register(LIVE_VOICE_LOCALE_NAMESPACE, locale, dictionary),
+      "dsh-live-voice: " + locale + " dictionary"
+    );
+  return ctx.locale.bind(LIVE_VOICE_LOCALE_NAMESPACE);
+}
+var registerLiveVoiceLocales = registerDshLocales;
+
+// src/app/client/i18n/runtime.tsx
+function interpolate(template, params = {}) {
+  return template.replace(
+    /\{([A-Za-z0-9_]+)\}/g,
+    (_2, name) => String(params[name] ?? "{" + name + "}")
+  );
+}
+function toLanguage(dictionary) {
+  const root = {};
+  for (const [identifier, template] of Object.entries(dictionary)) {
+    const path = identifier.replace(/^dsh-live-voice\./, "").split(".");
+    let parent = root;
+    for (const segment of path.slice(0, -1))
+      parent = parent[segment] ??= {};
+    const message2 = String(template);
+    parent[path.at(-1)] = ((params) => interpolate(message2, params));
+  }
+  return root;
+}
+var labels = new Map(LIVE_VOICE_LANGUAGES.map(({ id: id2, label }) => [id2, label]));
+var availableLangs = Object.fromEntries(
+  Object.entries(liveVoiceDictionaries).map(([id2, dictionary]) => [
+    id2,
+    {
+      name: labels.get(id2) ?? id2,
+      short: id2,
+      locale: id2,
+      lang: async () => ({ default: toLanguage(dictionary) })
+    }
+  ])
+);
+var { TranslationProvider: LiveVoiceTranslationProvider, useTranslation: useLanguage } = createTranslationRuntime({
+  availableLangs,
+  defaultLang: "en"
+});
+function normalizeAppLocale(locale) {
+  if (locale && locale in availableLangs) return locale;
+  const base = locale?.split("-")[0];
+  if (base && base in availableLangs) return base;
+  return "en";
+}
+
+// src/app/client/i18n/DshLanguageBoundary.tsx
+var FALLBACK_DSH_LOCALE = Object.freeze({ active: "en", revision: 0 });
+function DshLanguageBoundary({
+  locale,
+  children
+}) {
+  const { current, setLanguage } = useLanguage();
+  const subscribe = import_react2.default.useCallback(
+    (listener) => locale?.subscribe?.(listener) ?? (() => {
+    }),
+    [locale]
+  );
+  const snapshot = import_react2.default.useCallback(
+    () => locale?.getSnapshot?.() ?? FALLBACK_DSH_LOCALE,
+    [locale]
+  );
+  const dshLocale = import_react2.default.useSyncExternalStore(subscribe, snapshot, snapshot);
+  const expected = normalizeAppLocale(dshLocale.active);
+  import_react2.default.useEffect(() => {
+    if (current.locale !== expected) setLanguage(expected, true);
+  }, [current.locale, expected, setLanguage]);
+  return current.locale === expected ? children : null;
+}
+function withAppLanguage(Component, locale) {
+  function LocalizedComponent(props) {
+    return /* @__PURE__ */ import_react2.default.createElement(LiveVoiceTranslationProvider, null, /* @__PURE__ */ import_react2.default.createElement(DshLanguageBoundary, { locale }, /* @__PURE__ */ import_react2.default.createElement(Component, { ...props })));
+  }
+  LocalizedComponent.displayName = `AppLanguage(${Component.displayName || Component.name || "Component"})`;
+  return LocalizedComponent;
+}
+
+// src/shared/design-system/buttons/IconButton.tsx
+var import_react4 = __toESM(require("react"), 1);
+
+// src/shared/design-system/icons/Icon.tsx
+var import_react3 = __toESM(require("react"), 1);
+
+// src/shared/design-system/icons/icons.ts
+var iconPaths = {
+  meeting: "M8 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6M16 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6M2 20v-3a6 6 0 0 1 12 0v3M16 13a5 5 0 0 1 6 5v2",
+  mic: "M9 5a3 3 0 0 1 6 0v7a3 3 0 0 1-6 0V5M6 10v2a6 6 0 0 0 12 0v-2M12 18v4M8 22h8",
+  micOff: "M9 9v3a3 3 0 0 0 5.12 2.12M15 9V5a3 3 0 0 0-5.64-1.42M6 10v2a6 6 0 0 0 9.5 4.88M18 10v2a6 6 0 0 1-.5 2.4M12 18v4M8 22h8M3 3l18 18",
+  speaker: "M3 9h4l6-5v16l-6-5H3V9M17 8a6 6 0 0 1 0 8M20 5a10 10 0 0 1 0 14",
+  speakerOff: "M3 9h4l6-5v16l-6-5H3V9M17 9l5 6M22 9l-5 6",
+  pause: "M8 5v14M16 5v14",
+  play: "M7 4l13 8-13 8z",
+  stop: "M6 6h12v12H6z",
+  skipNext: "M5 5l10 7-10 7V5M19 5v14",
+  skipPrevious: "M19 5l-10 7 10 7V5M5 5v14",
+  send: "M3 11.5L21 3l-8.5 18-2-7.5L3 11.5zm7.5 2L21 3",
+  queue: "M5 6h14M5 12h10M5 18h6M18 15v6M15 18h6",
+  settings: "M4 7h16M4 17h16M8 4v6M16 14v6",
+  filter: "M3 5h18l-7 8v6l-4 2v-8L3 5z",
+  link: "M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.7 1.7M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.7-1.7",
+  chevron: "M6 9l6 6 6-6",
+  clock: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18M12 7v5l3 2",
+  close: "M6 6l12 12M18 6 6 18"
+};
+
+// src/shared/design-system/icons/Icon.tsx
+function Icon({ name, className }) {
+  return /* @__PURE__ */ import_react3.default.createElement(
+    "svg",
+    {
+      className,
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: 1.8,
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+      "aria-hidden": true
+    },
+    /* @__PURE__ */ import_react3.default.createElement("path", { d: iconPaths[name] })
+  );
+}
+
+// src/shared/design-system/buttons/IconButton.tsx
+function IconButton({
+  icon,
+  label,
+  visibleLabel,
+  className = "dlv-pill-button",
+  type = "button",
+  ...props
+}) {
+  return /* @__PURE__ */ import_react4.default.createElement(
+    "button",
+    {
+      ...props,
+      type,
+      className: "dlv-icon-button " + className,
+      title: props.title ?? label,
+      "aria-label": label
+    },
+    /* @__PURE__ */ import_react4.default.createElement(Icon, { name: icon }),
+    visibleLabel ? /* @__PURE__ */ import_react4.default.createElement("span", { className: "dlv-toggle-state", "aria-hidden": true }, visibleLabel) : null
+  );
+}
+
+// src/shared/design-system/buttons/PillButton.tsx
+var import_react5 = __toESM(require("react"), 1);
+
+// src/shared/design-system/buttons/ToggleButton.tsx
+var import_react6 = __toESM(require("react"), 1);
+function ToggleButton({ pressed, ...props }) {
+  return /* @__PURE__ */ import_react6.default.createElement(
+    IconButton,
+    {
+      ...props,
+      className: "dlv-live-toggle " + (props.className ?? ""),
+      "aria-pressed": pressed,
+      "data-toggle-active": String(pressed)
+    }
+  );
+}
+
+// src/shared/design-system/feedback/ErrorMessage.tsx
+var import_react7 = __toESM(require("react"), 1);
+function ErrorMessage({
+  error,
+  dismissLabel,
+  dismissText = "\xD7",
+  onDismiss
+}) {
+  if (!error) return null;
+  return /* @__PURE__ */ import_react7.default.createElement("div", { className: "dlv-error", role: "alert" }, String(error), onDismiss ? /* @__PURE__ */ import_react7.default.createElement("button", { type: "button", "aria-label": dismissLabel, onClick: onDismiss }, dismissText) : null);
+}
+
+// src/shared/design-system/feedback/StatusBadge.tsx
+var import_react8 = __toESM(require("react"), 1);
+
+// src/shared/design-system/feedback/StatusMessage.tsx
+var import_react9 = __toESM(require("react"), 1);
+
+// src/shared/design-system/forms/CheckboxField.tsx
+var import_react10 = __toESM(require("react"), 1);
+function CheckboxField({
+  label,
+  description,
+  className = "dlv-check",
+  ...props
+}) {
+  return /* @__PURE__ */ import_react10.default.createElement("div", null, /* @__PURE__ */ import_react10.default.createElement("label", { className }, /* @__PURE__ */ import_react10.default.createElement("input", { ...props, type: "checkbox" }), " ", label), description ? /* @__PURE__ */ import_react10.default.createElement("p", { className: "dlv-setting-description" }, description) : null);
+}
+
+// src/shared/design-system/forms/NumberField.tsx
+var import_react12 = __toESM(require("react"), 1);
+
+// src/shared/design-system/forms/DraftField.tsx
+var import_react11 = __toESM(require("react"), 1);
+function DraftField({
+  label,
+  value,
+  defaultValue,
+  onCommit,
+  multiline,
+  onInput,
+  onChange,
+  onFocus,
+  onBlur,
+  ...props
+}) {
+  const saved = String(value ?? defaultValue ?? "");
+  const [draft, setDraft] = import_react11.default.useState(saved);
+  const editing = import_react11.default.useRef(false);
+  const dirty = import_react11.default.useRef(false);
+  import_react11.default.useEffect(() => {
+    if (!editing.current) setDraft(saved);
+  }, [saved]);
+  const inputProps = {
+    ...props,
+    value: draft,
+    onFocus: (event) => {
+      editing.current = true;
+      onFocus?.(event);
+    },
+    onInput: (event) => {
+      editing.current = true;
+      dirty.current = true;
+      setDraft(event.currentTarget.value);
+      onInput?.(event);
+    },
+    onChange: (event) => {
+      editing.current = true;
+      dirty.current = true;
+      setDraft(event.currentTarget.value);
+      onChange?.(event);
+    },
+    onBlur: (event) => {
+      editing.current = false;
+      const raw = event.currentTarget.value;
+      const changed = dirty.current;
+      dirty.current = false;
+      setDraft(saved);
+      const valid = multiline || props.type !== "number" || raw.trim() !== "" && event.currentTarget.validity.valid;
+      if (changed && valid) onCommit?.(raw);
+      onBlur?.(event);
+    }
+  };
+  return /* @__PURE__ */ import_react11.default.createElement("label", null, label, multiline ? /* @__PURE__ */ import_react11.default.createElement("textarea", { ...inputProps }) : /* @__PURE__ */ import_react11.default.createElement("input", { ...inputProps }));
+}
+
+// src/shared/design-system/forms/NumberField.tsx
+function NumberField(props) {
+  return /* @__PURE__ */ import_react12.default.createElement(DraftField, { ...props, type: "number" });
+}
+
+// src/shared/design-system/forms/SelectField.tsx
+var import_react13 = __toESM(require("react"), 1);
+function SelectField({ label, options, ...props }) {
+  return /* @__PURE__ */ import_react13.default.createElement("label", null, label, /* @__PURE__ */ import_react13.default.createElement("select", { ...props }, options.map((option) => /* @__PURE__ */ import_react13.default.createElement("option", { key: option.value, value: option.value, disabled: option.disabled }, option.label))));
+}
+
+// src/shared/design-system/forms/TextAreaField.tsx
+var import_react14 = __toESM(require("react"), 1);
+function TextAreaField(props) {
+  return /* @__PURE__ */ import_react14.default.createElement(DraftField, { ...props, multiline: true });
+}
+
+// src/shared/design-system/forms/TextField.tsx
+var import_react15 = __toESM(require("react"), 1);
+function TextField(props) {
+  return /* @__PURE__ */ import_react15.default.createElement(DraftField, { ...props, type: "text" });
+}
+
+// src/shared/design-system/layout/SettingsCard.tsx
+var import_react16 = __toESM(require("react"), 1);
+function SettingsCard({
+  children,
+  className = ""
+}) {
+  return /* @__PURE__ */ import_react16.default.createElement("div", { className: ["dlv-settings-card", className].filter(Boolean).join(" ") }, children);
+}
+
+// src/shared/design-system/layout/SettingsSection.tsx
+var import_react17 = __toESM(require("react"), 1);
+
+// src/shared/design-system/layout/SettingsSubcard.tsx
+var import_react18 = __toESM(require("react"), 1);
+function SettingsSubcard({
+  title,
+  children,
+  open = false,
+  ariaLabel,
+  icon = "settings"
+}) {
+  return /* @__PURE__ */ import_react18.default.createElement("details", { className: "dlv-settings-subcard", open }, /* @__PURE__ */ import_react18.default.createElement("summary", { "aria-label": ariaLabel }, /* @__PURE__ */ import_react18.default.createElement(Icon, { name: icon, className: "dlv-settings-subcard-icon" }), /* @__PURE__ */ import_react18.default.createElement("span", null, title), /* @__PURE__ */ import_react18.default.createElement(Icon, { name: "chevron", className: "dlv-settings-subcard-chevron" })), /* @__PURE__ */ import_react18.default.createElement("div", { className: "dlv-settings-subcard-body" }, children));
+}
+
+// src/shared/design-system/layout/SettingsTabs.tsx
+var import_react19 = __toESM(require("react"), 1);
+function SettingsTabs({ label, tabs, active, idPrefix, onChange }) {
+  const refs = import_react19.default.useRef([]);
+  const activate = (index) => {
+    const tab = tabs[index];
+    if (!tab) return;
+    onChange(tab.id);
+    refs.current[index]?.focus();
+  };
+  const onKeyDown = (event, index) => {
+    let next;
+    if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
+    else if (event.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = tabs.length - 1;
+    if (next === void 0) return;
+    event.preventDefault();
+    activate(next);
+  };
+  return /* @__PURE__ */ import_react19.default.createElement("div", { className: "dlv-settings-tabs", role: "tablist", "aria-label": label }, tabs.map((tab, index) => /* @__PURE__ */ import_react19.default.createElement(
+    "button",
+    {
+      key: tab.id,
+      ref: (node) => {
+        refs.current[index] = node;
+      },
+      id: idPrefix + "-tab-" + tab.id,
+      type: "button",
+      role: "tab",
+      className: "dlv-settings-tab",
+      "aria-selected": active === tab.id,
+      "aria-controls": idPrefix + "-panel-" + tab.id,
+      "data-active": active === tab.id ? "true" : void 0,
+      tabIndex: active === tab.id ? 0 : -1,
+      onClick: () => onChange(tab.id),
+      onKeyDown: (event) => onKeyDown(event, index)
+    },
+    tab.icon ? /* @__PURE__ */ import_react19.default.createElement(Icon, { name: tab.icon, className: "dlv-settings-tab-icon" }) : null,
+    /* @__PURE__ */ import_react19.default.createElement("span", null, tab.label)
+  )));
+}
+
+// src/modules/conversation/hooks/useConversationActions.ts
+var import_react20 = __toESM(require("react"), 1);
+function useConversationActions(controller) {
+  const [error, setError] = import_react20.default.useState("");
+  const alive = import_react20.default.useRef(true);
+  import_react20.default.useEffect(
+    () => () => {
+      alive.current = false;
+    },
+    []
+  );
+  const invoke = import_react20.default.useCallback(
+    (name, ...args) => {
+      setError("");
+      try {
+        Promise.resolve(controller[name](...args)).catch((reason) => {
+          if (alive.current) setError(reason instanceof Error ? reason.message : String(reason));
+        });
+      } catch (reason) {
+        setError(reason instanceof Error ? reason.message : String(reason));
+      }
+    },
+    [controller]
+  );
+  const clearError = import_react20.default.useCallback(() => setError(""), []);
+  return { invoke, error, clearError };
+}
+
+// src/modules/conversation/hooks/useConversationController.ts
+var import_react21 = __toESM(require("react"), 1);
+function useConversationController(controller) {
+  const subscribe = import_react21.default.useCallback(
+    (listener) => controller.subscribe(listener),
+    [controller]
+  );
+  const read = import_react21.default.useCallback(() => controller.getSnapshot(), [controller]);
+  return import_react21.default.useSyncExternalStore(subscribe, read, read);
+}
+
+// src/modules/conversation/components/PlaybackControls.tsx
+var import_react22 = __toESM(require("react"), 1);
+function PlaybackControls({
+  state,
+  invoke,
+  navigation = true
+}) {
+  const { scoped: speak } = useLanguage((ctx) => ctx.speak);
+  const capabilities = state.capabilities?.[state.speechEngine || state.settings?.engine] ?? {};
+  return /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null, navigation && state.speechHasPrevious ? /* @__PURE__ */ import_react22.default.createElement(
+    IconButton,
+    {
+      label: speak.playback.previous(),
+      icon: "skipPrevious",
+      onClick: () => invoke("previousSpeechSegment")
+    }
+  ) : null, navigation && state.speechSegmentsRemaining > 1 ? /* @__PURE__ */ import_react22.default.createElement(
+    IconButton,
+    {
+      label: speak.playback.next(),
+      icon: "skipNext",
+      onClick: () => invoke("skipSpeechSegment")
+    }
+  ) : null, state.speechSegmentsRemaining > 0 && capabilities.pause && !state.paused ? /* @__PURE__ */ import_react22.default.createElement(
+    IconButton,
+    {
+      label: speak.playback.pause(),
+      icon: "pause",
+      disabled: !state.speaking || state.paused,
+      onClick: () => invoke("pauseSpeech")
+    }
+  ) : null, state.paused && capabilities.resume ? /* @__PURE__ */ import_react22.default.createElement(
+    IconButton,
+    {
+      label: speak.playback.resume(),
+      icon: "play",
+      onClick: () => invoke("resumeSpeech")
+    }
+  ) : null, state.speechSegmentsRemaining > 0 || state.speechRunActive ? /* @__PURE__ */ import_react22.default.createElement(
+    IconButton,
+    {
+      label: speak.playback.stopAll(),
+      icon: "stop",
+      onClick: () => invoke("stopSpeech")
+    }
+  ) : null);
+}
+
+// src/modules/conversation/components/ScrollingSpeechCaption.tsx
+var import_react23 = __toESM(require("react"), 1);
+function ScrollingSpeechCaption({
+  text,
+  label,
+  controller,
+  segment,
+  paused,
+  loading
+}) {
+  const viewport = import_react23.default.useRef(null);
+  const line = import_react23.default.useRef(null);
+  const marker = import_react23.default.useRef(null);
+  const current = import_react23.default.useRef({ paused, loading });
+  current.current = { paused, loading };
+  import_react23.default.useEffect(() => {
+    const box = viewport.current;
+    const content = line.current;
+    const band = marker.current;
+    if (!box || !content || !band) return;
+    const host = box.ownerDocument.defaultView;
+    let width = box.clientWidth;
+    let textWidth = content.scrollWidth;
+    let fraction = 0;
+    let previousTime = 0;
+    let frame = 0;
+    box.scrollLeft = 0;
+    band.style.transform = "translateX(0px)";
+    const measure = () => {
+      width = box.clientWidth;
+      textWidth = content.scrollWidth;
+    };
+    const observer = typeof host.ResizeObserver === "function" ? new host.ResizeObserver(measure) : null;
+    observer?.observe(box);
+    observer?.observe(content);
+    const reduced = host.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const tick = (time) => {
+      const delta = Math.min(100, previousTime ? time - previousTime : 16);
+      previousTime = time;
+      const state = current.current;
+      if (!state.paused && !state.loading) {
+        const progress = controller.getSpeechProgress?.();
+        if (progress && Number.isFinite(progress.durationSeconds) && progress.durationSeconds > 0 && Number.isFinite(progress.positionSeconds)) {
+          const target = Math.max(
+            0,
+            Math.min(1, progress.positionSeconds / progress.durationSeconds)
+          );
+          fraction = reduced ? target : fraction + (target - fraction) * (1 - Math.exp(-delta / 90));
+        }
+      }
+      const bandWidth = Math.min(90, width, textWidth);
+      const position = fraction * Math.max(0, textWidth - bandWidth);
+      const scroll = Math.max(
+        0,
+        Math.min(Math.max(0, textWidth - width), position - (width - bandWidth) / 2)
+      );
+      box.scrollLeft = scroll;
+      band.style.width = bandWidth + "px";
+      band.style.transform = "translateX(" + Math.max(0, position - box.scrollLeft) + "px)";
+      band.style.opacity = state.loading ? "0" : "1";
+      frame = host.requestAnimationFrame(tick);
+    };
+    frame = host.requestAnimationFrame(tick);
+    return () => {
+      host.cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
+  }, [controller, text, segment]);
+  return /* @__PURE__ */ import_react23.default.createElement("div", { className: "dlv-caption-stage" }, /* @__PURE__ */ import_react23.default.createElement(
+    "div",
+    {
+      ref: viewport,
+      className: "dlv-caption dlv-caption-scroll",
+      title: text,
+      "aria-label": label
+    },
+    /* @__PURE__ */ import_react23.default.createElement("span", { ref: line, className: "dlv-caption-line" }, text)
+  ), /* @__PURE__ */ import_react23.default.createElement("span", { ref: marker, className: "dlv-caption-marker", "aria-hidden": "true" }));
+}
+
+// src/modules/conversation/components/SpeechStatusBar.tsx
+function SpeechStatusBar({ controller }) {
+  const { scoped: speak } = useLanguage((ctx) => ctx.speak);
+  const { scoped: commons } = useLanguage((ctx) => ctx.commons);
+  const state = useConversationController(controller);
+  const { invoke, error, clearError } = useConversationActions(controller);
+  const [progress, setProgress] = import_react24.default.useState(null);
+  import_react24.default.useEffect(() => {
+    setProgress(null);
+    if (!state.speechText || !state.speaking) return;
+    const update = () => setProgress(controller.getSpeechProgress?.() ?? null);
+    update();
+    if (state.paused) return;
+    const timer = setInterval(update, 100);
+    return () => clearInterval(timer);
+  }, [controller, state.speechText, state.speaking, state.paused]);
+  if (!state.speaking && !state.paused && !state.speechRunActive && !(state.speechSegmentsRemaining > 0))
+    return null;
+  const text = state.speechText ?? "";
+  const ratio = progress && Number.isFinite(progress.durationSeconds) && progress.durationSeconds > 0 && Number.isFinite(progress.positionSeconds) ? Math.max(0, Math.min(1, progress.positionSeconds / progress.durationSeconds)) : null;
+  const loading = state.speechLoading === true && state.speaking && !state.paused;
+  const index = state.speechSegmentIndex ?? 0;
+  const total = state.speechSegmentsTotal ?? state.speechSegmentsRemaining ?? 0;
+  return /* @__PURE__ */ import_react24.default.createElement("div", { className: "dlv-bar-wrap dlv-speech-bar" }, /* @__PURE__ */ import_react24.default.createElement(
+    "div",
+    {
+      className: "dlv-pill dlv-speech-pill",
+      role: "group",
+      "aria-label": speak.captions.title()
+    },
+    /* @__PURE__ */ import_react24.default.createElement(
+      IconButton,
+      {
+        label: speak.playback.previous(),
+        icon: "skipPrevious",
+        disabled: !state.speechHasPrevious,
+        onClick: () => invoke("previousSpeechSegment")
+      }
+    ),
+    /* @__PURE__ */ import_react24.default.createElement("div", { className: "dlv-caption-stack" }, /* @__PURE__ */ import_react24.default.createElement(
+      ScrollingSpeechCaption,
+      {
+        text: text || speak.status.playing(),
+        label: speak.captions.approximate(),
+        controller,
+        segment: index,
+        paused: state.paused || !state.speaking,
+        loading
+      }
+    ), /* @__PURE__ */ import_react24.default.createElement(
+      "div",
+      {
+        className: "dlv-caption-progress",
+        "data-loading": loading ? "true" : "false",
+        role: "progressbar",
+        "aria-hidden": !loading,
+        "aria-label": loading ? speak.captions.loading() : speak.captions.progress(),
+        "aria-valuemin": 0,
+        "aria-valuemax": 100,
+        "aria-valuenow": loading || ratio === null ? void 0 : Math.round(ratio * 100)
+      },
+      /* @__PURE__ */ import_react24.default.createElement("span", { style: loading ? void 0 : { width: (ratio ?? 0) * 100 + "%" } })
+    )),
+    /* @__PURE__ */ import_react24.default.createElement(
+      IconButton,
+      {
+        label: speak.playback.next(),
+        icon: "skipNext",
+        disabled: !(state.speechSegmentsRemaining > 1),
+        onClick: () => invoke("skipSpeechSegment")
+      }
+    ),
+    /* @__PURE__ */ import_react24.default.createElement(
+      "span",
+      {
+        className: "dlv-speech-count",
+        "aria-label": speak.captions.position({ index, total })
+      },
+      index,
+      "/",
+      total
+    ),
+    /* @__PURE__ */ import_react24.default.createElement(PlaybackControls, { state, invoke, navigation: false })
+  ), /* @__PURE__ */ import_react24.default.createElement(
+    ErrorMessage,
+    {
+      error,
+      dismissLabel: commons.dismissError(),
+      dismissText: commons.dismiss(),
+      onDismiss: clearError
+    }
+  ));
+}
+
+// src/modules/conversation/models/meetingTranscript.ts
+var MeetingTranscript = class {
+  constructor(composer) {
+    this.composer = composer;
+  }
+  composer;
+  active = /* @__PURE__ */ new Set();
+  last = null;
+  expected = null;
+  timestamps = false;
+  setTimestamps(enabled) {
+    this.timestamps = enabled;
+    this.last = null;
+  }
+  setActive(source, enabled) {
+    if (enabled) this.active.add(source);
+    else this.active.delete(source);
+    this.last = null;
+  }
+  append(source, text, startedAt) {
+    const chunk = text.trim();
+    if (!chunk || !this.active.has(source)) return;
+    const draft = this.composer.getDraft();
+    if (draft !== this.expected) this.last = null;
+    const labelled = this.active.size > 1;
+    const changed = labelled && this.last !== source;
+    const date = new Date(Number.isFinite(startedAt) ? startedAt : Date.now());
+    const pad = (value) => String(value).padStart(2, "0");
+    const stamp = this.timestamps && changed ? "[" + date.getFullYear() + "/" + pad(date.getMonth() + 1) + "/" + pad(date.getDate()) + " " + pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds()) + "] " : "";
+    const prefix = changed ? stamp + (source === "microphone" ? "Me: " : "Them: ") : "";
+    const separator = draft ? changed ? "\n\n" : "\n" : "";
+    const next = draft + separator + prefix + chunk;
+    this.composer.setDraft(next);
+    this.expected = next;
+    this.last = labelled ? source : null;
+  }
+  reset() {
+    this.active.clear();
+    this.last = null;
+    this.expected = null;
+  }
+};
+
+// src/modules/conversation/models/meeting.ts
+var MeetingController = class {
+  constructor({ composer, settings, createSource, translate }) {
+    this.settings = settings;
+    this.createSource = createSource;
+    this.t = translate;
+    this.transcript = new MeetingTranscript(composer);
+    this.jobs = /* @__PURE__ */ new Map();
+    this.generations = /* @__PURE__ */ new Map();
+    this.listeners = /* @__PURE__ */ new Set();
+    this.snapshot = {
+      active: false,
+      timestamps: false,
+      microphone: { starting: false, listening: false, pending: 0, error: null },
+      shared: { starting: false, listening: false, pending: 0, error: null }
+    };
+  }
+  getSnapshot = () => this.snapshot;
+  subscribe = (listener) => {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  };
+  patch(source, next) {
+    this.snapshot = {
+      ...this.snapshot,
+      ...source ? { [source]: { ...this.snapshot[source], ...next } } : next
+    };
+    for (const listener of this.listeners) listener();
+  }
+  toggleTimestamps() {
+    const enabled = !this.snapshot.timestamps;
+    this.transcript.setTimestamps(enabled);
+    this.patch(null, { timestamps: enabled });
+  }
+  async start(source, request) {
+    if (this.disposed) {
+      request?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
+      });
+      return;
+    }
+    const stopping = this.stop(source);
+    const generation = this.generations.get(source);
+    await stopping;
+    if (this.disposed || this.generations.get(source) !== generation) {
+      request?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
+      });
+      return;
+    }
+    this.patch(null, { active: true });
+    const abort = new AbortController();
+    const job = { abort };
+    this.jobs.set(source, job);
+    const valid = () => this.jobs.get(source) === job && !abort.signal.aborted;
+    this.patch(source, { starting: true, error: null });
+    try {
+      const settings = this.settings();
+      if (settings.recognitionEngine === "browser") throw new Error(this.t("httpRequired"));
+      const { meter, engine } = this.createSource(source, settings);
+      Object.assign(job, { meter, engine });
+      if (source === "shared") meter.provide(request);
+      meter.deviceId = settings.inputDeviceId;
+      const capability = await engine.capability();
+      if (!valid()) return;
+      if (!capability.supported) throw new Error(capability.reason || this.t("unavailable"));
+      if (!await meter.start({ signal: abort.signal }) || !valid()) return;
+      this.transcript.setActive(source, true);
+      for (const track of meter.stream?.getTracks() || [])
+        track.addEventListener(
+          "ended",
+          () => {
+            if (valid()) void this.stop(source);
+          },
+          { once: true }
+        );
+      await engine.start({
+        lang: settings.recognitionLang,
+        signal: abort.signal,
+        onResult: ({ final, startedAt }) => {
+          if (valid() && final) this.transcript.append(source, final, startedAt);
+        },
+        onProcessingChange: ({ pending }) => {
+          if (valid()) this.patch(source, { pending });
+        },
+        onError: (error) => {
+          if (valid()) {
+            this.patch(source, { error: this.t("failed") });
+            void this.stop(source);
+          }
+        }
+      });
+      if (valid()) this.patch(source, { starting: false, listening: true });
+    } catch (error) {
+      if (valid()) {
+        this.patch(source, {
+          error: source === "shared" && error.message === "No shared audio track was returned." ? this.t("noAudio") : error.message === this.t("httpRequired") ? error.message : this.t("failed")
+        });
+        await this.stop(source);
+      }
+    } finally {
+      if (!valid()) {
+        await job.engine?.stop();
+        await job.meter?.stop();
+      }
+      if (source === "shared" && !job.meter?.stream)
+        request?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
+        });
+    }
+  }
+  async stop(source) {
+    this.generations.set(source, (this.generations.get(source) || 0) + 1);
+    const job = this.jobs.get(source);
+    this.jobs.delete(source);
+    job?.abort.abort();
+    this.transcript.setActive(source, false);
+    this.patch(source, { starting: false, listening: false, pending: 0 });
+    await job?.engine?.stop();
+    await job?.meter?.stop();
+  }
+  async end() {
+    await Promise.all(["microphone", "shared"].map((source) => this.stop(source)));
+    this.transcript.reset();
+    this.patch(null, { active: false });
+  }
+  async dispose() {
+    this.disposed = true;
+    await this.end();
+    this.listeners.clear();
+  }
+};
+
+// src/modules/core/microphone.ts
+var MicrophoneMeter = class {
+  constructor(globals = globalThis) {
+    this.g = globals;
+    this.deviceId = "";
+    this.epoch = 0;
+    this.current = null;
+    this.stream = this.context = this.source = this.analyser = this.samples = null;
+  }
+  async capability() {
+    const secure = this.g.isSecureContext === true || ["localhost", "127.0.0.1", "::1"].includes(this.g.location?.hostname);
+    if (!secure)
+      return {
+        supported: false,
+        permission: "unavailable",
+        reason: "Microphone capture requires a secure or loopback page."
+      };
+    if (typeof this.g.navigator?.mediaDevices?.getUserMedia !== "function")
+      return {
+        supported: false,
+        permission: "unavailable",
+        reason: "This browser does not expose microphone capture."
+      };
+    const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
+    if (typeof AudioContext !== "function")
+      return {
+        supported: false,
+        permission: "unavailable",
+        reason: "This browser does not expose Web Audio for the live waveform."
+      };
+    let permission = "prompt";
+    try {
+      const status = await this.g.navigator.permissions?.query?.({ name: "microphone" });
+      if (["granted", "denied", "prompt"].includes(status?.state)) permission = status.state;
+    } catch {
+    }
+    return permission === "denied" ? {
+      supported: false,
+      permission,
+      reason: "Microphone permission is denied. Allow it in browser settings, then refresh availability."
+    } : { supported: true, permission };
+  }
+  async start({ signal } = {}) {
+    this.stop();
+    if (signal?.aborted) return false;
+    const job = {
+      signal,
+      stream: null,
+      context: null,
+      source: null,
+      analyser: null,
+      samples: null
+    };
+    const cancelled2 = new Promise((resolve) => {
+      job.cancelled = resolve;
+    });
+    job.cancel = () => {
+      if (this.current === job) this.stop();
+    };
+    this.current = job;
+    signal?.addEventListener("abort", job.cancel, { once: true });
+    if (signal?.aborted) {
+      job.cancel();
+      return false;
+    }
+    const valid = () => this.current === job;
+    const capture = async () => {
+      try {
+        const stream = await this.g.navigator.mediaDevices.getUserMedia({
+          audio: {
+            ...this.deviceId ? { deviceId: { exact: this.deviceId } } : {},
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        });
+        job.stream = stream;
+        if (!valid()) {
+          this._dispose(job);
+          return false;
+        }
+        this.stream = stream;
+        const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
+        job.context = new AudioContext();
+        job.analyser = job.context.createAnalyser();
+        job.analyser.fftSize = 256;
+        job.source = job.context.createMediaStreamSource(stream);
+        job.source.connect(job.analyser);
+        job.samples = new Float32Array(job.analyser.fftSize);
+        this.context = job.context;
+        this.source = job.source;
+        this.analyser = job.analyser;
+        this.samples = job.samples;
+        await job.context.resume();
+        return valid();
+      } catch (error) {
+        if (!valid()) {
+          this._dispose(job);
+          return false;
+        }
+        this.current = null;
+        this._clear();
+        this._dispose(job);
+        throw error;
+      }
+    };
+    return Promise.race([capture(), cancelled2]);
+  }
+  level() {
+    if (!this.analyser || !this.samples) return 0;
+    this.analyser.getFloatTimeDomainData(this.samples);
+    return Math.min(
+      1,
+      Math.sqrt(this.samples.reduce((s, x2) => s + x2 * x2, 0) / this.samples.length) * 5
+    );
+  }
+  _clear() {
+    this.stream = this.context = this.source = this.analyser = this.samples = null;
+  }
+  _dispose(job) {
+    job.signal?.removeEventListener("abort", job.cancel);
+    const stream = job.stream, source = job.source, context = job.context;
+    job.stream = job.source = job.context = job.analyser = job.samples = null;
+    if (stream) {
+      for (const track of stream.getTracks()) {
+        try {
+          track.stop();
+        } catch {
+        }
+      }
+    }
+    try {
+      source?.disconnect();
+    } catch {
+    }
+    try {
+      if (context && context.state !== "closed") Promise.resolve(context.close()).catch(() => {
+      });
+    } catch {
+    }
+  }
+  async release() {
+    return this.stop();
+  }
+  async stop() {
+    ++this.epoch;
+    const job = this.current;
+    this.current = null;
+    this._clear();
+    if (!job) return;
+    job.cancelled(false);
+    this._dispose(job);
+  }
+};
+
+// src/modules/core/sharedAudio.ts
+function requestSharedAudio(globals = globalThis) {
+  return globals.navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+}
+var SharedAudioMeter = class extends MicrophoneMeter {
+  constructor(globals = globalThis) {
+    super(globals);
+    this.pending = null;
+  }
+  provide(request) {
+    this.pending = Promise.resolve(request);
+    this.pending.catch(() => {
+    });
+  }
+  async capability() {
+    return {
+      supported: typeof this.g.navigator?.mediaDevices?.getDisplayMedia === "function" && typeof (this.g.AudioContext || this.g.webkitAudioContext) === "function"
+    };
+  }
+  async stop() {
+    const pending = this.pending;
+    this.pending = null;
+    pending?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
+    });
+    return super.stop();
+  }
+  async start({ signal } = {}) {
+    const pending = this.pending;
+    this.pending = null;
+    await super.stop();
+    if (!pending) throw new Error("Shared audio permission was not requested.");
+    const job = {
+      signal,
+      stream: null,
+      context: null,
+      source: null,
+      cancel: () => {
+        if (this.current === job) void this.stop();
+      },
+      cancelled: () => {
+      }
+    };
+    this.current = job;
+    signal?.addEventListener("abort", job.cancel, { once: true });
+    try {
+      const stream = await pending;
+      job.stream = stream;
+      if (signal?.aborted || this.current !== job) {
+        this._dispose(job);
+        return false;
+      }
+      const tracks = stream.getAudioTracks();
+      if (!tracks.length) throw new Error("No shared audio track was returned.");
+      const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
+      job.context = new AudioContext();
+      job.source = job.context.createMediaStreamSource(new this.g.MediaStream(tracks));
+      job.analyser = job.context.createAnalyser();
+      job.analyser.fftSize = 256;
+      job.source.connect(job.analyser);
+      job.samples = new Float32Array(job.analyser.fftSize);
+      this.stream = stream;
+      this.context = job.context;
+      this.source = job.source;
+      this.analyser = job.analyser;
+      this.samples = job.samples;
+      await job.context.resume();
+      return this.current === job;
+    } catch (error) {
+      if (this.current === job) {
+        this.current = null;
+        this._clear();
+      }
+      this._dispose(job);
+      if (signal?.aborted) return false;
+      throw error;
+    }
+  }
+};
+
+// src/modules/conversation/components/MeetingControls.tsx
+var import_react27 = __toESM(require("react"), 1);
+
+// src/modules/conversation/components/RecognitionBar.tsx
+var import_react26 = __toESM(require("react"), 1);
+
+// src/modules/conversation/components/Waveform.tsx
+var import_react25 = __toESM(require("react"), 1);
+function Waveform({ controller, enabled }) {
+  const ref = import_react25.default.useRef(null);
+  const current = import_react25.default.useRef({ controller, enabled });
+  current.current = { controller, enabled };
+  import_react25.default.useEffect(() => {
+    const canvas = ref.current;
+    const context = canvas?.getContext("2d");
+    if (!canvas || !context) return;
+    let frame = 0, width = 1, height = 40, ratio = 1;
+    let disposed = false;
+    const motion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    function resize() {
+      const bounds = canvas.getBoundingClientRect();
+      width = Math.max(1, bounds.width);
+      height = Math.max(1, bounds.height || 40);
+      ratio = Math.max(1, window.devicePixelRatio || 1);
+      const nextWidth = Math.round(width * ratio);
+      const nextHeight = Math.round(height * ratio);
+      if (canvas.width !== nextWidth) canvas.width = nextWidth;
+      if (canvas.height !== nextHeight) canvas.height = nextHeight;
+    }
+    const observer = typeof ResizeObserver === "function" ? new ResizeObserver(resize) : null;
+    observer?.observe(canvas);
+    window.addEventListener("resize", resize);
+    resize();
+    function draw(time) {
+      if (disposed) return;
+      if (ratio !== Math.max(1, window.devicePixelRatio || 1)) resize();
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.clearRect(0, 0, width, height);
+      const { controller: controller2, enabled: enabled2 } = current.current;
+      const raw = Number(controller2.meter?.level?.() ?? 0);
+      const level = enabled2 && Number.isFinite(raw) ? Math.min(1, Math.max(0, raw)) : 0;
+      const color = getComputedStyle(canvas).color;
+      for (let layer = 0; layer < 3; layer += 1) {
+        context.beginPath();
+        context.strokeStyle = layer === 1 ? "#38bdf8" : color;
+        context.globalAlpha = 0.4 + layer * 0.25;
+        context.lineWidth = layer === 2 ? 2 : 1;
+        const phase = motion?.matches ? 0 : time / (500 + layer * 170);
+        for (let x2 = 0; x2 <= width; x2 += 2) {
+          const envelope = Math.sin(Math.PI * x2 / width);
+          const y2 = height / 2 + Math.sin(x2 / width * Math.PI * (4 + layer * 2) + phase) * envelope * level * height * (0.43 - layer * 0.08);
+          if (x2 === 0) context.moveTo(x2, y2);
+          else context.lineTo(x2, y2);
+        }
+        context.stroke();
+      }
+      context.globalAlpha = 1;
+      frame = window.requestAnimationFrame(draw);
+    }
+    frame = window.requestAnimationFrame(draw);
+    return () => {
+      disposed = true;
+      window.cancelAnimationFrame(frame);
+      observer?.disconnect();
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+  return /* @__PURE__ */ import_react25.default.createElement("canvas", { ref, className: "dlv-wave", "aria-hidden": true });
+}
+
+// src/modules/conversation/components/RecognitionBar.tsx
+function RecognitionBar({ controller, listening, label, status, leading, children }) {
+  return /* @__PURE__ */ import_react26.default.createElement("div", { className: "dlv-pill", role: "group", "aria-label": label }, leading, /* @__PURE__ */ import_react26.default.createElement(Waveform, { controller, enabled: Boolean(listening) }), /* @__PURE__ */ import_react26.default.createElement("span", { className: "dlv-status", role: "status", "aria-live": "polite" }, status), children);
+}
+
+// src/modules/conversation/components/MeetingControls.tsx
+function MeetingToggle({ meeting, onToggle }) {
+  const { scoped: copy } = useLanguage((ctx) => ctx.meeting);
+  const state = import_react27.default.useSyncExternalStore(meeting.subscribe, meeting.getSnapshot);
+  return /* @__PURE__ */ import_react27.default.createElement(
+    IconButton,
+    {
+      icon: "meeting",
+      label: copy.shared(),
+      className: "dlv-mic",
+      "aria-pressed": Boolean(state.shared.listening || state.shared.starting),
+      onClick: onToggle
+    }
+  );
+}
+function MeetingBars({ meeting }) {
+  const { scoped: copy } = useLanguage((ctx) => ctx.meeting);
+  const state = import_react27.default.useSyncExternalStore(meeting.subscribe, meeting.getSnapshot);
+  const value = state.shared;
+  if (!value.listening && !value.starting && !value.error) return null;
+  const label = copy.shared();
+  const status = value.error || (value.starting ? copy.starting() : value.pending ? copy.processing() : copy.listening());
+  return /* @__PURE__ */ import_react27.default.createElement("div", { className: "dlv-bar-wrap dlv-meeting-bars" }, /* @__PURE__ */ import_react27.default.createElement(
+    RecognitionBar,
+    {
+      controller: { meter: meeting.jobs.get("shared")?.meter },
+      listening: value.listening,
+      label,
+      status,
+      leading: /* @__PURE__ */ import_react27.default.createElement(
+        IconButton,
+        {
+          icon: "meeting",
+          label,
+          "aria-pressed": Boolean(value.listening || value.starting),
+          onClick: () => {
+            void meeting.stop("shared");
+            meeting.patch("shared", { error: null });
+          }
+        }
+      )
+    },
+    /* @__PURE__ */ import_react27.default.createElement(
+      ToggleButton,
+      {
+        visibleLabel: copy.timestampsBadge(),
+        icon: "clock",
+        label: copy.timestamps(),
+        className: "dlv-timestamp-toggle",
+        pressed: Boolean(state.timestamps),
+        onClick: () => meeting.toggleTimestamps()
+      }
+    )
+  ));
+}
+
+// src/app/client/apply.tsx
 var import_react_dom = require("react-dom");
 
 // src/app/client/composerSelection.ts
@@ -2156,7 +4926,7 @@ var VoiceCoordinator = class _VoiceCoordinator {
       void this.resumeSpeech();
     }
   }
-  onResult({ final = "", interim = "" }) {
+  onResult({ final = "", interim = "", startedAt }) {
     if (this.disposed || !this.snapshot.listening && !this.snapshot.starting) return;
     if (this.snapshot.speaking && !this.snapshot.paused && this.snapshot.settings.mode === "speaker")
       return;
@@ -2212,8 +4982,9 @@ var VoiceCoordinator = class _VoiceCoordinator {
         this.patch({ recognizing: false });
         return;
       }
-      const next = this.transcript.update(this.composer.getDraft(), final, true);
-      this.composer.setDraft(next);
+      const appended = this.composer.appendFinal?.(final, startedAt);
+      const next = appended ?? this.transcript.update(this.composer.getDraft(), final, true);
+      if (appended == null) this.composer.setDraft(next);
       this.maybeScheduleAutoSend(next);
     }
     if (interim) {
@@ -2680,161 +5451,6 @@ var VoiceCoordinator = class _VoiceCoordinator {
   }
 };
 
-// src/modules/core/microphone.ts
-var MicrophoneMeter = class {
-  constructor(globals = globalThis) {
-    this.g = globals;
-    this.deviceId = "";
-    this.epoch = 0;
-    this.current = null;
-    this.stream = this.context = this.source = this.analyser = this.samples = null;
-  }
-  async capability() {
-    const secure = this.g.isSecureContext === true || ["localhost", "127.0.0.1", "::1"].includes(this.g.location?.hostname);
-    if (!secure)
-      return {
-        supported: false,
-        permission: "unavailable",
-        reason: "Microphone capture requires a secure or loopback page."
-      };
-    if (typeof this.g.navigator?.mediaDevices?.getUserMedia !== "function")
-      return {
-        supported: false,
-        permission: "unavailable",
-        reason: "This browser does not expose microphone capture."
-      };
-    const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
-    if (typeof AudioContext !== "function")
-      return {
-        supported: false,
-        permission: "unavailable",
-        reason: "This browser does not expose Web Audio for the live waveform."
-      };
-    let permission = "prompt";
-    try {
-      const status = await this.g.navigator.permissions?.query?.({ name: "microphone" });
-      if (["granted", "denied", "prompt"].includes(status?.state)) permission = status.state;
-    } catch {
-    }
-    return permission === "denied" ? {
-      supported: false,
-      permission,
-      reason: "Microphone permission is denied. Allow it in browser settings, then refresh availability."
-    } : { supported: true, permission };
-  }
-  async start({ signal } = {}) {
-    this.stop();
-    if (signal?.aborted) return false;
-    const job = {
-      signal,
-      stream: null,
-      context: null,
-      source: null,
-      analyser: null,
-      samples: null
-    };
-    const cancelled2 = new Promise((resolve) => {
-      job.cancelled = resolve;
-    });
-    job.cancel = () => {
-      if (this.current === job) this.stop();
-    };
-    this.current = job;
-    signal?.addEventListener("abort", job.cancel, { once: true });
-    if (signal?.aborted) {
-      job.cancel();
-      return false;
-    }
-    const valid = () => this.current === job;
-    const capture = async () => {
-      try {
-        const stream = await this.g.navigator.mediaDevices.getUserMedia({
-          audio: {
-            ...this.deviceId ? { deviceId: { exact: this.deviceId } } : {},
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true
-          }
-        });
-        job.stream = stream;
-        if (!valid()) {
-          this._dispose(job);
-          return false;
-        }
-        this.stream = stream;
-        const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
-        job.context = new AudioContext();
-        job.analyser = job.context.createAnalyser();
-        job.analyser.fftSize = 256;
-        job.source = job.context.createMediaStreamSource(stream);
-        job.source.connect(job.analyser);
-        job.samples = new Float32Array(job.analyser.fftSize);
-        this.context = job.context;
-        this.source = job.source;
-        this.analyser = job.analyser;
-        this.samples = job.samples;
-        await job.context.resume();
-        return valid();
-      } catch (error) {
-        if (!valid()) {
-          this._dispose(job);
-          return false;
-        }
-        this.current = null;
-        this._clear();
-        this._dispose(job);
-        throw error;
-      }
-    };
-    return Promise.race([capture(), cancelled2]);
-  }
-  level() {
-    if (!this.analyser || !this.samples) return 0;
-    this.analyser.getFloatTimeDomainData(this.samples);
-    return Math.min(
-      1,
-      Math.sqrt(this.samples.reduce((s, x2) => s + x2 * x2, 0) / this.samples.length) * 5
-    );
-  }
-  _clear() {
-    this.stream = this.context = this.source = this.analyser = this.samples = null;
-  }
-  _dispose(job) {
-    job.signal?.removeEventListener("abort", job.cancel);
-    const stream = job.stream, source = job.source, context = job.context;
-    job.stream = job.source = job.context = job.analyser = job.samples = null;
-    if (stream) {
-      for (const track of stream.getTracks()) {
-        try {
-          track.stop();
-        } catch {
-        }
-      }
-    }
-    try {
-      source?.disconnect();
-    } catch {
-    }
-    try {
-      if (context && context.state !== "closed") Promise.resolve(context.close()).catch(() => {
-      });
-    } catch {
-    }
-  }
-  async release() {
-    return this.stop();
-  }
-  async stop() {
-    ++this.epoch;
-    const job = this.current;
-    this.current = null;
-    this._clear();
-    if (!job) return;
-    job.cancelled(false);
-    this._dispose(job);
-  }
-};
-
 // src/modules/core/ownership.ts
 var VoiceOwnership = class {
   constructor() {
@@ -2869,1864 +5485,7 @@ var VoiceOwnership = class {
 };
 
 // src/modules/recognition/components/RecognitionCapabilityStatus.tsx
-var import_react20 = __toESM(require("react"), 1);
-
-// src/app/client/i18n/catalogs/en.ts
-var en = {
-  "dsh-live-voice.commons.connection.contactingHost": "Contacting DSH host\u2026",
-  "dsh-live-voice.commons.connection.endpoint": "Endpoint URL",
-  "dsh-live-voice.commons.connection.healthEndpoint": "Health URL or path",
-  "dsh-live-voice.commons.connection.reload": "Reload saved settings",
-  "dsh-live-voice.commons.connection.test": "Test connection",
-  "dsh-live-voice.commons.connection.timeout": "Request timeout (ms)",
-  "dsh-live-voice.commons.connection.title": "Connection settings",
-  "dsh-live-voice.commons.connection.unsaved": "Unsaved changes",
-  "dsh-live-voice.commons.controls.title": "Voice controls",
-  "dsh-live-voice.commons.conversation.end": "End voice conversation",
-  "dsh-live-voice.commons.conversation.idle": "Conversation idle",
-  "dsh-live-voice.commons.conversation.start": "Start voice conversation",
-  "dsh-live-voice.commons.delivery.queueBadge": "QUEUE",
-  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
-  "dsh-live-voice.commons.dismiss": "Dismiss",
-  "dsh-live-voice.commons.dismissError": "Dismiss voice error",
-  "dsh-live-voice.commons.engine.failure": "{engine}: {reason}",
-  "dsh-live-voice.commons.input.ignoring": "ignoring",
-  "dsh-live-voice.commons.input.ignoringBadge": "IGNORING",
-  "dsh-live-voice.commons.input.listening": "listening",
-  "dsh-live-voice.commons.input.listeningBadge": "LISTENING",
-  "dsh-live-voice.commons.manual": "manual",
-  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
-  "dsh-live-voice.commons.off": "off",
-  "dsh-live-voice.commons.on": "on",
-  "dsh-live-voice.commons.pluginName": "Live Voice",
-  "dsh-live-voice.commons.queue": "queue",
-  "dsh-live-voice.commons.repository.starLabel": "Star Us on GitHub",
-  "dsh-live-voice.commons.repository.starLink": "Star DSH Live Voice on GitHub",
-  "dsh-live-voice.commons.second": "1 second",
-  "dsh-live-voice.commons.seconds": "{seconds} seconds",
-  "dsh-live-voice.commons.send": "SEND",
-  "dsh-live-voice.commons.status.ready": "Voice ready",
-  "dsh-live-voice.commons.systemDefault": "System default",
-  "dsh-live-voice.commons.toggle.offBadge": "OFF",
-  "dsh-live-voice.commons.unknownLanguage": "unknown language",
-  "dsh-live-voice.commons.update.label": "Update available",
-  "dsh-live-voice.commons.update.link": "Update available: {version}. Open release",
-  "dsh-live-voice.commons.update.version": "Update available: {version}",
-  "dsh-live-voice.commons.version.compatibility": "Compatible with DSH v{version}",
-  "dsh-live-voice.commons.version.compatibilityLink": "Compatible with DSH v{version}. Open release",
-  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
-  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}. Open releases",
-  "dsh-live-voice.commons.version.title": "Version information",
-  "dsh-live-voice.recognition.autoSend.countdownHelp": "Countdown starts after a final recognized phrase. New speech or edits cancel it.",
-  "dsh-live-voice.recognition.browser.autoInstallPack": "Automatically install this browser language pack when needed",
-  "dsh-live-voice.recognition.browser.help": "Uses the browser SpeechRecognition API. This is the default option.",
-  "dsh-live-voice.recognition.browser.label": "Browser SpeechRecognition \u2014 Default option",
-  "dsh-live-voice.recognition.browser.localProcessing": "Process recognition locally on this device",
-  "dsh-live-voice.recognition.browser.microphoneHelp": "Browser SpeechRecognition may use the browser or system default microphone instead of this selection.",
-  "dsh-live-voice.recognition.browser.remoteServiceWarning": "Browser-service recognition is enabled. The browser may send microphone audio to its recognition service.",
-  "dsh-live-voice.recognition.commands.clear": "Clear composer",
-  "dsh-live-voice.recognition.commands.enabled": "Enable exact voice commands",
-  "dsh-live-voice.recognition.commands.mute": "Mute composer input",
-  "dsh-live-voice.recognition.commands.queue": "Put in queue",
-  "dsh-live-voice.recognition.commands.resume": "Resume composer input",
-  "dsh-live-voice.recognition.commands.send": "Send to running agent",
-  "dsh-live-voice.recognition.commands.stopSpeech": "Stop assistant speech",
-  "dsh-live-voice.recognition.commands.title": "Voice commands",
-  "dsh-live-voice.recognition.dictation.cancel": "Cancel dictation",
-  "dsh-live-voice.recognition.engine.label": "Recognition engine",
-  "dsh-live-voice.recognition.headphoneMode.help": "Open microphone keeps listening while responses play. When your speech is detected, playback pauses and resumes only when you choose.",
-  "dsh-live-voice.recognition.headphoneMode.label": "Headphones \u2014 open microphone",
-  "dsh-live-voice.recognition.holdToTalk.enabled": "Hold Control to talk",
-  "dsh-live-voice.recognition.holdToTalk.help": "While a composer is open, hold Control anywhere on the page to capture speech. Release it to flush queued transcription, wait the configured send delay, queue the message, and close voice capture. Press Escape while holding to cancel.",
-  "dsh-live-voice.recognition.language.automatic": "Automatic \u2014 detect language",
-  "dsh-live-voice.recognition.language.label": "Recognition language",
-  "dsh-live-voice.recognition.manualSend.help": "Recognized text stays in the composer until you use the normal DSH Send control.",
-  "dsh-live-voice.recognition.maxUtterance.help": "If speech never pauses, start a new transcription chunk after this duration. Default: 60 seconds.",
-  "dsh-live-voice.recognition.maxUtterance.label": "Maximum continuous speech (seconds)",
-  "dsh-live-voice.recognition.microphone.checking": "Checking microphone availability",
-  "dsh-live-voice.recognition.microphone.device": "Input device",
-  "dsh-live-voice.recognition.microphone.failure": "Microphone: {reason}",
-  "dsh-live-voice.recognition.microphone.ignore": "Ignore composer input",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Microphone input: {state}",
-  "dsh-live-voice.recognition.microphone.label": "Microphone",
-  "dsh-live-voice.recognition.microphone.permissionHelp": "Microphone permission will be requested only when you start dictation or a voice conversation.",
-  "dsh-live-voice.recognition.microphone.resume": "Resume listening",
-  "dsh-live-voice.recognition.microphone.starting": "Starting microphone\u2026",
-  "dsh-live-voice.recognition.microphone.takeControl": "Take microphone",
-  "dsh-live-voice.recognition.minimumWords.enabled": "Ignore short final transcription chunks",
-  "dsh-live-voice.recognition.minimumWords.help": "Final chunks with fewer words are ignored before they reach the composer or automatic delivery.",
-  "dsh-live-voice.recognition.minimumWords.label": "Minimum words per final chunk",
-  "dsh-live-voice.recognition.mode.label": "Listening mode",
-  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 Soon",
-  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx Streaming \u2014 Soon",
-  "dsh-live-voice.recognition.planned.vote": "Coming Soon \u2014 vote on repo issues",
-  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 Soon",
-  "dsh-live-voice.recognition.planned.webGpu": "Browser WebGPU Inference \u2014 Soon",
-  "dsh-live-voice.recognition.presets.custom.description": "Choose your own silence duration.",
-  "dsh-live-voice.recognition.presets.custom.label": "Custom",
-  "dsh-live-voice.recognition.presets.long.description": "Wait through longer thinking pauses.",
-  "dsh-live-voice.recognition.presets.long.label": "Long",
-  "dsh-live-voice.recognition.presets.natural.description": "Allow normal pauses between phrases.",
-  "dsh-live-voice.recognition.presets.natural.label": "Natural",
-  "dsh-live-voice.recognition.presets.short.description": "Send quickly after a short pause.",
-  "dsh-live-voice.recognition.presets.short.label": "Short",
-  "dsh-live-voice.recognition.providerSettings.help": "Provider settings change with the selected recognition engine.",
-  "dsh-live-voice.recognition.qwen.captureHelp": "Audio is segmented into complete WAV utterances and sent through authenticated DSH to the host-local Qwen3 ASR model.",
-  "dsh-live-voice.recognition.qwen.connectionSuccess": "Connection successful. Both Qwen ASR and TTS are loaded. Unsaved edits have not been applied.",
-  "dsh-live-voice.recognition.qwen.endpointHelp": "HTTP API at the configured DSH host URL (default: http://127.0.0.1:8080/inference). Audio uses the authenticated DSH host transcription route.",
-  "dsh-live-voice.recognition.qwen.hostHelp": "Host-wide settings for the Qwen3 ASR + TTS server. Enter any HTTP or HTTPS base URL reachable from the DSH host. The browser accesses it through authenticated DSH routes.",
-  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
-  "dsh-live-voice.recognition.silenceDetection.customHelp": "Enter a whole number from 100 to 10,000 ms. Saved when you leave the field. Short pauses may split speech; recognition adds its own latency.",
-  "dsh-live-voice.recognition.silenceDetection.customLabel": "Custom pause (milliseconds)",
-  "dsh-live-voice.recognition.silenceDetection.duration": "Pause before sending: {milliseconds} ms",
-  "dsh-live-voice.recognition.silenceDetection.help": "Controls how long a pause must last before captured speech is sent for recognition.",
-  "dsh-live-voice.recognition.silenceDetection.label": "Silence detection",
-  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pause before sending",
-  "dsh-live-voice.recognition.silenceDetection.title": "Silence detection settings",
-  "dsh-live-voice.recognition.speakerMode.help": "Gated listening releases the microphone while responses play, preventing speaker audio from being recognized. Use Take microphone to interrupt.",
-  "dsh-live-voice.recognition.speakerMode.label": "Speakers \u2014 gated listening",
-  "dsh-live-voice.recognition.status.answer": "Recognizing answer\u2026",
-  "dsh-live-voice.recognition.status.awaitingAnswer": "Listening for your answer\u2026",
-  "dsh-live-voice.recognition.status.listening": "Listening \u2014 waiting for speech",
-  "dsh-live-voice.recognition.status.processing": "Recognizing speech\u2026",
-  "dsh-live-voice.recognition.status.unavailable": "Speech recognition unavailable",
-  "dsh-live-voice.recognition.voiceCommands.help": "Separate phrases with commas. Matching ignores capitalization, accents, punctuation, and extra spaces. The entire final chunk must match.",
-  "dsh-live-voice.recognition.whisper.captureHelp": "Audio is segmented into complete WAV utterances, sent through authenticated DSH, and processed by loopback whisper.cpp HTTP.",
-  "dsh-live-voice.recognition.whisper.connectionSuccess": "Connection successful. Health endpoint responded; transcription was not tested. Unsaved edits have not been applied.",
-  "dsh-live-voice.recognition.whisper.endpointHelp": "HTTP API at the configured base URL (default: http://127.0.0.1:8080/). Compatible with POST /v1/audio/transcriptions.",
-  "dsh-live-voice.recognition.whisper.healthFailed": "Whisper health check failed.",
-  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 HTTP API",
-  "dsh-live-voice.recognition.whisper.requestFailed": "Whisper settings request failed.",
-  "dsh-live-voice.recognition.whisper.restartRequired": "Whisper settings routes are not loaded. A normal DSH server restart is required to load updated plugin routes; refreshing this page alone is not enough.",
-  "dsh-live-voice.recognition.whisper.save": "Save Whisper settings",
-  "dsh-live-voice.recognition.whisper.saved": "Saved on the DSH host. Active host transcription requests were cancelled.",
-  "dsh-live-voice.recognition.whisper.signInRequired": "Sign in to DSH to manage Whisper settings.",
-  "dsh-live-voice.settings.autoSend.cancel": "Cancel automatic send",
-  "dsh-live-voice.settings.autoSend.countdown": "Sending in {remaining}\u2026",
-  "dsh-live-voice.settings.autoSend.delay": "Send after silence",
-  "dsh-live-voice.settings.close": "Close voice settings",
-  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice uses your answer to choose the correct action for Steer and Queue. This does not change DSH settings; match your current DSH configuration and update this answer if it changes.",
-  "dsh-live-voice.settings.delivery.dshEnterQuestion": "In your DSH, what does Enter do when the agent is busy?",
-  "dsh-live-voice.settings.delivery.dshEnterQueue": "Puts the message in the queue",
-  "dsh-live-voice.settings.delivery.dshEnterSteer": "Sends the message as steer",
-  "dsh-live-voice.settings.delivery.label": "Sending mode",
-  "dsh-live-voice.settings.delivery.manualLabel": "Off \u2014 review and send manually",
-  "dsh-live-voice.settings.delivery.queueLabel": "Queue \u2014 automatically add after silence",
-  "dsh-live-voice.settings.delivery.status": "Automatic delivery: {mode}",
-  "dsh-live-voice.settings.delivery.steerDescription": "send to the running agent",
-  "dsh-live-voice.settings.delivery.steerLabel": "Steer \u2014 automatically send to the running agent",
-  "dsh-live-voice.settings.delivery.toggle": "Automatic delivery mode",
-  "dsh-live-voice.settings.engine.refresh": "Refresh available engines",
-  "dsh-live-voice.settings.filters.title": "Filtering",
-  "dsh-live-voice.settings.general.title": "General",
-  "dsh-live-voice.settings.persistence.loadError": "Could not load Live Voice settings from the server. Reload to try again.",
-  "dsh-live-voice.settings.persistence.saveError": "Could not save Live Voice settings on the server. Please try again.",
-  "dsh-live-voice.settings.tabs.conversation": "Conversation",
-  "dsh-live-voice.settings.tabs.recognition": "Speech recognition",
-  "dsh-live-voice.settings.tabs.speak": "Speech",
-  "dsh-live-voice.settings.title": "Live Voice settings",
-  "dsh-live-voice.settings.whisper.hostHelp": "Host-wide settings. Only unauthenticated loopback HTTP URLs (localhost, 127.0.0.1, [::1]) are allowed. Loopback means the DSH host, not this browser. All health checks and audio requests run through the authenticated backend.",
-  "dsh-live-voice.speak.agentContext.enabled": "Enable agent voice context",
-  "dsh-live-voice.speak.agentContext.enabledHelp": "When enabled, the context below tells the agent that its responses will be spoken aloud.",
-  "dsh-live-voice.speak.agentContext.help": "This English instruction is sent to the agent only during an active voice conversation with automatic assistant speech enabled.",
-  "dsh-live-voice.speak.agentContext.label": "Agent voice context",
-  "dsh-live-voice.speak.agentContext.restore": "Restore default",
-  "dsh-live-voice.speak.autoPlayback.enabled": "Automatically speak new assistant messages",
-  "dsh-live-voice.speak.autoPlayback.help": "During a voice conversation, assistant phrases are announced automatically. Playback waits while you are speaking.",
-  "dsh-live-voice.speak.autoPlayback.label": "Automatic assistant speech",
-  "dsh-live-voice.speak.autoPlayback.remainingOne": "Automatic assistant speech: {state} \u2014 {count} speech segment remaining",
-  "dsh-live-voice.speak.autoPlayback.remainingOther": "Automatic assistant speech: {state} \u2014 {count} speech segments remaining",
-  "dsh-live-voice.speak.autoPlayback.status": "Automatic assistant speech: {state}",
-  "dsh-live-voice.speak.browser.automaticVoice": "Automatic local voice",
-  "dsh-live-voice.speak.browser.label": "Browser speech \u2014 device audio",
-  "dsh-live-voice.speak.browser.name": "Browser speech",
-  "dsh-live-voice.speak.browser.outputHelp": "Browser speech synthesis may ignore the selected output device; this browser API normally follows the system default.",
-  "dsh-live-voice.speak.browser.voice": "Local browser voice",
-  "dsh-live-voice.speak.captions.approximate": "Approximate speech captions",
-  "dsh-live-voice.speak.captions.loading": "Preparing speech audio",
-  "dsh-live-voice.speak.captions.position": "Speech segment {index} of {total}",
-  "dsh-live-voice.speak.captions.progress": "Approximate speech progress",
-  "dsh-live-voice.speak.captions.title": "Speech and live captions",
-  "dsh-live-voice.speak.engine.label": "Speech engine",
-  "dsh-live-voice.speak.engine.playbackHelp": "Qwen and macOS say synthesize on the DSH host; compact AAC/M4A audio plays in this browser. Browser speech synthesizes and plays on this device.",
-  "dsh-live-voice.speak.filters.code.enabled": "Filter Markdown code blocks before speaking",
-  "dsh-live-voice.speak.filters.code.maxLines": "Read code blocks up to this many lines",
-  "dsh-live-voice.speak.filters.code.notice": "Look at the code in our conversation",
-  "dsh-live-voice.speak.filters.code.replacement": "Replacement phrase for larger code blocks",
-  "dsh-live-voice.speak.interruption.disabledHelp": "Sending another message does not stop the assistant audio you are already hearing.",
-  "dsh-live-voice.speak.interruption.enabled": "Stop assistant speech when I send a message",
-  "dsh-live-voice.speak.interruption.enabledHelp": "Sending or steering a new user message stops current or paused assistant speech.",
-  "dsh-live-voice.speak.macos.label": "macOS say \u2014 host audio",
-  "dsh-live-voice.speak.macos.name": "macOS say",
-  "dsh-live-voice.speak.macos.outputHelp": "macOS say uses the output selected on the DSH host.",
-  "dsh-live-voice.speak.output.checking": "Checking speech output\u2026",
-  "dsh-live-voice.speak.output.device": "Output device",
-  "dsh-live-voice.speak.output.fallbackName": "Audio output",
-  "dsh-live-voice.speak.output.stopTest": "Stop speech test",
-  "dsh-live-voice.speak.output.test": "Test selected speech output",
-  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice. The selected speech output is working.",
-  "dsh-live-voice.speak.output.testing": "Testing speech\u2026",
-  "dsh-live-voice.speak.playback.message": "Speak message",
-  "dsh-live-voice.speak.playback.next": "Skip to next speech segment",
-  "dsh-live-voice.speak.playback.pause": "Pause speech",
-  "dsh-live-voice.speak.playback.previous": "Previous speech segment",
-  "dsh-live-voice.speak.playback.resume": "Resume speech",
-  "dsh-live-voice.speak.playback.stop": "Stop speaking",
-  "dsh-live-voice.speak.playback.stopAll": "Stop all speech",
-  "dsh-live-voice.speak.qwen.connection": "Qwen server connection",
-  "dsh-live-voice.speak.qwen.endpoint": "Qwen API base URL",
-  "dsh-live-voice.speak.qwen.healthFailed": "Qwen health check failed.",
-  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 local MLX server",
-  "dsh-live-voice.speak.qwen.name": "Qwen3 local",
-  "dsh-live-voice.speak.qwen.requestFailed": "Qwen settings request failed.",
-  "dsh-live-voice.speak.qwen.restartRequired": "Qwen settings routes are not loaded. A normal DSH server restart is required to load updated plugin routes; refreshing this page alone is not enough.",
-  "dsh-live-voice.speak.qwen.save": "Save Qwen settings",
-  "dsh-live-voice.speak.qwen.saved": "Saved on the DSH host. Active Qwen requests were cancelled.",
-  "dsh-live-voice.speak.qwen.signInRequired": "Sign in to DSH to manage Qwen settings.",
-  "dsh-live-voice.speak.qwen.test": "Test Qwen server",
-  "dsh-live-voice.speak.qwen.voice": "Qwen voice",
-  "dsh-live-voice.speak.qwen.voiceHelp": "Aiden is used by default. These preset voices are not native Brazilian Portuguese voices.",
-  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 male, American English",
-  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 male, Beijing Chinese",
-  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 male, Sichuan Chinese",
-  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 female, Japanese",
-  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 male, English",
-  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 female, Chinese",
-  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 female, Korean",
-  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 male, Chinese",
-  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 female, Chinese",
-  "dsh-live-voice.speak.rate.help": "Relative speed: 1 is normal.",
-  "dsh-live-voice.speak.rate.label": "Speech rate",
-  "dsh-live-voice.speak.responseDelay.help": "After you stop speaking, automatic assistant playback waits for this much continuous silence. Speaking again restarts the wait.",
-  "dsh-live-voice.speak.responseDelay.label": "Assistant response delay",
-  "dsh-live-voice.speak.responseDelay.none": "No delay",
-  "dsh-live-voice.speak.segmentGap.help": "Wait this many milliseconds between consecutive spoken segments. 400 ms is the default.",
-  "dsh-live-voice.speak.segmentGap.label": "Pause between speech segments",
-  "dsh-live-voice.speak.status.paused": "Speech paused",
-  "dsh-live-voice.speak.status.playing": "Speaking"
-};
-var en_default = Object.freeze(en);
-
-// src/app/client/i18n/catalogs/es.ts
-var es = {
-  "dsh-live-voice.commons.connection.contactingHost": "Conectando con el host de DSH\u2026",
-  "dsh-live-voice.commons.connection.endpoint": "URL del punto de acceso",
-  "dsh-live-voice.commons.connection.healthEndpoint": "URL o ruta de comprobaci\xF3n de estado",
-  "dsh-live-voice.commons.connection.reload": "Volver a cargar la configuraci\xF3n guardada",
-  "dsh-live-voice.commons.connection.test": "Probar conexi\xF3n",
-  "dsh-live-voice.commons.connection.timeout": "Tiempo de espera de las solicitudes (ms)",
-  "dsh-live-voice.commons.connection.title": "Configuraci\xF3n de conexi\xF3n",
-  "dsh-live-voice.commons.connection.unsaved": "Cambios sin guardar",
-  "dsh-live-voice.commons.controls.title": "Controles de voz",
-  "dsh-live-voice.commons.conversation.end": "Terminar conversaci\xF3n por voz",
-  "dsh-live-voice.commons.conversation.idle": "Conversaci\xF3n inactiva",
-  "dsh-live-voice.commons.conversation.start": "Iniciar conversaci\xF3n por voz",
-  "dsh-live-voice.commons.delivery.queueBadge": "COLA",
-  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
-  "dsh-live-voice.commons.dismiss": "Descartar",
-  "dsh-live-voice.commons.dismissError": "Descartar error de voz",
-  "dsh-live-voice.commons.engine.failure": "{engine}: {reason}",
-  "dsh-live-voice.commons.input.ignoring": "ignorando",
-  "dsh-live-voice.commons.input.ignoringBadge": "IGNORANDO",
-  "dsh-live-voice.commons.input.listening": "escuchando",
-  "dsh-live-voice.commons.input.listeningBadge": "ESCUCHANDO",
-  "dsh-live-voice.commons.manual": "manual",
-  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
-  "dsh-live-voice.commons.off": "desactivado",
-  "dsh-live-voice.commons.on": "activado",
-  "dsh-live-voice.commons.pluginName": "Live Voice",
-  "dsh-live-voice.commons.queue": "cola",
-  "dsh-live-voice.commons.repository.starLabel": "Danos una estrella en GitHub",
-  "dsh-live-voice.commons.repository.starLink": "Dar una estrella a DSH Live Voice en GitHub",
-  "dsh-live-voice.commons.second": "1 segundo",
-  "dsh-live-voice.commons.seconds": "{seconds} segundos",
-  "dsh-live-voice.commons.send": "ENVIAR",
-  "dsh-live-voice.commons.status.ready": "Funciones de voz listas",
-  "dsh-live-voice.commons.systemDefault": "Predeterminado del sistema",
-  "dsh-live-voice.commons.toggle.offBadge": "DESACTIVADO",
-  "dsh-live-voice.commons.unknownLanguage": "idioma desconocido",
-  "dsh-live-voice.commons.update.label": "Actualizaci\xF3n disponible",
-  "dsh-live-voice.commons.update.link": "Actualizaci\xF3n disponible: {version}. Abrir la p\xE1gina de esta versi\xF3n",
-  "dsh-live-voice.commons.update.version": "Actualizaci\xF3n disponible: {version}",
-  "dsh-live-voice.commons.version.compatibility": "Compatible con DSH v{version}",
-  "dsh-live-voice.commons.version.compatibilityLink": "Compatible con DSH v{version}. Abrir la p\xE1gina de esta versi\xF3n",
-  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
-  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}. Abrir la lista de versiones",
-  "dsh-live-voice.commons.version.title": "Informaci\xF3n de versi\xF3n",
-  "dsh-live-voice.recognition.autoSend.countdownHelp": "La cuenta atr\xE1s comienza tras el reconocimiento definitivo de una frase. Hablar de nuevo o editar el texto la cancela.",
-  "dsh-live-voice.recognition.browser.autoInstallPack": "Instalar autom\xE1ticamente este paquete de idioma del navegador cuando sea necesario",
-  "dsh-live-voice.recognition.browser.help": "Utiliza la API SpeechRecognition del navegador. Esta es la opci\xF3n predeterminada.",
-  "dsh-live-voice.recognition.browser.label": "SpeechRecognition del navegador \u2014 Opci\xF3n predeterminada",
-  "dsh-live-voice.recognition.browser.localProcessing": "Procesar el reconocimiento localmente en este dispositivo",
-  "dsh-live-voice.recognition.browser.microphoneHelp": "SpeechRecognition puede utilizar el micr\xF3fono predeterminado del navegador o del sistema en lugar del seleccionado aqu\xED.",
-  "dsh-live-voice.recognition.browser.remoteServiceWarning": "El reconocimiento mediante el servicio del navegador est\xE1 activado. El navegador puede enviar el audio del micr\xF3fono a su servicio de reconocimiento.",
-  "dsh-live-voice.recognition.commands.clear": "Vaciar el cuadro de mensaje",
-  "dsh-live-voice.recognition.commands.enabled": "Activar comandos de voz con coincidencia exacta",
-  "dsh-live-voice.recognition.commands.mute": "Suspender la entrada de voz en el cuadro de mensaje",
-  "dsh-live-voice.recognition.commands.queue": "A\xF1adir a la cola",
-  "dsh-live-voice.recognition.commands.resume": "Reanudar la entrada de voz en el cuadro de mensaje",
-  "dsh-live-voice.recognition.commands.send": "Enviar al agente en ejecuci\xF3n",
-  "dsh-live-voice.recognition.commands.stopSpeech": "Detener la lectura en voz alta del asistente",
-  "dsh-live-voice.recognition.commands.title": "Comandos de voz",
-  "dsh-live-voice.recognition.dictation.cancel": "Cancelar dictado",
-  "dsh-live-voice.recognition.engine.label": "Motor de reconocimiento",
-  "dsh-live-voice.recognition.headphoneMode.help": "El micr\xF3fono abierto sigue escuchando mientras se reproducen las respuestas. Al detectar tu voz, la reproducci\xF3n se pausa y solo se reanuda cuando t\xFA lo decides.",
-  "dsh-live-voice.recognition.headphoneMode.label": "Auriculares \u2014 micr\xF3fono abierto",
-  "dsh-live-voice.recognition.holdToTalk.enabled": "Mantener Control pulsado para hablar",
-  "dsh-live-voice.recognition.holdToTalk.help": "Con un cuadro de mensaje abierto, mant\xE9n Control pulsado en cualquier parte de la p\xE1gina para capturar tu voz. Al soltarlo, se procesa la transcripci\xF3n pendiente, se espera el retraso de env\xEDo configurado, se a\xF1ade el mensaje a la cola y se cierra la captura de voz. Pulsa Escape mientras mantienes Control para cancelar.",
-  "dsh-live-voice.recognition.language.automatic": "Autom\xE1tico \u2014 detectar idioma",
-  "dsh-live-voice.recognition.language.label": "Idioma de reconocimiento",
-  "dsh-live-voice.recognition.manualSend.help": "El texto reconocido permanece en el cuadro de mensaje hasta que utilices el bot\xF3n de env\xEDo habitual de DSH.",
-  "dsh-live-voice.recognition.maxUtterance.help": "Si hablas sin hacer pausas, se inicia un nuevo fragmento de transcripci\xF3n tras este intervalo. Valor predeterminado: 60 segundos.",
-  "dsh-live-voice.recognition.maxUtterance.label": "Duraci\xF3n m\xE1xima del habla continua (segundos)",
-  "dsh-live-voice.recognition.microphone.checking": "Comprobando la disponibilidad del micr\xF3fono",
-  "dsh-live-voice.recognition.microphone.device": "Dispositivo de entrada",
-  "dsh-live-voice.recognition.microphone.failure": "Micr\xF3fono: {reason}",
-  "dsh-live-voice.recognition.microphone.ignore": "Ignorar la entrada de voz en el cuadro de mensaje",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada del micr\xF3fono: {state}",
-  "dsh-live-voice.recognition.microphone.label": "Micr\xF3fono",
-  "dsh-live-voice.recognition.microphone.permissionHelp": "Solo se solicitar\xE1 permiso para usar el micr\xF3fono cuando inicies un dictado o una conversaci\xF3n por voz.",
-  "dsh-live-voice.recognition.microphone.resume": "Reanudar escucha",
-  "dsh-live-voice.recognition.microphone.starting": "Iniciando micr\xF3fono\u2026",
-  "dsh-live-voice.recognition.microphone.takeControl": "Tomar el control del micr\xF3fono",
-  "dsh-live-voice.recognition.minimumWords.enabled": "Ignorar los fragmentos definitivos de transcripci\xF3n demasiado cortos",
-  "dsh-live-voice.recognition.minimumWords.help": "Los fragmentos definitivos con menos palabras se descartan antes de llegar al cuadro de mensaje o al env\xEDo autom\xE1tico.",
-  "dsh-live-voice.recognition.minimumWords.label": "M\xEDnimo de palabras por fragmento definitivo",
-  "dsh-live-voice.recognition.mode.label": "Modo de escucha",
-  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 Pr\xF3ximamente",
-  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx en continuo \u2014 Pr\xF3ximamente",
-  "dsh-live-voice.recognition.planned.vote": "Pr\xF3ximamente \u2014 vota en las incidencias del repositorio",
-  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 Pr\xF3ximamente",
-  "dsh-live-voice.recognition.planned.webGpu": "Inferencia WebGPU en el navegador \u2014 Pr\xF3ximamente",
-  "dsh-live-voice.recognition.presets.custom.description": "Elige la duraci\xF3n del silencio.",
-  "dsh-live-voice.recognition.presets.custom.label": "Personalizada",
-  "dsh-live-voice.recognition.presets.long.description": "Espera durante pausas de reflexi\xF3n m\xE1s largas.",
-  "dsh-live-voice.recognition.presets.long.label": "Larga",
-  "dsh-live-voice.recognition.presets.natural.description": "Permite pausas normales entre frases.",
-  "dsh-live-voice.recognition.presets.natural.label": "Natural",
-  "dsh-live-voice.recognition.presets.short.description": "Env\xEDa r\xE1pidamente despu\xE9s de una pausa corta.",
-  "dsh-live-voice.recognition.presets.short.label": "Corta",
-  "dsh-live-voice.recognition.providerSettings.help": "La configuraci\xF3n del proveedor cambia seg\xFAn el motor de reconocimiento seleccionado.",
-  "dsh-live-voice.recognition.qwen.captureHelp": "El audio se divide en enunciados completos en formato WAV y se env\xEDa a trav\xE9s de DSH con autenticaci\xF3n al modelo Qwen3 ASR ejecutado localmente en el host.",
-  "dsh-live-voice.recognition.qwen.connectionSuccess": "Conexi\xF3n correcta. Qwen ASR y TTS est\xE1n cargados. Los cambios sin guardar no se han aplicado.",
-  "dsh-live-voice.recognition.qwen.endpointHelp": "API HTTP en la URL configurada en el host de DSH (predeterminada: http://127.0.0.1:8080/inference). El audio utiliza la ruta de transcripci\xF3n autenticada del host de DSH.",
-  "dsh-live-voice.recognition.qwen.hostHelp": "Configuraci\xF3n para todo el host del servidor Qwen3 ASR + TTS. Introduce una URL base HTTP o HTTPS accesible desde el host de DSH. El navegador accede a ella mediante las rutas autenticadas de DSH.",
-  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
-  "dsh-live-voice.recognition.silenceDetection.customHelp": "Introduce un n\xFAmero entero de 100 a 10.000 ms. Se guarda al salir del campo. Las pausas cortas pueden dividir el habla; el reconocimiento a\xF1ade su propia latencia.",
-  "dsh-live-voice.recognition.silenceDetection.customLabel": "Pausa personalizada (milisegundos)",
-  "dsh-live-voice.recognition.silenceDetection.duration": "Pausa antes de enviar: {milliseconds} ms",
-  "dsh-live-voice.recognition.silenceDetection.help": "Determina cu\xE1nto debe durar una pausa antes de enviar la voz capturada para su reconocimiento.",
-  "dsh-live-voice.recognition.silenceDetection.label": "Detecci\xF3n de silencio",
-  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pausa antes de enviar",
-  "dsh-live-voice.recognition.silenceDetection.title": "Configuraci\xF3n de detecci\xF3n de silencio",
-  "dsh-live-voice.recognition.speakerMode.help": "La escucha controlada libera el micr\xF3fono mientras se reproducen las respuestas para evitar que se reconozca el audio de los altavoces. Usa \xABTomar el control del micr\xF3fono\xBB para interrumpir la reproducci\xF3n.",
-  "dsh-live-voice.recognition.speakerMode.label": "Altavoces \u2014 escucha controlada",
-  "dsh-live-voice.recognition.status.answer": "Reconociendo respuesta\u2026",
-  "dsh-live-voice.recognition.status.awaitingAnswer": "Escuchando tu respuesta\u2026",
-  "dsh-live-voice.recognition.status.listening": "Escuchando \u2014 esperando voz",
-  "dsh-live-voice.recognition.status.processing": "Reconociendo voz\u2026",
-  "dsh-live-voice.recognition.status.unavailable": "Reconocimiento de voz no disponible",
-  "dsh-live-voice.recognition.voiceCommands.help": "Separa las frases con comas. La comparaci\xF3n ignora may\xFAsculas, acentos, puntuaci\xF3n y espacios adicionales. Debe coincidir todo el fragmento definitivo.",
-  "dsh-live-voice.recognition.whisper.captureHelp": "El audio se divide en enunciados completos en formato WAV, se env\xEDa a trav\xE9s de DSH con autenticaci\xF3n y se procesa mediante el servidor HTTP de whisper.cpp en la interfaz de bucle local.",
-  "dsh-live-voice.recognition.whisper.connectionSuccess": "Conexi\xF3n correcta. El punto de acceso de comprobaci\xF3n de estado ha respondido; no se ha probado la transcripci\xF3n. Los cambios sin guardar no se han aplicado.",
-  "dsh-live-voice.recognition.whisper.endpointHelp": "API HTTP en la URL base configurada (predeterminada: http://127.0.0.1:8080/). Compatible con POST /v1/audio/transcriptions.",
-  "dsh-live-voice.recognition.whisper.healthFailed": "Ha fallado la comprobaci\xF3n de estado de Whisper.",
-  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 API HTTP",
-  "dsh-live-voice.recognition.whisper.requestFailed": "Ha fallado la solicitud de configuraci\xF3n de Whisper.",
-  "dsh-live-voice.recognition.whisper.restartRequired": "Las rutas de configuraci\xF3n de Whisper no est\xE1n cargadas. Es necesario reiniciar normalmente el servidor DSH para cargar las rutas actualizadas del complemento; no basta con actualizar esta p\xE1gina.",
-  "dsh-live-voice.recognition.whisper.save": "Guardar la configuraci\xF3n de Whisper",
-  "dsh-live-voice.recognition.whisper.saved": "Guardado en el host de DSH. Se han cancelado las solicitudes de transcripci\xF3n activas del host.",
-  "dsh-live-voice.recognition.whisper.signInRequired": "Inicia sesi\xF3n en DSH para gestionar la configuraci\xF3n de Whisper.",
-  "dsh-live-voice.settings.autoSend.cancel": "Cancelar env\xEDo autom\xE1tico",
-  "dsh-live-voice.settings.autoSend.countdown": "Enviando en {remaining}\u2026",
-  "dsh-live-voice.settings.autoSend.delay": "Enviar despu\xE9s del silencio",
-  "dsh-live-voice.settings.close": "Cerrar configuraci\xF3n de voz",
-  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice usa tu respuesta para elegir la acci\xF3n correcta para Redirigir y Cola. Esto no cambia la configuraci\xF3n de DSH; indica el comportamiento que ya usas y actualiza esta respuesta si cambia.",
-  "dsh-live-voice.settings.delivery.dshEnterQuestion": "En tu DSH, \xBFqu\xE9 hace Enter cuando el agente est\xE1 ocupado?",
-  "dsh-live-voice.settings.delivery.dshEnterQueue": "A\xF1ade el mensaje a la cola",
-  "dsh-live-voice.settings.delivery.dshEnterSteer": "Env\xEDa el mensaje para redirigir al agente",
-  "dsh-live-voice.settings.delivery.label": "Modo de env\xEDo",
-  "dsh-live-voice.settings.delivery.manualLabel": "Desactivado \u2014 revisar y enviar manualmente",
-  "dsh-live-voice.settings.delivery.queueLabel": "Cola \u2014 a\xF1adir autom\xE1ticamente tras un silencio",
-  "dsh-live-voice.settings.delivery.status": "Env\xEDo autom\xE1tico: {mode}",
-  "dsh-live-voice.settings.delivery.steerDescription": "enviar al agente en ejecuci\xF3n",
-  "dsh-live-voice.settings.delivery.steerLabel": "Redirigir \u2014 enviar autom\xE1ticamente al agente en ejecuci\xF3n",
-  "dsh-live-voice.settings.delivery.toggle": "Modo de env\xEDo autom\xE1tico",
-  "dsh-live-voice.settings.engine.refresh": "Actualizar los motores disponibles",
-  "dsh-live-voice.settings.filters.title": "Filtrado",
-  "dsh-live-voice.settings.general.title": "General",
-  "dsh-live-voice.settings.persistence.loadError": "No se pudieron cargar los ajustes de Live Voice del servidor. Recarga para volver a intentarlo.",
-  "dsh-live-voice.settings.persistence.saveError": "No se pudieron guardar los ajustes de Live Voice en el servidor. Int\xE9ntalo de nuevo.",
-  "dsh-live-voice.settings.tabs.conversation": "Conversaci\xF3n",
-  "dsh-live-voice.settings.tabs.recognition": "Reconocimiento de voz",
-  "dsh-live-voice.settings.tabs.speak": "S\xEDntesis de voz",
-  "dsh-live-voice.settings.title": "Configuraci\xF3n de Live Voice",
-  "dsh-live-voice.settings.whisper.hostHelp": "Configuraci\xF3n para todo el host. Solo se permiten URL HTTP sin autenticaci\xF3n en la interfaz de bucle local (localhost, 127.0.0.1, [::1]). El bucle local se refiere al host de DSH, no a este navegador. Todas las comprobaciones de estado y solicitudes de audio pasan por el servidor con autenticaci\xF3n.",
-  "dsh-live-voice.speak.agentContext.enabled": "Activar el contexto de voz del agente",
-  "dsh-live-voice.speak.agentContext.enabledHelp": "Cuando est\xE1 activado, el contexto siguiente informa al agente que sus respuestas se leer\xE1n en voz alta.",
-  "dsh-live-voice.speak.agentContext.help": "Esta instrucci\xF3n en ingl\xE9s se env\xEDa al agente solo durante una conversaci\xF3n de voz activa con habla autom\xE1tica del asistente activada.",
-  "dsh-live-voice.speak.agentContext.label": "Contexto de voz del agente",
-  "dsh-live-voice.speak.agentContext.restore": "Restaurar predeterminado",
-  "dsh-live-voice.speak.autoPlayback.enabled": "Leer autom\xE1ticamente los nuevos mensajes del asistente en voz alta",
-  "dsh-live-voice.speak.autoPlayback.help": "Durante una conversaci\xF3n por voz, las frases del asistente se leen autom\xE1ticamente. La reproducci\xF3n espera mientras hablas.",
-  "dsh-live-voice.speak.autoPlayback.label": "Lectura autom\xE1tica del asistente",
-  "dsh-live-voice.speak.autoPlayback.remainingOne": "Lectura autom\xE1tica del asistente: {state} \u2014 queda {count} segmento de voz",
-  "dsh-live-voice.speak.autoPlayback.remainingOther": "Lectura autom\xE1tica del asistente: {state} \u2014 quedan {count} segmentos de voz",
-  "dsh-live-voice.speak.autoPlayback.status": "Lectura autom\xE1tica del asistente: {state}",
-  "dsh-live-voice.speak.browser.automaticVoice": "Voz local autom\xE1tica",
-  "dsh-live-voice.speak.browser.label": "S\xEDntesis de voz del navegador \u2014 audio en este dispositivo",
-  "dsh-live-voice.speak.browser.name": "S\xEDntesis de voz del navegador",
-  "dsh-live-voice.speak.browser.outputHelp": "La s\xEDntesis de voz del navegador puede ignorar el dispositivo de salida seleccionado; esta API del navegador normalmente utiliza el predeterminado del sistema.",
-  "dsh-live-voice.speak.browser.voice": "Voz local del navegador",
-  "dsh-live-voice.speak.captions.approximate": "Subt\xEDtulos de voz aproximados",
-  "dsh-live-voice.speak.captions.loading": "Preparando audio de voz",
-  "dsh-live-voice.speak.captions.position": "Fragmento de voz {index} de {total}",
-  "dsh-live-voice.speak.captions.progress": "Progreso aproximado de voz",
-  "dsh-live-voice.speak.captions.title": "Voz y subt\xEDtulos en vivo",
-  "dsh-live-voice.speak.engine.label": "Motor de s\xEDntesis de voz",
-  "dsh-live-voice.speak.engine.playbackHelp": "Qwen y macOS say sintetizan en el host de DSH; el audio AAC/M4A compacto se reproduce en este navegador. La voz del navegador se sintetiza y reproduce en este dispositivo.",
-  "dsh-live-voice.speak.filters.code.enabled": "Filtrar los bloques de c\xF3digo Markdown antes de leer en voz alta",
-  "dsh-live-voice.speak.filters.code.maxLines": "M\xE1ximo de l\xEDneas de los bloques de c\xF3digo que se leer\xE1n",
-  "dsh-live-voice.speak.filters.code.notice": "Mira el c\xF3digo en nuestra conversaci\xF3n",
-  "dsh-live-voice.speak.filters.code.replacement": "Frase de reemplazo para los bloques de c\xF3digo m\xE1s largos",
-  "dsh-live-voice.speak.interruption.disabledHelp": "Enviar otro mensaje no detiene el audio del asistente que ya est\xE1s escuchando.",
-  "dsh-live-voice.speak.interruption.enabled": "Detener la lectura en voz alta del asistente cuando env\xEDe un mensaje",
-  "dsh-live-voice.speak.interruption.enabledHelp": "Enviar un nuevo mensaje de usuario, incluso al agente en ejecuci\xF3n, detiene la lectura en voz alta del asistente, tanto si est\xE1 reproduci\xE9ndose como si est\xE1 en pausa.",
-  "dsh-live-voice.speak.macos.label": "macOS say \u2014 audio en el host",
-  "dsh-live-voice.speak.macos.name": "macOS say",
-  "dsh-live-voice.speak.macos.outputHelp": "macOS say utiliza la salida seleccionada en el host de DSH.",
-  "dsh-live-voice.speak.output.checking": "Comprobando la salida de voz\u2026",
-  "dsh-live-voice.speak.output.device": "Dispositivo de salida",
-  "dsh-live-voice.speak.output.fallbackName": "Salida de audio",
-  "dsh-live-voice.speak.output.stopTest": "Detener la prueba de voz",
-  "dsh-live-voice.speak.output.test": "Probar la salida de voz seleccionada",
-  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice. La salida de voz seleccionada funciona.",
-  "dsh-live-voice.speak.output.testing": "Probando la voz\u2026",
-  "dsh-live-voice.speak.playback.message": "Leer el mensaje en voz alta",
-  "dsh-live-voice.speak.playback.next": "Saltar al siguiente segmento de voz",
-  "dsh-live-voice.speak.playback.pause": "Pausar la lectura en voz alta",
-  "dsh-live-voice.speak.playback.previous": "Fragmento de voz anterior",
-  "dsh-live-voice.speak.playback.resume": "Reanudar la lectura en voz alta",
-  "dsh-live-voice.speak.playback.stop": "Detener la lectura en voz alta",
-  "dsh-live-voice.speak.playback.stopAll": "Detener toda la lectura en voz alta",
-  "dsh-live-voice.speak.qwen.connection": "Conexi\xF3n al servidor Qwen",
-  "dsh-live-voice.speak.qwen.endpoint": "URL base de la API de Qwen",
-  "dsh-live-voice.speak.qwen.healthFailed": "Ha fallado la comprobaci\xF3n de estado de Qwen.",
-  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 servidor MLX local",
-  "dsh-live-voice.speak.qwen.name": "Qwen3 local",
-  "dsh-live-voice.speak.qwen.requestFailed": "Ha fallado la solicitud de configuraci\xF3n de Qwen.",
-  "dsh-live-voice.speak.qwen.restartRequired": "Las rutas de configuraci\xF3n de Qwen no est\xE1n cargadas. Es necesario reiniciar normalmente el servidor DSH para cargar las rutas actualizadas del complemento; no basta con actualizar esta p\xE1gina.",
-  "dsh-live-voice.speak.qwen.save": "Guardar la configuraci\xF3n de Qwen",
-  "dsh-live-voice.speak.qwen.saved": "Guardado en el host de DSH. Se han cancelado las solicitudes activas de Qwen.",
-  "dsh-live-voice.speak.qwen.signInRequired": "Inicia sesi\xF3n en DSH para gestionar la configuraci\xF3n de Qwen.",
-  "dsh-live-voice.speak.qwen.test": "Probar el servidor Qwen",
-  "dsh-live-voice.speak.qwen.voice": "Voz de Qwen",
-  "dsh-live-voice.speak.qwen.voiceHelp": "Aiden se utiliza de forma predeterminada. Estas voces predefinidas no son voces nativas de portugu\xE9s brasile\xF1o.",
-  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 masculino, ingl\xE9s estadounidense",
-  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 masculino, chino de Pek\xEDn",
-  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 masculino, chino de Sichuan",
-  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 femenino, japon\xE9s",
-  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 masculino, ingl\xE9s",
-  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 femenino, chino",
-  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 femenino, coreano",
-  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 masculino, chino",
-  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 femenino, chino",
-  "dsh-live-voice.speak.rate.help": "Velocidad relativa: 1 es la velocidad normal.",
-  "dsh-live-voice.speak.rate.label": "Velocidad de habla",
-  "dsh-live-voice.speak.responseDelay.help": "Cuando dejas de hablar, la reproducci\xF3n autom\xE1tica del asistente espera este intervalo de silencio continuo. Si vuelves a hablar, la espera se reinicia.",
-  "dsh-live-voice.speak.responseDelay.label": "Demora de respuesta del asistente",
-  "dsh-live-voice.speak.responseDelay.none": "Sin retraso",
-  "dsh-live-voice.speak.segmentGap.help": "Espera esta cantidad de milisegundos entre segmentos hablados consecutivos. El valor predeterminado es 400 ms.",
-  "dsh-live-voice.speak.segmentGap.label": "Pausa entre segmentos de voz",
-  "dsh-live-voice.speak.status.paused": "Lectura en pausa",
-  "dsh-live-voice.speak.status.playing": "Hablando"
-};
-var es_default = Object.freeze(es);
-
-// src/app/client/i18n/catalogs/fr.ts
-var fr = {
-  "dsh-live-voice.commons.connection.contactingHost": "Connexion \xE0 l\u2019h\xF4te DSH\u2026",
-  "dsh-live-voice.commons.connection.endpoint": "URL du point d\u2019acc\xE8s",
-  "dsh-live-voice.commons.connection.healthEndpoint": "URL ou chemin de v\xE9rification de l\u2019\xE9tat",
-  "dsh-live-voice.commons.connection.reload": "Recharger les param\xE8tres enregistr\xE9s",
-  "dsh-live-voice.commons.connection.test": "Tester la connexion",
-  "dsh-live-voice.commons.connection.timeout": "D\xE9lai d\u2019expiration des requ\xEAtes (ms)",
-  "dsh-live-voice.commons.connection.title": "Param\xE8tres de connexion",
-  "dsh-live-voice.commons.connection.unsaved": "Modifications non enregistr\xE9es",
-  "dsh-live-voice.commons.controls.title": "Contr\xF4les vocaux",
-  "dsh-live-voice.commons.conversation.end": "Terminer la conversation vocale",
-  "dsh-live-voice.commons.conversation.idle": "Conversation inactive",
-  "dsh-live-voice.commons.conversation.start": "D\xE9marrer une conversation vocale",
-  "dsh-live-voice.commons.delivery.queueBadge": "FILE",
-  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
-  "dsh-live-voice.commons.dismiss": "Fermer",
-  "dsh-live-voice.commons.dismissError": "Masquer l\u2019erreur vocale",
-  "dsh-live-voice.commons.engine.failure": "{engine} : {reason}",
-  "dsh-live-voice.commons.input.ignoring": "entr\xE9e ignor\xE9e",
-  "dsh-live-voice.commons.input.ignoringBadge": "ENTR\xC9E IGNOR\xC9E",
-  "dsh-live-voice.commons.input.listening": "\xE0 l\u2019\xE9coute",
-  "dsh-live-voice.commons.input.listeningBadge": "\xC0 L\u2019\xC9COUTE",
-  "dsh-live-voice.commons.manual": "manuel",
-  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
-  "dsh-live-voice.commons.off": "d\xE9sactiv\xE9",
-  "dsh-live-voice.commons.on": "activ\xE9",
-  "dsh-live-voice.commons.pluginName": "Live Voice",
-  "dsh-live-voice.commons.queue": "file d\u2019attente",
-  "dsh-live-voice.commons.repository.starLabel": "Soutenez-nous avec une \xE9toile sur GitHub",
-  "dsh-live-voice.commons.repository.starLink": "Attribuer une \xE9toile \xE0 DSH Live Voice sur GitHub",
-  "dsh-live-voice.commons.second": "1 seconde",
-  "dsh-live-voice.commons.seconds": "{seconds} secondes",
-  "dsh-live-voice.commons.send": "ENVOYER",
-  "dsh-live-voice.commons.status.ready": "Fonctions vocales pr\xEAtes",
-  "dsh-live-voice.commons.systemDefault": "Valeur par d\xE9faut du syst\xE8me",
-  "dsh-live-voice.commons.toggle.offBadge": "D\xC9SACTIV\xC9",
-  "dsh-live-voice.commons.unknownLanguage": "langue inconnue",
-  "dsh-live-voice.commons.update.label": "Mise \xE0 jour disponible",
-  "dsh-live-voice.commons.update.link": "Mise \xE0 jour disponible : {version}. Ouvrir la page de cette version",
-  "dsh-live-voice.commons.update.version": "Mise \xE0 jour disponible : {version}",
-  "dsh-live-voice.commons.version.compatibility": "Compatible avec DSH v{version}",
-  "dsh-live-voice.commons.version.compatibilityLink": "Compatible avec DSH v{version}. Ouvrir la page de cette version",
-  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
-  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}. Ouvrir la liste des versions",
-  "dsh-live-voice.commons.version.title": "Informations de version",
-  "dsh-live-voice.recognition.autoSend.countdownHelp": "Le compte \xE0 rebours d\xE9marre apr\xE8s la reconnaissance d\xE9finitive d\u2019une phrase. Toute nouvelle parole ou modification l\u2019annule.",
-  "dsh-live-voice.recognition.browser.autoInstallPack": "Installer automatiquement ce pack linguistique du navigateur si n\xE9cessaire",
-  "dsh-live-voice.recognition.browser.help": "Utilise l\u2019API SpeechRecognition du navigateur. Il s\u2019agit de l\u2019option par d\xE9faut.",
-  "dsh-live-voice.recognition.browser.label": "SpeechRecognition du navigateur \u2014 Option par d\xE9faut",
-  "dsh-live-voice.recognition.browser.localProcessing": "Effectuer la reconnaissance localement sur cet appareil",
-  "dsh-live-voice.recognition.browser.microphoneHelp": "SpeechRecognition peut utiliser le microphone par d\xE9faut du navigateur ou du syst\xE8me plut\xF4t que celui s\xE9lectionn\xE9 ici.",
-  "dsh-live-voice.recognition.browser.remoteServiceWarning": "La reconnaissance via le service du navigateur est activ\xE9e. Le navigateur peut envoyer le son du microphone \xE0 son service de reconnaissance.",
-  "dsh-live-voice.recognition.commands.clear": "Vider la zone de r\xE9daction",
-  "dsh-live-voice.recognition.commands.enabled": "Activer les commandes vocales par correspondance exacte",
-  "dsh-live-voice.recognition.commands.mute": "Suspendre la saisie vocale dans la zone de r\xE9daction",
-  "dsh-live-voice.recognition.commands.queue": "Mettre en file d\u2019attente",
-  "dsh-live-voice.recognition.commands.resume": "Reprendre la saisie vocale dans la zone de r\xE9daction",
-  "dsh-live-voice.recognition.commands.send": "Envoyer \xE0 l\u2019agent en cours d\u2019ex\xE9cution",
-  "dsh-live-voice.recognition.commands.stopSpeech": "Arr\xEAter la lecture vocale de l\u2019assistant",
-  "dsh-live-voice.recognition.commands.title": "Commandes vocales",
-  "dsh-live-voice.recognition.dictation.cancel": "Annuler la dict\xE9e",
-  "dsh-live-voice.recognition.engine.label": "Moteur de reconnaissance",
-  "dsh-live-voice.recognition.headphoneMode.help": "Le microphone ouvert continue d\u2019\xE9couter pendant la lecture des r\xE9ponses. Lorsque votre voix est d\xE9tect\xE9e, la lecture se met en pause et ne reprend que lorsque vous le d\xE9cidez.",
-  "dsh-live-voice.recognition.headphoneMode.label": "Casque \u2014 microphone ouvert",
-  "dsh-live-voice.recognition.holdToTalk.enabled": "Maintenir Ctrl pour parler",
-  "dsh-live-voice.recognition.holdToTalk.help": "Lorsqu\u2019une zone de r\xE9daction est ouverte, maintenez Ctrl n\u2019importe o\xF9 sur la page pour capturer votre voix. Rel\xE2chez la touche pour traiter la transcription en attente, attendre le d\xE9lai d\u2019envoi configur\xE9, mettre le message en file d\u2019attente et arr\xEAter la capture vocale. Appuyez sur \xC9chap tout en maintenant Ctrl pour annuler.",
-  "dsh-live-voice.recognition.language.automatic": "Automatique \u2014 d\xE9tecter la langue",
-  "dsh-live-voice.recognition.language.label": "Langue de reconnaissance",
-  "dsh-live-voice.recognition.manualSend.help": "Le texte reconnu reste dans la zone de r\xE9daction jusqu\u2019\xE0 ce que vous utilisiez le bouton d\u2019envoi habituel de DSH.",
-  "dsh-live-voice.recognition.maxUtterance.help": "Si vous parlez sans pause, un nouveau segment de transcription commence apr\xE8s cette dur\xE9e. Valeur par d\xE9faut : 60 secondes.",
-  "dsh-live-voice.recognition.maxUtterance.label": "Dur\xE9e maximale de parole continue (secondes)",
-  "dsh-live-voice.recognition.microphone.checking": "V\xE9rification de la disponibilit\xE9 du microphone",
-  "dsh-live-voice.recognition.microphone.device": "P\xE9riph\xE9rique d\u2019entr\xE9e",
-  "dsh-live-voice.recognition.microphone.failure": "Microphone : {reason}",
-  "dsh-live-voice.recognition.microphone.ignore": "Ignorer la saisie vocale dans la zone de r\xE9daction",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Entr\xE9e du microphone : {state}",
-  "dsh-live-voice.recognition.microphone.label": "Microphone",
-  "dsh-live-voice.recognition.microphone.permissionHelp": "L\u2019autorisation d\u2019utiliser le microphone ne sera demand\xE9e que lorsque vous d\xE9marrerez une dict\xE9e ou une conversation vocale.",
-  "dsh-live-voice.recognition.microphone.resume": "Reprendre l\u2019\xE9coute",
-  "dsh-live-voice.recognition.microphone.starting": "D\xE9marrage du microphone\u2026",
-  "dsh-live-voice.recognition.microphone.takeControl": "Prendre le contr\xF4le du microphone",
-  "dsh-live-voice.recognition.minimumWords.enabled": "Ignorer les segments d\xE9finitifs de transcription trop courts",
-  "dsh-live-voice.recognition.minimumWords.help": "Les segments d\xE9finitifs contenant moins de mots sont ignor\xE9s avant d\u2019atteindre la zone de r\xE9daction ou l\u2019envoi automatique.",
-  "dsh-live-voice.recognition.minimumWords.label": "Nombre minimal de mots par segment d\xE9finitif",
-  "dsh-live-voice.recognition.mode.label": "Mode d\u2019\xE9coute",
-  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 Bient\xF4t disponible",
-  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx en continu \u2014 Bient\xF4t disponible",
-  "dsh-live-voice.recognition.planned.vote": "Bient\xF4t disponible \u2014 votez dans les tickets du d\xE9p\xF4t",
-  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 Bient\xF4t disponible",
-  "dsh-live-voice.recognition.planned.webGpu": "Inf\xE9rence WebGPU dans le navigateur \u2014 Bient\xF4t disponible",
-  "dsh-live-voice.recognition.presets.custom.description": "Choisissez la dur\xE9e du silence.",
-  "dsh-live-voice.recognition.presets.custom.label": "Personnalis\xE9e",
-  "dsh-live-voice.recognition.presets.long.description": "Attend pendant les pauses de r\xE9flexion plus longues.",
-  "dsh-live-voice.recognition.presets.long.label": "Longue",
-  "dsh-live-voice.recognition.presets.natural.description": "Autorise des pauses normales entre les phrases.",
-  "dsh-live-voice.recognition.presets.natural.label": "Naturelle",
-  "dsh-live-voice.recognition.presets.short.description": "Envoie rapidement apr\xE8s une courte pause.",
-  "dsh-live-voice.recognition.presets.short.label": "Courte",
-  "dsh-live-voice.recognition.providerSettings.help": "Les param\xE8tres du fournisseur d\xE9pendent du moteur de reconnaissance s\xE9lectionn\xE9.",
-  "dsh-live-voice.recognition.qwen.captureHelp": "Le son est d\xE9coup\xE9 en \xE9nonc\xE9s complets au format WAV, puis envoy\xE9 via DSH avec authentification au mod\xE8le Qwen3 ASR ex\xE9cut\xE9 localement sur l\u2019h\xF4te.",
-  "dsh-live-voice.recognition.qwen.connectionSuccess": "Connexion r\xE9ussie. Qwen ASR et TTS sont tous deux charg\xE9s. Les modifications non enregistr\xE9es n\u2019ont pas \xE9t\xE9 appliqu\xE9es.",
-  "dsh-live-voice.recognition.qwen.endpointHelp": "API HTTP \xE0 l\u2019URL configur\xE9e sur l\u2019h\xF4te DSH (par d\xE9faut : http://127.0.0.1:8080/inference). Le son passe par la route de transcription authentifi\xE9e de l\u2019h\xF4te DSH.",
-  "dsh-live-voice.recognition.qwen.hostHelp": "Param\xE8tres communs \xE0 tout l\u2019h\xF4te pour le serveur Qwen3 ASR + TTS. Saisissez une URL de base HTTP ou HTTPS accessible depuis l\u2019h\xF4te DSH. Le navigateur y acc\xE8de via les routes authentifi\xE9es de DSH.",
-  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
-  "dsh-live-voice.recognition.silenceDetection.customHelp": "Saisissez un entier de 100 \xE0 10 000 ms. Enregistr\xE9 en quittant le champ. Les pauses courtes peuvent couper la parole ; la reconnaissance ajoute sa propre latence.",
-  "dsh-live-voice.recognition.silenceDetection.customLabel": "Pause personnalis\xE9e (millisecondes)",
-  "dsh-live-voice.recognition.silenceDetection.duration": "Pause avant l\u2019envoi : {milliseconds} ms",
-  "dsh-live-voice.recognition.silenceDetection.help": "D\xE9termine la dur\xE9e de pause n\xE9cessaire avant que la parole captur\xE9e soit envoy\xE9e pour reconnaissance.",
-  "dsh-live-voice.recognition.silenceDetection.label": "D\xE9tection du silence",
-  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pause avant l\u2019envoi",
-  "dsh-live-voice.recognition.silenceDetection.title": "Param\xE8tres de d\xE9tection du silence",
-  "dsh-live-voice.recognition.speakerMode.help": "L\u2019\xE9coute contr\xF4l\xE9e lib\xE8re le microphone pendant la lecture des r\xE9ponses pour \xE9viter que le son des haut-parleurs soit reconnu. Utilisez \xAB Prendre le contr\xF4le du microphone \xBB pour interrompre la lecture.",
-  "dsh-live-voice.recognition.speakerMode.label": "Haut-parleurs \u2014 \xE9coute contr\xF4l\xE9e",
-  "dsh-live-voice.recognition.status.answer": "Reconnaissance de la r\xE9ponse\u2026",
-  "dsh-live-voice.recognition.status.awaitingAnswer": "\xC9coute de votre r\xE9ponse\u2026",
-  "dsh-live-voice.recognition.status.listening": "\xC9coute \u2014 en attente de parole",
-  "dsh-live-voice.recognition.status.processing": "Reconnaissance vocale\u2026",
-  "dsh-live-voice.recognition.status.unavailable": "Reconnaissance vocale indisponible",
-  "dsh-live-voice.recognition.voiceCommands.help": "S\xE9parez les expressions par des virgules. La comparaison ignore la casse, les accents, la ponctuation et les espaces superflus. Le segment d\xE9finitif entier doit correspondre.",
-  "dsh-live-voice.recognition.whisper.captureHelp": "Le son est d\xE9coup\xE9 en \xE9nonc\xE9s complets au format WAV, transmis via DSH avec authentification, puis trait\xE9 par le serveur HTTP whisper.cpp sur l\u2019interface de bouclage.",
-  "dsh-live-voice.recognition.whisper.connectionSuccess": "Connexion r\xE9ussie. Le point d\u2019acc\xE8s de v\xE9rification de l\u2019\xE9tat a r\xE9pondu ; la transcription n\u2019a pas \xE9t\xE9 test\xE9e. Les modifications non enregistr\xE9es n\u2019ont pas \xE9t\xE9 appliqu\xE9es.",
-  "dsh-live-voice.recognition.whisper.endpointHelp": "API HTTP \xE0 l\u2019URL de base configur\xE9e (par d\xE9faut : http://127.0.0.1:8080/). Compatible avec POST /v1/audio/transcriptions.",
-  "dsh-live-voice.recognition.whisper.healthFailed": "La v\xE9rification de l\u2019\xE9tat de Whisper a \xE9chou\xE9.",
-  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 API HTTP",
-  "dsh-live-voice.recognition.whisper.requestFailed": "La requ\xEAte relative aux param\xE8tres de Whisper a \xE9chou\xE9.",
-  "dsh-live-voice.recognition.whisper.restartRequired": "Les routes de configuration de Whisper ne sont pas charg\xE9es. Un red\xE9marrage normal du serveur DSH est n\xE9cessaire pour charger les routes mises \xE0 jour du plugin ; actualiser cette page ne suffit pas.",
-  "dsh-live-voice.recognition.whisper.save": "Enregistrer les param\xE8tres de Whisper",
-  "dsh-live-voice.recognition.whisper.saved": "Enregistr\xE9 sur l\u2019h\xF4te DSH. Les requ\xEAtes de transcription actives sur l\u2019h\xF4te ont \xE9t\xE9 annul\xE9es.",
-  "dsh-live-voice.recognition.whisper.signInRequired": "Connectez-vous \xE0 DSH pour g\xE9rer les param\xE8tres de Whisper.",
-  "dsh-live-voice.settings.autoSend.cancel": "Annuler l\u2019envoi automatique",
-  "dsh-live-voice.settings.autoSend.countdown": "Envoi dans {remaining}\u2026",
-  "dsh-live-voice.settings.autoSend.delay": "Envoyer apr\xE8s le silence",
-  "dsh-live-voice.settings.close": "Fermer les param\xE8tres vocaux",
-  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice utilise votre r\xE9ponse pour choisir la bonne action pour R\xE9orienter et File d\u2019attente. Cela ne modifie pas les param\xE8tres de DSH ; indiquez le comportement actuel et mettez cette r\xE9ponse \xE0 jour s\u2019il change.",
-  "dsh-live-voice.settings.delivery.dshEnterQuestion": "Dans votre DSH, que fait Entr\xE9e lorsque l\u2019agent est occup\xE9 ?",
-  "dsh-live-voice.settings.delivery.dshEnterQueue": "Place le message dans la file d\u2019attente",
-  "dsh-live-voice.settings.delivery.dshEnterSteer": "Envoie le message pour r\xE9orienter l\u2019agent",
-  "dsh-live-voice.settings.delivery.label": "Mode d\u2019envoi",
-  "dsh-live-voice.settings.delivery.manualLabel": "D\xE9sactiv\xE9 \u2014 v\xE9rifier et envoyer manuellement",
-  "dsh-live-voice.settings.delivery.queueLabel": "File d\u2019attente \u2014 ajout automatique apr\xE8s un silence",
-  "dsh-live-voice.settings.delivery.status": "Envoi automatique : {mode}",
-  "dsh-live-voice.settings.delivery.steerDescription": "envoyer \xE0 l\u2019agent en cours d\u2019ex\xE9cution",
-  "dsh-live-voice.settings.delivery.steerLabel": "R\xE9orienter \u2014 envoyer automatiquement \xE0 l\u2019agent en cours d\u2019ex\xE9cution",
-  "dsh-live-voice.settings.delivery.toggle": "Mode d\u2019envoi automatique",
-  "dsh-live-voice.settings.engine.refresh": "Actualiser les moteurs disponibles",
-  "dsh-live-voice.settings.filters.title": "Filtrage",
-  "dsh-live-voice.settings.general.title": "G\xE9n\xE9ral",
-  "dsh-live-voice.settings.persistence.loadError": "Impossible de charger les param\xE8tres Live Voice depuis le serveur. Rechargez pour r\xE9essayer.",
-  "dsh-live-voice.settings.persistence.saveError": "Impossible de sauvegarder les param\xE8tres Live Voice sur le serveur. R\xE9essayez.",
-  "dsh-live-voice.settings.tabs.conversation": "Conversation",
-  "dsh-live-voice.settings.tabs.recognition": "Reconnaissance vocale",
-  "dsh-live-voice.settings.tabs.speak": "Synth\xE8se vocale",
-  "dsh-live-voice.settings.title": "Param\xE8tres de Live Voice",
-  "dsh-live-voice.settings.whisper.hostHelp": "Param\xE8tres communs \xE0 tout l\u2019h\xF4te. Seules les URL HTTP sans authentification sur l\u2019interface de bouclage (localhost, 127.0.0.1, [::1]) sont autoris\xE9es. Le bouclage d\xE9signe l\u2019h\xF4te DSH, pas ce navigateur. Toutes les v\xE9rifications d\u2019\xE9tat et requ\xEAtes audio passent par le serveur avec authentification.",
-  "dsh-live-voice.speak.agentContext.enabled": "Activer le contexte vocal de l\u2019agent",
-  "dsh-live-voice.speak.agentContext.enabledHelp": "Lorsqu\u2019il est activ\xE9, le contexte ci-dessous indique \xE0 l\u2019agent que ses r\xE9ponses seront lues \xE0 voix haute.",
-  "dsh-live-voice.speak.agentContext.help": "Cette instruction en anglais est envoy\xE9e \xE0 l\u2019agent seulement pendant une conversation vocale active avec la parole automatique de l\u2019assistant activ\xE9e.",
-  "dsh-live-voice.speak.agentContext.label": "Contexte vocal de l\u2019agent",
-  "dsh-live-voice.speak.agentContext.restore": "Restaurer la valeur par d\xE9faut",
-  "dsh-live-voice.speak.autoPlayback.enabled": "Lire automatiquement les nouveaux messages de l\u2019assistant",
-  "dsh-live-voice.speak.autoPlayback.help": "Pendant une conversation vocale, les phrases de l\u2019assistant sont lues automatiquement. La lecture attend pendant que vous parlez.",
-  "dsh-live-voice.speak.autoPlayback.label": "Lecture automatique de l\u2019assistant",
-  "dsh-live-voice.speak.autoPlayback.remainingOne": "Lecture automatique de l\u2019assistant : {state} \u2014 {count} segment vocal restant",
-  "dsh-live-voice.speak.autoPlayback.remainingOther": "Lecture automatique de l\u2019assistant : {state} \u2014 {count} segments vocaux restants",
-  "dsh-live-voice.speak.autoPlayback.status": "Lecture automatique de l\u2019assistant : {state}",
-  "dsh-live-voice.speak.browser.automaticVoice": "Voix locale automatique",
-  "dsh-live-voice.speak.browser.label": "Synth\xE8se vocale du navigateur \u2014 son sur cet appareil",
-  "dsh-live-voice.speak.browser.name": "Synth\xE8se vocale du navigateur",
-  "dsh-live-voice.speak.browser.outputHelp": "La synth\xE8se vocale du navigateur peut ignorer le p\xE9riph\xE9rique de sortie s\xE9lectionn\xE9 ; cette API du navigateur utilise normalement celui d\xE9fini par d\xE9faut sur le syst\xE8me.",
-  "dsh-live-voice.speak.browser.voice": "Voix locale du navigateur",
-  "dsh-live-voice.speak.captions.approximate": "Sous-titres vocaux approximatifs",
-  "dsh-live-voice.speak.captions.loading": "Pr\xE9paration de l\u2019audio vocal",
-  "dsh-live-voice.speak.captions.position": "Segment vocal {index} sur {total}",
-  "dsh-live-voice.speak.captions.progress": "Progression vocale approximative",
-  "dsh-live-voice.speak.captions.title": "Voix et sous-titres en direct",
-  "dsh-live-voice.speak.engine.label": "Moteur de synth\xE8se vocale",
-  "dsh-live-voice.speak.engine.playbackHelp": "Qwen et macOS say synth\xE9tisent sur l\u2019h\xF4te DSH ; l\u2019audio AAC/M4A compact est lu dans ce navigateur. La synth\xE8se vocale du navigateur est g\xE9n\xE9r\xE9e et lue sur cet appareil.",
-  "dsh-live-voice.speak.filters.code.enabled": "Filtrer les blocs de code Markdown avant la lecture vocale",
-  "dsh-live-voice.speak.filters.code.maxLines": "Nombre maximal de lignes des blocs de code \xE0 lire",
-  "dsh-live-voice.speak.filters.code.notice": "Consultez le code dans notre conversation",
-  "dsh-live-voice.speak.filters.code.replacement": "Phrase de remplacement pour les blocs de code plus longs",
-  "dsh-live-voice.speak.interruption.disabledHelp": "L\u2019envoi d\u2019un autre message n\u2019arr\xEAte pas la lecture vocale de l\u2019assistant que vous \xE9coutez d\xE9j\xE0.",
-  "dsh-live-voice.speak.interruption.enabled": "Arr\xEAter la lecture vocale de l\u2019assistant lorsque j\u2019envoie un message",
-  "dsh-live-voice.speak.interruption.enabledHelp": "L\u2019envoi d\u2019un nouveau message utilisateur, y compris \xE0 l\u2019agent en cours d\u2019ex\xE9cution, arr\xEAte la lecture vocale de l\u2019assistant, qu\u2019elle soit en cours ou en pause.",
-  "dsh-live-voice.speak.macos.label": "macOS say \u2014 son sur l\u2019h\xF4te",
-  "dsh-live-voice.speak.macos.name": "macOS say",
-  "dsh-live-voice.speak.macos.outputHelp": "macOS say utilise la sortie s\xE9lectionn\xE9e sur l\u2019h\xF4te DSH.",
-  "dsh-live-voice.speak.output.checking": "V\xE9rification de la sortie vocale\u2026",
-  "dsh-live-voice.speak.output.device": "P\xE9riph\xE9rique de sortie",
-  "dsh-live-voice.speak.output.fallbackName": "Sortie audio",
-  "dsh-live-voice.speak.output.stopTest": "Arr\xEAter le test vocal",
-  "dsh-live-voice.speak.output.test": "Tester la sortie vocale s\xE9lectionn\xE9e",
-  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice. La sortie vocale s\xE9lectionn\xE9e fonctionne.",
-  "dsh-live-voice.speak.output.testing": "Test vocal en cours\u2026",
-  "dsh-live-voice.speak.playback.message": "Lire le message \xE0 voix haute",
-  "dsh-live-voice.speak.playback.next": "Passer au segment vocal suivant",
-  "dsh-live-voice.speak.playback.pause": "Mettre la lecture en pause",
-  "dsh-live-voice.speak.playback.previous": "Segment vocal pr\xE9c\xE9dent",
-  "dsh-live-voice.speak.playback.resume": "Reprendre la lecture",
-  "dsh-live-voice.speak.playback.stop": "Arr\xEAter la lecture",
-  "dsh-live-voice.speak.playback.stopAll": "Arr\xEAter toute lecture",
-  "dsh-live-voice.speak.qwen.connection": "Connexion au serveur Qwen",
-  "dsh-live-voice.speak.qwen.endpoint": "URL de base de l\u2019API Qwen",
-  "dsh-live-voice.speak.qwen.healthFailed": "La v\xE9rification de l\u2019\xE9tat de Qwen a \xE9chou\xE9.",
-  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 serveur MLX local",
-  "dsh-live-voice.speak.qwen.name": "Qwen3 local",
-  "dsh-live-voice.speak.qwen.requestFailed": "La requ\xEAte relative aux param\xE8tres de Qwen a \xE9chou\xE9.",
-  "dsh-live-voice.speak.qwen.restartRequired": "Les routes de configuration de Qwen ne sont pas charg\xE9es. Un red\xE9marrage normal du serveur DSH est n\xE9cessaire pour charger les routes mises \xE0 jour du plugin ; actualiser cette page ne suffit pas.",
-  "dsh-live-voice.speak.qwen.save": "Enregistrer les param\xE8tres de Qwen",
-  "dsh-live-voice.speak.qwen.saved": "Enregistr\xE9 sur l\u2019h\xF4te DSH. Les requ\xEAtes Qwen actives ont \xE9t\xE9 annul\xE9es.",
-  "dsh-live-voice.speak.qwen.signInRequired": "Connectez-vous \xE0 DSH pour g\xE9rer les param\xE8tres de Qwen.",
-  "dsh-live-voice.speak.qwen.test": "Tester le serveur Qwen",
-  "dsh-live-voice.speak.qwen.voice": "Voix Qwen",
-  "dsh-live-voice.speak.qwen.voiceHelp": "Aiden est utilis\xE9 par d\xE9faut. Ces voix pr\xE9d\xE9finies ne sont pas des voix natives du portugais br\xE9silien.",
-  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 homme, anglais am\xE9ricain",
-  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 homme, chinois de P\xE9kin",
-  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 homme, chinois du Sichuan",
-  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 femme, japonais",
-  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 homme, anglais",
-  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 femme, chinois",
-  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 femme, cor\xE9en",
-  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 homme, chinois",
-  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 femme, chinois",
-  "dsh-live-voice.speak.rate.help": "Vitesse relative : 1 correspond \xE0 la vitesse normale.",
-  "dsh-live-voice.speak.rate.label": "D\xE9bit de parole",
-  "dsh-live-voice.speak.responseDelay.help": "Apr\xE8s que vous avez cess\xE9 de parler, la lecture automatique de l\u2019assistant attend cette dur\xE9e de silence continu. Si vous reparlez, l\u2019attente recommence.",
-  "dsh-live-voice.speak.responseDelay.label": "D\xE9lai de r\xE9ponse de l\u2019assistant",
-  "dsh-live-voice.speak.responseDelay.none": "Sans d\xE9lai",
-  "dsh-live-voice.speak.segmentGap.help": "Attend ce nombre de millisecondes entre des segments vocaux cons\xE9cutifs. La valeur par d\xE9faut est 400 ms.",
-  "dsh-live-voice.speak.segmentGap.label": "Pause entre les segments vocaux",
-  "dsh-live-voice.speak.status.paused": "Lecture en pause",
-  "dsh-live-voice.speak.status.playing": "Lecture en cours"
-};
-var fr_default = Object.freeze(fr);
-
-// src/app/client/i18n/catalogs/hi.ts
-var hi = {
-  "dsh-live-voice.commons.connection.contactingHost": "DSH \u0939\u094B\u0938\u094D\u091F \u0938\u0947 \u0938\u0902\u092A\u0930\u094D\u0915 \u0915\u093F\u092F\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
-  "dsh-live-voice.commons.connection.endpoint": "\u090F\u0902\u0921\u092A\u0949\u0907\u0902\u091F URL",
-  "dsh-live-voice.commons.connection.healthEndpoint": "\u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u091C\u093E\u0901\u091A \u0915\u093E URL \u092F\u093E \u092A\u0925",
-  "dsh-live-voice.commons.connection.reload": "\u0938\u0939\u0947\u091C\u0940 \u0917\u0908 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092B\u093F\u0930 \u0932\u094B\u0921 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.commons.connection.test": "\u0915\u0928\u0947\u0915\u094D\u0936\u0928 \u091C\u093E\u0901\u091A\u0947\u0902",
-  "dsh-live-voice.commons.connection.timeout": "\u0905\u0928\u0941\u0930\u094B\u0927 \u0915\u0940 \u0938\u092E\u092F-\u0938\u0940\u092E\u093E (\u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921)",
-  "dsh-live-voice.commons.connection.title": "\u0915\u0928\u0947\u0915\u094D\u0936\u0928 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938",
-  "dsh-live-voice.commons.connection.unsaved": "\u092C\u0926\u0932\u093E\u0935 \u0905\u092D\u0940 \u0938\u0939\u0947\u091C\u0947 \u0928\u0939\u0940\u0902 \u0917\u090F \u0939\u0948\u0902",
-  "dsh-live-voice.commons.controls.title": "\u0935\u0949\u0907\u0938 \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u0923",
-  "dsh-live-voice.commons.conversation.end": "\u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0938\u092E\u093E\u092A\u094D\u0924 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.commons.conversation.idle": "\u092C\u093E\u0924\u091A\u0940\u0924 \u0928\u093F\u0937\u094D\u0915\u094D\u0930\u093F\u092F \u0939\u0948",
-  "dsh-live-voice.commons.conversation.start": "\u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.commons.delivery.queueBadge": "\u0915\u0924\u093E\u0930",
-  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
-  "dsh-live-voice.commons.dismiss": "\u0939\u091F\u093E\u090F\u0901",
-  "dsh-live-voice.commons.dismissError": "\u0935\u0949\u0907\u0938 \u0924\u094D\u0930\u0941\u091F\u093F \u0915\u093E \u0938\u0902\u0926\u0947\u0936 \u0939\u091F\u093E\u090F\u0901",
-  "dsh-live-voice.commons.engine.failure": "{engine}: {reason}",
-  "dsh-live-voice.commons.input.ignoring": "\u0905\u0928\u0926\u0947\u0916\u093E \u0915\u093F\u092F\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948",
-  "dsh-live-voice.commons.input.ignoringBadge": "\u0905\u0928\u0926\u0947\u0916\u093E \u0915\u093F\u092F\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948",
-  "dsh-live-voice.commons.input.listening": "\u0938\u0941\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948",
-  "dsh-live-voice.commons.input.listeningBadge": "\u0938\u0941\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948",
-  "dsh-live-voice.commons.manual": "\u092E\u0948\u0928\u094D\u092F\u0941\u0905\u0932",
-  "dsh-live-voice.commons.milliseconds": "{milliseconds} \u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921",
-  "dsh-live-voice.commons.off": "\u092C\u0902\u0926",
-  "dsh-live-voice.commons.on": "\u091A\u093E\u0932\u0942",
-  "dsh-live-voice.commons.pluginName": "Live Voice",
-  "dsh-live-voice.commons.queue": "\u0915\u0924\u093E\u0930",
-  "dsh-live-voice.commons.repository.starLabel": "GitHub \u092A\u0930 \u0939\u092E\u0947\u0902 \u0938\u094D\u091F\u093E\u0930 \u0926\u0947\u0902",
-  "dsh-live-voice.commons.repository.starLink": "GitHub \u092A\u0930 DSH Live Voice \u0915\u094B \u0938\u094D\u091F\u093E\u0930 \u0926\u0947\u0902",
-  "dsh-live-voice.commons.second": "1 \u0938\u0947\u0915\u0902\u0921",
-  "dsh-live-voice.commons.seconds": "{seconds} \u0938\u0947\u0915\u0902\u0921",
-  "dsh-live-voice.commons.send": "\u092D\u0947\u091C\u0947\u0902",
-  "dsh-live-voice.commons.status.ready": "\u0935\u0949\u0907\u0938 \u0924\u0948\u092F\u093E\u0930 \u0939\u0948",
-  "dsh-live-voice.commons.systemDefault": "\u0938\u093F\u0938\u094D\u091F\u092E \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F",
-  "dsh-live-voice.commons.toggle.offBadge": "\u092C\u0902\u0926",
-  "dsh-live-voice.commons.unknownLanguage": "\u0905\u091C\u094D\u091E\u093E\u0924 \u092D\u093E\u0937\u093E",
-  "dsh-live-voice.commons.update.label": "\u0905\u092A\u0921\u0947\u091F \u0909\u092A\u0932\u092C\u094D\u0927 \u0939\u0948",
-  "dsh-live-voice.commons.update.link": "\u0905\u092A\u0921\u0947\u091F \u0909\u092A\u0932\u092C\u094D\u0927 \u0939\u0948: {version}\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0916\u094B\u0932\u0947\u0902",
-  "dsh-live-voice.commons.update.version": "\u0905\u092A\u0921\u0947\u091F \u0909\u092A\u0932\u092C\u094D\u0927 \u0939\u0948: {version}",
-  "dsh-live-voice.commons.version.compatibility": "DSH v{version} \u0915\u0947 \u0938\u093E\u0925 \u0938\u0902\u0917\u0924",
-  "dsh-live-voice.commons.version.compatibilityLink": "DSH v{version} \u0915\u0947 \u0938\u093E\u0925 \u0938\u0902\u0917\u0924\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0916\u094B\u0932\u0947\u0902",
-  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
-  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0938\u0942\u091A\u0940 \u0916\u094B\u0932\u0947\u0902",
-  "dsh-live-voice.commons.version.title": "\u0938\u0902\u0938\u094D\u0915\u0930\u0923 \u091C\u093E\u0928\u0915\u093E\u0930\u0940",
-  "dsh-live-voice.recognition.autoSend.countdownHelp": "\u092A\u0939\u091A\u093E\u0928\u0947 \u0917\u090F \u0935\u093E\u0915\u094D\u092F\u093E\u0902\u0936 \u0915\u093E \u0905\u0902\u0924\u093F\u092E \u092A\u0930\u093F\u0923\u093E\u092E \u092E\u093F\u0932\u0928\u0947 \u0915\u0947 \u092C\u093E\u0926 \u0909\u0932\u091F\u0940 \u0917\u093F\u0928\u0924\u0940 \u0936\u0941\u0930\u0942 \u0939\u094B\u0924\u0940 \u0939\u0948\u0964 \u0926\u094B\u092C\u093E\u0930\u093E \u092C\u094B\u0932\u0928\u0947 \u092F\u093E \u0938\u0902\u092A\u093E\u0926\u0928 \u0915\u0930\u0928\u0947 \u092A\u0930 \u092F\u0939 \u0930\u0926\u094D\u0926 \u0939\u094B \u091C\u093E\u0924\u0940 \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.browser.autoInstallPack": "\u091C\u093C\u0930\u0942\u0930\u0924 \u092A\u0921\u093C\u0928\u0947 \u092A\u0930 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0915\u093E \u092F\u0939 \u092D\u093E\u0937\u093E \u092A\u0948\u0915 \u0905\u092A\u0928\u0947 \u0906\u092A \u0907\u0902\u0938\u094D\u091F\u0949\u0932 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.browser.help": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0915\u0947 SpeechRecognition API \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0924\u093E \u0939\u0948\u0964 \u092F\u0939 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u0935\u093F\u0915\u0932\u094D\u092A \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.browser.label": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 SpeechRecognition \u2014 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u0935\u093F\u0915\u0932\u094D\u092A",
-  "dsh-live-voice.recognition.browser.localProcessing": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0915\u0940 \u092A\u094D\u0930\u094B\u0938\u0947\u0938\u093F\u0902\u0917 \u0907\u0938\u0940 \u0921\u093F\u0935\u093E\u0907\u0938 \u092A\u0930 \u0938\u094D\u0925\u093E\u0928\u0940\u092F \u0930\u0942\u092A \u0938\u0947 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.browser.microphoneHelp": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0915\u093E SpeechRecognition \u092F\u0939\u093E\u0901 \u091A\u0941\u0928\u0947 \u0917\u090F \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u0947 \u092C\u091C\u093E\u092F \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u092F\u093E \u0938\u093F\u0938\u094D\u091F\u092E \u0915\u0947 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930 \u0938\u0915\u0924\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.browser.remoteServiceWarning": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0938\u0947\u0935\u093E \u0915\u0947 \u091C\u093C\u0930\u093F\u090F \u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u091A\u093E\u0932\u0942 \u0939\u0948\u0964 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u093E \u0911\u0921\u093F\u092F\u094B \u0905\u092A\u0928\u0940 \u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0938\u0947\u0935\u093E \u0915\u094B \u092D\u0947\u091C \u0938\u0915\u0924\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.commands.clear": "\u0938\u0902\u0926\u0947\u0936 \u0932\u093F\u0916\u0928\u0947 \u0915\u093E \u092C\u0949\u0915\u094D\u0938 \u0916\u093E\u0932\u0940 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.commands.enabled": "\u0939\u0942\u092C\u0939\u0942 \u092E\u093F\u0932\u093E\u0928 \u0935\u093E\u0932\u0947 \u0935\u0949\u0907\u0938 \u0915\u092E\u093E\u0902\u0921 \u091A\u093E\u0932\u0942 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.commands.mute": "\u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u092E\u0947\u0902 \u0935\u0949\u0907\u0938 \u0907\u0928\u092A\u0941\u091F \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.commands.queue": "\u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u091C\u094B\u0921\u093C\u0947\u0902",
-  "dsh-live-voice.recognition.commands.resume": "\u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u092E\u0947\u0902 \u0935\u0949\u0907\u0938 \u0907\u0928\u092A\u0941\u091F \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.commands.send": "\u091A\u0932 \u0930\u0939\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u092D\u0947\u091C\u0947\u0902",
-  "dsh-live-voice.recognition.commands.stopSpeech": "\u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0935\u093E\u091A\u0928 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.commands.title": "\u0935\u0949\u0907\u0938 \u0915\u092E\u093E\u0902\u0921",
-  "dsh-live-voice.recognition.dictation.cancel": "\u0921\u093F\u0915\u094D\u091F\u0947\u0936\u0928 \u0930\u0926\u094D\u0926 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.engine.label": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0907\u0902\u091C\u0928",
-  "dsh-live-voice.recognition.headphoneMode.help": "\u0916\u0941\u0932\u093E \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u091C\u0935\u093E\u092C \u091A\u0932\u0928\u0947 \u0915\u0947 \u0926\u094C\u0930\u093E\u0928 \u092D\u0940 \u0938\u0941\u0928\u0924\u093E \u0930\u0939\u0924\u093E \u0939\u0948\u0964 \u0906\u092A\u0915\u0947 \u092C\u094B\u0932\u0928\u0947 \u0915\u093E \u092A\u0924\u093E \u091A\u0932\u0928\u0947 \u092A\u0930 \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0920\u0939\u0930 \u091C\u093E\u0924\u093E \u0939\u0948 \u0914\u0930 \u0906\u092A\u0915\u0947 \u091A\u0941\u0928\u0928\u0947 \u092A\u0930 \u0939\u0940 \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0939\u094B\u0924\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.headphoneMode.label": "\u0939\u0947\u0921\u092B\u093C\u094B\u0928 \u2014 \u0916\u0941\u0932\u093E \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928",
-  "dsh-live-voice.recognition.holdToTalk.enabled": "\u092C\u094B\u0932\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F Control \u0926\u092C\u093E\u090F \u0930\u0916\u0947\u0902",
-  "dsh-live-voice.recognition.holdToTalk.help": "\u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u0916\u0941\u0932\u093E \u0939\u094B\u0928\u0947 \u092A\u0930, \u092A\u0947\u091C \u092A\u0930 \u0915\u0939\u0940\u0902 \u092D\u0940 Control \u0926\u092C\u093E\u090F \u0930\u0916\u0915\u0930 \u0906\u0935\u093E\u091C\u093C \u0930\u093F\u0915\u0949\u0930\u094D\u0921 \u0915\u0930\u0947\u0902\u0964 \u091B\u094B\u0921\u093C\u0928\u0947 \u092A\u0930 \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u092E\u094C\u091C\u0942\u0926 \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u092A\u0942\u0930\u093E \u0915\u093F\u092F\u093E \u091C\u093E\u0924\u093E \u0939\u0948, \u0924\u092F \u092D\u0947\u091C\u0928\u0947 \u0915\u0947 \u0935\u093F\u0932\u0902\u092C \u0924\u0915 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0939\u094B\u0924\u0940 \u0939\u0948, \u0938\u0902\u0926\u0947\u0936 \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u091C\u0941\u0921\u093C\u0924\u093E \u0939\u0948 \u0914\u0930 \u0906\u0935\u093E\u091C\u093C \u0930\u093F\u0915\u0949\u0930\u094D\u0921 \u0915\u0930\u0928\u093E \u092C\u0902\u0926 \u0939\u094B \u091C\u093E\u0924\u093E \u0939\u0948\u0964 \u0930\u0926\u094D\u0926 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F Control \u0926\u092C\u093E\u090F \u0930\u0916\u0924\u0947 \u0939\u0941\u090F Escape \u0926\u092C\u093E\u090F\u0901\u0964",
-  "dsh-live-voice.recognition.language.automatic": "\u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u2014 \u092D\u093E\u0937\u093E \u092A\u0939\u091A\u093E\u0928\u0947\u0902",
-  "dsh-live-voice.recognition.language.label": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0915\u0940 \u092D\u093E\u0937\u093E",
-  "dsh-live-voice.recognition.manualSend.help": "\u092A\u0939\u091A\u093E\u0928\u093E \u0917\u092F\u093E \u092A\u093E\u0920 \u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u092E\u0947\u0902 \u0924\u092C \u0924\u0915 \u0930\u0939\u0924\u093E \u0939\u0948 \u091C\u092C \u0924\u0915 \u0906\u092A DSH \u0915\u0947 \u0938\u093E\u092E\u093E\u0928\u094D\u092F \u092D\u0947\u091C\u0947\u0902 \u092C\u091F\u0928 \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0928\u0939\u0940\u0902 \u0915\u0930\u0924\u0947\u0964",
-  "dsh-live-voice.recognition.maxUtterance.help": "\u092F\u0926\u093F \u092C\u094B\u0932\u0928\u093E \u092C\u093F\u0928\u093E \u0930\u0941\u0915\u0947 \u091C\u093E\u0930\u0940 \u0930\u0939\u0947, \u0924\u094B \u0907\u0938 \u0905\u0935\u0927\u093F \u0915\u0947 \u092C\u093E\u0926 \u0928\u092F\u093E \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u0916\u0902\u0921 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902\u0964 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F: 60 \u0938\u0947\u0915\u0902\u0921\u0964",
-  "dsh-live-voice.recognition.maxUtterance.label": "\u0932\u0917\u093E\u0924\u093E\u0930 \u092C\u094B\u0932\u0928\u0947 \u0915\u0940 \u0905\u0927\u093F\u0915\u0924\u092E \u0905\u0935\u0927\u093F (\u0938\u0947\u0915\u0902\u0921)",
-  "dsh-live-voice.recognition.microphone.checking": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u0940 \u0909\u092A\u0932\u092C\u094D\u0927\u0924\u093E \u091C\u093E\u0901\u091A\u0940 \u091C\u093E \u0930\u0939\u0940 \u0939\u0948",
-  "dsh-live-voice.recognition.microphone.device": "\u0907\u0928\u092A\u0941\u091F \u0921\u093F\u0935\u093E\u0907\u0938",
-  "dsh-live-voice.recognition.microphone.failure": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928: {reason}",
-  "dsh-live-voice.recognition.microphone.ignore": "\u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u0915\u093E \u0935\u0949\u0907\u0938 \u0907\u0928\u092A\u0941\u091F \u0905\u0928\u0926\u0947\u0916\u093E \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.microphone.inputStatus": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0907\u0928\u092A\u0941\u091F: {state}",
-  "dsh-live-voice.recognition.microphone.label": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928",
-  "dsh-live-voice.recognition.microphone.permissionHelp": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u0940 \u0905\u0928\u0941\u092E\u0924\u093F \u0915\u0947\u0935\u0932 \u0924\u092D\u0940 \u092E\u093E\u0901\u0917\u0940 \u091C\u093E\u090F\u0917\u0940 \u091C\u092C \u0906\u092A \u0921\u093F\u0915\u094D\u091F\u0947\u0936\u0928 \u092F\u093E \u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902\u0917\u0947\u0964",
-  "dsh-live-voice.recognition.microphone.resume": "\u0938\u0941\u0928\u0928\u093E \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.microphone.starting": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0936\u0941\u0930\u0942 \u0939\u094B \u0930\u0939\u093E \u0939\u0948\u2026",
-  "dsh-live-voice.recognition.microphone.takeControl": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u093E \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u0923 \u0932\u0947\u0902",
-  "dsh-live-voice.recognition.minimumWords.enabled": "\u091B\u094B\u091F\u0947 \u0905\u0902\u0924\u093F\u092E \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u0916\u0902\u0921 \u0905\u0928\u0926\u0947\u0916\u093E \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.minimumWords.help": "\u0915\u092E \u0936\u092C\u094D\u0926\u094B\u0902 \u0935\u093E\u0932\u0947 \u0905\u0902\u0924\u093F\u092E \u0916\u0902\u0921 \u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u092F\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092D\u0947\u091C\u0928\u0947 \u0915\u0940 \u092A\u094D\u0930\u0915\u094D\u0930\u093F\u092F\u093E \u0924\u0915 \u092A\u0939\u0941\u0901\u091A\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0939\u0940 \u0905\u0928\u0926\u0947\u0916\u0947 \u0915\u0930 \u0926\u093F\u090F \u091C\u093E\u0924\u0947 \u0939\u0948\u0902\u0964",
-  "dsh-live-voice.recognition.minimumWords.label": "\u0939\u0930 \u0905\u0902\u0924\u093F\u092E \u0916\u0902\u0921 \u092E\u0947\u0902 \u0928\u094D\u092F\u0942\u0928\u0924\u092E \u0936\u092C\u094D\u0926",
-  "dsh-live-voice.recognition.mode.label": "\u0938\u0941\u0928\u0928\u0947 \u0915\u093E \u092E\u094B\u0921",
-  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 \u091C\u0932\u094D\u0926 \u0906 \u0930\u0939\u093E \u0939\u0948",
-  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx \u0938\u094D\u091F\u094D\u0930\u0940\u092E\u093F\u0902\u0917 \u2014 \u091C\u0932\u094D\u0926 \u0906 \u0930\u0939\u093E \u0939\u0948",
-  "dsh-live-voice.recognition.planned.vote": "\u091C\u0932\u094D\u0926 \u0906 \u0930\u0939\u093E \u0939\u0948 \u2014 \u0930\u093F\u092A\u0949\u091C\u093C\u093F\u091F\u0930\u0940 \u0915\u0947 \u0907\u0936\u094D\u092F\u0942 \u092E\u0947\u0902 \u0935\u094B\u091F \u0926\u0947\u0902",
-  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 \u091C\u0932\u094D\u0926 \u0906 \u0930\u0939\u093E \u0939\u0948",
-  "dsh-live-voice.recognition.planned.webGpu": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u092E\u0947\u0902 WebGPU \u0907\u0928\u094D\u092B\u093C\u0930\u0947\u0902\u0938 \u2014 \u091C\u0932\u094D\u0926 \u0906 \u0930\u0939\u093E \u0939\u0948",
-  "dsh-live-voice.recognition.presets.custom.description": "\u092E\u094C\u0928 \u0915\u0940 \u0905\u0935\u0927\u093F \u0938\u094D\u0935\u092F\u0902 \u091A\u0941\u0928\u0947\u0902\u0964",
-  "dsh-live-voice.recognition.presets.custom.label": "\u0915\u0938\u094D\u091F\u092E",
-  "dsh-live-voice.recognition.presets.long.description": "\u0932\u0902\u092C\u0947 \u0938\u094B\u091A-\u0935\u093F\u091A\u093E\u0930 \u0935\u093E\u0932\u0947 \u0935\u093F\u0930\u093E\u092E\u094B\u0902 \u0924\u0915 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0915\u0930\u0947\u0902\u0964",
-  "dsh-live-voice.recognition.presets.long.label": "\u0932\u0902\u092C\u093E",
-  "dsh-live-voice.recognition.presets.natural.description": "\u0935\u093E\u0915\u094D\u092F\u093E\u0902\u0936\u094B\u0902 \u0915\u0947 \u092C\u0940\u091A \u0938\u093E\u092E\u093E\u0928\u094D\u092F \u0935\u093F\u0930\u093E\u092E \u0915\u0940 \u0905\u0928\u0941\u092E\u0924\u093F \u0926\u0947\u0902\u0964",
-  "dsh-live-voice.recognition.presets.natural.label": "\u0938\u094D\u0935\u093E\u092D\u093E\u0935\u093F\u0915",
-  "dsh-live-voice.recognition.presets.short.description": "\u091B\u094B\u091F\u0947 \u0935\u093F\u0930\u093E\u092E \u0915\u0947 \u092C\u093E\u0926 \u091C\u0932\u094D\u0926\u0940 \u092D\u0947\u091C\u0947\u0902\u0964",
-  "dsh-live-voice.recognition.presets.short.label": "\u091B\u094B\u091F\u093E",
-  "dsh-live-voice.recognition.providerSettings.help": "\u092A\u094D\u0930\u0926\u093E\u0924\u093E \u0915\u0940 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u091A\u0941\u0928\u0947 \u0917\u090F \u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0907\u0902\u091C\u0928 \u0915\u0947 \u0905\u0928\u0941\u0938\u093E\u0930 \u092C\u0926\u0932\u0924\u0940 \u0939\u0948\u0902\u0964",
-  "dsh-live-voice.recognition.qwen.captureHelp": "\u0911\u0921\u093F\u092F\u094B \u0915\u094B \u092A\u0942\u0930\u0947 \u0915\u0925\u0928\u094B\u0902 \u0935\u093E\u0932\u0947 WAV \u0916\u0902\u0921\u094B\u0902 \u092E\u0947\u0902 \u092C\u093E\u0901\u091F\u0915\u0930, \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0943\u0924 DSH \u0915\u0947 \u091C\u093C\u0930\u093F\u090F \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0938\u094D\u0925\u093E\u0928\u0940\u092F \u0930\u0942\u092A \u0938\u0947 \u091A\u0932 \u0930\u0939\u0947 Qwen3 ASR \u092E\u0949\u0921\u0932 \u0915\u094B \u092D\u0947\u091C\u093E \u091C\u093E\u0924\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.qwen.connectionSuccess": "\u0915\u0928\u0947\u0915\u094D\u0936\u0928 \u0938\u092B\u0932 \u0930\u0939\u093E\u0964 Qwen ASR \u0914\u0930 TTS \u0926\u094B\u0928\u094B\u0902 \u0932\u094B\u0921 \u0939\u0948\u0902\u0964 \u092C\u093F\u0928\u093E \u0938\u0939\u0947\u091C\u0947 \u092C\u0926\u0932\u093E\u0935 \u0932\u093E\u0917\u0942 \u0928\u0939\u0940\u0902 \u0915\u093F\u090F \u0917\u090F \u0939\u0948\u0902\u0964",
-  "dsh-live-voice.recognition.qwen.endpointHelp": "HTTP API, \u0915\u0949\u0928\u094D\u092B\u093C\u093F\u0917\u0930 \u0915\u093F\u090F \u0917\u090F DSH \u0939\u094B\u0938\u094D\u091F URL \u092A\u0930 \u0939\u0948 (\u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F: http://127.0.0.1:8080/inference)\u0964 \u0911\u0921\u093F\u092F\u094B \u0915\u0947 \u0932\u093F\u090F \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0930\u0923 \u0935\u093E\u0932\u0947 DSH \u0939\u094B\u0938\u094D\u091F \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u0930\u0942\u091F \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0939\u094B\u0924\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.qwen.hostHelp": "Qwen3 ASR + TTS \u0938\u0930\u094D\u0935\u0930 \u0915\u0940 \u092A\u0942\u0930\u0947 \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0932\u093E\u0917\u0942 \u0939\u094B\u0928\u0947 \u0935\u093E\u0932\u0940 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938\u0964 \u0915\u094B\u0908 \u092D\u0940 HTTP \u092F\u093E HTTPS \u092C\u0947\u0938 URL \u0926\u0930\u094D\u091C \u0915\u0930\u0947\u0902 \u091C\u093F\u0938 \u0924\u0915 DSH \u0939\u094B\u0938\u094D\u091F \u092A\u0939\u0941\u0901\u091A \u0938\u0915\u0947\u0964 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0930\u0923 \u0935\u093E\u0932\u0947 DSH \u0930\u0942\u091F\u094B\u0902 \u0915\u0947 \u091C\u093C\u0930\u093F\u090F \u0907\u0938\u0947 \u090F\u0915\u094D\u0938\u0947\u0938 \u0915\u0930\u0924\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
-  "dsh-live-voice.recognition.silenceDetection.customHelp": "100 \u0938\u0947 10,000 ms \u0924\u0915 \u092A\u0942\u0930\u094D\u0923\u093E\u0902\u0915 \u0926\u0930\u094D\u091C \u0915\u0930\u0947\u0902\u0964 \u092B\u093C\u0940\u0932\u094D\u0921 \u091B\u094B\u0921\u093C\u0928\u0947 \u092A\u0930 \u0938\u0939\u0947\u091C\u093E \u091C\u093E\u0924\u093E \u0939\u0948\u0964 \u091B\u094B\u091F\u0947 \u0935\u093F\u0930\u093E\u092E \u092C\u094B\u0932\u0928\u0947 \u0915\u094B \u0916\u0902\u0921\u094B\u0902 \u092E\u0947\u0902 \u092C\u093E\u0901\u091F \u0938\u0915\u0924\u0947 \u0939\u0948\u0902; \u092A\u0939\u091A\u093E\u0928 \u092E\u0947\u0902 \u0905\u0924\u093F\u0930\u093F\u0915\u094D\u0924 \u0938\u092E\u092F \u0932\u0917\u0924\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.silenceDetection.customLabel": "\u0915\u0938\u094D\u091F\u092E \u0935\u093F\u0930\u093E\u092E (\u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921)",
-  "dsh-live-voice.recognition.silenceDetection.duration": "\u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0915\u093E \u0935\u093F\u0930\u093E\u092E: {milliseconds} \u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921",
-  "dsh-live-voice.recognition.silenceDetection.help": "\u0924\u092F \u0915\u0930\u0924\u093E \u0939\u0948 \u0915\u093F \u0930\u093F\u0915\u0949\u0930\u094D\u0921 \u0915\u0940 \u0917\u0908 \u0906\u0935\u093E\u091C\u093C \u0915\u094B \u092A\u0939\u091A\u093E\u0928 \u0915\u0947 \u0932\u093F\u090F \u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0935\u093F\u0930\u093E\u092E \u0915\u093F\u0924\u0928\u0940 \u0926\u0947\u0930 \u0930\u0939\u0928\u093E \u091A\u093E\u0939\u093F\u090F\u0964",
-  "dsh-live-voice.recognition.silenceDetection.label": "\u092E\u094C\u0928 \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u093E",
-  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "\u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0915\u093E \u0935\u093F\u0930\u093E\u092E",
-  "dsh-live-voice.recognition.silenceDetection.title": "\u092E\u094C\u0928 \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u0947 \u0915\u0940 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938",
-  "dsh-live-voice.recognition.speakerMode.help": "\u0928\u093F\u092F\u0902\u0924\u094D\u0930\u093F\u0924 \u0938\u0941\u0928\u0928\u0947 \u0915\u093E \u092E\u094B\u0921 \u091C\u0935\u093E\u092C \u091A\u0932\u0924\u0947 \u0938\u092E\u092F \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u091B\u094B\u0921\u093C \u0926\u0947\u0924\u093E \u0939\u0948, \u0924\u093E\u0915\u093F \u0938\u094D\u092A\u0940\u0915\u0930 \u0915\u093E \u0911\u0921\u093F\u092F\u094B \u092A\u0939\u091A\u093E\u0928\u093E \u0928 \u091C\u093E\u090F\u0964 \u092C\u0940\u091A \u092E\u0947\u0902 \u0930\u094B\u0915\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F \u201C\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u093E \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u0923 \u0932\u0947\u0902\u201D \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0947\u0902\u0964",
-  "dsh-live-voice.recognition.speakerMode.label": "\u0938\u094D\u092A\u0940\u0915\u0930 \u2014 \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u093F\u0924 \u0938\u0941\u0928\u0928\u093E",
-  "dsh-live-voice.recognition.status.answer": "\u0909\u0924\u094D\u0924\u0930 \u092A\u0939\u091A\u093E\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
-  "dsh-live-voice.recognition.status.awaitingAnswer": "\u0906\u092A\u0915\u093E \u0909\u0924\u094D\u0924\u0930 \u0938\u0941\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
-  "dsh-live-voice.recognition.status.listening": "\u0938\u0941\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948 \u2014 \u0906\u092A\u0915\u0947 \u092C\u094B\u0932\u0928\u0947 \u0915\u0940 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0939\u0948",
-  "dsh-live-voice.recognition.status.processing": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
-  "dsh-live-voice.recognition.status.unavailable": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0909\u092A\u0932\u092C\u094D\u0927 \u0928\u0939\u0940\u0902 \u0939\u0948",
-  "dsh-live-voice.recognition.voiceCommands.help": "\u0935\u093E\u0915\u094D\u092F\u093E\u0902\u0936\u094B\u0902 \u0915\u094B \u0905\u0932\u094D\u092A\u0935\u093F\u0930\u093E\u092E \u0938\u0947 \u0905\u0932\u0917 \u0915\u0930\u0947\u0902\u0964 \u092E\u093F\u0932\u093E\u0928 \u092E\u0947\u0902 \u092C\u0921\u093C\u0947-\u091B\u094B\u091F\u0947 \u0905\u0915\u094D\u0937\u0930, \u0909\u091A\u094D\u091A\u093E\u0930\u0923 \u091A\u093F\u0939\u094D\u0928, \u0935\u093F\u0930\u093E\u092E \u091A\u093F\u0939\u094D\u0928 \u0914\u0930 \u0905\u0924\u093F\u0930\u093F\u0915\u094D\u0924 \u0938\u094D\u092A\u0947\u0938 \u0905\u0928\u0926\u0947\u0916\u0947 \u0915\u093F\u090F \u091C\u093E\u0924\u0947 \u0939\u0948\u0902\u0964 \u092A\u0942\u0930\u093E \u0905\u0902\u0924\u093F\u092E \u0916\u0902\u0921 \u092E\u0947\u0932 \u0916\u093E\u0928\u093E \u091A\u093E\u0939\u093F\u090F\u0964",
-  "dsh-live-voice.recognition.whisper.captureHelp": "\u0911\u0921\u093F\u092F\u094B \u0915\u094B \u092A\u0942\u0930\u0947 \u0915\u0925\u0928\u094B\u0902 \u0935\u093E\u0932\u0947 WAV \u0916\u0902\u0921\u094B\u0902 \u092E\u0947\u0902 \u092C\u093E\u0901\u091F\u0915\u0930 \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0943\u0924 DSH \u0915\u0947 \u091C\u093C\u0930\u093F\u090F \u092D\u0947\u091C\u093E \u091C\u093E\u0924\u093E \u0939\u0948, \u0914\u0930 \u0932\u0942\u092A\u092C\u0948\u0915 \u092A\u0924\u0947 \u092A\u0930 \u091A\u0932 \u0930\u0939\u0940 whisper.cpp HTTP \u0938\u0947\u0935\u093E \u0907\u0938\u0947 \u092A\u094D\u0930\u094B\u0938\u0947\u0938 \u0915\u0930\u0924\u0940 \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.whisper.connectionSuccess": "\u0915\u0928\u0947\u0915\u094D\u0936\u0928 \u0938\u092B\u0932 \u0930\u0939\u093E\u0964 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u091C\u093E\u0901\u091A \u090F\u0902\u0921\u092A\u0949\u0907\u0902\u091F \u0928\u0947 \u091C\u0935\u093E\u092C \u0926\u093F\u092F\u093E; \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u0915\u0940 \u091C\u093E\u0901\u091A \u0928\u0939\u0940\u0902 \u0915\u0940 \u0917\u0908\u0964 \u092C\u093F\u0928\u093E \u0938\u0939\u0947\u091C\u0947 \u092C\u0926\u0932\u093E\u0935 \u0932\u093E\u0917\u0942 \u0928\u0939\u0940\u0902 \u0915\u093F\u090F \u0917\u090F \u0939\u0948\u0902\u0964",
-  "dsh-live-voice.recognition.whisper.endpointHelp": "HTTP API, \u0915\u0949\u0928\u094D\u092B\u093C\u093F\u0917\u0930 \u0915\u093F\u090F \u0917\u090F \u092C\u0947\u0938 URL \u092A\u0930 \u0939\u0948 (\u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F: http://127.0.0.1:8080/)\u0964 POST /v1/audio/transcriptions \u0915\u0947 \u0938\u093E\u0925 \u0938\u0902\u0917\u0924 \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.whisper.healthFailed": "Whisper \u0915\u0940 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u091C\u093E\u0901\u091A \u0935\u093F\u092B\u0932 \u0930\u0939\u0940\u0964",
-  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 HTTP API",
-  "dsh-live-voice.recognition.whisper.requestFailed": "Whisper \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0915\u093E \u0905\u0928\u0941\u0930\u094B\u0927 \u0935\u093F\u092B\u0932 \u0930\u0939\u093E\u0964",
-  "dsh-live-voice.recognition.whisper.restartRequired": "Whisper \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0915\u0947 \u0930\u0942\u091F \u0932\u094B\u0921 \u0928\u0939\u0940\u0902 \u0939\u0948\u0902\u0964 \u0905\u092A\u0921\u0947\u091F \u0915\u093F\u090F \u0917\u090F \u092A\u094D\u0932\u0917\u0907\u0928 \u0930\u0942\u091F \u0932\u094B\u0921 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F DSH \u0938\u0930\u094D\u0935\u0930 \u0915\u094B \u0938\u093E\u092E\u093E\u0928\u094D\u092F \u0930\u0942\u092A \u0938\u0947 \u092A\u0941\u0928\u0903 \u0936\u0941\u0930\u0942 \u0915\u0930\u0928\u093E \u0939\u094B\u0917\u093E; \u0915\u0947\u0935\u0932 \u092F\u0939 \u092A\u0947\u091C \u0930\u0940\u092B\u093C\u094D\u0930\u0947\u0936 \u0915\u0930\u0928\u093E \u092A\u0930\u094D\u092F\u093E\u092A\u094D\u0924 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964",
-  "dsh-live-voice.recognition.whisper.save": "Whisper \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0938\u0939\u0947\u091C\u0947\u0902",
-  "dsh-live-voice.recognition.whisper.saved": "DSH \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0938\u0939\u0947\u091C\u093E \u0917\u092F\u093E\u0964 \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u091A\u0932 \u0930\u0939\u0947 \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u0905\u0928\u0941\u0930\u094B\u0927 \u0930\u0926\u094D\u0926 \u0915\u0930 \u0926\u093F\u090F \u0917\u090F\u0964",
-  "dsh-live-voice.recognition.whisper.signInRequired": "Whisper \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092A\u094D\u0930\u092C\u0902\u0927\u093F\u0924 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F DSH \u092E\u0947\u0902 \u0938\u093E\u0907\u0928 \u0907\u0928 \u0915\u0930\u0947\u0902\u0964",
-  "dsh-live-voice.settings.autoSend.cancel": "\u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092D\u0947\u091C\u0928\u093E \u0930\u0926\u094D\u0926 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.settings.autoSend.countdown": "{remaining} \u092E\u0947\u0902 \u092D\u0947\u091C\u093E \u091C\u093E\u090F\u0917\u093E\u2026",
-  "dsh-live-voice.settings.autoSend.delay": "\u092E\u094C\u0928 \u0915\u0947 \u092C\u093E\u0926 \u092D\u0947\u091C\u0947\u0902",
-  "dsh-live-voice.settings.close": "\u0935\u0949\u0907\u0938 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice \u0906\u092A\u0915\u0947 \u0909\u0924\u094D\u0924\u0930 \u0938\u0947 \u0926\u093F\u0936\u093E \u0926\u0947\u0928\u0947 \u0914\u0930 \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u0921\u093E\u0932\u0928\u0947 \u0915\u0940 \u0938\u0939\u0940 \u0915\u094D\u0930\u093F\u092F\u093E \u091A\u0941\u0928\u0924\u093E \u0939\u0948\u0964 \u0907\u0938\u0938\u0947 DSH \u0915\u0940 \u0938\u0947\u091F\u093F\u0902\u0917 \u0928\u0939\u0940\u0902 \u092C\u0926\u0932\u0924\u0940; \u0905\u092A\u0928\u093E \u0935\u0930\u094D\u0924\u092E\u093E\u0928 DSH \u0935\u094D\u092F\u0935\u0939\u093E\u0930 \u092C\u0924\u093E\u090F\u0902 \u0914\u0930 \u0909\u0938\u0915\u0947 \u092C\u0926\u0932\u0928\u0947 \u092A\u0930 \u092F\u0939 \u0909\u0924\u094D\u0924\u0930 \u0905\u092A\u0921\u0947\u091F \u0915\u0930\u0947\u0902\u0964",
-  "dsh-live-voice.settings.delivery.dshEnterQuestion": "\u0906\u092A\u0915\u0947 DSH \u092E\u0947\u0902, \u090F\u091C\u0947\u0902\u091F \u0935\u094D\u092F\u0938\u094D\u0924 \u0939\u094B\u0928\u0947 \u092A\u0930 Enter \u0915\u094D\u092F\u093E \u0915\u0930\u0924\u093E \u0939\u0948?",
-  "dsh-live-voice.settings.delivery.dshEnterQueue": "\u0938\u0902\u0926\u0947\u0936 \u0915\u094B \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u0921\u093E\u0932\u0924\u093E \u0939\u0948",
-  "dsh-live-voice.settings.delivery.dshEnterSteer": "\u0938\u0902\u0926\u0947\u0936 \u0938\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u0926\u093F\u0936\u093E \u0926\u0947\u0924\u093E \u0939\u0948",
-  "dsh-live-voice.settings.delivery.label": "\u092D\u0947\u091C\u0928\u0947 \u0915\u093E \u092E\u094B\u0921",
-  "dsh-live-voice.settings.delivery.manualLabel": "\u092C\u0902\u0926 \u2014 \u0938\u092E\u0940\u0915\u094D\u0937\u093E \u0915\u0930\u0915\u0947 \u092E\u0948\u0928\u094D\u092F\u0941\u0905\u0932 \u0930\u0942\u092A \u0938\u0947 \u092D\u0947\u091C\u0947\u0902",
-  "dsh-live-voice.settings.delivery.queueLabel": "\u0915\u0924\u093E\u0930 \u2014 \u092E\u094C\u0928 \u0915\u0947 \u092C\u093E\u0926 \u0905\u092A\u0928\u0947 \u0906\u092A \u091C\u094B\u0921\u093C\u0947\u0902",
-  "dsh-live-voice.settings.delivery.status": "\u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092D\u0947\u091C\u0928\u093E: {mode}",
-  "dsh-live-voice.settings.delivery.steerDescription": "\u091A\u0932 \u0930\u0939\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u092D\u0947\u091C\u0947\u0902",
-  "dsh-live-voice.settings.delivery.steerLabel": "\u0926\u093F\u0936\u093E \u0926\u0947\u0902 \u2014 \u091A\u0932 \u0930\u0939\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u0905\u092A\u0928\u0947 \u0906\u092A \u092D\u0947\u091C\u0947\u0902",
-  "dsh-live-voice.settings.delivery.toggle": "\u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092D\u0947\u091C\u0928\u0947 \u0915\u093E \u092E\u094B\u0921",
-  "dsh-live-voice.settings.engine.refresh": "\u0909\u092A\u0932\u092C\u094D\u0927 \u0907\u0902\u091C\u0928 \u0930\u0940\u092B\u093C\u094D\u0930\u0947\u0936 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.settings.filters.title": "\u092B\u093C\u093F\u0932\u094D\u091F\u0930\u093F\u0902\u0917",
-  "dsh-live-voice.settings.general.title": "\u0938\u093E\u092E\u093E\u0928\u094D\u092F",
-  "dsh-live-voice.settings.persistence.loadError": "\u0938\u0930\u094D\u0935\u0930 \u0938\u0947 Live Voice \u0938\u0947\u091F\u093F\u0902\u0917 \u0932\u094B\u0921 \u0928\u0939\u0940\u0902 \u0939\u094B \u0938\u0915\u0940\u0902\u0964 \u092B\u093F\u0930 \u092A\u094D\u0930\u092F\u093E\u0938 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F \u092A\u0947\u091C \u0930\u0940\u0932\u094B\u0921 \u0915\u0930\u0947\u0902\u0964",
-  "dsh-live-voice.settings.persistence.saveError": "\u0938\u0930\u094D\u0935\u0930 \u092A\u0930 Live Voice \u0938\u0947\u091F\u093F\u0902\u0917 \u0938\u0947\u0935 \u0928\u0939\u0940\u0902 \u0939\u094B \u0938\u0915\u0940\u0902\u0964 \u092B\u093F\u0930 \u092A\u094D\u0930\u092F\u093E\u0938 \u0915\u0930\u0947\u0902\u0964",
-  "dsh-live-voice.settings.tabs.conversation": "\u092C\u093E\u0924\u091A\u0940\u0924",
-  "dsh-live-voice.settings.tabs.recognition": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928",
-  "dsh-live-voice.settings.tabs.speak": "\u0935\u093E\u091A\u0928",
-  "dsh-live-voice.settings.title": "Live Voice \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938",
-  "dsh-live-voice.settings.whisper.hostHelp": "\u092A\u0942\u0930\u0947 \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0932\u093E\u0917\u0942 \u0939\u094B\u0928\u0947 \u0935\u093E\u0932\u0940 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938\u0964 \u0915\u0947\u0935\u0932 \u092C\u093F\u0928\u093E \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0930\u0923 \u0935\u093E\u0932\u0947 \u0932\u0942\u092A\u092C\u0948\u0915 HTTP URL (localhost, 127.0.0.1, [::1]) \u0938\u094D\u0935\u0940\u0915\u093E\u0930\u094D\u092F \u0939\u0948\u0902\u0964 \u0932\u0942\u092A\u092C\u0948\u0915 \u0915\u093E \u0905\u0930\u094D\u0925 DSH \u0939\u094B\u0938\u094D\u091F \u0939\u0948, \u092F\u0939 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0928\u0939\u0940\u0902\u0964 \u0938\u092D\u0940 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u091C\u093E\u0901\u091A \u0914\u0930 \u0911\u0921\u093F\u092F\u094B \u0905\u0928\u0941\u0930\u094B\u0927 \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0930\u0923 \u0935\u093E\u0932\u0947 \u092C\u0948\u0915\u090F\u0902\u0921 \u0915\u0947 \u091C\u093C\u0930\u093F\u090F \u091A\u0932\u0924\u0947 \u0939\u0948\u0902\u0964",
-  "dsh-live-voice.speak.agentContext.enabled": "\u090F\u091C\u0947\u0902\u091F \u0935\u0949\u0907\u0938 \u0938\u0902\u0926\u0930\u094D\u092D \u0938\u0915\u094D\u0937\u092E \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.speak.agentContext.enabledHelp": "\u0938\u0915\u094D\u0937\u092E \u0939\u094B\u0928\u0947 \u092A\u0930, \u0928\u0940\u091A\u0947 \u0926\u093F\u092F\u093E \u0917\u092F\u093E \u0938\u0902\u0926\u0930\u094D\u092D \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u092C\u0924\u093E\u0924\u093E \u0939\u0948 \u0915\u093F \u0909\u0938\u0915\u0947 \u0909\u0924\u094D\u0924\u0930 \u091C\u093C\u094B\u0930 \u0938\u0947 \u092C\u094B\u0932\u0947 \u091C\u093E\u090F\u0902\u0917\u0947\u0964",
-  "dsh-live-voice.speak.agentContext.help": "\u092F\u0939 \u0905\u0902\u0917\u094D\u0930\u0947\u091C\u093C\u0940 \u0928\u093F\u0930\u094D\u0926\u0947\u0936 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u0915\u0947\u0935\u0932 \u0938\u0915\u094D\u0930\u093F\u092F \u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0915\u0947 \u0926\u094C\u0930\u093E\u0928 \u092D\u0947\u091C\u093E \u091C\u093E\u0924\u093E \u0939\u0948, \u091C\u092C \u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092D\u093E\u0937\u0923 \u0938\u0915\u094D\u0937\u092E \u0939\u094B.",
-  "dsh-live-voice.speak.agentContext.label": "\u090F\u091C\u0947\u0902\u091F \u0935\u0949\u0907\u0938 \u0938\u0902\u0926\u0930\u094D\u092D",
-  "dsh-live-voice.speak.agentContext.restore": "\u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u092C\u0939\u093E\u0932 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.speak.autoPlayback.enabled": "\u0938\u0939\u093E\u092F\u0915 \u0915\u0947 \u0928\u090F \u0938\u0902\u0926\u0947\u0936 \u0905\u092A\u0928\u0947 \u0906\u092A \u092A\u0922\u093C\u0915\u0930 \u0938\u0941\u0928\u093E\u090F\u0901",
-  "dsh-live-voice.speak.autoPlayback.help": "\u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0915\u0947 \u0926\u094C\u0930\u093E\u0928 \u0938\u0939\u093E\u092F\u0915 \u0915\u0947 \u0935\u093E\u0915\u094D\u092F\u093E\u0902\u0936 \u0905\u092A\u0928\u0947 \u0906\u092A \u092A\u0922\u093C\u0915\u0930 \u0938\u0941\u0928\u093E\u090F \u091C\u093E\u0924\u0947 \u0939\u0948\u0902\u0964 \u091C\u092C \u0906\u092A \u092C\u094B\u0932 \u0930\u0939\u0947 \u0939\u094B\u0902, \u0924\u094B \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0915\u0930\u0924\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.speak.autoPlayback.label": "\u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u0935\u093E\u091A\u0928",
-  "dsh-live-voice.speak.autoPlayback.remainingOne": "\u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u0935\u093E\u091A\u0928: {state} \u2014 {count} \u0935\u093E\u0915\u094D \u0916\u0902\u0921 \u0936\u0947\u0937 \u0939\u0948",
-  "dsh-live-voice.speak.autoPlayback.remainingOther": "\u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u0935\u093E\u091A\u0928: {state} \u2014 {count} \u0935\u093E\u0915\u094D \u0916\u0902\u0921 \u0936\u0947\u0937 \u0939\u0948\u0902",
-  "dsh-live-voice.speak.autoPlayback.status": "\u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u0935\u093E\u091A\u0928: {state}",
-  "dsh-live-voice.speak.browser.automaticVoice": "\u0938\u094D\u0925\u093E\u0928\u0940\u092F \u0906\u0935\u093E\u091C\u093C \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u091A\u092F\u0928",
-  "dsh-live-voice.speak.browser.label": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0935\u093E\u091A\u0928 \u2014 \u0907\u0938 \u0921\u093F\u0935\u093E\u0907\u0938 \u092A\u0930 \u0911\u0921\u093F\u092F\u094B",
-  "dsh-live-voice.speak.browser.name": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0935\u093E\u091A\u0928",
-  "dsh-live-voice.speak.browser.outputHelp": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0915\u093E \u0935\u093E\u0915\u094D \u0938\u0902\u0936\u094D\u0932\u0947\u0937\u0923 \u091A\u0941\u0928\u0947 \u0917\u090F \u0906\u0909\u091F\u092A\u0941\u091F \u0921\u093F\u0935\u093E\u0907\u0938 \u0915\u094B \u0905\u0928\u0926\u0947\u0916\u093E \u0915\u0930 \u0938\u0915\u0924\u093E \u0939\u0948; \u092F\u0939 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 API \u0938\u093E\u092E\u093E\u0928\u094D\u092F\u0924\u0903 \u0938\u093F\u0938\u094D\u091F\u092E \u0915\u0947 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0924\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.speak.browser.voice": "\u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0915\u0940 \u0938\u094D\u0925\u093E\u0928\u0940\u092F \u0906\u0935\u093E\u091C\u093C",
-  "dsh-live-voice.speak.captions.approximate": "\u0905\u0928\u0941\u092E\u093E\u0928\u093F\u0924 \u0935\u093E\u0923\u0940 \u0915\u0948\u092A\u094D\u0936\u0928",
-  "dsh-live-voice.speak.captions.loading": "\u0935\u093E\u0923\u0940 \u0911\u0921\u093F\u092F\u094B \u0924\u0948\u092F\u093E\u0930 \u0939\u094B \u0930\u0939\u093E \u0939\u0948",
-  "dsh-live-voice.speak.captions.position": "\u0935\u093E\u0923\u0940 \u0916\u0902\u0921 {index} / {total}",
-  "dsh-live-voice.speak.captions.progress": "\u0905\u0928\u0941\u092E\u093E\u0928\u093F\u0924 \u0935\u093E\u0923\u0940 \u092A\u094D\u0930\u0917\u0924\u093F",
-  "dsh-live-voice.speak.captions.title": "\u0935\u093E\u0923\u0940 \u0914\u0930 \u0932\u093E\u0907\u0935 \u0915\u0948\u092A\u094D\u0936\u0928",
-  "dsh-live-voice.speak.engine.label": "\u0935\u093E\u0915\u094D \u0938\u0902\u0936\u094D\u0932\u0947\u0937\u0923 \u0907\u0902\u091C\u0928",
-  "dsh-live-voice.speak.engine.playbackHelp": "Qwen \u0914\u0930 macOS say DSH \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0906\u0935\u093E\u091C\u093C \u092C\u0928\u093E\u0924\u0947 \u0939\u0948\u0902; \u0915\u0949\u092E\u094D\u092A\u0948\u0915\u094D\u091F AAC/M4A \u0911\u0921\u093F\u092F\u094B \u0907\u0938 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u092E\u0947\u0902 \u091A\u0932\u0924\u093E \u0939\u0948\u0964 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0938\u094D\u092A\u0940\u091A \u0907\u0938\u0940 \u0921\u093F\u0935\u093E\u0907\u0938 \u092A\u0930 \u092C\u0928\u0924\u0940 \u0914\u0930 \u091A\u0932\u0924\u0940 \u0939\u0948\u0964",
-  "dsh-live-voice.speak.filters.code.enabled": "\u092A\u0922\u093C\u0915\u0930 \u0938\u0941\u0928\u093E\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 Markdown \u0915\u094B\u0921 \u092C\u094D\u0932\u0949\u0915 \u092B\u093C\u093F\u0932\u094D\u091F\u0930 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.speak.filters.code.maxLines": "\u0905\u0927\u093F\u0915\u0924\u092E \u0907\u0924\u0928\u0940 \u092A\u0902\u0915\u094D\u0924\u093F\u092F\u094B\u0902 \u0935\u093E\u0932\u0947 \u0915\u094B\u0921 \u092C\u094D\u0932\u0949\u0915 \u092A\u0922\u093C\u0947\u0902",
-  "dsh-live-voice.speak.filters.code.notice": "\u0939\u092E\u093E\u0930\u0940 \u092C\u093E\u0924\u091A\u0940\u0924 \u092E\u0947\u0902 \u0926\u093F\u092F\u093E \u0917\u092F\u093E \u0915\u094B\u0921 \u0926\u0947\u0916\u0947\u0902",
-  "dsh-live-voice.speak.filters.code.replacement": "\u092C\u0921\u093C\u0947 \u0915\u094B\u0921 \u092C\u094D\u0932\u0949\u0915 \u0915\u0940 \u091C\u0917\u0939 \u092A\u0922\u093C\u093E \u091C\u093E\u0928\u0947 \u0935\u093E\u0932\u093E \u0935\u093E\u0915\u094D\u092F\u093E\u0902\u0936",
-  "dsh-live-voice.speak.interruption.disabledHelp": "\u0926\u0942\u0938\u0930\u093E \u0938\u0902\u0926\u0947\u0936 \u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0935\u0939 \u0911\u0921\u093F\u092F\u094B \u092C\u0902\u0926 \u0928\u0939\u0940\u0902 \u0939\u094B\u0924\u093E \u091C\u093F\u0938\u0947 \u0906\u092A \u0905\u092D\u0940 \u0938\u0941\u0928 \u0930\u0939\u0947 \u0939\u0948\u0902\u0964",
-  "dsh-live-voice.speak.interruption.enabled": "\u092E\u0947\u0930\u0947 \u0938\u0902\u0926\u0947\u0936 \u092D\u0947\u091C\u0928\u0947 \u092A\u0930 \u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0935\u093E\u091A\u0928 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.speak.interruption.enabledHelp": "\u0928\u092F\u093E \u0909\u092A\u092F\u094B\u0917\u0915\u0930\u094D\u0924\u093E \u0938\u0902\u0926\u0947\u0936 \u092D\u0947\u091C\u0928\u0947 \u092F\u093E \u0909\u0938\u0938\u0947 \u091A\u0932 \u0930\u0939\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u0926\u093F\u0936\u093E \u0926\u0947\u0928\u0947 \u092A\u0930 \u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u091A\u093E\u0932\u0942 \u092F\u093E \u0920\u0939\u0930\u093E \u0939\u0941\u0906 \u0935\u093E\u091A\u0928 \u092C\u0902\u0926 \u0939\u094B \u091C\u093E\u0924\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.speak.macos.label": "macOS say \u2014 \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0911\u0921\u093F\u092F\u094B",
-  "dsh-live-voice.speak.macos.name": "macOS say",
-  "dsh-live-voice.speak.macos.outputHelp": "macOS say, DSH \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u091A\u0941\u0928\u0947 \u0917\u090F \u0906\u0909\u091F\u092A\u0941\u091F \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0924\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.speak.output.checking": "\u0935\u093E\u0915\u094D \u0906\u0909\u091F\u092A\u0941\u091F \u091C\u093E\u0901\u091A\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
-  "dsh-live-voice.speak.output.device": "\u0906\u0909\u091F\u092A\u0941\u091F \u0921\u093F\u0935\u093E\u0907\u0938",
-  "dsh-live-voice.speak.output.fallbackName": "\u0911\u0921\u093F\u092F\u094B \u0906\u0909\u091F\u092A\u0941\u091F",
-  "dsh-live-voice.speak.output.stopTest": "\u0935\u093E\u091A\u0928 \u092A\u0930\u0940\u0915\u094D\u0937\u0923 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.speak.output.test": "\u091A\u0941\u0928\u0947 \u0917\u090F \u0935\u093E\u0915\u094D \u0906\u0909\u091F\u092A\u0941\u091F \u0915\u0940 \u091C\u093E\u0901\u091A \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice\u0964 \u091A\u0941\u0928\u093E \u0917\u092F\u093E \u0935\u093E\u0915\u094D \u0906\u0909\u091F\u092A\u0941\u091F \u0915\u093E\u092E \u0915\u0930 \u0930\u0939\u093E \u0939\u0948\u0964",
-  "dsh-live-voice.speak.output.testing": "\u0935\u093E\u091A\u0928 \u0915\u093E \u092A\u0930\u0940\u0915\u094D\u0937\u0923 \u0939\u094B \u0930\u0939\u093E \u0939\u0948\u2026",
-  "dsh-live-voice.speak.playback.message": "\u0938\u0902\u0926\u0947\u0936 \u092A\u0922\u093C\u0915\u0930 \u0938\u0941\u0928\u093E\u090F\u0901",
-  "dsh-live-voice.speak.playback.next": "\u0905\u0917\u0932\u0947 \u0935\u093E\u0923\u0940 \u0916\u0902\u0921 \u092A\u0930 \u091C\u093E\u090F\u0901",
-  "dsh-live-voice.speak.playback.pause": "\u0935\u093E\u091A\u0928 \u0920\u0939\u0930\u093E\u090F\u0901",
-  "dsh-live-voice.speak.playback.previous": "\u092A\u093F\u091B\u0932\u093E \u0935\u093E\u0923\u0940 \u0916\u0902\u0921",
-  "dsh-live-voice.speak.playback.resume": "\u0935\u093E\u091A\u0928 \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.speak.playback.stop": "\u0935\u093E\u091A\u0928 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.speak.playback.stopAll": "\u0938\u092D\u0940 \u0935\u093E\u091A\u0928 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.speak.qwen.connection": "Qwen \u0938\u0930\u094D\u0935\u0930 \u0915\u0928\u0947\u0915\u094D\u0936\u0928",
-  "dsh-live-voice.speak.qwen.endpoint": "Qwen API \u0915\u093E \u092C\u0947\u0938 URL",
-  "dsh-live-voice.speak.qwen.healthFailed": "Qwen \u0915\u0940 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u091C\u093E\u0901\u091A \u0935\u093F\u092B\u0932 \u0930\u0939\u0940\u0964",
-  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 \u0938\u094D\u0925\u093E\u0928\u0940\u092F MLX \u0938\u0930\u094D\u0935\u0930",
-  "dsh-live-voice.speak.qwen.name": "\u0938\u094D\u0925\u093E\u0928\u0940\u092F Qwen3",
-  "dsh-live-voice.speak.qwen.requestFailed": "Qwen \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0915\u093E \u0905\u0928\u0941\u0930\u094B\u0927 \u0935\u093F\u092B\u0932 \u0930\u0939\u093E\u0964",
-  "dsh-live-voice.speak.qwen.restartRequired": "Qwen \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0915\u0947 \u0930\u0942\u091F \u0932\u094B\u0921 \u0928\u0939\u0940\u0902 \u0939\u0948\u0902\u0964 \u0905\u092A\u0921\u0947\u091F \u0915\u093F\u090F \u0917\u090F \u092A\u094D\u0932\u0917\u0907\u0928 \u0930\u0942\u091F \u0932\u094B\u0921 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F DSH \u0938\u0930\u094D\u0935\u0930 \u0915\u094B \u0938\u093E\u092E\u093E\u0928\u094D\u092F \u0930\u0942\u092A \u0938\u0947 \u092A\u0941\u0928\u0903 \u0936\u0941\u0930\u0942 \u0915\u0930\u0928\u093E \u0939\u094B\u0917\u093E; \u0915\u0947\u0935\u0932 \u092F\u0939 \u092A\u0947\u091C \u0930\u0940\u092B\u093C\u094D\u0930\u0947\u0936 \u0915\u0930\u0928\u093E \u092A\u0930\u094D\u092F\u093E\u092A\u094D\u0924 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964",
-  "dsh-live-voice.speak.qwen.save": "Qwen \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u0938\u0939\u0947\u091C\u0947\u0902",
-  "dsh-live-voice.speak.qwen.saved": "DSH \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0938\u0939\u0947\u091C\u093E \u0917\u092F\u093E\u0964 \u091A\u0932 \u0930\u0939\u0947 Qwen \u0905\u0928\u0941\u0930\u094B\u0927 \u0930\u0926\u094D\u0926 \u0915\u0930 \u0926\u093F\u090F \u0917\u090F\u0964",
-  "dsh-live-voice.speak.qwen.signInRequired": "Qwen \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092A\u094D\u0930\u092C\u0902\u0927\u093F\u0924 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F DSH \u092E\u0947\u0902 \u0938\u093E\u0907\u0928 \u0907\u0928 \u0915\u0930\u0947\u0902\u0964",
-  "dsh-live-voice.speak.qwen.test": "Qwen \u0938\u0930\u094D\u0935\u0930 \u0915\u0940 \u091C\u093E\u0901\u091A \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.speak.qwen.voice": "Qwen \u0915\u0940 \u0906\u0935\u093E\u091C\u093C",
-  "dsh-live-voice.speak.qwen.voiceHelp": "\u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u0930\u0942\u092A \u0938\u0947 Aiden \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0939\u094B\u0924\u093E \u0939\u0948\u0964 \u092F\u0947 \u092A\u0939\u0932\u0947 \u0938\u0947 \u0924\u092F \u0906\u0935\u093E\u091C\u093C\u0947\u0902 \u092C\u094D\u0930\u093E\u091C\u093C\u0940\u0932\u093F\u092F\u093E\u0908 \u092A\u0941\u0930\u094D\u0924\u0917\u093E\u0932\u0940 \u0915\u0947 \u092E\u0942\u0932 \u0935\u0915\u094D\u0924\u093E\u0913\u0902 \u0915\u0940 \u0906\u0935\u093E\u091C\u093C\u0947\u0902 \u0928\u0939\u0940\u0902 \u0939\u0948\u0902\u0964",
-  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 \u092A\u0941\u0930\u0941\u0937, \u0905\u092E\u0947\u0930\u093F\u0915\u0940 \u0905\u0902\u0917\u094D\u0930\u0947\u091C\u093C\u0940",
-  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 \u092A\u0941\u0930\u0941\u0937, \u092C\u0940\u091C\u093F\u0902\u0917 \u091A\u0940\u0928\u0940",
-  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 \u092A\u0941\u0930\u0941\u0937, \u0938\u093F\u091A\u0941\u0906\u0928 \u091A\u0940\u0928\u0940",
-  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 \u092E\u0939\u093F\u0932\u093E, \u091C\u093E\u092A\u093E\u0928\u0940",
-  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 \u092A\u0941\u0930\u0941\u0937, \u0905\u0902\u0917\u094D\u0930\u0947\u091C\u093C\u0940",
-  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 \u092E\u0939\u093F\u0932\u093E, \u091A\u0940\u0928\u0940",
-  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 \u092E\u0939\u093F\u0932\u093E, \u0915\u094B\u0930\u093F\u092F\u093E\u0908",
-  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 \u092A\u0941\u0930\u0941\u0937, \u091A\u0940\u0928\u0940",
-  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 \u092E\u0939\u093F\u0932\u093E, \u091A\u0940\u0928\u0940",
-  "dsh-live-voice.speak.rate.help": "\u0938\u093E\u092A\u0947\u0915\u094D\u0937 \u0917\u0924\u093F: 1 \u0938\u093E\u092E\u093E\u0928\u094D\u092F \u0939\u0948\u0964",
-  "dsh-live-voice.speak.rate.label": "\u092C\u094B\u0932\u0928\u0947 \u0915\u0940 \u0917\u0924\u093F",
-  "dsh-live-voice.speak.responseDelay.help": "\u0906\u092A\u0915\u0947 \u092C\u094B\u0932\u0928\u093E \u092C\u0902\u0926 \u0915\u0930\u0928\u0947 \u0915\u0947 \u092C\u093E\u0926 \u0938\u0939\u093E\u092F\u0915 \u0915\u093E \u0938\u094D\u0935\u091A\u093E\u0932\u093F\u0924 \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0907\u0924\u0928\u0940 \u0926\u0947\u0930 \u0924\u0915 \u0932\u0917\u093E\u0924\u093E\u0930 \u092E\u094C\u0928 \u0930\u0939\u0928\u0947 \u0915\u0940 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0915\u0930\u0924\u093E \u0939\u0948\u0964 \u0926\u094B\u092C\u093E\u0930\u093E \u092C\u094B\u0932\u0928\u0947 \u092A\u0930 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u092B\u093F\u0930 \u0938\u0947 \u0936\u0941\u0930\u0942 \u0939\u094B\u0924\u0940 \u0939\u0948\u0964",
-  "dsh-live-voice.speak.responseDelay.label": "\u0938\u0939\u093E\u092F\u0915 \u0915\u0947 \u091C\u0935\u093E\u092C \u0915\u093E \u0935\u093F\u0932\u0902\u092C",
-  "dsh-live-voice.speak.responseDelay.none": "\u0915\u094B\u0908 \u0935\u093F\u0932\u0902\u092C \u0928\u0939\u0940\u0902",
-  "dsh-live-voice.speak.segmentGap.help": "\u0932\u0917\u093E\u0924\u093E\u0930 \u092C\u094B\u0932\u0947 \u0917\u090F \u0939\u093F\u0938\u094D\u0938\u094B\u0902 \u0915\u0947 \u092C\u0940\u091A \u0907\u0924\u0928\u0947 \u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921 \u0930\u0941\u0915\u0947\u0902\u0964 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F 400 ms \u0939\u0948\u0964",
-  "dsh-live-voice.speak.segmentGap.label": "\u092C\u094B\u0932\u0947 \u0917\u090F \u0939\u093F\u0938\u094D\u0938\u094B\u0902 \u0915\u0947 \u092C\u0940\u091A \u0935\u093F\u0930\u093E\u092E",
-  "dsh-live-voice.speak.status.paused": "\u0935\u093E\u091A\u0928 \u0920\u0939\u0930\u093E \u0939\u0941\u0906 \u0939\u0948",
-  "dsh-live-voice.speak.status.playing": "\u092A\u0922\u093C\u0915\u0930 \u0938\u0941\u0928\u093E\u092F\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948"
-};
-var hi_default = Object.freeze(hi);
-
-// src/app/client/i18n/catalogs/pt-BR.ts
-var ptBR = {
-  "dsh-live-voice.commons.connection.contactingHost": "Conectando ao host DSH\u2026",
-  "dsh-live-voice.commons.connection.endpoint": "URL do endpoint",
-  "dsh-live-voice.commons.connection.healthEndpoint": "URL ou caminho de verifica\xE7\xE3o de integridade",
-  "dsh-live-voice.commons.connection.reload": "Recarregar configura\xE7\xF5es salvas",
-  "dsh-live-voice.commons.connection.test": "Testar conex\xE3o",
-  "dsh-live-voice.commons.connection.timeout": "Tempo limite da requisi\xE7\xE3o (ms)",
-  "dsh-live-voice.commons.connection.title": "Configura\xE7\xF5es de conex\xE3o",
-  "dsh-live-voice.commons.connection.unsaved": "Altera\xE7\xF5es n\xE3o salvas",
-  "dsh-live-voice.commons.controls.title": "Controles de voz",
-  "dsh-live-voice.commons.conversation.end": "Encerrar conversa por voz",
-  "dsh-live-voice.commons.conversation.idle": "Conversa inativa",
-  "dsh-live-voice.commons.conversation.start": "Iniciar conversa por voz",
-  "dsh-live-voice.commons.delivery.queueBadge": "FILA",
-  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
-  "dsh-live-voice.commons.dismiss": "Dispensar",
-  "dsh-live-voice.commons.dismissError": "Dispensar erro de voz",
-  "dsh-live-voice.commons.engine.failure": "{engine}: {reason}",
-  "dsh-live-voice.commons.input.ignoring": "ignorando",
-  "dsh-live-voice.commons.input.ignoringBadge": "IGNORANDO",
-  "dsh-live-voice.commons.input.listening": "escutando",
-  "dsh-live-voice.commons.input.listeningBadge": "ESCUTANDO",
-  "dsh-live-voice.commons.manual": "manual",
-  "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
-  "dsh-live-voice.commons.off": "desativado",
-  "dsh-live-voice.commons.on": "ativada",
-  "dsh-live-voice.commons.pluginName": "Live Voice",
-  "dsh-live-voice.commons.queue": "fila",
-  "dsh-live-voice.commons.repository.starLabel": "D\xEA uma estrela no GitHub",
-  "dsh-live-voice.commons.repository.starLink": "Dar estrela ao DSH Live Voice no GitHub",
-  "dsh-live-voice.commons.second": "1 segundo",
-  "dsh-live-voice.commons.seconds": "{seconds} segundos",
-  "dsh-live-voice.commons.send": "ENVIAR",
-  "dsh-live-voice.commons.status.ready": "Voz pronta",
-  "dsh-live-voice.commons.systemDefault": "Padr\xE3o do sistema",
-  "dsh-live-voice.commons.toggle.offBadge": "DESATIVADO",
-  "dsh-live-voice.commons.unknownLanguage": "idioma desconhecido",
-  "dsh-live-voice.commons.update.label": "Atualiza\xE7\xE3o dispon\xEDvel",
-  "dsh-live-voice.commons.update.link": "Atualiza\xE7\xE3o dispon\xEDvel: {version}. Abrir lan\xE7amento",
-  "dsh-live-voice.commons.update.version": "Atualiza\xE7\xE3o dispon\xEDvel: {version}",
-  "dsh-live-voice.commons.version.compatibility": "Compat\xEDvel com DSH v{version}",
-  "dsh-live-voice.commons.version.compatibilityLink": "Compat\xEDvel com DSH v{version}. Abrir lan\xE7amento",
-  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
-  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}. Abrir vers\xF5es",
-  "dsh-live-voice.commons.version.title": "Informa\xE7\xF5es da vers\xE3o",
-  "dsh-live-voice.recognition.autoSend.countdownHelp": "A contagem regressiva inicia ap\xF3s a frase final reconhecida. Nova fala ou edi\xE7\xF5es cancelam o envio.",
-  "dsh-live-voice.recognition.browser.autoInstallPack": "Instalar automaticamente este pacote de idioma do navegador quando necess\xE1rio",
-  "dsh-live-voice.recognition.browser.help": "Usa a API SpeechRecognition do navegador. Esta \xE9 a op\xE7\xE3o padr\xE3o.",
-  "dsh-live-voice.recognition.browser.label": "SpeechRecognition do navegador \u2014 Op\xE7\xE3o padr\xE3o",
-  "dsh-live-voice.recognition.browser.localProcessing": "Processar reconhecimento localmente neste dispositivo",
-  "dsh-live-voice.recognition.browser.microphoneHelp": "O SpeechRecognition do navegador pode usar o microfone padr\xE3o do sistema ou do navegador em vez desta sele\xE7\xE3o.",
-  "dsh-live-voice.recognition.browser.remoteServiceWarning": "O reconhecimento pelo servi\xE7o do navegador est\xE1 ativado. O navegador pode enviar o \xE1udio do microfone para o servi\xE7o remoto.",
-  "dsh-live-voice.recognition.commands.clear": "Limpar editor de mensagens",
-  "dsh-live-voice.recognition.commands.enabled": "Ativar comandos de voz exatos",
-  "dsh-live-voice.recognition.commands.mute": "Silenciar entrada do editor de mensagens",
-  "dsh-live-voice.recognition.commands.queue": "Adicionar \xE0 fila",
-  "dsh-live-voice.recognition.commands.resume": "Retomar entrada do editor de mensagens",
-  "dsh-live-voice.recognition.commands.send": "Enviar ao agente em execu\xE7\xE3o",
-  "dsh-live-voice.recognition.commands.stopSpeech": "Parar fala do assistente",
-  "dsh-live-voice.recognition.commands.title": "Comandos de voz",
-  "dsh-live-voice.recognition.dictation.cancel": "Cancelar ditado",
-  "dsh-live-voice.recognition.engine.label": "Mecanismo de reconhecimento",
-  "dsh-live-voice.recognition.headphoneMode.help": "O microfone aberto continua ouvindo enquanto as respostas s\xE3o reproduzidas. Ao detectar sua fala, a reprodu\xE7\xE3o pausa e s\xF3 continua quando voc\xEA escolher.",
-  "dsh-live-voice.recognition.headphoneMode.label": "Fones de ouvido \u2014 microfone aberto",
-  "dsh-live-voice.recognition.holdToTalk.enabled": "Segure Control para falar",
-  "dsh-live-voice.recognition.holdToTalk.help": "Com o editor aberto, segure Control em qualquer lugar da p\xE1gina para capturar a fala. Solte para concluir as transcri\xE7\xF5es pendentes, aguardar o atraso configurado, enfileirar a mensagem e encerrar a captura. Pressione Escape enquanto segura para cancelar.",
-  "dsh-live-voice.recognition.language.automatic": "Autom\xE1tico \u2014 detectar idioma",
-  "dsh-live-voice.recognition.language.label": "Idioma de reconhecimento",
-  "dsh-live-voice.recognition.manualSend.help": "O texto reconhecido permanece no editor at\xE9 que voc\xEA use o bot\xE3o normal de envio do DSH.",
-  "dsh-live-voice.recognition.maxUtterance.help": "Se a fala nunca pausar, inicia um novo trecho de transcri\xE7\xE3o ap\xF3s esta dura\xE7\xE3o. Padr\xE3o: 60 segundos.",
-  "dsh-live-voice.recognition.maxUtterance.label": "Fala cont\xEDnua m\xE1xima (segundos)",
-  "dsh-live-voice.recognition.microphone.checking": "Verificando disponibilidade do microfone",
-  "dsh-live-voice.recognition.microphone.device": "Dispositivo de entrada",
-  "dsh-live-voice.recognition.microphone.failure": "Microfone: {reason}",
-  "dsh-live-voice.recognition.microphone.ignore": "Ignorar entrada do editor de mensagens",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada do microfone: {state}",
-  "dsh-live-voice.recognition.microphone.label": "Microfone",
-  "dsh-live-voice.recognition.microphone.permissionHelp": "A permiss\xE3o do microfone ser\xE1 solicitada apenas quando voc\xEA iniciar a ditado ou uma conversa por voz.",
-  "dsh-live-voice.recognition.microphone.resume": "Retomar escuta",
-  "dsh-live-voice.recognition.microphone.starting": "Iniciando microfone\u2026",
-  "dsh-live-voice.recognition.microphone.takeControl": "Assumir microfone",
-  "dsh-live-voice.recognition.minimumWords.enabled": "Ignorar trechos curtos de transcri\xE7\xE3o final",
-  "dsh-live-voice.recognition.minimumWords.help": "Trechos finais com menos palavras s\xE3o ignorados antes de chegarem ao editor ou ao envio autom\xE1tico.",
-  "dsh-live-voice.recognition.minimumWords.label": "M\xEDnimo de palavras por trecho final",
-  "dsh-live-voice.recognition.mode.label": "Modo de escuta",
-  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 Em breve",
-  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx Streaming \u2014 Em breve",
-  "dsh-live-voice.recognition.planned.vote": "Em breve \u2014 vote nas issues do reposit\xF3rio",
-  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 Em breve",
-  "dsh-live-voice.recognition.planned.webGpu": "Infer\xEAncia WebGPU no navegador \u2014 Em breve",
-  "dsh-live-voice.recognition.presets.custom.description": "Escolha a dura\xE7\xE3o do sil\xEAncio.",
-  "dsh-live-voice.recognition.presets.custom.label": "Personalizada",
-  "dsh-live-voice.recognition.presets.long.description": "Aguarda durante pausas de pensamento mais longas.",
-  "dsh-live-voice.recognition.presets.long.label": "Longa",
-  "dsh-live-voice.recognition.presets.natural.description": "Permite pausas normais entre frases.",
-  "dsh-live-voice.recognition.presets.natural.label": "Natural",
-  "dsh-live-voice.recognition.presets.short.description": "Envia rapidamente ap\xF3s uma pausa curta.",
-  "dsh-live-voice.recognition.presets.short.label": "Curta",
-  "dsh-live-voice.recognition.providerSettings.help": "As configura\xE7\xF5es do provedor mudam com o mecanismo de reconhecimento selecionado.",
-  "dsh-live-voice.recognition.qwen.captureHelp": "O \xE1udio \xE9 segmentado em trechos completos de fala em WAV e enviado pelo DSH autenticado para o modelo Qwen3 ASR local do host.",
-  "dsh-live-voice.recognition.qwen.connectionSuccess": "Conex\xE3o bem-sucedida. O Qwen ASR e TTS est\xE3o carregados. Edi\xE7\xF5es n\xE3o salvas n\xE3o foram aplicadas.",
-  "dsh-live-voice.recognition.qwen.endpointHelp": "API HTTP na URL configurada do host DSH (padr\xE3o: http://127.0.0.1:8080/inference). O \xE1udio usa a rota de transcri\xE7\xE3o autenticada do host DSH.",
-  "dsh-live-voice.recognition.qwen.hostHelp": "Configura\xE7\xF5es de todo o host para o servidor Qwen3 ASR + TTS. Insira qualquer URL base HTTP ou HTTPS acess\xEDvel a partir do host DSH. O navegador acessa atrav\xE9s de rotas autenticadas do DSH.",
-  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
-  "dsh-live-voice.recognition.silenceDetection.customHelp": "Insira um n\xFAmero inteiro de 100 a 10.000 ms. Salvo ao sair do campo. Pausas curtas podem dividir a fala; o reconhecimento acrescenta sua pr\xF3pria lat\xEAncia.",
-  "dsh-live-voice.recognition.silenceDetection.customLabel": "Pausa personalizada (milissegundos)",
-  "dsh-live-voice.recognition.silenceDetection.duration": "Pausa antes de enviar: {milliseconds} ms",
-  "dsh-live-voice.recognition.silenceDetection.help": "Controla a dura\xE7\xE3o m\xEDnima da pausa antes de enviar a fala capturada para reconhecimento.",
-  "dsh-live-voice.recognition.silenceDetection.label": "Detec\xE7\xE3o de sil\xEAncio",
-  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pausa antes de enviar",
-  "dsh-live-voice.recognition.silenceDetection.title": "Configura\xE7\xF5es de detec\xE7\xE3o de sil\xEAncio",
-  "dsh-live-voice.recognition.speakerMode.help": 'A escuta controlada libera o microfone enquanto as respostas s\xE3o reproduzidas, evitando que o som dos alto-falantes seja reconhecido. Use "Assumir microfone" para interromper.',
-  "dsh-live-voice.recognition.speakerMode.label": "Alto-falantes \u2014 escuta controlada",
-  "dsh-live-voice.recognition.status.answer": "Reconhecendo resposta\u2026",
-  "dsh-live-voice.recognition.status.awaitingAnswer": "Ouvindo sua resposta\u2026",
-  "dsh-live-voice.recognition.status.listening": "Ouvindo \u2014 aguardando fala",
-  "dsh-live-voice.recognition.status.processing": "Reconhecendo fala\u2026",
-  "dsh-live-voice.recognition.status.unavailable": "Reconhecimento de voz indispon\xEDvel",
-  "dsh-live-voice.recognition.voiceCommands.help": "Separe as frases por v\xEDrgulas. A correspond\xEAncia ignora mai\xFAsculas, acentos, pontua\xE7\xE3o e espa\xE7os extras. Todo o trecho final deve coincidir.",
-  "dsh-live-voice.recognition.whisper.captureHelp": "O \xE1udio \xE9 segmentado em trechos completos de fala em WAV, enviado atrav\xE9s do DSH autenticado e processado pelo whisper.cpp HTTP em loopback.",
-  "dsh-live-voice.recognition.whisper.connectionSuccess": "Conex\xE3o bem-sucedida. O endpoint de verifica\xE7\xE3o respondeu; a transcri\xE7\xE3o n\xE3o foi testada. Edi\xE7\xF5es n\xE3o salvas n\xE3o foram aplicadas.",
-  "dsh-live-voice.recognition.whisper.endpointHelp": "API HTTP na URL base configurada (padr\xE3o: http://127.0.0.1:8080/). Compat\xEDvel com POST /v1/audio/transcriptions.",
-  "dsh-live-voice.recognition.whisper.healthFailed": "Falha na verifica\xE7\xE3o de integridade do Whisper.",
-  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 API HTTP",
-  "dsh-live-voice.recognition.whisper.requestFailed": "Falha na requisi\xE7\xE3o de configura\xE7\xF5es do Whisper.",
-  "dsh-live-voice.recognition.whisper.restartRequired": "As rotas de configura\xE7\xE3o do Whisper n\xE3o est\xE3o carregadas. \xC9 necess\xE1rio reiniciar o servidor DSH normalmente para carregar rotas atualizadas do plugin; atualizar apenas esta p\xE1gina n\xE3o \xE9 suficiente.",
-  "dsh-live-voice.recognition.whisper.save": "Salvar configura\xE7\xF5es do Whisper",
-  "dsh-live-voice.recognition.whisper.saved": "Salvo no host DSH. Requisi\xE7\xF5es ativas de transcri\xE7\xE3o do host foram canceladas.",
-  "dsh-live-voice.recognition.whisper.signInRequired": "Fa\xE7a login no DSH para gerenciar as configura\xE7\xF5es do Whisper.",
-  "dsh-live-voice.settings.autoSend.cancel": "Cancelar envio autom\xE1tico",
-  "dsh-live-voice.settings.autoSend.countdown": "Enviando em {remaining}\u2026",
-  "dsh-live-voice.settings.autoSend.delay": "Enviar ap\xF3s o sil\xEAncio",
-  "dsh-live-voice.settings.close": "Fechar configura\xE7\xF5es de voz",
-  "dsh-live-voice.settings.delivery.dshEnterHelp": "O Live Voice usa sua resposta para escolher a a\xE7\xE3o correta ao enviar como Steer ou colocar na Fila. Isto n\xE3o altera as configura\xE7\xF5es do DSH; informe o comportamento que voc\xEA j\xE1 usa nele e atualize esta resposta se ele mudar.",
-  "dsh-live-voice.settings.delivery.dshEnterQuestion": "No seu DSH, quando o agente est\xE1 ocupado, o Enter faz o qu\xEA?",
-  "dsh-live-voice.settings.delivery.dshEnterQueue": "Coloca a mensagem na fila",
-  "dsh-live-voice.settings.delivery.dshEnterSteer": "Envia a mensagem como steer",
-  "dsh-live-voice.settings.delivery.label": "Modo de envio",
-  "dsh-live-voice.settings.delivery.manualLabel": "Desativado \u2014 revisar e enviar manualmente",
-  "dsh-live-voice.settings.delivery.queueLabel": "Fila \u2014 adicionar automaticamente ap\xF3s o sil\xEAncio",
-  "dsh-live-voice.settings.delivery.status": "Entrega autom\xE1tica: {mode}",
-  "dsh-live-voice.settings.delivery.steerDescription": "enviar ao agente em execu\xE7\xE3o",
-  "dsh-live-voice.settings.delivery.steerLabel": "Enviar \u2014 encaminhar automaticamente ao agente em execu\xE7\xE3o",
-  "dsh-live-voice.settings.delivery.toggle": "Modo de entrega autom\xE1tica",
-  "dsh-live-voice.settings.engine.refresh": "Atualizar mecanismos dispon\xEDveis",
-  "dsh-live-voice.settings.filters.title": "Filtragem",
-  "dsh-live-voice.settings.general.title": "Gerais",
-  "dsh-live-voice.settings.persistence.loadError": "N\xE3o foi poss\xEDvel carregar as configura\xE7\xF5es do Live Voice do servidor. Recarregue para tentar novamente.",
-  "dsh-live-voice.settings.persistence.saveError": "N\xE3o foi poss\xEDvel salvar as configura\xE7\xF5es do Live Voice no servidor. Tente novamente.",
-  "dsh-live-voice.settings.tabs.conversation": "Conversa",
-  "dsh-live-voice.settings.tabs.recognition": "Reconhecimento de voz",
-  "dsh-live-voice.settings.tabs.speak": "Fala",
-  "dsh-live-voice.settings.title": "Configura\xE7\xF5es do Live Voice",
-  "dsh-live-voice.settings.whisper.hostHelp": "Configura\xE7\xF5es para todo o host. Apenas URLs HTTP loopback n\xE3o autenticadas (localhost, 127.0.0.1, [::1]) s\xE3o permitidas. Loopback refere-se ao host DSH, n\xE3o a este navegador. Todas as verifica\xE7\xF5es de integridade e requisi\xE7\xF5es de \xE1udio passam pelo backend autenticado.",
-  "dsh-live-voice.speak.agentContext.enabled": "Ativar contexto de voz do agente",
-  "dsh-live-voice.speak.agentContext.enabledHelp": "Quando ativado, o contexto abaixo informa ao agente que suas respostas ser\xE3o faladas em voz alta.",
-  "dsh-live-voice.speak.agentContext.help": "Esta instru\xE7\xE3o em ingl\xEAs \xE9 enviada ao agente somente durante uma conversa por voz ativa com fala autom\xE1tica do assistente ativada.",
-  "dsh-live-voice.speak.agentContext.label": "Contexto de voz do agente",
-  "dsh-live-voice.speak.agentContext.restore": "Restaurar padr\xE3o",
-  "dsh-live-voice.speak.autoPlayback.enabled": "Falar automaticamente novas mensagens do assistente",
-  "dsh-live-voice.speak.autoPlayback.help": "Durante uma conversa por voz, as frases do assistente s\xE3o anunciadas automaticamente. A reprodu\xE7\xE3o aguarda enquanto voc\xEA fala.",
-  "dsh-live-voice.speak.autoPlayback.label": "Fala autom\xE1tica do assistente",
-  "dsh-live-voice.speak.autoPlayback.remainingOne": "Fala autom\xE1tica do assistente: {state} \u2014 resta {count} segmento de fala",
-  "dsh-live-voice.speak.autoPlayback.remainingOther": "Fala autom\xE1tica do assistente: {state} \u2014 restam {count} segmentos de fala",
-  "dsh-live-voice.speak.autoPlayback.status": "Fala autom\xE1tica do assistente: {state}",
-  "dsh-live-voice.speak.browser.automaticVoice": "Voz local autom\xE1tica",
-  "dsh-live-voice.speak.browser.label": "Fala do navegador \u2014 \xE1udio neste dispositivo",
-  "dsh-live-voice.speak.browser.name": "Fala do navegador",
-  "dsh-live-voice.speak.browser.outputHelp": "A s\xEDntese de fala do navegador pode ignorar o dispositivo de sa\xEDda selecionado; esta API normalmente segue o padr\xE3o do sistema.",
-  "dsh-live-voice.speak.browser.voice": "Voz local do navegador",
-  "dsh-live-voice.speak.captions.approximate": "Legendas aproximadas da fala",
-  "dsh-live-voice.speak.captions.loading": "Preparando \xE1udio da fala",
-  "dsh-live-voice.speak.captions.position": "Trecho de fala {index} de {total}",
-  "dsh-live-voice.speak.captions.progress": "Progresso aproximado da fala",
-  "dsh-live-voice.speak.captions.title": "Fala e legendas ao vivo",
-  "dsh-live-voice.speak.engine.label": "Mecanismo de fala",
-  "dsh-live-voice.speak.engine.playbackHelp": "Qwen e macOS say sintetizam no host do DSH; o \xE1udio AAC/M4A compacto \xE9 reproduzido neste navegador. A fala do navegador \xE9 sintetizada e reproduzida neste dispositivo.",
-  "dsh-live-voice.speak.filters.code.enabled": "Filtrar blocos de c\xF3digo Markdown antes de falar",
-  "dsh-live-voice.speak.filters.code.maxLines": "Ler blocos de c\xF3digo at\xE9 esta quantidade de linhas",
-  "dsh-live-voice.speak.filters.code.notice": "Veja o c\xF3digo na nossa conversa",
-  "dsh-live-voice.speak.filters.code.replacement": "Frase substituta para blocos de c\xF3digo maiores",
-  "dsh-live-voice.speak.interruption.disabledHelp": "Enviar outra mensagem n\xE3o interrompe o \xE1udio do assistente que voc\xEA j\xE1 est\xE1 ouvindo.",
-  "dsh-live-voice.speak.interruption.enabled": "Parar fala do assistente quando eu enviar uma mensagem",
-  "dsh-live-voice.speak.interruption.enabledHelp": "Enviar ou direcionar uma nova mensagem interrompe a fala atual ou pausada do assistente.",
-  "dsh-live-voice.speak.macos.label": "macOS say \u2014 \xE1udio no host",
-  "dsh-live-voice.speak.macos.name": "macOS say",
-  "dsh-live-voice.speak.macos.outputHelp": "O macOS say usa a sa\xEDda selecionada no host DSH.",
-  "dsh-live-voice.speak.output.checking": "Verificando sa\xEDda de fala\u2026",
-  "dsh-live-voice.speak.output.device": "Dispositivo de sa\xEDda",
-  "dsh-live-voice.speak.output.fallbackName": "Sa\xEDda de \xE1udio",
-  "dsh-live-voice.speak.output.stopTest": "Parar teste de fala",
-  "dsh-live-voice.speak.output.test": "Testar sa\xEDda de fala selecionada",
-  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice. A sa\xEDda de fala selecionada est\xE1 funcionando.",
-  "dsh-live-voice.speak.output.testing": "Testando fala\u2026",
-  "dsh-live-voice.speak.playback.message": "Falar mensagem",
-  "dsh-live-voice.speak.playback.next": "Pular para o pr\xF3ximo trecho de fala",
-  "dsh-live-voice.speak.playback.pause": "Pausar fala",
-  "dsh-live-voice.speak.playback.previous": "Voltar ao trecho de fala anterior",
-  "dsh-live-voice.speak.playback.resume": "Retomar fala",
-  "dsh-live-voice.speak.playback.stop": "Parar de falar",
-  "dsh-live-voice.speak.playback.stopAll": "Parar toda a fala",
-  "dsh-live-voice.speak.qwen.connection": "Conex\xE3o com servidor Qwen",
-  "dsh-live-voice.speak.qwen.endpoint": "URL base da API Qwen",
-  "dsh-live-voice.speak.qwen.healthFailed": "Falha na verifica\xE7\xE3o de integridade do Qwen.",
-  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 servidor MLX local",
-  "dsh-live-voice.speak.qwen.name": "Qwen3 local",
-  "dsh-live-voice.speak.qwen.requestFailed": "Falha na requisi\xE7\xE3o de configura\xE7\xF5es do Qwen.",
-  "dsh-live-voice.speak.qwen.restartRequired": "As rotas de configura\xE7\xE3o do Qwen n\xE3o est\xE3o carregadas. \xC9 necess\xE1rio reiniciar o servidor DSH normalmente para carregar rotas atualizadas do plugin; atualizar apenas esta p\xE1gina n\xE3o \xE9 suficiente.",
-  "dsh-live-voice.speak.qwen.save": "Salvar configura\xE7\xF5es do Qwen",
-  "dsh-live-voice.speak.qwen.saved": "Salvo no host DSH. Requisi\xE7\xF5es ativas do Qwen foram canceladas.",
-  "dsh-live-voice.speak.qwen.signInRequired": "Fa\xE7a login no DSH para gerenciar as configura\xE7\xF5es do Qwen.",
-  "dsh-live-voice.speak.qwen.test": "Testar servidor Qwen",
-  "dsh-live-voice.speak.qwen.voice": "Voz Qwen",
-  "dsh-live-voice.speak.qwen.voiceHelp": "Aiden \xE9 usado por padr\xE3o. Estas vozes predefinidas n\xE3o s\xE3o vozes nativas em Portugu\xEAs do Brasil.",
-  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 masculino, ingl\xEAs americano",
-  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 masculino, chin\xEAs de Pequim",
-  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 masculino, chin\xEAs de Sichuan",
-  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 feminino, japon\xEAs",
-  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 masculino, ingl\xEAs",
-  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 feminino, chin\xEAs",
-  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 feminino, coreano",
-  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 masculino, chin\xEAs",
-  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 feminino, chin\xEAs",
-  "dsh-live-voice.speak.rate.help": "A velocidade relativa 1 \xE9 normal.",
-  "dsh-live-voice.speak.rate.label": "Velocidade da fala",
-  "dsh-live-voice.speak.responseDelay.help": "Depois que voc\xEA parar de falar, a reprodu\xE7\xE3o autom\xE1tica do assistente aguardar\xE1 esse tempo de sil\xEAncio cont\xEDnuo. Falar novamente reinicia a contagem.",
-  "dsh-live-voice.speak.responseDelay.label": "Atraso da resposta do assistente",
-  "dsh-live-voice.speak.responseDelay.none": "Sem atraso",
-  "dsh-live-voice.speak.segmentGap.help": "Aguarde esta quantidade de milissegundos entre trechos falados consecutivos. O padr\xE3o \xE9 400 ms.",
-  "dsh-live-voice.speak.segmentGap.label": "Pausa entre trechos de fala",
-  "dsh-live-voice.speak.status.paused": "Fala pausada",
-  "dsh-live-voice.speak.status.playing": "Falando"
-};
-var pt_BR_default = Object.freeze(ptBR);
-
-// src/app/client/i18n/catalogs/zh.ts
-var zh = {
-  "dsh-live-voice.commons.connection.contactingHost": "\u6B63\u5728\u8054\u7CFB DSH \u4E3B\u673A\u2026",
-  "dsh-live-voice.commons.connection.endpoint": "\u7AEF\u70B9 URL",
-  "dsh-live-voice.commons.connection.healthEndpoint": "\u5065\u5EB7\u68C0\u67E5 URL \u6216\u8DEF\u5F84",
-  "dsh-live-voice.commons.connection.reload": "\u91CD\u65B0\u52A0\u8F7D\u5DF2\u4FDD\u5B58\u7684\u8BBE\u7F6E",
-  "dsh-live-voice.commons.connection.test": "\u6D4B\u8BD5\u8FDE\u63A5",
-  "dsh-live-voice.commons.connection.timeout": "\u8BF7\u6C42\u8D85\u65F6\uFF08\u6BEB\u79D2\uFF09",
-  "dsh-live-voice.commons.connection.title": "\u8FDE\u63A5\u8BBE\u7F6E",
-  "dsh-live-voice.commons.connection.unsaved": "\u6709\u672A\u4FDD\u5B58\u7684\u66F4\u6539",
-  "dsh-live-voice.commons.controls.title": "\u8BED\u97F3\u63A7\u5236",
-  "dsh-live-voice.commons.conversation.end": "\u7ED3\u675F\u8BED\u97F3\u5BF9\u8BDD",
-  "dsh-live-voice.commons.conversation.idle": "\u5BF9\u8BDD\u7A7A\u95F2",
-  "dsh-live-voice.commons.conversation.start": "\u5F00\u59CB\u8BED\u97F3\u5BF9\u8BDD",
-  "dsh-live-voice.commons.delivery.queueBadge": "\u961F\u5217",
-  "dsh-live-voice.commons.device.numberedLabel": "{device} {number}",
-  "dsh-live-voice.commons.dismiss": "\u5173\u95ED",
-  "dsh-live-voice.commons.dismissError": "\u5173\u95ED\u8BED\u97F3\u9519\u8BEF\u63D0\u793A",
-  "dsh-live-voice.commons.engine.failure": "{engine}\uFF1A{reason}",
-  "dsh-live-voice.commons.input.ignoring": "\u6B63\u5728\u5FFD\u7565",
-  "dsh-live-voice.commons.input.ignoringBadge": "\u5FFD\u7565\u4E2D",
-  "dsh-live-voice.commons.input.listening": "\u6B63\u5728\u8046\u542C",
-  "dsh-live-voice.commons.input.listeningBadge": "\u8046\u542C\u4E2D",
-  "dsh-live-voice.commons.manual": "\u624B\u52A8",
-  "dsh-live-voice.commons.milliseconds": "{milliseconds} \u6BEB\u79D2",
-  "dsh-live-voice.commons.off": "\u5173\u95ED",
-  "dsh-live-voice.commons.on": "\u5F00\u542F",
-  "dsh-live-voice.commons.pluginName": "Live Voice",
-  "dsh-live-voice.commons.queue": "\u961F\u5217",
-  "dsh-live-voice.commons.repository.starLabel": "\u5728 GitHub \u4E0A\u4E3A\u6211\u4EEC\u52A0\u661F",
-  "dsh-live-voice.commons.repository.starLink": "\u5728 GitHub \u4E0A\u4E3A DSH Live Voice \u52A0\u661F",
-  "dsh-live-voice.commons.second": "1 \u79D2",
-  "dsh-live-voice.commons.seconds": "{seconds} \u79D2",
-  "dsh-live-voice.commons.send": "\u53D1\u9001",
-  "dsh-live-voice.commons.status.ready": "\u8BED\u97F3\u5DF2\u5C31\u7EEA",
-  "dsh-live-voice.commons.systemDefault": "\u7CFB\u7EDF\u9ED8\u8BA4",
-  "dsh-live-voice.commons.toggle.offBadge": "\u5173\u95ED",
-  "dsh-live-voice.commons.unknownLanguage": "\u672A\u77E5\u8BED\u8A00",
-  "dsh-live-voice.commons.update.label": "\u6709\u53EF\u7528\u66F4\u65B0",
-  "dsh-live-voice.commons.update.link": "\u6709\u53EF\u7528\u66F4\u65B0\uFF1A{version}\u3002\u6253\u5F00\u53D1\u5E03\u9875\u9762",
-  "dsh-live-voice.commons.update.version": "\u6709\u53EF\u7528\u66F4\u65B0\uFF1A{version}",
-  "dsh-live-voice.commons.version.compatibility": "\u517C\u5BB9 DSH v{version}",
-  "dsh-live-voice.commons.version.compatibilityLink": "\u517C\u5BB9 DSH v{version}\u3002\u6253\u5F00\u53D1\u5E03\u9875\u9762",
-  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
-  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}\u3002\u6253\u5F00\u7248\u672C\u53D1\u5E03\u5217\u8868",
-  "dsh-live-voice.commons.version.title": "\u7248\u672C\u4FE1\u606F",
-  "dsh-live-voice.recognition.autoSend.countdownHelp": "\u8BC6\u522B\u51FA\u6700\u7EC8\u8BED\u53E5\u540E\u5F00\u59CB\u5012\u8BA1\u65F6\u3002\u518D\u6B21\u8BF4\u8BDD\u6216\u7F16\u8F91\u6587\u672C\u4F1A\u53D6\u6D88\u5012\u8BA1\u65F6\u3002",
-  "dsh-live-voice.recognition.browser.autoInstallPack": "\u9700\u8981\u65F6\u81EA\u52A8\u5B89\u88C5\u6B64\u6D4F\u89C8\u5668\u8BED\u8A00\u5305",
-  "dsh-live-voice.recognition.browser.help": "\u4F7F\u7528\u6D4F\u89C8\u5668\u7684 SpeechRecognition API\u3002\u8FD9\u662F\u9ED8\u8BA4\u9009\u9879\u3002",
-  "dsh-live-voice.recognition.browser.label": "\u6D4F\u89C8\u5668 SpeechRecognition \u2014 \u9ED8\u8BA4\u9009\u9879",
-  "dsh-live-voice.recognition.browser.localProcessing": "\u5728\u6B64\u8BBE\u5907\u4E0A\u672C\u5730\u5904\u7406\u8BED\u97F3\u8BC6\u522B",
-  "dsh-live-voice.recognition.browser.microphoneHelp": "\u6D4F\u89C8\u5668 SpeechRecognition \u53EF\u80FD\u4F7F\u7528\u6D4F\u89C8\u5668\u6216\u7CFB\u7EDF\u9ED8\u8BA4\u9EA6\u514B\u98CE\uFF0C\u800C\u975E\u6B64\u5904\u9009\u62E9\u7684\u8BBE\u5907\u3002",
-  "dsh-live-voice.recognition.browser.remoteServiceWarning": "\u5DF2\u542F\u7528\u6D4F\u89C8\u5668\u670D\u52A1\u8BED\u97F3\u8BC6\u522B\u3002\u6D4F\u89C8\u5668\u53EF\u80FD\u4F1A\u5C06\u9EA6\u514B\u98CE\u97F3\u9891\u53D1\u9001\u81F3\u5176\u8BED\u97F3\u8BC6\u522B\u670D\u52A1\u3002",
-  "dsh-live-voice.recognition.commands.clear": "\u6E05\u7A7A\u6D88\u606F\u8F93\u5165\u6846",
-  "dsh-live-voice.recognition.commands.enabled": "\u542F\u7528\u7CBE\u786E\u5339\u914D\u7684\u8BED\u97F3\u547D\u4EE4",
-  "dsh-live-voice.recognition.commands.mute": "\u505C\u6B62\u5411\u6D88\u606F\u8F93\u5165\u6846\u8F93\u5165\u8BED\u97F3",
-  "dsh-live-voice.recognition.commands.queue": "\u52A0\u5165\u961F\u5217",
-  "dsh-live-voice.recognition.commands.resume": "\u6062\u590D\u5411\u6D88\u606F\u8F93\u5165\u6846\u8F93\u5165\u8BED\u97F3",
-  "dsh-live-voice.recognition.commands.send": "\u53D1\u9001\u7ED9\u8FD0\u884C\u4E2D\u7684\u667A\u80FD\u4F53",
-  "dsh-live-voice.recognition.commands.stopSpeech": "\u505C\u6B62\u52A9\u624B\u6717\u8BFB",
-  "dsh-live-voice.recognition.commands.title": "\u8BED\u97F3\u547D\u4EE4",
-  "dsh-live-voice.recognition.dictation.cancel": "\u53D6\u6D88\u542C\u5199",
-  "dsh-live-voice.recognition.engine.label": "\u8BC6\u522B\u5F15\u64CE",
-  "dsh-live-voice.recognition.headphoneMode.help": "\u5F00\u653E\u9EA6\u514B\u98CE\u4F1A\u5728\u64AD\u653E\u56DE\u590D\u65F6\u7EE7\u7EED\u8046\u542C\u3002\u68C0\u6D4B\u5230\u4F60\u8BF4\u8BDD\u65F6\uFF0C\u64AD\u653E\u4F1A\u6682\u505C\uFF0C\u5E76\u4EC5\u5728\u4F60\u9009\u62E9\u6062\u590D\u65F6\u7EE7\u7EED\u3002",
-  "dsh-live-voice.recognition.headphoneMode.label": "\u8033\u673A \u2014 \u5F00\u653E\u9EA6\u514B\u98CE",
-  "dsh-live-voice.recognition.holdToTalk.enabled": "\u6309\u4F4F Control \u952E\u8BF4\u8BDD",
-  "dsh-live-voice.recognition.holdToTalk.help": "\u6D88\u606F\u8F93\u5165\u6846\u6253\u5F00\u65F6\uFF0C\u5728\u9875\u9762\u4EFB\u610F\u4F4D\u7F6E\u6309\u4F4F Control \u952E\u5373\u53EF\u91C7\u96C6\u8BED\u97F3\u3002\u677E\u5F00\u540E\u4F1A\u5904\u7406\u5B8C\u961F\u5217\u4E2D\u7684\u8F6C\u5199\uFF0C\u7B49\u5F85\u8BBE\u5B9A\u7684\u53D1\u9001\u5EF6\u8FDF\uFF0C\u5C06\u6D88\u606F\u52A0\u5165\u961F\u5217\uFF0C\u7136\u540E\u5173\u95ED\u8BED\u97F3\u91C7\u96C6\u3002\u6309\u4F4F\u671F\u95F4\u6309 Escape \u952E\u53EF\u53D6\u6D88\u3002",
-  "dsh-live-voice.recognition.language.automatic": "\u81EA\u52A8 \u2014 \u68C0\u6D4B\u8BED\u8A00",
-  "dsh-live-voice.recognition.language.label": "\u8BC6\u522B\u8BED\u8A00",
-  "dsh-live-voice.recognition.manualSend.help": "\u8BC6\u522B\u51FA\u7684\u6587\u672C\u4F1A\u4FDD\u7559\u5728\u6D88\u606F\u8F93\u5165\u6846\u4E2D\uFF0C\u76F4\u5230\u4F60\u4F7F\u7528 DSH \u7684\u5E38\u89C4\u53D1\u9001\u6309\u94AE\u3002",
-  "dsh-live-voice.recognition.maxUtterance.help": "\u5982\u679C\u8BF4\u8BDD\u4E00\u76F4\u6CA1\u6709\u505C\u987F\uFF0C\u5219\u5728\u6B64\u65F6\u957F\u540E\u5F00\u59CB\u65B0\u7684\u8F6C\u5199\u7247\u6BB5\u3002\u9ED8\u8BA4\u503C\uFF1A60 \u79D2\u3002",
-  "dsh-live-voice.recognition.maxUtterance.label": "\u6700\u957F\u8FDE\u7EED\u8BED\u97F3\uFF08\u79D2\uFF09",
-  "dsh-live-voice.recognition.microphone.checking": "\u6B63\u5728\u68C0\u67E5\u9EA6\u514B\u98CE\u53EF\u7528\u6027",
-  "dsh-live-voice.recognition.microphone.device": "\u8F93\u5165\u8BBE\u5907",
-  "dsh-live-voice.recognition.microphone.failure": "\u9EA6\u514B\u98CE\uFF1A{reason}",
-  "dsh-live-voice.recognition.microphone.ignore": "\u5FFD\u7565\u6D88\u606F\u8F93\u5165\u6846\u7684\u8BED\u97F3\u8F93\u5165",
-  "dsh-live-voice.recognition.microphone.inputStatus": "\u9EA6\u514B\u98CE\u8F93\u5165\uFF1A{state}",
-  "dsh-live-voice.recognition.microphone.label": "\u9EA6\u514B\u98CE",
-  "dsh-live-voice.recognition.microphone.permissionHelp": "\u4EC5\u5728\u4F60\u5F00\u59CB\u542C\u5199\u6216\u8BED\u97F3\u5BF9\u8BDD\u65F6\u624D\u4F1A\u8BF7\u6C42\u9EA6\u514B\u98CE\u6743\u9650\u3002",
-  "dsh-live-voice.recognition.microphone.resume": "\u6062\u590D\u8046\u542C",
-  "dsh-live-voice.recognition.microphone.starting": "\u6B63\u5728\u542F\u52A8\u9EA6\u514B\u98CE\u2026",
-  "dsh-live-voice.recognition.microphone.takeControl": "\u63A5\u7BA1\u9EA6\u514B\u98CE",
-  "dsh-live-voice.recognition.minimumWords.enabled": "\u5FFD\u7565\u8FC7\u77ED\u7684\u6700\u7EC8\u8F6C\u5199\u7247\u6BB5",
-  "dsh-live-voice.recognition.minimumWords.help": "\u5B57\u8BCD\u6570\u4E0D\u8DB3\u7684\u6700\u7EC8\u8F6C\u5199\u7247\u6BB5\u4F1A\u88AB\u5FFD\u7565\uFF0C\u4E0D\u4F1A\u8FDB\u5165\u6D88\u606F\u8F93\u5165\u6846\u6216\u81EA\u52A8\u53D1\u9001\u6D41\u7A0B\u3002",
-  "dsh-live-voice.recognition.minimumWords.label": "\u6BCF\u4E2A\u6700\u7EC8\u7247\u6BB5\u7684\u6700\u5C11\u5B57\u8BCD\u6570",
-  "dsh-live-voice.recognition.mode.label": "\u8046\u542C\u6A21\u5F0F",
-  "dsh-live-voice.recognition.planned.parakeet": "NVIDIA Parakeet \u2014 \u5373\u5C06\u63A8\u51FA",
-  "dsh-live-voice.recognition.planned.sherpa": "sherpa-onnx \u6D41\u5F0F\u8BC6\u522B \u2014 \u5373\u5C06\u63A8\u51FA",
-  "dsh-live-voice.recognition.planned.vote": "\u5373\u5C06\u63A8\u51FA \u2014 \u8BF7\u5728\u4ED3\u5E93\u8BAE\u9898\u4E2D\u6295\u7968",
-  "dsh-live-voice.recognition.planned.voxtral": "Voxtral Realtime \u2014 \u5373\u5C06\u63A8\u51FA",
-  "dsh-live-voice.recognition.planned.webGpu": "\u6D4F\u89C8\u5668 WebGPU \u63A8\u7406 \u2014 \u5373\u5C06\u63A8\u51FA",
-  "dsh-live-voice.recognition.presets.custom.description": "\u81EA\u884C\u9009\u62E9\u9759\u97F3\u65F6\u957F\u3002",
-  "dsh-live-voice.recognition.presets.custom.label": "\u81EA\u5B9A\u4E49",
-  "dsh-live-voice.recognition.presets.long.description": "\u7B49\u5F85\u8F83\u957F\u7684\u601D\u8003\u505C\u987F\u3002",
-  "dsh-live-voice.recognition.presets.long.label": "\u957F",
-  "dsh-live-voice.recognition.presets.natural.description": "\u5141\u8BB8\u77ED\u8BED\u4E4B\u95F4\u51FA\u73B0\u81EA\u7136\u505C\u987F\u3002",
-  "dsh-live-voice.recognition.presets.natural.label": "\u81EA\u7136",
-  "dsh-live-voice.recognition.presets.short.description": "\u77ED\u6682\u505C\u987F\u540E\u5FEB\u901F\u53D1\u9001\u3002",
-  "dsh-live-voice.recognition.presets.short.label": "\u77ED",
-  "dsh-live-voice.recognition.providerSettings.help": "\u670D\u52A1\u63D0\u4F9B\u65B9\u8BBE\u7F6E\u4F1A\u968F\u6240\u9009\u8BC6\u522B\u5F15\u64CE\u800C\u53D8\u5316\u3002",
-  "dsh-live-voice.recognition.qwen.captureHelp": "\u97F3\u9891\u4F1A\u6309\u5B8C\u6574\u8BED\u53E5\u5206\u5272\u4E3A WAV \u7247\u6BB5\uFF0C\u5E76\u901A\u8FC7\u7ECF\u8FC7\u8EAB\u4EFD\u9A8C\u8BC1\u7684 DSH \u53D1\u9001\u81F3\u4E3B\u673A\u672C\u5730\u7684 Qwen3 ASR \u6A21\u578B\u3002",
-  "dsh-live-voice.recognition.qwen.connectionSuccess": "\u8FDE\u63A5\u6210\u529F\u3002Qwen ASR \u548C TTS \u5747\u5DF2\u52A0\u8F7D\u3002\u672A\u4FDD\u5B58\u7684\u66F4\u6539\u5C1A\u672A\u5E94\u7528\u3002",
-  "dsh-live-voice.recognition.qwen.endpointHelp": "HTTP API \u4F4D\u4E8E\u914D\u7F6E\u7684 DSH \u4E3B\u673A URL\uFF08\u9ED8\u8BA4\uFF1Ahttp://127.0.0.1:8080/inference\uFF09\u3002\u97F3\u9891\u901A\u8FC7\u9700\u8981\u8EAB\u4EFD\u9A8C\u8BC1\u7684 DSH \u4E3B\u673A\u8F6C\u5199\u8DEF\u7531\u53D1\u9001\u3002",
-  "dsh-live-voice.recognition.qwen.hostHelp": "Qwen3 ASR + TTS \u670D\u52A1\u5668\u7684\u4E3B\u673A\u7EA7\u8BBE\u7F6E\u3002\u8BF7\u8F93\u5165 DSH \u4E3B\u673A\u53EF\u8BBF\u95EE\u7684\u4EFB\u610F HTTP \u6216 HTTPS \u57FA\u7840 URL\u3002\u6D4F\u89C8\u5668\u901A\u8FC7\u9700\u8981\u8EAB\u4EFD\u9A8C\u8BC1\u7684 DSH \u8DEF\u7531\u8BBF\u95EE\u8BE5\u670D\u52A1\u5668\u3002",
-  "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
-  "dsh-live-voice.recognition.silenceDetection.customHelp": "\u8BF7\u8F93\u5165 100 \u81F3 10,000 ms \u7684\u6574\u6570\u3002\u79BB\u5F00\u8F93\u5165\u6846\u65F6\u4FDD\u5B58\u3002\u77ED\u505C\u987F\u53EF\u80FD\u5207\u5206\u8BED\u97F3\uFF1B\u8BC6\u522B\u8FD8\u9700\u8981\u989D\u5916\u65F6\u95F4\u3002",
-  "dsh-live-voice.recognition.silenceDetection.customLabel": "\u81EA\u5B9A\u4E49\u505C\u987F\uFF08\u6BEB\u79D2\uFF09",
-  "dsh-live-voice.recognition.silenceDetection.duration": "\u53D1\u9001\u524D\u505C\u987F\uFF1A{milliseconds} \u6BEB\u79D2",
-  "dsh-live-voice.recognition.silenceDetection.help": "\u8BBE\u7F6E\u505C\u987F\u6301\u7EED\u591A\u4E45\u540E\uFF0C\u5C06\u91C7\u96C6\u7684\u8BED\u97F3\u53D1\u9001\u8FDB\u884C\u8BC6\u522B\u3002",
-  "dsh-live-voice.recognition.silenceDetection.label": "\u9759\u97F3\u68C0\u6D4B",
-  "dsh-live-voice.recognition.silenceDetection.pauseLabel": "\u53D1\u9001\u524D\u505C\u987F",
-  "dsh-live-voice.recognition.silenceDetection.title": "\u9759\u97F3\u68C0\u6D4B\u8BBE\u7F6E",
-  "dsh-live-voice.recognition.speakerMode.help": "\u95E8\u63A7\u8046\u542C\u4F1A\u5728\u64AD\u653E\u56DE\u590D\u65F6\u91CA\u653E\u9EA6\u514B\u98CE\uFF0C\u9632\u6B62\u626C\u58F0\u5668\u97F3\u9891\u88AB\u8BC6\u522B\u3002\u4F7F\u7528\u201C\u63A5\u7BA1\u9EA6\u514B\u98CE\u201D\u53EF\u6253\u65AD\u64AD\u653E\u3002",
-  "dsh-live-voice.recognition.speakerMode.label": "\u626C\u58F0\u5668 \u2014 \u95E8\u63A7\u8046\u542C",
-  "dsh-live-voice.recognition.status.answer": "\u6B63\u5728\u8BC6\u522B\u56DE\u7B54\u2026",
-  "dsh-live-voice.recognition.status.awaitingAnswer": "\u6B63\u5728\u8046\u542C\u4F60\u7684\u56DE\u7B54\u2026",
-  "dsh-live-voice.recognition.status.listening": "\u6B63\u5728\u8046\u542C \u2014 \u7B49\u5F85\u8BED\u97F3",
-  "dsh-live-voice.recognition.status.processing": "\u6B63\u5728\u8BC6\u522B\u8BED\u97F3\u2026",
-  "dsh-live-voice.recognition.status.unavailable": "\u8BED\u97F3\u8BC6\u522B\u4E0D\u53EF\u7528",
-  "dsh-live-voice.recognition.voiceCommands.help": "\u7528\u9017\u53F7\u5206\u9694\u77ED\u8BED\u3002\u5339\u914D\u65F6\u5FFD\u7565\u5927\u5C0F\u5199\u3001\u91CD\u97F3\u7B26\u53F7\u3001\u6807\u70B9\u548C\u591A\u4F59\u7A7A\u683C\u3002\u6574\u4E2A\u6700\u7EC8\u7247\u6BB5\u5FC5\u987B\u5B8C\u5168\u5339\u914D\u3002",
-  "dsh-live-voice.recognition.whisper.captureHelp": "\u97F3\u9891\u4F1A\u6309\u5B8C\u6574\u8BED\u53E5\u5206\u5272\u4E3A WAV \u7247\u6BB5\uFF0C\u901A\u8FC7\u7ECF\u8FC7\u8EAB\u4EFD\u9A8C\u8BC1\u7684 DSH \u53D1\u9001\uFF0C\u5E76\u7531\u56DE\u73AF\u5730\u5740\u4E0A\u7684 whisper.cpp HTTP \u670D\u52A1\u5904\u7406\u3002",
-  "dsh-live-voice.recognition.whisper.connectionSuccess": "\u8FDE\u63A5\u6210\u529F\u3002\u5065\u5EB7\u68C0\u67E5\u7AEF\u70B9\u5DF2\u54CD\u5E94\uFF1B\u5C1A\u672A\u6D4B\u8BD5\u8F6C\u5199\u529F\u80FD\u3002\u672A\u4FDD\u5B58\u7684\u66F4\u6539\u5C1A\u672A\u5E94\u7528\u3002",
-  "dsh-live-voice.recognition.whisper.endpointHelp": "HTTP API \u4F4D\u4E8E\u914D\u7F6E\u7684\u57FA\u7840 URL\uFF08\u9ED8\u8BA4\uFF1Ahttp://127.0.0.1:8080/\uFF09\u3002\u517C\u5BB9 POST /v1/audio/transcriptions\u3002",
-  "dsh-live-voice.recognition.whisper.healthFailed": "Whisper \u5065\u5EB7\u68C0\u67E5\u5931\u8D25\u3002",
-  "dsh-live-voice.recognition.whisper.label": "Whisper \u2014 HTTP API",
-  "dsh-live-voice.recognition.whisper.requestFailed": "Whisper \u8BBE\u7F6E\u8BF7\u6C42\u5931\u8D25\u3002",
-  "dsh-live-voice.recognition.whisper.restartRequired": "Whisper \u8BBE\u7F6E\u8DEF\u7531\u5C1A\u672A\u52A0\u8F7D\u3002\u9700\u8981\u6B63\u5E38\u91CD\u542F DSH \u670D\u52A1\u5668\u624D\u80FD\u52A0\u8F7D\u66F4\u65B0\u540E\u7684\u63D2\u4EF6\u8DEF\u7531\uFF1B\u4EC5\u5237\u65B0\u6B64\u9875\u9762\u662F\u4E0D\u591F\u7684\u3002",
-  "dsh-live-voice.recognition.whisper.save": "\u4FDD\u5B58 Whisper \u8BBE\u7F6E",
-  "dsh-live-voice.recognition.whisper.saved": "\u5DF2\u4FDD\u5B58\u5230 DSH \u4E3B\u673A\u3002\u4E3B\u673A\u4E0A\u6B63\u5728\u8FDB\u884C\u7684\u8F6C\u5199\u8BF7\u6C42\u5DF2\u53D6\u6D88\u3002",
-  "dsh-live-voice.recognition.whisper.signInRequired": "\u8BF7\u767B\u5F55 DSH \u4EE5\u7BA1\u7406 Whisper \u8BBE\u7F6E\u3002",
-  "dsh-live-voice.settings.autoSend.cancel": "\u53D6\u6D88\u81EA\u52A8\u53D1\u9001",
-  "dsh-live-voice.settings.autoSend.countdown": "{remaining} \u540E\u53D1\u9001\u2026",
-  "dsh-live-voice.settings.autoSend.delay": "\u9759\u97F3\u540E\u53D1\u9001",
-  "dsh-live-voice.settings.close": "\u5173\u95ED\u8BED\u97F3\u8BBE\u7F6E",
-  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice \u6839\u636E\u60A8\u7684\u56DE\u7B54\uFF0C\u4E3A\u5F15\u5BFC\u548C\u52A0\u5165\u961F\u5217\u9009\u62E9\u6B63\u786E\u7684\u64CD\u4F5C\u3002\u8FD9\u4E0D\u4F1A\u66F4\u6539 DSH \u8BBE\u7F6E\uFF1B\u8BF7\u586B\u5199\u5F53\u524D DSH \u7684\u884C\u4E3A\uFF0C\u5E76\u5728\u8BE5\u884C\u4E3A\u53D8\u5316\u65F6\u66F4\u65B0\u6B64\u56DE\u7B54\u3002",
-  "dsh-live-voice.settings.delivery.dshEnterQuestion": "\u5728\u60A8\u7684 DSH \u4E2D\uFF0C\u667A\u80FD\u4F53\u5FD9\u788C\u65F6\u6309 Enter \u4F1A\u600E\u6837\uFF1F",
-  "dsh-live-voice.settings.delivery.dshEnterQueue": "\u5C06\u6D88\u606F\u52A0\u5165\u961F\u5217",
-  "dsh-live-voice.settings.delivery.dshEnterSteer": "\u53D1\u9001\u6D88\u606F\u4EE5\u5F15\u5BFC\u667A\u80FD\u4F53",
-  "dsh-live-voice.settings.delivery.label": "\u53D1\u9001\u6A21\u5F0F",
-  "dsh-live-voice.settings.delivery.manualLabel": "\u5173\u95ED \u2014 \u5BA1\u9605\u540E\u624B\u52A8\u53D1\u9001",
-  "dsh-live-voice.settings.delivery.queueLabel": "\u961F\u5217 \u2014 \u9759\u97F3\u540E\u81EA\u52A8\u52A0\u5165\u961F\u5217",
-  "dsh-live-voice.settings.delivery.status": "\u81EA\u52A8\u53D1\u9001\uFF1A{mode}",
-  "dsh-live-voice.settings.delivery.steerDescription": "\u53D1\u9001\u7ED9\u8FD0\u884C\u4E2D\u7684\u667A\u80FD\u4F53",
-  "dsh-live-voice.settings.delivery.steerLabel": "\u5F15\u5BFC \u2014 \u81EA\u52A8\u53D1\u9001\u7ED9\u8FD0\u884C\u4E2D\u7684\u667A\u80FD\u4F53",
-  "dsh-live-voice.settings.delivery.toggle": "\u81EA\u52A8\u53D1\u9001\u6A21\u5F0F",
-  "dsh-live-voice.settings.engine.refresh": "\u5237\u65B0\u53EF\u7528\u5F15\u64CE",
-  "dsh-live-voice.settings.filters.title": "\u8FC7\u6EE4",
-  "dsh-live-voice.settings.general.title": "\u5E38\u89C4",
-  "dsh-live-voice.settings.persistence.loadError": "\u65E0\u6CD5\u4ECE\u670D\u52A1\u5668\u52A0\u8F7D Live Voice \u8BBE\u7F6E\u3002\u8BF7\u5237\u65B0\u540E\u91CD\u8BD5\u3002",
-  "dsh-live-voice.settings.persistence.saveError": "\u65E0\u6CD5\u5728\u670D\u52A1\u5668\u4E0A\u4FDD\u5B58 Live Voice \u8BBE\u7F6E\u3002\u8BF7\u91CD\u8BD5\u3002",
-  "dsh-live-voice.settings.tabs.conversation": "\u5BF9\u8BDD",
-  "dsh-live-voice.settings.tabs.recognition": "\u8BED\u97F3\u8BC6\u522B",
-  "dsh-live-voice.settings.tabs.speak": "\u8BED\u97F3\u5408\u6210",
-  "dsh-live-voice.settings.title": "Live Voice \u8BBE\u7F6E",
-  "dsh-live-voice.settings.whisper.hostHelp": "\u4E3B\u673A\u7EA7\u8BBE\u7F6E\u3002\u4EC5\u5141\u8BB8\u65E0\u9700\u8EAB\u4EFD\u9A8C\u8BC1\u7684\u56DE\u73AF HTTP URL\uFF08localhost\u3001127.0.0.1\u3001[::1]\uFF09\u3002\u56DE\u73AF\u5730\u5740\u6307 DSH \u4E3B\u673A\uFF0C\u800C\u975E\u6B64\u6D4F\u89C8\u5668\u3002\u6240\u6709\u5065\u5EB7\u68C0\u67E5\u548C\u97F3\u9891\u8BF7\u6C42\u90FD\u901A\u8FC7\u9700\u8981\u8EAB\u4EFD\u9A8C\u8BC1\u7684\u540E\u7AEF\u6267\u884C\u3002",
-  "dsh-live-voice.speak.agentContext.enabled": "\u542F\u7528\u4EE3\u7406\u8BED\u97F3\u4E0A\u4E0B\u6587",
-  "dsh-live-voice.speak.agentContext.enabledHelp": "\u542F\u7528\u540E\uFF0C\u4E0B\u65B9\u7684\u4E0A\u4E0B\u6587\u4F1A\u544A\u77E5\u4EE3\u7406\u5176\u56DE\u590D\u5C06\u88AB\u6717\u8BFB\u3002",
-  "dsh-live-voice.speak.agentContext.help": "\u6B64\u82F1\u6587\u6307\u4EE4\u4EC5\u5728\u8BED\u97F3\u5BF9\u8BDD\u5904\u4E8E\u6D3B\u52A8\u72B6\u6001\u4E14\u542F\u7528\u81EA\u52A8\u6717\u8BFB\u52A9\u624B\u56DE\u590D\u65F6\u53D1\u9001\u7ED9\u4EE3\u7406\u3002",
-  "dsh-live-voice.speak.agentContext.label": "\u4EE3\u7406\u8BED\u97F3\u4E0A\u4E0B\u6587",
-  "dsh-live-voice.speak.agentContext.restore": "\u6062\u590D\u9ED8\u8BA4\u503C",
-  "dsh-live-voice.speak.autoPlayback.enabled": "\u81EA\u52A8\u6717\u8BFB\u65B0\u7684\u52A9\u624B\u6D88\u606F",
-  "dsh-live-voice.speak.autoPlayback.help": "\u8BED\u97F3\u5BF9\u8BDD\u671F\u95F4\uFF0C\u52A9\u624B\u7684\u8BED\u53E5\u4F1A\u81EA\u52A8\u6717\u8BFB\u3002\u4F60\u8BF4\u8BDD\u65F6\u4F1A\u7B49\u5F85\uFF0C\u4E0D\u4F1A\u64AD\u653E\u3002",
-  "dsh-live-voice.speak.autoPlayback.label": "\u52A9\u624B\u81EA\u52A8\u6717\u8BFB",
-  "dsh-live-voice.speak.autoPlayback.remainingOne": "\u52A9\u624B\u81EA\u52A8\u6717\u8BFB\uFF1A{state} \u2014 \u5269\u4F59 {count} \u4E2A\u8BED\u97F3\u7247\u6BB5",
-  "dsh-live-voice.speak.autoPlayback.remainingOther": "\u52A9\u624B\u81EA\u52A8\u6717\u8BFB\uFF1A{state} \u2014 \u5269\u4F59 {count} \u4E2A\u8BED\u97F3\u7247\u6BB5",
-  "dsh-live-voice.speak.autoPlayback.status": "\u52A9\u624B\u81EA\u52A8\u6717\u8BFB\uFF1A{state}",
-  "dsh-live-voice.speak.browser.automaticVoice": "\u81EA\u52A8\u9009\u62E9\u672C\u5730\u8BED\u97F3",
-  "dsh-live-voice.speak.browser.label": "\u6D4F\u89C8\u5668\u8BED\u97F3\u5408\u6210 \u2014 \u5728\u6B64\u8BBE\u5907\u64AD\u653E",
-  "dsh-live-voice.speak.browser.name": "\u6D4F\u89C8\u5668\u8BED\u97F3\u5408\u6210",
-  "dsh-live-voice.speak.browser.outputHelp": "\u6D4F\u89C8\u5668\u8BED\u97F3\u5408\u6210\u53EF\u80FD\u5FFD\u7565\u6240\u9009\u8F93\u51FA\u8BBE\u5907\uFF1B\u6B64\u6D4F\u89C8\u5668 API \u901A\u5E38\u4F7F\u7528\u7CFB\u7EDF\u9ED8\u8BA4\u8BBE\u5907\u3002",
-  "dsh-live-voice.speak.browser.voice": "\u6D4F\u89C8\u5668\u672C\u5730\u8BED\u97F3",
-  "dsh-live-voice.speak.captions.approximate": "\u8FD1\u4F3C\u8BED\u97F3\u5B57\u5E55",
-  "dsh-live-voice.speak.captions.loading": "\u6B63\u5728\u51C6\u5907\u8BED\u97F3\u97F3\u9891",
-  "dsh-live-voice.speak.captions.position": "\u8BED\u97F3\u7247\u6BB5 {index}/{total}",
-  "dsh-live-voice.speak.captions.progress": "\u8FD1\u4F3C\u8BED\u97F3\u8FDB\u5EA6",
-  "dsh-live-voice.speak.captions.title": "\u8BED\u97F3\u4E0E\u5B9E\u65F6\u5B57\u5E55",
-  "dsh-live-voice.speak.engine.label": "\u8BED\u97F3\u5408\u6210\u5F15\u64CE",
-  "dsh-live-voice.speak.engine.playbackHelp": "Qwen \u548C macOS say \u5728 DSH \u4E3B\u673A\u4E0A\u5408\u6210\u8BED\u97F3\uFF1B\u538B\u7F29\u7684 AAC/M4A \u97F3\u9891\u5728\u6B64\u6D4F\u89C8\u5668\u4E2D\u64AD\u653E\u3002\u6D4F\u89C8\u5668\u8BED\u97F3\u5219\u5728\u6B64\u8BBE\u5907\u4E0A\u5408\u6210\u5E76\u64AD\u653E\u3002",
-  "dsh-live-voice.speak.filters.code.enabled": "\u6717\u8BFB\u524D\u8FC7\u6EE4 Markdown \u4EE3\u7801\u5757",
-  "dsh-live-voice.speak.filters.code.maxLines": "\u4EC5\u6717\u8BFB\u4E0D\u8D85\u8FC7\u6B64\u884C\u6570\u7684\u4EE3\u7801\u5757",
-  "dsh-live-voice.speak.filters.code.notice": "\u8BF7\u67E5\u770B\u6211\u4EEC\u5BF9\u8BDD\u4E2D\u7684\u4EE3\u7801",
-  "dsh-live-voice.speak.filters.code.replacement": "\u8F83\u5927\u4EE3\u7801\u5757\u7684\u66FF\u4EE3\u6717\u8BFB\u8BED\u53E5",
-  "dsh-live-voice.speak.interruption.disabledHelp": "\u53D1\u9001\u53E6\u4E00\u6761\u6D88\u606F\u4E0D\u4F1A\u505C\u6B62\u4F60\u6B63\u5728\u6536\u542C\u7684\u52A9\u624B\u97F3\u9891\u3002",
-  "dsh-live-voice.speak.interruption.enabled": "\u53D1\u9001\u6D88\u606F\u65F6\u505C\u6B62\u52A9\u624B\u6717\u8BFB",
-  "dsh-live-voice.speak.interruption.enabledHelp": "\u53D1\u9001\u65B0\u7684\u7528\u6237\u6D88\u606F\u6216\u7528\u65B0\u6D88\u606F\u5F15\u5BFC\u667A\u80FD\u4F53\u65F6\uFF0C\u4F1A\u505C\u6B62\u5F53\u524D\u6B63\u5728\u64AD\u653E\u6216\u5DF2\u6682\u505C\u7684\u52A9\u624B\u8BED\u97F3\u3002",
-  "dsh-live-voice.speak.macos.label": "macOS say \u2014 \u5728\u4E3B\u673A\u64AD\u653E",
-  "dsh-live-voice.speak.macos.name": "macOS say",
-  "dsh-live-voice.speak.macos.outputHelp": "macOS say \u4F7F\u7528 DSH \u4E3B\u673A\u4E0A\u9009\u5B9A\u7684\u8F93\u51FA\u8BBE\u5907\u3002",
-  "dsh-live-voice.speak.output.checking": "\u6B63\u5728\u68C0\u67E5\u8BED\u97F3\u8F93\u51FA\u2026",
-  "dsh-live-voice.speak.output.device": "\u8F93\u51FA\u8BBE\u5907",
-  "dsh-live-voice.speak.output.fallbackName": "\u97F3\u9891\u8F93\u51FA",
-  "dsh-live-voice.speak.output.stopTest": "\u505C\u6B62\u8BED\u97F3\u6D4B\u8BD5",
-  "dsh-live-voice.speak.output.test": "\u6D4B\u8BD5\u6240\u9009\u8BED\u97F3\u8F93\u51FA",
-  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice\u3002\u6240\u9009\u8BED\u97F3\u8F93\u51FA\u5DE5\u4F5C\u6B63\u5E38\u3002",
-  "dsh-live-voice.speak.output.testing": "\u6B63\u5728\u6D4B\u8BD5\u8BED\u97F3\u2026",
-  "dsh-live-voice.speak.playback.message": "\u6717\u8BFB\u6D88\u606F",
-  "dsh-live-voice.speak.playback.next": "\u8DF3\u81F3\u4E0B\u4E00\u8BED\u97F3\u7247\u6BB5",
-  "dsh-live-voice.speak.playback.pause": "\u6682\u505C\u6717\u8BFB",
-  "dsh-live-voice.speak.playback.previous": "\u4E0A\u4E00\u8BED\u97F3\u7247\u6BB5",
-  "dsh-live-voice.speak.playback.resume": "\u6062\u590D\u6717\u8BFB",
-  "dsh-live-voice.speak.playback.stop": "\u505C\u6B62\u6717\u8BFB",
-  "dsh-live-voice.speak.playback.stopAll": "\u505C\u6B62\u5168\u90E8\u6717\u8BFB",
-  "dsh-live-voice.speak.qwen.connection": "Qwen \u670D\u52A1\u5668\u8FDE\u63A5",
-  "dsh-live-voice.speak.qwen.endpoint": "Qwen API \u57FA\u7840 URL",
-  "dsh-live-voice.speak.qwen.healthFailed": "Qwen \u5065\u5EB7\u68C0\u67E5\u5931\u8D25\u3002",
-  "dsh-live-voice.speak.qwen.label": "Qwen3 TTS \u2014 \u672C\u5730 MLX \u670D\u52A1\u5668",
-  "dsh-live-voice.speak.qwen.name": "\u672C\u5730 Qwen3",
-  "dsh-live-voice.speak.qwen.requestFailed": "Qwen \u8BBE\u7F6E\u8BF7\u6C42\u5931\u8D25\u3002",
-  "dsh-live-voice.speak.qwen.restartRequired": "Qwen \u8BBE\u7F6E\u8DEF\u7531\u5C1A\u672A\u52A0\u8F7D\u3002\u9700\u8981\u6B63\u5E38\u91CD\u542F DSH \u670D\u52A1\u5668\u624D\u80FD\u52A0\u8F7D\u66F4\u65B0\u540E\u7684\u63D2\u4EF6\u8DEF\u7531\uFF1B\u4EC5\u5237\u65B0\u6B64\u9875\u9762\u662F\u4E0D\u591F\u7684\u3002",
-  "dsh-live-voice.speak.qwen.save": "\u4FDD\u5B58 Qwen \u8BBE\u7F6E",
-  "dsh-live-voice.speak.qwen.saved": "\u5DF2\u4FDD\u5B58\u5230 DSH \u4E3B\u673A\u3002\u6B63\u5728\u8FDB\u884C\u7684 Qwen \u8BF7\u6C42\u5DF2\u53D6\u6D88\u3002",
-  "dsh-live-voice.speak.qwen.signInRequired": "\u8BF7\u767B\u5F55 DSH \u4EE5\u7BA1\u7406 Qwen \u8BBE\u7F6E\u3002",
-  "dsh-live-voice.speak.qwen.test": "\u6D4B\u8BD5 Qwen \u670D\u52A1\u5668",
-  "dsh-live-voice.speak.qwen.voice": "Qwen \u97F3\u8272",
-  "dsh-live-voice.speak.qwen.voiceHelp": "\u9ED8\u8BA4\u4F7F\u7528 Aiden\u3002\u8FD9\u4E9B\u9884\u8BBE\u97F3\u8272\u5E76\u975E\u4EE5\u5DF4\u897F\u8461\u8404\u7259\u8BED\u4E3A\u6BCD\u8BED\u7684\u97F3\u8272\u3002",
-  "dsh-live-voice.speak.qwen.voices.aiden": "Aiden \u2014 \u7537\u58F0\uFF0C\u7F8E\u5F0F\u82F1\u8BED",
-  "dsh-live-voice.speak.qwen.voices.dylan": "Dylan \u2014 \u7537\u58F0\uFF0C\u5317\u4EAC\u8BDD",
-  "dsh-live-voice.speak.qwen.voices.eric": "Eric \u2014 \u7537\u58F0\uFF0C\u56DB\u5DDD\u8BDD",
-  "dsh-live-voice.speak.qwen.voices.onoAnna": "Ono Anna \u2014 \u5973\u58F0\uFF0C\u65E5\u8BED",
-  "dsh-live-voice.speak.qwen.voices.ryan": "Ryan \u2014 \u7537\u58F0\uFF0C\u82F1\u8BED",
-  "dsh-live-voice.speak.qwen.voices.serena": "Serena \u2014 \u5973\u58F0\uFF0C\u4E2D\u6587",
-  "dsh-live-voice.speak.qwen.voices.sohee": "Sohee \u2014 \u5973\u58F0\uFF0C\u97E9\u8BED",
-  "dsh-live-voice.speak.qwen.voices.uncleFu": "Uncle Fu \u2014 \u7537\u58F0\uFF0C\u4E2D\u6587",
-  "dsh-live-voice.speak.qwen.voices.vivian": "Vivian \u2014 \u5973\u58F0\uFF0C\u4E2D\u6587",
-  "dsh-live-voice.speak.rate.help": "\u76F8\u5BF9\u901F\u5EA6\uFF1A1 \u4E3A\u6B63\u5E38\u901F\u5EA6\u3002",
-  "dsh-live-voice.speak.rate.label": "\u8BED\u901F",
-  "dsh-live-voice.speak.responseDelay.help": "\u4F60\u505C\u6B62\u8BF4\u8BDD\u540E\uFF0C\u52A9\u624B\u4F1A\u7B49\u5F85\u6B64\u65F6\u957F\u7684\u8FDE\u7EED\u9759\u97F3\uFF0C\u7136\u540E\u81EA\u52A8\u64AD\u653E\u8BED\u97F3\u3002\u518D\u6B21\u8BF4\u8BDD\u4F1A\u91CD\u65B0\u5F00\u59CB\u7B49\u5F85\u3002",
-  "dsh-live-voice.speak.responseDelay.label": "\u52A9\u624B\u54CD\u5E94\u5EF6\u8FDF",
-  "dsh-live-voice.speak.responseDelay.none": "\u65E0\u5EF6\u8FDF",
-  "dsh-live-voice.speak.segmentGap.help": "\u5728\u8FDE\u7EED\u8BED\u97F3\u7247\u6BB5\u4E4B\u95F4\u7B49\u5F85\u6B64\u6BEB\u79D2\u6570\u3002\u9ED8\u8BA4\u503C\u4E3A 400 ms\u3002",
-  "dsh-live-voice.speak.segmentGap.label": "\u8BED\u97F3\u7247\u6BB5\u4E4B\u95F4\u7684\u505C\u987F",
-  "dsh-live-voice.speak.status.paused": "\u8BED\u97F3\u5DF2\u6682\u505C",
-  "dsh-live-voice.speak.status.playing": "\u6B63\u5728\u6717\u8BFB"
-};
-var zh_default = Object.freeze(zh);
-
-// src/app/client/i18n/catalogs/base.ts
-var liveVoiceLanguageDefinitions = Object.freeze([
-  { id: "pt-BR", label: "Portugu\xEAs (Brasil)", fallback: "en" },
-  { id: "fr", label: "Fran\xE7ais", fallback: "en" },
-  { id: "es", label: "Espa\xF1ol", fallback: "en" },
-  { id: "hi", label: "\u0939\u093F\u0928\u094D\u0926\u0940", fallback: "en" }
-]);
-
-// src/app/client/i18n/catalogs/index.ts
-var appDictionaries = Object.freeze({
-  en: en_default,
-  es: es_default,
-  fr: fr_default,
-  hi: hi_default,
-  "pt-BR": pt_BR_default,
-  zh: zh_default
-});
-
-// src/app/client/i18n/DshLanguageBoundary.tsx
-var import_react2 = __toESM(require("react"), 1);
-
-// ../../node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
-var import_react = require("react");
-
-// ../../node_modules/.pnpm/@wads.dev+i18n-ts@0.0.1-alpha.0_typescript@7.0.2/node_modules/@wads.dev/i18n-ts/dist/runtime/language.js
-function detectLanguage() {
-  if (typeof navigator !== "undefined" && typeof navigator.language === "string")
-    return navigator.language;
-  if (typeof Intl !== "undefined")
-    return Intl.DateTimeFormat().resolvedOptions().locale;
-  return void 0;
-}
-async function loadLanguage(availableLangs2, defaultLang, language) {
-  if (!language || !availableLangs2[language]) {
-    const browserLang = (detectLanguage() || "").replace("-", "").toLowerCase();
-    const languageKeys = Object.keys(availableLangs2).map((key) => key.toLowerCase());
-    language = languageKeys.find((key) => key === browserLang) || languageKeys.find((key) => browserLang.startsWith(key)) || defaultLang;
-  }
-  const info = availableLangs2[language];
-  const lang = typeof info.lang === "function" ? await info.lang().then(({ default: loadedLang }) => loadedLang) : info.lang;
-  return { ...info, lang: deepFreeze(lang) };
-}
-function deepFreeze(value) {
-  Object.freeze(value);
-  Object.getOwnPropertyNames(value).forEach((property) => {
-    const nestedValue = value[property];
-    if (nestedValue && (typeof nestedValue === "object" || typeof nestedValue === "function") && !Object.isFrozen(nestedValue)) {
-      deepFreeze(nestedValue);
-    }
-  });
-  return value;
-}
-
-// ../../node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
-function createTranslationRuntime({ availableLangs: availableLangs2, defaultLang, onLanguageLoaded }) {
-  const context = (0, import_react.createContext)({});
-  function useTranslation(selector) {
-    const value = (0, import_react.useContext)(context);
-    if (!value.current)
-      throw new Error("useTranslation must be used within TranslationProvider.");
-    return { ...value, scoped: selector ? selector(value.current.lang) : value.current.lang };
-  }
-  function TranslationProvider({ children }) {
-    const [saved, setSaved] = (0, import_react.useState)();
-    const [language, setCurrentLanguage] = (0, import_react.useState)();
-    function setLanguage(nextLanguage, save) {
-      if (save)
-        setSaved(nextLanguage);
-    }
-    (0, import_react.useEffect)(() => {
-      void loadLanguage(availableLangs2, defaultLang, saved).then((loadedLanguage) => {
-        setCurrentLanguage(loadedLanguage);
-        onLanguageLoaded?.(loadedLanguage);
-      });
-    }, [saved]);
-    if (!language)
-      return null;
-    return (0, import_react.createElement)(context.Provider, { value: { setLanguage, available: availableLangs2, current: language, saved } }, children);
-  }
-  return { TranslationProvider, useTranslation };
-}
-
-// src/app/client/i18n/registerDshLocales.ts
-var LIVE_VOICE_LOCALE_NAMESPACE = "dsh-live-voice";
-var LIVE_VOICE_LANGUAGES = liveVoiceLanguageDefinitions;
-var liveVoiceDictionaries = appDictionaries;
-function createFallbackTranslator(locale = "en") {
-  return (key, params = {}) => {
-    const template = liveVoiceDictionaries[locale]?.[key] ?? liveVoiceDictionaries.en[key] ?? key;
-    return String(template).replace(
-      /\{([A-Za-z0-9_]+)\}/g,
-      (_2, name) => String(params[name] ?? "{" + name + "}")
-    );
-  };
-}
-function registerDshLocales(ctx) {
-  if (!ctx.locale) return createFallbackTranslator();
-  const registeredLanguages = new Set(
-    (ctx.locale.getSnapshot?.().locales || []).map(
-      (language) => language.id.toLowerCase()
-    )
-  );
-  for (const language of LIVE_VOICE_LANGUAGES) {
-    if (registeredLanguages.has(language.id.toLowerCase())) continue;
-    ctx.effect(
-      () => ctx.locale.addLanguage(language),
-      "dsh-live-voice: " + language.id + " language"
-    );
-    registeredLanguages.add(language.id.toLowerCase());
-  }
-  for (const [locale, dictionary] of Object.entries(liveVoiceDictionaries))
-    ctx.effect(
-      () => ctx.locale.register(LIVE_VOICE_LOCALE_NAMESPACE, locale, dictionary),
-      "dsh-live-voice: " + locale + " dictionary"
-    );
-  return ctx.locale.bind(LIVE_VOICE_LOCALE_NAMESPACE);
-}
-var registerLiveVoiceLocales = registerDshLocales;
-
-// src/app/client/i18n/runtime.tsx
-function interpolate(template, params = {}) {
-  return template.replace(
-    /\{([A-Za-z0-9_]+)\}/g,
-    (_2, name) => String(params[name] ?? "{" + name + "}")
-  );
-}
-function toLanguage(dictionary) {
-  const root = {};
-  for (const [identifier, template] of Object.entries(dictionary)) {
-    const path = identifier.replace(/^dsh-live-voice\./, "").split(".");
-    let parent = root;
-    for (const segment of path.slice(0, -1))
-      parent = parent[segment] ??= {};
-    const message2 = String(template);
-    parent[path.at(-1)] = ((params) => interpolate(message2, params));
-  }
-  return root;
-}
-var labels = new Map(LIVE_VOICE_LANGUAGES.map(({ id: id2, label }) => [id2, label]));
-var availableLangs = Object.fromEntries(
-  Object.entries(liveVoiceDictionaries).map(([id2, dictionary]) => [
-    id2,
-    {
-      name: labels.get(id2) ?? id2,
-      short: id2,
-      locale: id2,
-      lang: async () => ({ default: toLanguage(dictionary) })
-    }
-  ])
-);
-var { TranslationProvider: LiveVoiceTranslationProvider, useTranslation: useLanguage } = createTranslationRuntime({
-  availableLangs,
-  defaultLang: "en"
-});
-function normalizeAppLocale(locale) {
-  if (locale && locale in availableLangs) return locale;
-  const base = locale?.split("-")[0];
-  if (base && base in availableLangs) return base;
-  return "en";
-}
-
-// src/app/client/i18n/DshLanguageBoundary.tsx
-var FALLBACK_DSH_LOCALE = Object.freeze({ active: "en", revision: 0 });
-function DshLanguageBoundary({
-  locale,
-  children
-}) {
-  const { current, setLanguage } = useLanguage();
-  const subscribe = import_react2.default.useCallback(
-    (listener) => locale?.subscribe?.(listener) ?? (() => {
-    }),
-    [locale]
-  );
-  const snapshot = import_react2.default.useCallback(
-    () => locale?.getSnapshot?.() ?? FALLBACK_DSH_LOCALE,
-    [locale]
-  );
-  const dshLocale = import_react2.default.useSyncExternalStore(subscribe, snapshot, snapshot);
-  const expected = normalizeAppLocale(dshLocale.active);
-  import_react2.default.useEffect(() => {
-    if (current.locale !== expected) setLanguage(expected, true);
-  }, [current.locale, expected, setLanguage]);
-  return current.locale === expected ? children : null;
-}
-function withAppLanguage(Component, locale) {
-  function LocalizedComponent(props) {
-    return /* @__PURE__ */ import_react2.default.createElement(LiveVoiceTranslationProvider, null, /* @__PURE__ */ import_react2.default.createElement(DshLanguageBoundary, { locale }, /* @__PURE__ */ import_react2.default.createElement(Component, { ...props })));
-  }
-  LocalizedComponent.displayName = `AppLanguage(${Component.displayName || Component.name || "Component"})`;
-  return LocalizedComponent;
-}
-
-// src/shared/design-system/buttons/IconButton.tsx
-var import_react4 = __toESM(require("react"), 1);
-
-// src/shared/design-system/icons/Icon.tsx
-var import_react3 = __toESM(require("react"), 1);
-
-// src/shared/design-system/icons/icons.ts
-var iconPaths = {
-  mic: "M9 5a3 3 0 0 1 6 0v7a3 3 0 0 1-6 0V5M6 10v2a6 6 0 0 0 12 0v-2M12 18v4M8 22h8",
-  micOff: "M9 9v3a3 3 0 0 0 5.12 2.12M15 9V5a3 3 0 0 0-5.64-1.42M6 10v2a6 6 0 0 0 9.5 4.88M18 10v2a6 6 0 0 1-.5 2.4M12 18v4M8 22h8M3 3l18 18",
-  speaker: "M3 9h4l6-5v16l-6-5H3V9M17 8a6 6 0 0 1 0 8M20 5a10 10 0 0 1 0 14",
-  speakerOff: "M3 9h4l6-5v16l-6-5H3V9M17 9l5 6M22 9l-5 6",
-  pause: "M8 5v14M16 5v14",
-  play: "M7 4l13 8-13 8z",
-  stop: "M6 6h12v12H6z",
-  skipNext: "M5 5l10 7-10 7V5M19 5v14",
-  skipPrevious: "M19 5l-10 7 10 7V5M5 5v14",
-  send: "M3 11.5L21 3l-8.5 18-2-7.5L3 11.5zm7.5 2L21 3",
-  queue: "M5 6h14M5 12h10M5 18h6M18 15v6M15 18h6",
-  settings: "M4 7h16M4 17h16M8 4v6M16 14v6",
-  filter: "M3 5h18l-7 8v6l-4 2v-8L3 5z",
-  link: "M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.7 1.7M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.7-1.7",
-  chevron: "M6 9l6 6 6-6",
-  close: "M6 6l12 12M18 6 6 18"
-};
-
-// src/shared/design-system/icons/Icon.tsx
-function Icon({ name, className }) {
-  return /* @__PURE__ */ import_react3.default.createElement(
-    "svg",
-    {
-      className,
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      strokeWidth: 1.8,
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      "aria-hidden": true
-    },
-    /* @__PURE__ */ import_react3.default.createElement("path", { d: iconPaths[name] })
-  );
-}
-
-// src/shared/design-system/buttons/IconButton.tsx
-function IconButton({
-  icon,
-  label,
-  visibleLabel,
-  className = "dlv-pill-button",
-  type = "button",
-  ...props
-}) {
-  return /* @__PURE__ */ import_react4.default.createElement(
-    "button",
-    {
-      ...props,
-      type,
-      className: "dlv-icon-button " + className,
-      title: props.title ?? label,
-      "aria-label": label
-    },
-    /* @__PURE__ */ import_react4.default.createElement(Icon, { name: icon }),
-    visibleLabel ? /* @__PURE__ */ import_react4.default.createElement("span", { className: "dlv-toggle-state", "aria-hidden": true }, visibleLabel) : null
-  );
-}
-
-// src/shared/design-system/buttons/PillButton.tsx
-var import_react5 = __toESM(require("react"), 1);
-
-// src/shared/design-system/buttons/ToggleButton.tsx
-var import_react6 = __toESM(require("react"), 1);
-
-// src/shared/design-system/feedback/ErrorMessage.tsx
-var import_react7 = __toESM(require("react"), 1);
-function ErrorMessage({
-  error,
-  dismissLabel,
-  dismissText = "\xD7",
-  onDismiss
-}) {
-  if (!error) return null;
-  return /* @__PURE__ */ import_react7.default.createElement("div", { className: "dlv-error", role: "alert" }, String(error), onDismiss ? /* @__PURE__ */ import_react7.default.createElement("button", { type: "button", "aria-label": dismissLabel, onClick: onDismiss }, dismissText) : null);
-}
-
-// src/shared/design-system/feedback/StatusBadge.tsx
-var import_react8 = __toESM(require("react"), 1);
-
-// src/shared/design-system/feedback/StatusMessage.tsx
-var import_react9 = __toESM(require("react"), 1);
-
-// src/shared/design-system/forms/CheckboxField.tsx
-var import_react10 = __toESM(require("react"), 1);
-function CheckboxField({
-  label,
-  description,
-  className = "dlv-check",
-  ...props
-}) {
-  return /* @__PURE__ */ import_react10.default.createElement("div", null, /* @__PURE__ */ import_react10.default.createElement("label", { className }, /* @__PURE__ */ import_react10.default.createElement("input", { ...props, type: "checkbox" }), " ", label), description ? /* @__PURE__ */ import_react10.default.createElement("p", { className: "dlv-setting-description" }, description) : null);
-}
-
-// src/shared/design-system/forms/NumberField.tsx
-var import_react12 = __toESM(require("react"), 1);
-
-// src/shared/design-system/forms/DraftField.tsx
-var import_react11 = __toESM(require("react"), 1);
-function DraftField({
-  label,
-  value,
-  defaultValue,
-  onCommit,
-  multiline,
-  onInput,
-  onChange,
-  onFocus,
-  onBlur,
-  ...props
-}) {
-  const saved = String(value ?? defaultValue ?? "");
-  const [draft, setDraft] = import_react11.default.useState(saved);
-  const editing = import_react11.default.useRef(false);
-  const dirty = import_react11.default.useRef(false);
-  import_react11.default.useEffect(() => {
-    if (!editing.current) setDraft(saved);
-  }, [saved]);
-  const inputProps = {
-    ...props,
-    value: draft,
-    onFocus: (event) => {
-      editing.current = true;
-      onFocus?.(event);
-    },
-    onInput: (event) => {
-      editing.current = true;
-      dirty.current = true;
-      setDraft(event.currentTarget.value);
-      onInput?.(event);
-    },
-    onChange: (event) => {
-      editing.current = true;
-      dirty.current = true;
-      setDraft(event.currentTarget.value);
-      onChange?.(event);
-    },
-    onBlur: (event) => {
-      editing.current = false;
-      const raw = event.currentTarget.value;
-      const changed = dirty.current;
-      dirty.current = false;
-      setDraft(saved);
-      const valid = multiline || props.type !== "number" || raw.trim() !== "" && event.currentTarget.validity.valid;
-      if (changed && valid) onCommit?.(raw);
-      onBlur?.(event);
-    }
-  };
-  return /* @__PURE__ */ import_react11.default.createElement("label", null, label, multiline ? /* @__PURE__ */ import_react11.default.createElement("textarea", { ...inputProps }) : /* @__PURE__ */ import_react11.default.createElement("input", { ...inputProps }));
-}
-
-// src/shared/design-system/forms/NumberField.tsx
-function NumberField(props) {
-  return /* @__PURE__ */ import_react12.default.createElement(DraftField, { ...props, type: "number" });
-}
-
-// src/shared/design-system/forms/SelectField.tsx
-var import_react13 = __toESM(require("react"), 1);
-function SelectField({ label, options, ...props }) {
-  return /* @__PURE__ */ import_react13.default.createElement("label", null, label, /* @__PURE__ */ import_react13.default.createElement("select", { ...props }, options.map((option) => /* @__PURE__ */ import_react13.default.createElement("option", { key: option.value, value: option.value, disabled: option.disabled }, option.label))));
-}
-
-// src/shared/design-system/forms/TextAreaField.tsx
-var import_react14 = __toESM(require("react"), 1);
-function TextAreaField(props) {
-  return /* @__PURE__ */ import_react14.default.createElement(DraftField, { ...props, multiline: true });
-}
-
-// src/shared/design-system/forms/TextField.tsx
-var import_react15 = __toESM(require("react"), 1);
-function TextField(props) {
-  return /* @__PURE__ */ import_react15.default.createElement(DraftField, { ...props, type: "text" });
-}
-
-// src/shared/design-system/layout/SettingsCard.tsx
-var import_react16 = __toESM(require("react"), 1);
-function SettingsCard({
-  children,
-  className = ""
-}) {
-  return /* @__PURE__ */ import_react16.default.createElement("div", { className: ["dlv-settings-card", className].filter(Boolean).join(" ") }, children);
-}
-
-// src/shared/design-system/layout/SettingsSection.tsx
-var import_react17 = __toESM(require("react"), 1);
-
-// src/shared/design-system/layout/SettingsSubcard.tsx
-var import_react18 = __toESM(require("react"), 1);
-function SettingsSubcard({
-  title,
-  children,
-  open = false,
-  ariaLabel,
-  icon = "settings"
-}) {
-  return /* @__PURE__ */ import_react18.default.createElement("details", { className: "dlv-settings-subcard", open }, /* @__PURE__ */ import_react18.default.createElement("summary", { "aria-label": ariaLabel }, /* @__PURE__ */ import_react18.default.createElement(Icon, { name: icon, className: "dlv-settings-subcard-icon" }), /* @__PURE__ */ import_react18.default.createElement("span", null, title), /* @__PURE__ */ import_react18.default.createElement(Icon, { name: "chevron", className: "dlv-settings-subcard-chevron" })), /* @__PURE__ */ import_react18.default.createElement("div", { className: "dlv-settings-subcard-body" }, children));
-}
-
-// src/shared/design-system/layout/SettingsTabs.tsx
-var import_react19 = __toESM(require("react"), 1);
-function SettingsTabs({ label, tabs, active, idPrefix, onChange }) {
-  const refs = import_react19.default.useRef([]);
-  const activate = (index) => {
-    const tab = tabs[index];
-    if (!tab) return;
-    onChange(tab.id);
-    refs.current[index]?.focus();
-  };
-  const onKeyDown = (event, index) => {
-    let next;
-    if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
-    else if (event.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
-    else if (event.key === "Home") next = 0;
-    else if (event.key === "End") next = tabs.length - 1;
-    if (next === void 0) return;
-    event.preventDefault();
-    activate(next);
-  };
-  return /* @__PURE__ */ import_react19.default.createElement("div", { className: "dlv-settings-tabs", role: "tablist", "aria-label": label }, tabs.map((tab, index) => /* @__PURE__ */ import_react19.default.createElement(
-    "button",
-    {
-      key: tab.id,
-      ref: (node) => {
-        refs.current[index] = node;
-      },
-      id: idPrefix + "-tab-" + tab.id,
-      type: "button",
-      role: "tab",
-      className: "dlv-settings-tab",
-      "aria-selected": active === tab.id,
-      "aria-controls": idPrefix + "-panel-" + tab.id,
-      "data-active": active === tab.id ? "true" : void 0,
-      tabIndex: active === tab.id ? 0 : -1,
-      onClick: () => onChange(tab.id),
-      onKeyDown: (event) => onKeyDown(event, index)
-    },
-    tab.icon ? /* @__PURE__ */ import_react19.default.createElement(Icon, { name: tab.icon, className: "dlv-settings-tab-icon" }) : null,
-    /* @__PURE__ */ import_react19.default.createElement("span", null, tab.label)
-  )));
-}
+var import_react28 = __toESM(require("react"), 1);
 
 // src/modules/recognition/engines/browser/BrowserRecognitionEngine.ts
 var abortError = () => Object.assign(new Error("Speech recognition was cancelled."), { name: "AbortError" });
@@ -4909,10 +5668,13 @@ var BrowserRecognitionEngine = class {
     recognition.interimResults = true;
     session.recognition = recognition;
     const finals = /* @__PURE__ */ new Set();
+    const starts = /* @__PURE__ */ new Map();
+    let speechStartedAt = null;
     const valid = () => this.session === session && session.recognition === recognition;
     recognition.onspeechstart = () => {
       if (!valid()) return;
       session.restarts = 0;
+      speechStartedAt = Date.now();
       this._activity(session, true);
     };
     recognition.onspeechend = () => {
@@ -4920,19 +5682,23 @@ var BrowserRecognitionEngine = class {
     };
     recognition.onresult = (event) => {
       if (!valid()) return;
+      let startedAt = null;
       const interim = [], final = [];
       for (let i = 0; i < event.results.length; i++) {
         const result = event.results[i];
         const text = result[0]?.transcript ?? "";
+        if (!finals.has(i) && !starts.has(i) && text.trim())
+          starts.set(i, speechStartedAt ?? Date.now());
         if (text.trim()) session.restarts = 0;
         if (result.isFinal) {
           if (!finals.has(i)) {
             finals.add(i);
+            startedAt ??= starts.get(i);
             final.push(text);
           }
         } else interim.push(text);
       }
-      notify(session.onResult, { interim: interim.join(" "), final: final.join(" ") });
+      notify(session.onResult, { interim: interim.join(" "), final: final.join(" "), startedAt });
     };
     recognition.onerror = (event) => {
       if (!valid()) return;
@@ -5146,6 +5912,7 @@ var WhisperHttpRecognitionEngine = class {
       chunks: [],
       samples: 0,
       voiced: false,
+      startedAt: null,
       silence: 0,
       transcriptionQueue: [],
       activeRequest: null,
@@ -5167,6 +5934,7 @@ var WhisperHttpRecognitionEngine = class {
     const enqueue = () => {
       if (!session.voiced || session.samples < context.sampleRate * 0.25) {
         session.chunks = [];
+        session.startedAt = null;
         session.samples = 0;
         session.voiced = false;
         session.silence = 0;
@@ -5178,11 +5946,13 @@ var WhisperHttpRecognitionEngine = class {
         samples.set(chunk, at2);
         at2 += chunk.length;
       }
+      const startedAt = session.startedAt;
+      session.startedAt = null;
       session.chunks = [];
       session.samples = 0;
       session.voiced = false;
       session.silence = 0;
-      session.transcriptionQueue.push(samples);
+      session.transcriptionQueue.push({ samples, startedAt });
       notifyProcessing();
       void drain();
     };
@@ -5191,7 +5961,7 @@ var WhisperHttpRecognitionEngine = class {
       session.draining = true;
       try {
         while (valid() && session.transcriptionQueue.length) {
-          const samples = session.transcriptionQueue.shift();
+          const { samples, startedAt } = session.transcriptionQueue.shift();
           const request = new AbortController();
           session.activeRequest = request;
           notifyProcessing();
@@ -5211,7 +5981,8 @@ var WhisperHttpRecognitionEngine = class {
             const json = await response.json();
             if (!response.ok || !json?.ok)
               throw new Error(json?.error?.message || "HTTP transcription failed.");
-            if (valid() && json.value.text) onResult?.({ final: json.value.text, interim: "" });
+            if (valid() && json.value.text)
+              onResult?.({ final: json.value.text, interim: "", startedAt });
           } catch (error) {
             if (error.name !== "AbortError" && valid()) onError?.(error);
           } finally {
@@ -5228,6 +5999,8 @@ var WhisperHttpRecognitionEngine = class {
       if (!valid()) return;
       const data = new Float32Array(event.inputBuffer.getChannelData(0)), rms = Math.sqrt(data.reduce((sum, x2) => sum + x2 * x2, 0) / data.length);
       if (rms > 0.012) {
+        if (!session.voiced)
+          session.startedAt = Date.now() - Math.round(data.length / context.sampleRate * 1e3);
         session.voiced = true;
         session.silence = 0;
         onActivity?.(true);
@@ -5638,16 +6411,16 @@ var QwenHttpSpeakingEngine = class extends HostAudioSpeakingEngine {
 };
 
 // src/modules/settings/components/createLiveVoiceSettings.tsx
-var import_react46 = __toESM(require("react"), 1);
+var import_react52 = __toESM(require("react"), 1);
 
 // src/modules/settings/components/LiveVoiceSettings.tsx
-var import_react45 = __toESM(require("react"), 1);
+var import_react51 = __toESM(require("react"), 1);
 
 // src/modules/settings/hooks/useAudioDevices.ts
-var import_react21 = __toESM(require("react"), 1);
+var import_react29 = __toESM(require("react"), 1);
 function useAudioDevices() {
-  const [audioDevices, setAudioDevices] = import_react21.default.useState([]);
-  import_react21.default.useEffect(() => {
+  const [audioDevices, setAudioDevices] = import_react29.default.useState([]);
+  import_react29.default.useEffect(() => {
     let active = true;
     const refresh = async () => {
       try {
@@ -5676,47 +6449,8 @@ function createDeviceOptions(devices, kind, systemDefault, fallback) {
   ];
 }
 
-// src/modules/conversation/hooks/useConversationActions.ts
-var import_react22 = __toESM(require("react"), 1);
-function useConversationActions(controller) {
-  const [error, setError] = import_react22.default.useState("");
-  const alive = import_react22.default.useRef(true);
-  import_react22.default.useEffect(
-    () => () => {
-      alive.current = false;
-    },
-    []
-  );
-  const invoke = import_react22.default.useCallback(
-    (name, ...args) => {
-      setError("");
-      try {
-        Promise.resolve(controller[name](...args)).catch((reason) => {
-          if (alive.current) setError(reason instanceof Error ? reason.message : String(reason));
-        });
-      } catch (reason) {
-        setError(reason instanceof Error ? reason.message : String(reason));
-      }
-    },
-    [controller]
-  );
-  const clearError = import_react22.default.useCallback(() => setError(""), []);
-  return { invoke, error, clearError };
-}
-
-// src/modules/conversation/hooks/useConversationController.ts
-var import_react23 = __toESM(require("react"), 1);
-function useConversationController(controller) {
-  const subscribe = import_react23.default.useCallback(
-    (listener) => controller.subscribe(listener),
-    [controller]
-  );
-  const read = import_react23.default.useCallback(() => controller.getSnapshot(), [controller]);
-  return import_react23.default.useSyncExternalStore(subscribe, read, read);
-}
-
 // src/modules/settings/hooks/useReleaseStatus.ts
-var import_react24 = __toESM(require("react"), 1);
+var import_react30 = __toESM(require("react"), 1);
 
 // src/modules/settings/services/releases.ts
 var CURRENT_VERSION = "0.4.0";
@@ -5821,10 +6555,10 @@ function hasNewerRelease(release, currentVersion = CURRENT_VERSION) {
 
 // src/modules/settings/hooks/useReleaseStatus.ts
 function useReleaseStatus() {
-  const [latestRelease, setLatestRelease] = import_react24.default.useState(
+  const [latestRelease, setLatestRelease] = import_react30.default.useState(
     null
   );
-  import_react24.default.useEffect(() => {
+  import_react30.default.useEffect(() => {
     let active = true;
     void checkLatestRelease().then((result) => {
       if (active) setLatestRelease(result.release);
@@ -5837,10 +6571,10 @@ function useReleaseStatus() {
 }
 
 // src/modules/settings/sections/conversation/ConversationSettingsSection.tsx
-var import_react30 = __toESM(require("react"), 1);
+var import_react36 = __toESM(require("react"), 1);
 
 // src/modules/settings/sections/conversation/DeliverySettings.tsx
-var import_react25 = __toESM(require("react"), 1);
+var import_react31 = __toESM(require("react"), 1);
 function DeliverySettings({
   settings,
   updateSettings
@@ -5848,8 +6582,8 @@ function DeliverySettings({
   const { scoped } = useLanguage((ctx) => ctx.settings);
   const mode = settings.sendingMode || "manual";
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
-  const busyEnterHelpId = import_react25.default.useId();
-  return /* @__PURE__ */ import_react25.default.createElement(import_react25.default.Fragment, null, /* @__PURE__ */ import_react25.default.createElement(
+  const busyEnterHelpId = import_react31.default.useId();
+  return /* @__PURE__ */ import_react31.default.createElement(import_react31.default.Fragment, null, /* @__PURE__ */ import_react31.default.createElement(
     SelectField,
     {
       label: scoped.delivery.label(),
@@ -5861,7 +6595,7 @@ function DeliverySettings({
       ],
       onChange: (event) => updateSettings({ sendingMode: event.target.value })
     }
-  ), /* @__PURE__ */ import_react25.default.createElement(
+  ), /* @__PURE__ */ import_react31.default.createElement(
     SelectField,
     {
       label: scoped.delivery.dshEnterQuestion(),
@@ -5873,7 +6607,7 @@ function DeliverySettings({
       ],
       onChange: (event) => updateSettings({ dshBusyEnterBehavior: event.target.value })
     }
-  ), /* @__PURE__ */ import_react25.default.createElement("p", { id: busyEnterHelpId, className: "dlv-setting-description" }, scoped.delivery.dshEnterHelp()), mode !== "manual" ? /* @__PURE__ */ import_react25.default.createElement(
+  ), /* @__PURE__ */ import_react31.default.createElement("p", { id: busyEnterHelpId, className: "dlv-setting-description" }, scoped.delivery.dshEnterHelp()), mode !== "manual" ? /* @__PURE__ */ import_react31.default.createElement(
     SelectField,
     {
       label: scoped.autoSend.delay(),
@@ -5884,17 +6618,17 @@ function DeliverySettings({
       })),
       onChange: (event) => updateSettings({ autoSendDelaySeconds: Number(event.target.value) })
     }
-  ) : /* @__PURE__ */ import_react25.default.createElement("p", { className: "dlv-setting-description" }, scoped.delivery.manualLabel()));
+  ) : /* @__PURE__ */ import_react31.default.createElement("p", { className: "dlv-setting-description" }, scoped.delivery.manualLabel()));
 }
 
 // src/modules/settings/sections/conversation/HoldToTalkSettings.tsx
-var import_react26 = __toESM(require("react"), 1);
+var import_react32 = __toESM(require("react"), 1);
 function HoldToTalkSettings({
   settings,
   updateSettings
 }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
-  return /* @__PURE__ */ import_react26.default.createElement(
+  return /* @__PURE__ */ import_react32.default.createElement(
     CheckboxField,
     {
       label: recognition.holdToTalk.enabled(),
@@ -5906,14 +6640,14 @@ function HoldToTalkSettings({
 }
 
 // src/modules/settings/sections/conversation/VoiceModeSettings.tsx
-var import_react27 = __toESM(require("react"), 1);
+var import_react33 = __toESM(require("react"), 1);
 function VoiceModeSettings({
   settings,
   updateSettings
 }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const mode = settings.mode || "speaker";
-  return /* @__PURE__ */ import_react27.default.createElement(import_react27.default.Fragment, null, /* @__PURE__ */ import_react27.default.createElement(
+  return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null, /* @__PURE__ */ import_react33.default.createElement(
     SelectField,
     {
       label: recognition.mode.label(),
@@ -5924,16 +6658,16 @@ function VoiceModeSettings({
       ],
       onChange: (event) => updateSettings({ mode: event.target.value })
     }
-  ), /* @__PURE__ */ import_react27.default.createElement("p", { className: "dlv-setting-description" }, mode === "headphones" ? recognition.headphoneMode.help() : recognition.speakerMode.help()));
+  ), /* @__PURE__ */ import_react33.default.createElement("p", { className: "dlv-setting-description" }, mode === "headphones" ? recognition.headphoneMode.help() : recognition.speakerMode.help()));
 }
 
 // src/modules/settings/sections/conversation/ConversationDelaySettings.tsx
-var import_react28 = __toESM(require("react"), 1);
+var import_react34 = __toESM(require("react"), 1);
 var DELAYS = [0, 1, 2, 3, 4];
 function ConversationDelaySettings({ settings, updateSettings }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
-  return /* @__PURE__ */ import_react28.default.createElement(import_react28.default.Fragment, null, /* @__PURE__ */ import_react28.default.createElement(
+  return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null, /* @__PURE__ */ import_react34.default.createElement(
     SelectField,
     {
       label: speak.responseDelay.label(),
@@ -5944,41 +6678,41 @@ function ConversationDelaySettings({ settings, updateSettings }) {
       })),
       onChange: (event) => updateSettings({ assistantSpeechDelaySeconds: Number(event.target.value) })
     }
-  ), /* @__PURE__ */ import_react28.default.createElement("p", { className: "dlv-setting-description" }, speak.responseDelay.help()));
+  ), /* @__PURE__ */ import_react34.default.createElement("p", { className: "dlv-setting-description" }, speak.responseDelay.help()));
 }
 
 // src/modules/settings/sections/speak/PlaybackPolicySettings.tsx
-var import_react29 = __toESM(require("react"), 1);
+var import_react35 = __toESM(require("react"), 1);
 function PlaybackPolicySettings({ settings, updateSettings }) {
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
-  return /* @__PURE__ */ import_react29.default.createElement(import_react29.default.Fragment, null, /* @__PURE__ */ import_react29.default.createElement(
+  return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement(
     CheckboxField,
     {
       label: speak.autoPlayback.label(),
       checked: settings.announceAssistantMessages !== false,
       onChange: (event) => updateSettings({ announceAssistantMessages: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react29.default.createElement("p", null, speak.autoPlayback.help()), /* @__PURE__ */ import_react29.default.createElement(
+  ), /* @__PURE__ */ import_react35.default.createElement("p", null, speak.autoPlayback.help()), /* @__PURE__ */ import_react35.default.createElement(
     CheckboxField,
     {
       label: speak.interruption.enabled(),
       checked: Boolean(settings.interruptSpeechOnUserMessage),
       onChange: (event) => updateSettings({ interruptSpeechOnUserMessage: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react29.default.createElement("p", null, settings.interruptSpeechOnUserMessage ? speak.interruption.enabledHelp() : speak.interruption.disabledHelp()));
+  ), /* @__PURE__ */ import_react35.default.createElement("p", null, settings.interruptSpeechOnUserMessage ? speak.interruption.enabledHelp() : speak.interruption.disabledHelp()));
 }
 
 // src/modules/settings/sections/conversation/ConversationSettingsSection.tsx
 function ConversationSettingsSection(props) {
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
-  return /* @__PURE__ */ import_react30.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react30.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react30.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "send" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "dlv-conversation-fields" }, /* @__PURE__ */ import_react30.default.createElement(DeliverySettings, { ...props }), /* @__PURE__ */ import_react30.default.createElement(HoldToTalkSettings, { ...props }), /* @__PURE__ */ import_react30.default.createElement(VoiceModeSettings, { ...props }), /* @__PURE__ */ import_react30.default.createElement(PlaybackPolicySettings, { ...props }), /* @__PURE__ */ import_react30.default.createElement(ConversationDelaySettings, { ...props })))));
+  return /* @__PURE__ */ import_react36.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react36.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "send" }, /* @__PURE__ */ import_react36.default.createElement("div", { className: "dlv-conversation-fields" }, /* @__PURE__ */ import_react36.default.createElement(DeliverySettings, { ...props }), /* @__PURE__ */ import_react36.default.createElement(HoldToTalkSettings, { ...props }), /* @__PURE__ */ import_react36.default.createElement(VoiceModeSettings, { ...props }), /* @__PURE__ */ import_react36.default.createElement(PlaybackPolicySettings, { ...props }), /* @__PURE__ */ import_react36.default.createElement(ConversationDelaySettings, { ...props })))));
 }
 
 // src/modules/settings/sections/recognition/RecognitionEngineSettings.tsx
-var import_react33 = __toESM(require("react"), 1);
+var import_react39 = __toESM(require("react"), 1);
 
 // src/modules/core/qwen/QwenSettings.tsx
-var import_react31 = __toESM(require("react"), 1);
+var import_react37 = __toESM(require("react"), 1);
 var BASE = "/api/dsh-live-voice/qwen";
 var UNLOADED = "dsh-live-voice.speak.qwen.restartRequired";
 async function qwenSettingsRequest(path, { method = "GET", config, signal } = {}, fetchImpl = globalThis.fetch) {
@@ -6007,15 +6741,15 @@ function QwenSettings({ controller }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
-  const [draft, setDraft] = import_react31.default.useState({
+  const [draft, setDraft] = import_react37.default.useState({
     baseUrl: "http://127.0.0.1:8080/",
     timeoutMs: 3e5
   });
-  const [busy, setBusy] = import_react31.default.useState(true);
-  const [loaded, setLoaded] = import_react31.default.useState(false);
-  const [error, setError] = import_react31.default.useState("");
-  const [message2, setMessage] = import_react31.default.useState("");
-  const active = import_react31.default.useRef(null);
+  const [busy, setBusy] = import_react37.default.useState(true);
+  const [loaded, setLoaded] = import_react37.default.useState(false);
+  const [error, setError] = import_react37.default.useState("");
+  const [message2, setMessage] = import_react37.default.useState("");
+  const active = import_react37.default.useRef(null);
   const translateStatus = (value) => ({
     "dsh-live-voice.commons.connection.unsaved": commons.connection.unsaved(),
     "dsh-live-voice.speak.qwen.saved": speak.qwen.saved(),
@@ -6069,13 +6803,13 @@ function QwenSettings({ controller }) {
       if (!abort.signal.aborted) setBusy(false);
     }
   }
-  import_react31.default.useEffect(() => {
+  import_react37.default.useEffect(() => {
     void run("load");
     return () => active.current?.abort();
   }, []);
   const field = (label, key, type = "text") => {
     const Field = type === "number" ? NumberField : TextField;
-    return /* @__PURE__ */ import_react31.default.createElement(
+    return /* @__PURE__ */ import_react37.default.createElement(
       Field,
       {
         label,
@@ -6091,11 +6825,11 @@ function QwenSettings({ controller }) {
       }
     );
   };
-  return /* @__PURE__ */ import_react31.default.createElement(import_react31.default.Fragment, null, /* @__PURE__ */ import_react31.default.createElement("p", null, recognition.qwen.hostHelp()), field(speak.qwen.endpoint(), "baseUrl"), field(commons.connection.timeout(), "timeoutMs", "number"), /* @__PURE__ */ import_react31.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react31.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("save") }, speak.qwen.save()), /* @__PURE__ */ import_react31.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("test") }, speak.qwen.test()), /* @__PURE__ */ import_react31.default.createElement("button", { type: "button", disabled: busy, onClick: () => run("load") }, commons.connection.reload())), busy && /* @__PURE__ */ import_react31.default.createElement("p", { role: "status" }, commons.connection.contactingHost()), message2 && /* @__PURE__ */ import_react31.default.createElement("p", { role: "status" }, translateStatus(message2)), error && /* @__PURE__ */ import_react31.default.createElement("p", { role: "alert" }, translateStatus(error)));
+  return /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null, /* @__PURE__ */ import_react37.default.createElement("p", null, recognition.qwen.hostHelp()), field(speak.qwen.endpoint(), "baseUrl"), field(commons.connection.timeout(), "timeoutMs", "number"), /* @__PURE__ */ import_react37.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react37.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("save") }, speak.qwen.save()), /* @__PURE__ */ import_react37.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("test") }, speak.qwen.test()), /* @__PURE__ */ import_react37.default.createElement("button", { type: "button", disabled: busy, onClick: () => run("load") }, commons.connection.reload())), busy && /* @__PURE__ */ import_react37.default.createElement("p", { role: "status" }, commons.connection.contactingHost()), message2 && /* @__PURE__ */ import_react37.default.createElement("p", { role: "status" }, translateStatus(message2)), error && /* @__PURE__ */ import_react37.default.createElement("p", { role: "alert" }, translateStatus(error)));
 }
 
 // src/modules/recognition/engines/whisper/WhisperSettings.tsx
-var import_react32 = __toESM(require("react"), 1);
+var import_react38 = __toESM(require("react"), 1);
 var BASE2 = "/api/dsh-live-voice/whisper";
 var UNLOADED2 = "dsh-live-voice.recognition.whisper.restartRequired";
 async function whisperSettingsRequest(path, { method = "GET", config, signal } = {}, fetchImpl = globalThis.fetch) {
@@ -6124,16 +6858,16 @@ function WhisperSettings({ controller }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const { scoped: settings } = useLanguage((ctx) => ctx.settings);
-  const [draft, setDraft] = import_react32.default.useState({
+  const [draft, setDraft] = import_react38.default.useState({
     url: "http://127.0.0.1:8080/inference",
     healthUrl: "/health",
     timeoutMs: 3e4
   });
-  const [busy, setBusy] = import_react32.default.useState(true);
-  const [loaded, setLoaded] = import_react32.default.useState(false);
-  const [error, setError] = import_react32.default.useState("");
-  const [message2, setMessage] = import_react32.default.useState("");
-  const active = import_react32.default.useRef(null);
+  const [busy, setBusy] = import_react38.default.useState(true);
+  const [loaded, setLoaded] = import_react38.default.useState(false);
+  const [error, setError] = import_react38.default.useState("");
+  const [message2, setMessage] = import_react38.default.useState("");
+  const active = import_react38.default.useRef(null);
   const translateStatus = (value) => ({
     "dsh-live-voice.commons.connection.unsaved": commons.connection.unsaved(),
     "dsh-live-voice.recognition.whisper.saved": recognition.whisper.saved(),
@@ -6187,13 +6921,13 @@ function WhisperSettings({ controller }) {
       if (!abort.signal.aborted) setBusy(false);
     }
   }
-  import_react32.default.useEffect(() => {
+  import_react38.default.useEffect(() => {
     void run("load");
     return () => active.current?.abort();
   }, []);
   const field = (label, key, type = "text") => {
     const Field = type === "number" ? NumberField : TextField;
-    return /* @__PURE__ */ import_react32.default.createElement(
+    return /* @__PURE__ */ import_react38.default.createElement(
       Field,
       {
         label,
@@ -6209,7 +6943,7 @@ function WhisperSettings({ controller }) {
       }
     );
   };
-  return /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null, /* @__PURE__ */ import_react32.default.createElement("p", null, settings.whisper.hostHelp()), field(commons.connection.endpoint(), "url"), field(commons.connection.healthEndpoint(), "healthUrl"), field(commons.connection.timeout(), "timeoutMs", "number"), /* @__PURE__ */ import_react32.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react32.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("save") }, recognition.whisper.save()), /* @__PURE__ */ import_react32.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("test") }, commons.connection.test()), /* @__PURE__ */ import_react32.default.createElement("button", { type: "button", disabled: busy, onClick: () => run("load") }, commons.connection.reload())), busy && /* @__PURE__ */ import_react32.default.createElement("p", { role: "status" }, commons.connection.contactingHost()), message2 && /* @__PURE__ */ import_react32.default.createElement("p", { role: "status" }, translateStatus(message2)), error && /* @__PURE__ */ import_react32.default.createElement("p", { role: "alert" }, translateStatus(error)));
+  return /* @__PURE__ */ import_react38.default.createElement(import_react38.default.Fragment, null, /* @__PURE__ */ import_react38.default.createElement("p", null, settings.whisper.hostHelp()), field(commons.connection.endpoint(), "url"), field(commons.connection.healthEndpoint(), "healthUrl"), field(commons.connection.timeout(), "timeoutMs", "number"), /* @__PURE__ */ import_react38.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react38.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("save") }, recognition.whisper.save()), /* @__PURE__ */ import_react38.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("test") }, commons.connection.test()), /* @__PURE__ */ import_react38.default.createElement("button", { type: "button", disabled: busy, onClick: () => run("load") }, commons.connection.reload())), busy && /* @__PURE__ */ import_react38.default.createElement("p", { role: "status" }, commons.connection.contactingHost()), message2 && /* @__PURE__ */ import_react38.default.createElement("p", { role: "status" }, translateStatus(message2)), error && /* @__PURE__ */ import_react38.default.createElement("p", { role: "alert" }, translateStatus(error)));
 }
 
 // src/modules/settings/sections/recognition/RecognitionEngineSettings.tsx
@@ -6226,7 +6960,7 @@ function RecognitionEngineSettings({
   const setEngine = (next) => updateSettings(
     next === "browser" && settings.recognitionLang === "auto" ? { recognitionEngine: next, recognitionLang: "pt-BR" } : { recognitionEngine: next }
   );
-  return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null, /* @__PURE__ */ import_react33.default.createElement(
+  return /* @__PURE__ */ import_react39.default.createElement(import_react39.default.Fragment, null, /* @__PURE__ */ import_react39.default.createElement(
     SelectField,
     {
       label: recognition.engine.label(),
@@ -6250,7 +6984,7 @@ function RecognitionEngineSettings({
       ],
       onChange: (event) => setEngine(event.target.value)
     }
-  ), /* @__PURE__ */ import_react33.default.createElement(
+  ), /* @__PURE__ */ import_react39.default.createElement(
     SelectField,
     {
       label: recognition.microphone.device(),
@@ -6263,7 +6997,7 @@ function RecognitionEngineSettings({
       ),
       onChange: (event) => updateSettings({ inputDeviceId: event.target.value })
     }
-  ), /* @__PURE__ */ import_react33.default.createElement(
+  ), /* @__PURE__ */ import_react39.default.createElement(
     SelectField,
     {
       label: recognition.language.label(),
@@ -6275,29 +7009,29 @@ function RecognitionEngineSettings({
       ],
       onChange: (event) => updateSettings({ recognitionLang: event.target.value })
     }
-  ), engine === "browser" && /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null, /* @__PURE__ */ import_react33.default.createElement("p", null, recognition.browser.help()), /* @__PURE__ */ import_react33.default.createElement(
+  ), engine === "browser" && /* @__PURE__ */ import_react39.default.createElement(import_react39.default.Fragment, null, /* @__PURE__ */ import_react39.default.createElement("p", null, recognition.browser.help()), /* @__PURE__ */ import_react39.default.createElement(
     CheckboxField,
     {
       label: recognition.browser.localProcessing(),
       checked: settings.recognitionProcessLocally !== false,
       onChange: (event) => updateSettings({ recognitionProcessLocally: event.target.checked })
     }
-  ), settings.recognitionProcessLocally !== false ? /* @__PURE__ */ import_react33.default.createElement(
+  ), settings.recognitionProcessLocally !== false ? /* @__PURE__ */ import_react39.default.createElement(
     CheckboxField,
     {
       label: recognition.browser.autoInstallPack(),
       checked: settings.recognitionAutoInstall !== false,
       onChange: (event) => updateSettings({ recognitionAutoInstall: event.target.checked })
     }
-  ) : /* @__PURE__ */ import_react33.default.createElement("p", { role: "status" }, recognition.browser.remoteServiceWarning())), engine === "whisper-http" && /* @__PURE__ */ import_react33.default.createElement(SettingsSubcard, { title: commons.connection.title(), icon: "link" }, /* @__PURE__ */ import_react33.default.createElement("p", null, recognition.whisper.captureHelp()), /* @__PURE__ */ import_react33.default.createElement(WhisperSettings, { controller })), engine === "qwen-http" && /* @__PURE__ */ import_react33.default.createElement(SettingsSubcard, { title: commons.connection.title(), icon: "link" }, /* @__PURE__ */ import_react33.default.createElement("p", null, recognition.qwen.captureHelp()), settings.engine !== "qwen-http" && /* @__PURE__ */ import_react33.default.createElement(QwenSettings, { controller })));
+  ) : /* @__PURE__ */ import_react39.default.createElement("p", { role: "status" }, recognition.browser.remoteServiceWarning())), engine === "whisper-http" && /* @__PURE__ */ import_react39.default.createElement(SettingsSubcard, { title: commons.connection.title(), icon: "link" }, /* @__PURE__ */ import_react39.default.createElement("p", null, recognition.whisper.captureHelp()), /* @__PURE__ */ import_react39.default.createElement(WhisperSettings, { controller })), engine === "qwen-http" && /* @__PURE__ */ import_react39.default.createElement(SettingsSubcard, { title: commons.connection.title(), icon: "link" }, /* @__PURE__ */ import_react39.default.createElement("p", null, recognition.qwen.captureHelp()), settings.engine !== "qwen-http" && /* @__PURE__ */ import_react39.default.createElement(QwenSettings, { controller })));
 }
 
 // src/modules/settings/sections/recognition/RecognitionFilterSettings.tsx
-var import_react34 = __toESM(require("react"), 1);
+var import_react40 = __toESM(require("react"), 1);
 function RecognitionFilterSettings({ settings, updateSettings }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const enabled = settings.recognitionFilterEnabled !== false;
-  return /* @__PURE__ */ import_react34.default.createElement(SettingsSubcard, { title: recognition.minimumWords.label(), icon: "filter" }, /* @__PURE__ */ import_react34.default.createElement(
+  return /* @__PURE__ */ import_react40.default.createElement(SettingsSubcard, { title: recognition.minimumWords.label(), icon: "filter" }, /* @__PURE__ */ import_react40.default.createElement(
     CheckboxField,
     {
       label: recognition.minimumWords.enabled(),
@@ -6305,7 +7039,7 @@ function RecognitionFilterSettings({ settings, updateSettings }) {
       checked: enabled,
       onChange: (event) => updateSettings({ recognitionFilterEnabled: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react34.default.createElement(
+  ), /* @__PURE__ */ import_react40.default.createElement(
     NumberField,
     {
       label: recognition.minimumWords.label(),
@@ -6323,24 +7057,24 @@ function RecognitionFilterSettings({ settings, updateSettings }) {
 }
 
 // src/modules/settings/sections/recognition/RecognitionSettingsSection.tsx
-var import_react38 = __toESM(require("react"), 1);
+var import_react44 = __toESM(require("react"), 1);
 
 // src/modules/settings/sections/recognition/SilenceDetectionSettings.tsx
-var import_react35 = __toESM(require("react"), 1);
+var import_react41 = __toESM(require("react"), 1);
 function SilenceDetectionSettings({ settings, updateSettings }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const savedCustomMs = normalizeCustomSilenceMs(settings.voiceDetectionCustomSilenceMs);
   if (!usesPluginVoiceDetection(settings.recognitionEngine)) return null;
   const selected = settings.voiceDetectionPreset || defaultSettings.voiceDetectionPreset;
-  return /* @__PURE__ */ import_react35.default.createElement(
+  return /* @__PURE__ */ import_react41.default.createElement(
     SettingsSubcard,
     {
       title: recognition.silenceDetection.label(),
       ariaLabel: recognition.silenceDetection.title(),
       icon: "pause"
     },
-    /* @__PURE__ */ import_react35.default.createElement("p", null, recognition.silenceDetection.help()),
-    /* @__PURE__ */ import_react35.default.createElement(
+    /* @__PURE__ */ import_react41.default.createElement("p", null, recognition.silenceDetection.help()),
+    /* @__PURE__ */ import_react41.default.createElement(
       NumberField,
       {
         label: recognition.maxUtterance.label(),
@@ -6355,15 +7089,15 @@ function SilenceDetectionSettings({ settings, updateSettings }) {
         }
       }
     ),
-    /* @__PURE__ */ import_react35.default.createElement("small", null, recognition.maxUtterance.help()),
-    /* @__PURE__ */ import_react35.default.createElement(
+    /* @__PURE__ */ import_react41.default.createElement("small", null, recognition.maxUtterance.help()),
+    /* @__PURE__ */ import_react41.default.createElement(
       "div",
       {
         className: "dlv-preset-group",
         role: "radiogroup",
         "aria-label": recognition.silenceDetection.pauseLabel()
       },
-      [...Object.keys(voiceDetectionPresets), "custom"].map((value) => /* @__PURE__ */ import_react35.default.createElement("label", { key: value, className: "dlv-preset" }, /* @__PURE__ */ import_react35.default.createElement(
+      [...Object.keys(voiceDetectionPresets), "custom"].map((value) => /* @__PURE__ */ import_react41.default.createElement("label", { key: value, className: "dlv-preset" }, /* @__PURE__ */ import_react41.default.createElement(
         "input",
         {
           type: "radio",
@@ -6372,9 +7106,9 @@ function SilenceDetectionSettings({ settings, updateSettings }) {
           checked: selected === value,
           onChange: () => updateSettings({ voiceDetectionPreset: value })
         }
-      ), /* @__PURE__ */ import_react35.default.createElement("span", null, /* @__PURE__ */ import_react35.default.createElement("strong", null, recognition.presets[value].label()), /* @__PURE__ */ import_react35.default.createElement("small", null, recognition.presets[value].description()))))
+      ), /* @__PURE__ */ import_react41.default.createElement("span", null, /* @__PURE__ */ import_react41.default.createElement("strong", null, recognition.presets[value].label()), /* @__PURE__ */ import_react41.default.createElement("small", null, recognition.presets[value].description()))))
     ),
-    selected === "custom" && /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement(
+    selected === "custom" && /* @__PURE__ */ import_react41.default.createElement(import_react41.default.Fragment, null, /* @__PURE__ */ import_react41.default.createElement(
       NumberField,
       {
         label: recognition.silenceDetection.customLabel(),
@@ -6388,15 +7122,15 @@ function SilenceDetectionSettings({ settings, updateSettings }) {
             updateSettings({ voiceDetectionCustomSilenceMs: value });
         }
       }
-    ), /* @__PURE__ */ import_react35.default.createElement("small", null, recognition.silenceDetection.customHelp())),
-    /* @__PURE__ */ import_react35.default.createElement("p", { className: "dlv-vad-summary" }, recognition.silenceDetection.duration({
+    ), /* @__PURE__ */ import_react41.default.createElement("small", null, recognition.silenceDetection.customHelp())),
+    /* @__PURE__ */ import_react41.default.createElement("p", { className: "dlv-vad-summary" }, recognition.silenceDetection.duration({
       milliseconds: voiceDetectionSilenceMs(settings)
     }))
   );
 }
 
 // src/modules/settings/sections/recognition/VoiceCommandSettings.tsx
-var import_react36 = __toESM(require("react"), 1);
+var import_react42 = __toESM(require("react"), 1);
 var COMMANDS = [
   ["send", "voiceCommandSend", "send message, send it"],
   ["queue", "voiceCommandQueue", "queue message, queue it"],
@@ -6409,14 +7143,14 @@ var COMMANDS = [
 function VoiceCommandSettings({ settings, updateSettings }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const enabled = settings.voiceCommandsEnabled !== false;
-  return /* @__PURE__ */ import_react36.default.createElement(SettingsSubcard, { title: recognition.commands.title(), icon: "send" }, /* @__PURE__ */ import_react36.default.createElement(
+  return /* @__PURE__ */ import_react42.default.createElement(SettingsSubcard, { title: recognition.commands.title(), icon: "send" }, /* @__PURE__ */ import_react42.default.createElement(
     CheckboxField,
     {
       label: recognition.commands.enabled(),
       checked: enabled,
       onChange: (event) => updateSettings({ voiceCommandsEnabled: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react36.default.createElement("p", { className: "dlv-setting-description" }, recognition.voiceCommands.help()), COMMANDS.map(([label, key, fallback]) => /* @__PURE__ */ import_react36.default.createElement(
+  ), /* @__PURE__ */ import_react42.default.createElement("p", { className: "dlv-setting-description" }, recognition.voiceCommands.help()), COMMANDS.map(([label, key, fallback]) => /* @__PURE__ */ import_react42.default.createElement(
     TextAreaField,
     {
       key,
@@ -6431,31 +7165,31 @@ function VoiceCommandSettings({ settings, updateSettings }) {
 }
 
 // src/modules/settings/sections/recognition/RecognitionStatus.tsx
-var import_react37 = __toESM(require("react"), 1);
+var import_react43 = __toESM(require("react"), 1);
 function RecognitionStatus({ capabilities = {} }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
-  return /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null, capabilities.capture?.supported === false ? /* @__PURE__ */ import_react37.default.createElement("p", { role: "status" }, recognition.microphone.failure({ reason: capabilities.capture.reason || "" })) : capabilities.capture?.permission === "prompt" ? /* @__PURE__ */ import_react37.default.createElement("p", { role: "status" }, recognition.microphone.permissionHelp()) : null, capabilities.recognition?.supported === false && /* @__PURE__ */ import_react37.default.createElement("p", { role: "status" }, capabilities.recognition.reason));
+  return /* @__PURE__ */ import_react43.default.createElement(import_react43.default.Fragment, null, capabilities.capture?.supported === false ? /* @__PURE__ */ import_react43.default.createElement("p", { role: "status" }, recognition.microphone.failure({ reason: capabilities.capture.reason || "" })) : capabilities.capture?.permission === "prompt" ? /* @__PURE__ */ import_react43.default.createElement("p", { role: "status" }, recognition.microphone.permissionHelp()) : null, capabilities.recognition?.supported === false && /* @__PURE__ */ import_react43.default.createElement("p", { role: "status" }, capabilities.recognition.reason));
 }
 
 // src/modules/settings/sections/recognition/RecognitionSettingsSection.tsx
 function RecognitionSettingsSection(props) {
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
-  return /* @__PURE__ */ import_react38.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react38.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react38.default.createElement(RecognitionStatus, { ...props }), /* @__PURE__ */ import_react38.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "mic" }, /* @__PURE__ */ import_react38.default.createElement(RecognitionEngineSettings, { ...props })), /* @__PURE__ */ import_react38.default.createElement(VoiceCommandSettings, { ...props }), /* @__PURE__ */ import_react38.default.createElement(RecognitionFilterSettings, { ...props }), /* @__PURE__ */ import_react38.default.createElement(SilenceDetectionSettings, { ...props })));
+  return /* @__PURE__ */ import_react44.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react44.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react44.default.createElement(RecognitionStatus, { ...props }), /* @__PURE__ */ import_react44.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "mic" }, /* @__PURE__ */ import_react44.default.createElement(RecognitionEngineSettings, { ...props })), /* @__PURE__ */ import_react44.default.createElement(VoiceCommandSettings, { ...props }), /* @__PURE__ */ import_react44.default.createElement(RecognitionFilterSettings, { ...props }), /* @__PURE__ */ import_react44.default.createElement(SilenceDetectionSettings, { ...props })));
 }
 
 // src/modules/settings/sections/speak/OutputFilterSettings.tsx
-var import_react39 = __toESM(require("react"), 1);
+var import_react45 = __toESM(require("react"), 1);
 function OutputFilterSettings({ settings, updateSettings }) {
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const enabled = settings.outputCodeFilterEnabled !== false;
-  return /* @__PURE__ */ import_react39.default.createElement(SettingsSubcard, { title: speak.filters.code.enabled(), icon: "filter" }, /* @__PURE__ */ import_react39.default.createElement(
+  return /* @__PURE__ */ import_react45.default.createElement(SettingsSubcard, { title: speak.filters.code.enabled(), icon: "filter" }, /* @__PURE__ */ import_react45.default.createElement(
     CheckboxField,
     {
       label: speak.filters.code.enabled(),
       checked: enabled,
       onChange: (event) => updateSettings({ outputCodeFilterEnabled: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react39.default.createElement(
+  ), /* @__PURE__ */ import_react45.default.createElement(
     NumberField,
     {
       label: speak.filters.code.maxLines(),
@@ -6469,7 +7203,7 @@ function OutputFilterSettings({ settings, updateSettings }) {
           updateSettings({ outputCodeMaxLines: value });
       }
     }
-  ), /* @__PURE__ */ import_react39.default.createElement(
+  ), /* @__PURE__ */ import_react45.default.createElement(
     TextField,
     {
       label: speak.filters.code.replacement(),
@@ -6481,16 +7215,16 @@ function OutputFilterSettings({ settings, updateSettings }) {
 }
 
 // src/modules/settings/sections/speak/SpeakSettingsSection.tsx
-var import_react42 = __toESM(require("react"), 1);
+var import_react48 = __toESM(require("react"), 1);
 
 // src/modules/settings/sections/speak/SpeechEngineSettings.tsx
-var import_react40 = __toESM(require("react"), 1);
+var import_react46 = __toESM(require("react"), 1);
 function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const engine = settings.engine || "browser";
   const browserVoices = capabilities?.browser?.voices || [];
-  return /* @__PURE__ */ import_react40.default.createElement(import_react40.default.Fragment, null, /* @__PURE__ */ import_react40.default.createElement(
+  return /* @__PURE__ */ import_react46.default.createElement(import_react46.default.Fragment, null, /* @__PURE__ */ import_react46.default.createElement(
     SelectField,
     {
       label: speak.engine.label(),
@@ -6514,7 +7248,7 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       ],
       onChange: (event) => updateSettings({ engine: event.target.value })
     }
-  ), engine === "browser" && /* @__PURE__ */ import_react40.default.createElement(
+  ), engine === "browser" && /* @__PURE__ */ import_react46.default.createElement(
     SelectField,
     {
       label: speak.browser.voice(),
@@ -6528,7 +7262,7 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       ],
       onChange: (event) => updateSettings({ voice: event.target.value })
     }
-  ), engine === "qwen-http" && /* @__PURE__ */ import_react40.default.createElement(
+  ), engine === "qwen-http" && /* @__PURE__ */ import_react46.default.createElement(
     SelectField,
     {
       label: speak.qwen.voice(),
@@ -6536,7 +7270,7 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       options: qwenVoices,
       onChange: (event) => updateSettings({ voice: event.target.value })
     }
-  ), /* @__PURE__ */ import_react40.default.createElement(
+  ), /* @__PURE__ */ import_react46.default.createElement(
     NumberField,
     {
       label: speak.rate.label(),
@@ -6546,7 +7280,7 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       value: settings.rate ?? 1,
       onCommit: (value) => updateSettings({ rate: Number(value) })
     }
-  ), /* @__PURE__ */ import_react40.default.createElement(
+  ), /* @__PURE__ */ import_react46.default.createElement(
     NumberField,
     {
       label: speak.segmentGap.label(),
@@ -6556,11 +7290,11 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       value: settings.segmentGapMs ?? 400,
       onCommit: (value) => updateSettings({ segmentGapMs: Number(value) })
     }
-  ), capabilities?.[engine === "qwen-http" ? "qwen" : engine]?.supported === false && /* @__PURE__ */ import_react40.default.createElement("p", { role: "status" }, capabilities?.[engine === "qwen-http" ? "qwen" : engine]?.reason || commons.engine.failure()));
+  ), capabilities?.[engine === "qwen-http" ? "qwen" : engine]?.supported === false && /* @__PURE__ */ import_react46.default.createElement("p", { role: "status" }, capabilities?.[engine === "qwen-http" ? "qwen" : engine]?.reason || commons.engine.failure()));
 }
 
 // src/modules/settings/sections/speak/SpeechAdvancedSettings.tsx
-var import_react41 = __toESM(require("react"), 1);
+var import_react47 = __toESM(require("react"), 1);
 function SpeechAdvancedSettings({
   controller,
   settings,
@@ -6578,7 +7312,7 @@ function SpeechAdvancedSettings({
     commons.systemDefault(),
     speak.output.fallbackName()
   );
-  return /* @__PURE__ */ import_react41.default.createElement(import_react41.default.Fragment, null, settings.engine !== "say" ? /* @__PURE__ */ import_react41.default.createElement(
+  return /* @__PURE__ */ import_react47.default.createElement(import_react47.default.Fragment, null, settings.engine !== "say" ? /* @__PURE__ */ import_react47.default.createElement(
     SelectField,
     {
       label: speak.output.device(),
@@ -6586,14 +7320,14 @@ function SpeechAdvancedSettings({
       options: outputOptions,
       onChange: (event) => updateSettings({ outputDeviceId: event.target.value })
     }
-  ) : /* @__PURE__ */ import_react41.default.createElement("p", { className: "dlv-setting-description" }, speak.macos.outputHelp()), settings.engine === "qwen-http" && /* @__PURE__ */ import_react41.default.createElement(SettingsSubcard, { title: speak.qwen.connection(), icon: "link" }, /* @__PURE__ */ import_react41.default.createElement(QwenSettings, { controller })), /* @__PURE__ */ import_react41.default.createElement(SettingsSubcard, { title: speak.agentContext.label(), icon: "settings" }, /* @__PURE__ */ import_react41.default.createElement(
+  ) : /* @__PURE__ */ import_react47.default.createElement("p", { className: "dlv-setting-description" }, speak.macos.outputHelp()), settings.engine === "qwen-http" && /* @__PURE__ */ import_react47.default.createElement(SettingsSubcard, { title: speak.qwen.connection(), icon: "link" }, /* @__PURE__ */ import_react47.default.createElement(QwenSettings, { controller })), /* @__PURE__ */ import_react47.default.createElement(SettingsSubcard, { title: speak.agentContext.label(), icon: "settings" }, /* @__PURE__ */ import_react47.default.createElement(
     CheckboxField,
     {
       label: speak.agentContext.enabled(),
       checked: settings.agentVoiceContextEnabled !== false,
       onChange: (event) => updateSettings({ agentVoiceContextEnabled: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react41.default.createElement(
+  ), /* @__PURE__ */ import_react47.default.createElement(
     TextAreaField,
     {
       label: speak.agentContext.label(),
@@ -6601,30 +7335,30 @@ function SpeechAdvancedSettings({
       disabled: settings.agentVoiceContextEnabled === false,
       onCommit: (value) => updateSettings({ agentVoiceContext: value })
     }
-  ), /* @__PURE__ */ import_react41.default.createElement(
+  ), /* @__PURE__ */ import_react47.default.createElement(
     "button",
     {
       type: "button",
       onClick: () => updateSettings({ agentVoiceContext: defaultAgentVoiceContext })
     },
     speak.agentContext.restore()
-  )), /* @__PURE__ */ import_react41.default.createElement("p", null, speak.engine.playbackHelp()), /* @__PURE__ */ import_react41.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react41.default.createElement("button", { type: "button", onClick: () => invoke("speak", speak.output.testPhrase()) }, speak.output.test()), speaking && /* @__PURE__ */ import_react41.default.createElement("button", { type: "button", onClick: () => invoke("stopSpeech") }, speak.output.stopTest()), /* @__PURE__ */ import_react41.default.createElement("button", { type: "button", onClick: () => invoke("refreshCapabilities") }, settingsLanguage.engine.refresh())));
+  )), /* @__PURE__ */ import_react47.default.createElement("p", null, speak.engine.playbackHelp()), /* @__PURE__ */ import_react47.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react47.default.createElement("button", { type: "button", onClick: () => invoke("speak", speak.output.testPhrase()) }, speak.output.test()), speaking && /* @__PURE__ */ import_react47.default.createElement("button", { type: "button", onClick: () => invoke("stopSpeech") }, speak.output.stopTest()), /* @__PURE__ */ import_react47.default.createElement("button", { type: "button", onClick: () => invoke("refreshCapabilities") }, settingsLanguage.engine.refresh())));
 }
 
 // src/modules/settings/sections/speak/SpeakSettingsSection.tsx
 function SpeakSettingsSection(props) {
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
-  return /* @__PURE__ */ import_react42.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react42.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react42.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "speaker" }, /* @__PURE__ */ import_react42.default.createElement(SpeechEngineSettings, { ...props }), /* @__PURE__ */ import_react42.default.createElement(SpeechAdvancedSettings, { ...props })), /* @__PURE__ */ import_react42.default.createElement(OutputFilterSettings, { ...props })));
+  return /* @__PURE__ */ import_react48.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react48.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react48.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "speaker" }, /* @__PURE__ */ import_react48.default.createElement(SpeechEngineSettings, { ...props }), /* @__PURE__ */ import_react48.default.createElement(SpeechAdvancedSettings, { ...props })), /* @__PURE__ */ import_react48.default.createElement(OutputFilterSettings, { ...props })));
 }
 
 // src/modules/settings/components/SettingsHeader.tsx
-var import_react44 = __toESM(require("react"), 1);
+var import_react50 = __toESM(require("react"), 1);
 
 // src/modules/settings/components/VersionBadges.tsx
-var import_react43 = __toESM(require("react"), 1);
+var import_react49 = __toESM(require("react"), 1);
 function VersionBadges() {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
-  return /* @__PURE__ */ import_react43.default.createElement("div", { className: "dlv-version-badges", "aria-label": commons.version.title() }, /* @__PURE__ */ import_react43.default.createElement(
+  return /* @__PURE__ */ import_react49.default.createElement("div", { className: "dlv-version-badges", "aria-label": commons.version.title() }, /* @__PURE__ */ import_react49.default.createElement(
     "a",
     {
       className: "dlv-shields-badge",
@@ -6634,9 +7368,9 @@ function VersionBadges() {
       "aria-label": commons.version.link({ version: CURRENT_VERSION }),
       title: commons.version.label({ version: CURRENT_VERSION })
     },
-    /* @__PURE__ */ import_react43.default.createElement("img", { src: LIVE_VOICE_BADGE_URL, alt: "" }),
-    /* @__PURE__ */ import_react43.default.createElement("span", null, `v${CURRENT_VERSION}`)
-  ), /* @__PURE__ */ import_react43.default.createElement(
+    /* @__PURE__ */ import_react49.default.createElement("img", { src: LIVE_VOICE_BADGE_URL, alt: "" }),
+    /* @__PURE__ */ import_react49.default.createElement("span", null, `v${CURRENT_VERSION}`)
+  ), /* @__PURE__ */ import_react49.default.createElement(
     "a",
     {
       className: "dlv-shields-badge",
@@ -6646,8 +7380,8 @@ function VersionBadges() {
       "aria-label": commons.version.compatibilityLink({ version: TESTED_DSH_VERSION }),
       title: commons.version.compatibility({ version: TESTED_DSH_VERSION })
     },
-    /* @__PURE__ */ import_react43.default.createElement("img", { src: DSH_BADGE_URL, alt: "" }),
-    /* @__PURE__ */ import_react43.default.createElement("span", null, `v${TESTED_DSH_VERSION}`)
+    /* @__PURE__ */ import_react49.default.createElement("img", { src: DSH_BADGE_URL, alt: "" }),
+    /* @__PURE__ */ import_react49.default.createElement("span", null, `v${TESTED_DSH_VERSION}`)
   ));
 }
 
@@ -6656,7 +7390,7 @@ function SettingsHeader({ onClose }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: settings } = useLanguage((ctx) => ctx.settings);
   const { latestRelease, updateAvailable } = useReleaseStatus();
-  return /* @__PURE__ */ import_react44.default.createElement("div", { className: "dlv-settings-heading" }, /* @__PURE__ */ import_react44.default.createElement("h3", null, commons.pluginName()), /* @__PURE__ */ import_react44.default.createElement(VersionBadges, null), /* @__PURE__ */ import_react44.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true }), updateAvailable && latestRelease ? /* @__PURE__ */ import_react44.default.createElement(import_react44.default.Fragment, null, /* @__PURE__ */ import_react44.default.createElement(
+  return /* @__PURE__ */ import_react50.default.createElement("div", { className: "dlv-settings-heading" }, /* @__PURE__ */ import_react50.default.createElement("h3", null, commons.pluginName()), /* @__PURE__ */ import_react50.default.createElement(VersionBadges, null), /* @__PURE__ */ import_react50.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true }), updateAvailable && latestRelease ? /* @__PURE__ */ import_react50.default.createElement(import_react50.default.Fragment, null, /* @__PURE__ */ import_react50.default.createElement(
     "a",
     {
       className: "dlv-version-badge dlv-update-badge",
@@ -6666,9 +7400,9 @@ function SettingsHeader({ onClose }) {
       "aria-label": commons.update.link({ version: latestRelease.tag }),
       title: commons.update.version({ version: latestRelease.tag })
     },
-    /* @__PURE__ */ import_react44.default.createElement("span", { className: "dlv-update-icon", "aria-hidden": true }, "\u2191"),
+    /* @__PURE__ */ import_react50.default.createElement("span", { className: "dlv-update-icon", "aria-hidden": true }, "\u2191"),
     commons.update.label()
-  ), /* @__PURE__ */ import_react44.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true })) : null, /* @__PURE__ */ import_react44.default.createElement(
+  ), /* @__PURE__ */ import_react50.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true })) : null, /* @__PURE__ */ import_react50.default.createElement(
     "a",
     {
       className: "dlv-version-badge dlv-star-badge",
@@ -6680,7 +7414,7 @@ function SettingsHeader({ onClose }) {
     },
     "\u2605 ",
     commons.repository.starLabel()
-  ), onClose ? /* @__PURE__ */ import_react44.default.createElement(IconButton, { icon: "close", label: settings.close(), onClick: onClose }) : null);
+  ), onClose ? /* @__PURE__ */ import_react50.default.createElement(IconButton, { icon: "close", label: settings.close(), onClick: onClose }) : null);
 }
 
 // src/modules/core/developerExtension.ts
@@ -6701,9 +7435,9 @@ function LiveVoiceSettings({ controller, onClose }) {
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
   const state = useConversationController(controller);
   const { invoke, error, clearError } = useConversationActions(controller);
-  const [activeTab, setActiveTab] = import_react45.default.useState("conversation");
-  const tabsId = import_react45.default.useId();
-  const developer = import_react45.default.useSyncExternalStore(
+  const [activeTab, setActiveTab] = import_react51.default.useState("conversation");
+  const tabsId = import_react51.default.useId();
+  const developer = import_react51.default.useSyncExternalStore(
     subscribeDeveloperExtension,
     readDeveloperExtension,
     () => null
@@ -6732,7 +7466,7 @@ function LiveVoiceSettings({ controller, onClose }) {
     invoke,
     updateSettings: (next) => invoke("updateSettings", next)
   };
-  return /* @__PURE__ */ import_react45.default.createElement("section", { className: "dlv-settings", "aria-label": settingsLanguage.title() }, /* @__PURE__ */ import_react45.default.createElement(SettingsHeader, { onClose }), /* @__PURE__ */ import_react45.default.createElement(
+  return /* @__PURE__ */ import_react51.default.createElement("section", { className: "dlv-settings", "aria-label": settingsLanguage.title() }, /* @__PURE__ */ import_react51.default.createElement(SettingsHeader, { onClose }), /* @__PURE__ */ import_react51.default.createElement(
     SettingsTabs,
     {
       label: settingsLanguage.title(),
@@ -6741,7 +7475,7 @@ function LiveVoiceSettings({ controller, onClose }) {
       idPrefix: tabsId,
       onChange: setActiveTab
     }
-  ), tabs.map((tab) => /* @__PURE__ */ import_react45.default.createElement(
+  ), tabs.map((tab) => /* @__PURE__ */ import_react51.default.createElement(
     "div",
     {
       key: tab.id,
@@ -6751,8 +7485,8 @@ function LiveVoiceSettings({ controller, onClose }) {
       "aria-labelledby": `${tabsId}-tab-${tab.id}`,
       hidden: selectedTab !== tab.id
     },
-    tab.id === "developer" && Developer ? /* @__PURE__ */ import_react45.default.createElement(Developer, null) : tab.id === "speech" ? /* @__PURE__ */ import_react45.default.createElement(SpeakSettingsSection, { ...sectionProps }) : tab.id === "recognition" ? /* @__PURE__ */ import_react45.default.createElement(RecognitionSettingsSection, { ...sectionProps }) : /* @__PURE__ */ import_react45.default.createElement(ConversationSettingsSection, { ...sectionProps })
-  )), /* @__PURE__ */ import_react45.default.createElement(
+    tab.id === "developer" && Developer ? /* @__PURE__ */ import_react51.default.createElement(Developer, null) : tab.id === "speech" ? /* @__PURE__ */ import_react51.default.createElement(SpeakSettingsSection, { ...sectionProps }) : tab.id === "recognition" ? /* @__PURE__ */ import_react51.default.createElement(RecognitionSettingsSection, { ...sectionProps }) : /* @__PURE__ */ import_react51.default.createElement(ConversationSettingsSection, { ...sectionProps })
+  )), /* @__PURE__ */ import_react51.default.createElement(
     ErrorMessage,
     {
       error: error || state.error,
@@ -6769,7 +7503,7 @@ function LiveVoiceSettings({ controller, onClose }) {
 // src/modules/settings/components/createLiveVoiceSettings.tsx
 function createLiveVoiceSettings(..._legacyArguments) {
   return function SettingsPanel({ controller, onClose }) {
-    return /* @__PURE__ */ import_react46.default.createElement(LiveVoiceSettings, { controller, onClose });
+    return /* @__PURE__ */ import_react52.default.createElement(LiveVoiceSettings, { controller, onClose });
   };
 }
 
@@ -6821,12 +7555,40 @@ function createSettingsClient(fetchImpl = globalThis.fetch) {
 }
 
 // src/modules/conversation/components/ConversationControls.tsx
-var import_react48 = __toESM(require("react"), 1);
+var import_react55 = __toESM(require("react"), 1);
 
 // src/modules/conversation/components/MicrophoneButton.tsx
-var import_react47 = __toESM(require("react"), 1);
+var import_react53 = __toESM(require("react"), 1);
 function MicrophoneButton(props) {
-  return /* @__PURE__ */ import_react47.default.createElement(IconButton, { ...props, className: "dlv-mic", icon: "mic" });
+  return /* @__PURE__ */ import_react53.default.createElement(IconButton, { ...props, className: "dlv-mic", icon: "mic" });
+}
+
+// src/modules/conversation/components/AutoPlaybackToggle.tsx
+var import_react54 = __toESM(require("react"), 1);
+function AutoPlaybackToggle({ state, invoke, error }) {
+  const { scoped: commons } = useLanguage((ctx) => ctx.commons);
+  const { scoped: speak } = useLanguage((ctx) => ctx.speak);
+  const active = state.settings.announceAssistantMessages !== false;
+  const count = state.speechSegmentsRemaining || 0;
+  const title = count > 0 ? speak.autoPlayback[count === 1 ? "remainingOne" : "remainingOther"]({
+    state: active ? commons.on() : commons.off(),
+    count
+  }) : speak.autoPlayback.status({
+    state: active ? commons.on() : commons.off()
+  });
+  return /* @__PURE__ */ import_react54.default.createElement(
+    ToggleButton,
+    {
+      pressed: active,
+      label: speak.autoPlayback.label(),
+      title: error || title,
+      icon: active ? "speaker" : "speakerOff",
+      visibleLabel: active ? commons.on() : commons.toggle.offBadge(),
+      role: "switch",
+      "aria-checked": active,
+      onClick: () => invoke("updateSettings", { announceAssistantMessages: !active })
+    }
+  );
 }
 
 // src/modules/conversation/components/ConversationControls.tsx
@@ -6836,21 +7598,23 @@ function ConversationControls({ controller }) {
   const state = useConversationController(controller);
   const { invoke, error, clearError } = useConversationActions(controller);
   const busy = state.conversation || state.listening || state.starting || state.recognizing;
-  if (busy) return null;
   const capability = state.capabilities?.recognition;
   const capture = state.capabilities?.capture;
   const pending = !capability || !capture;
   const unavailable = capability?.supported === false || capture?.supported === false;
   const reason = capture?.supported === false ? capture.reason : capability?.reason;
-  const label = pending ? recognition.microphone.checking() : unavailable ? reason || recognition.status.unavailable() : commons.conversation.start();
-  return /* @__PURE__ */ import_react48.default.createElement(import_react48.default.Fragment, null, /* @__PURE__ */ import_react48.default.createElement(
+  const label = busy ? commons.conversation.end() : pending ? recognition.microphone.checking() : unavailable ? reason || recognition.status.unavailable() : commons.conversation.start();
+  return /* @__PURE__ */ import_react55.default.createElement(import_react55.default.Fragment, null, /* @__PURE__ */ import_react55.default.createElement(AutoPlaybackToggle, { state, invoke, error }), /* @__PURE__ */ import_react55.default.createElement(
     MicrophoneButton,
     {
       label,
-      disabled: pending,
-      onClick: () => invoke(unavailable ? "explainRecognition" : "startConversation")
+      disabled: !busy && pending,
+      "aria-pressed": Boolean(busy),
+      onClick: () => invoke(
+        busy ? state.conversation ? "endConversation" : "cancelDictation" : unavailable ? "explainRecognition" : "startConversation"
+      )
     }
-  ), /* @__PURE__ */ import_react48.default.createElement(
+  ), /* @__PURE__ */ import_react55.default.createElement(
     ErrorMessage,
     {
       error,
@@ -6862,10 +7626,10 @@ function ConversationControls({ controller }) {
 }
 
 // src/modules/conversation/components/ConversationStatusBar.tsx
-var import_react54 = __toESM(require("react"), 1);
+var import_react57 = __toESM(require("react"), 1);
 
 // src/modules/conversation/components/DeliveryModeButton.tsx
-var import_react49 = __toESM(require("react"), 1);
+var import_react56 = __toESM(require("react"), 1);
 function nextDeliveryMode(mode) {
   return mode === "queue" ? "steer" : mode === "steer" ? "manual" : "queue";
 }
@@ -6878,303 +7642,19 @@ function DeliveryModeButton({
   const description = mode === "steer" ? settings.delivery.steerDescription() : mode === "queue" ? commons.queue() : commons.manual();
   const status = settings.delivery.status({ mode: description });
   const visible = mode === "steer" ? commons.send() : mode === "queue" ? commons.delivery.queueBadge() : commons.toggle.offBadge();
-  return /* @__PURE__ */ import_react49.default.createElement(
-    IconButton,
+  return /* @__PURE__ */ import_react56.default.createElement(
+    ToggleButton,
     {
       className: "dlv-live-toggle",
       label: status,
       title: status,
       icon: mode === "queue" ? "queue" : "send",
       visibleLabel: visible,
-      "aria-pressed": mode !== "manual",
+      pressed: mode !== "manual",
       "data-mode": mode,
       onClick: () => onChange(nextDeliveryMode(mode))
     }
   );
-}
-
-// src/modules/conversation/components/SpeechStatusBar.tsx
-var import_react52 = __toESM(require("react"), 1);
-
-// src/modules/conversation/components/PlaybackControls.tsx
-var import_react50 = __toESM(require("react"), 1);
-function PlaybackControls({
-  state,
-  invoke,
-  navigation = true
-}) {
-  const { scoped: speak } = useLanguage((ctx) => ctx.speak);
-  const capabilities = state.capabilities?.[state.speechEngine || state.settings?.engine] ?? {};
-  return /* @__PURE__ */ import_react50.default.createElement(import_react50.default.Fragment, null, navigation && state.speechHasPrevious ? /* @__PURE__ */ import_react50.default.createElement(
-    IconButton,
-    {
-      label: speak.playback.previous(),
-      icon: "skipPrevious",
-      onClick: () => invoke("previousSpeechSegment")
-    }
-  ) : null, navigation && state.speechSegmentsRemaining > 1 ? /* @__PURE__ */ import_react50.default.createElement(
-    IconButton,
-    {
-      label: speak.playback.next(),
-      icon: "skipNext",
-      onClick: () => invoke("skipSpeechSegment")
-    }
-  ) : null, state.speechSegmentsRemaining > 0 && capabilities.pause && !state.paused ? /* @__PURE__ */ import_react50.default.createElement(
-    IconButton,
-    {
-      label: speak.playback.pause(),
-      icon: "pause",
-      disabled: !state.speaking || state.paused,
-      onClick: () => invoke("pauseSpeech")
-    }
-  ) : null, state.paused && capabilities.resume ? /* @__PURE__ */ import_react50.default.createElement(
-    IconButton,
-    {
-      label: speak.playback.resume(),
-      icon: "play",
-      onClick: () => invoke("resumeSpeech")
-    }
-  ) : null, state.speechSegmentsRemaining > 0 || state.speechRunActive ? /* @__PURE__ */ import_react50.default.createElement(
-    IconButton,
-    {
-      label: speak.playback.stopAll(),
-      icon: "stop",
-      onClick: () => invoke("stopSpeech")
-    }
-  ) : null);
-}
-
-// src/modules/conversation/components/ScrollingSpeechCaption.tsx
-var import_react51 = __toESM(require("react"), 1);
-function ScrollingSpeechCaption({
-  text,
-  label,
-  controller,
-  segment,
-  paused,
-  loading
-}) {
-  const viewport = import_react51.default.useRef(null);
-  const line = import_react51.default.useRef(null);
-  const marker = import_react51.default.useRef(null);
-  const current = import_react51.default.useRef({ paused, loading });
-  current.current = { paused, loading };
-  import_react51.default.useEffect(() => {
-    const box = viewport.current;
-    const content = line.current;
-    const band = marker.current;
-    if (!box || !content || !band) return;
-    const host = box.ownerDocument.defaultView;
-    let width = box.clientWidth;
-    let textWidth = content.scrollWidth;
-    let fraction = 0;
-    let previousTime = 0;
-    let frame = 0;
-    box.scrollLeft = 0;
-    band.style.transform = "translateX(0px)";
-    const measure = () => {
-      width = box.clientWidth;
-      textWidth = content.scrollWidth;
-    };
-    const observer = typeof host.ResizeObserver === "function" ? new host.ResizeObserver(measure) : null;
-    observer?.observe(box);
-    observer?.observe(content);
-    const reduced = host.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    const tick = (time) => {
-      const delta = Math.min(100, previousTime ? time - previousTime : 16);
-      previousTime = time;
-      const state = current.current;
-      if (!state.paused && !state.loading) {
-        const progress = controller.getSpeechProgress?.();
-        if (progress && Number.isFinite(progress.durationSeconds) && progress.durationSeconds > 0 && Number.isFinite(progress.positionSeconds)) {
-          const target = Math.max(
-            0,
-            Math.min(1, progress.positionSeconds / progress.durationSeconds)
-          );
-          fraction = reduced ? target : fraction + (target - fraction) * (1 - Math.exp(-delta / 90));
-        }
-      }
-      const bandWidth = Math.min(90, width, textWidth);
-      const position = fraction * Math.max(0, textWidth - bandWidth);
-      const scroll = Math.max(
-        0,
-        Math.min(Math.max(0, textWidth - width), position - (width - bandWidth) / 2)
-      );
-      box.scrollLeft = scroll;
-      band.style.width = bandWidth + "px";
-      band.style.transform = "translateX(" + Math.max(0, position - box.scrollLeft) + "px)";
-      band.style.opacity = state.loading ? "0" : "1";
-      frame = host.requestAnimationFrame(tick);
-    };
-    frame = host.requestAnimationFrame(tick);
-    return () => {
-      host.cancelAnimationFrame(frame);
-      observer?.disconnect();
-    };
-  }, [controller, text, segment]);
-  return /* @__PURE__ */ import_react51.default.createElement("div", { className: "dlv-caption-stage" }, /* @__PURE__ */ import_react51.default.createElement(
-    "div",
-    {
-      ref: viewport,
-      className: "dlv-caption dlv-caption-scroll",
-      title: text,
-      "aria-label": label
-    },
-    /* @__PURE__ */ import_react51.default.createElement("span", { ref: line, className: "dlv-caption-line" }, text)
-  ), /* @__PURE__ */ import_react51.default.createElement("span", { ref: marker, className: "dlv-caption-marker", "aria-hidden": "true" }));
-}
-
-// src/modules/conversation/components/SpeechStatusBar.tsx
-function SpeechStatusBar({ controller }) {
-  const { scoped: speak } = useLanguage((ctx) => ctx.speak);
-  const { scoped: commons } = useLanguage((ctx) => ctx.commons);
-  const state = useConversationController(controller);
-  const { invoke, error, clearError } = useConversationActions(controller);
-  const [progress, setProgress] = import_react52.default.useState(null);
-  import_react52.default.useEffect(() => {
-    setProgress(null);
-    if (!state.speechText || !state.speaking) return;
-    const update = () => setProgress(controller.getSpeechProgress?.() ?? null);
-    update();
-    if (state.paused) return;
-    const timer = setInterval(update, 100);
-    return () => clearInterval(timer);
-  }, [controller, state.speechText, state.speaking, state.paused]);
-  if (!state.speaking && !state.paused && !state.speechRunActive && !(state.speechSegmentsRemaining > 0))
-    return null;
-  const text = state.speechText ?? "";
-  const ratio = progress && Number.isFinite(progress.durationSeconds) && progress.durationSeconds > 0 && Number.isFinite(progress.positionSeconds) ? Math.max(0, Math.min(1, progress.positionSeconds / progress.durationSeconds)) : null;
-  const loading = state.speechLoading === true && state.speaking && !state.paused;
-  const index = state.speechSegmentIndex ?? 0;
-  const total = state.speechSegmentsTotal ?? state.speechSegmentsRemaining ?? 0;
-  return /* @__PURE__ */ import_react52.default.createElement("div", { className: "dlv-bar-wrap dlv-speech-bar" }, /* @__PURE__ */ import_react52.default.createElement(
-    "div",
-    {
-      className: "dlv-pill dlv-speech-pill",
-      role: "group",
-      "aria-label": speak.captions.title()
-    },
-    /* @__PURE__ */ import_react52.default.createElement(
-      IconButton,
-      {
-        label: speak.playback.previous(),
-        icon: "skipPrevious",
-        disabled: !state.speechHasPrevious,
-        onClick: () => invoke("previousSpeechSegment")
-      }
-    ),
-    /* @__PURE__ */ import_react52.default.createElement("div", { className: "dlv-caption-stack" }, /* @__PURE__ */ import_react52.default.createElement(
-      ScrollingSpeechCaption,
-      {
-        text: text || speak.status.playing(),
-        label: speak.captions.approximate(),
-        controller,
-        segment: index,
-        paused: state.paused || !state.speaking,
-        loading
-      }
-    ), /* @__PURE__ */ import_react52.default.createElement(
-      "div",
-      {
-        className: "dlv-caption-progress",
-        "data-loading": loading ? "true" : "false",
-        role: "progressbar",
-        "aria-hidden": !loading,
-        "aria-label": loading ? speak.captions.loading() : speak.captions.progress(),
-        "aria-valuemin": 0,
-        "aria-valuemax": 100,
-        "aria-valuenow": loading || ratio === null ? void 0 : Math.round(ratio * 100)
-      },
-      /* @__PURE__ */ import_react52.default.createElement("span", { style: loading ? void 0 : { width: (ratio ?? 0) * 100 + "%" } })
-    )),
-    /* @__PURE__ */ import_react52.default.createElement(
-      IconButton,
-      {
-        label: speak.playback.next(),
-        icon: "skipNext",
-        disabled: !(state.speechSegmentsRemaining > 1),
-        onClick: () => invoke("skipSpeechSegment")
-      }
-    ),
-    /* @__PURE__ */ import_react52.default.createElement(
-      "span",
-      {
-        className: "dlv-speech-count",
-        "aria-label": speak.captions.position({ index, total })
-      },
-      index,
-      "/",
-      total
-    ),
-    /* @__PURE__ */ import_react52.default.createElement(PlaybackControls, { state, invoke, navigation: false })
-  ), /* @__PURE__ */ import_react52.default.createElement(
-    ErrorMessage,
-    {
-      error,
-      dismissLabel: commons.dismissError(),
-      dismissText: commons.dismiss(),
-      onDismiss: clearError
-    }
-  ));
-}
-
-// src/modules/conversation/components/Waveform.tsx
-var import_react53 = __toESM(require("react"), 1);
-function Waveform({ controller, enabled }) {
-  const ref = import_react53.default.useRef(null);
-  import_react53.default.useEffect(() => {
-    const canvas = ref.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
-    let frame = 0, width = 1, height = 40, ratio = 1;
-    let disposed = false;
-    const motion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    function resize() {
-      const bounds = canvas.getBoundingClientRect();
-      width = Math.max(1, bounds.width);
-      height = Math.max(1, bounds.height || 40);
-      ratio = Math.max(1, window.devicePixelRatio || 1);
-      canvas.width = Math.round(width * ratio);
-      canvas.height = Math.round(height * ratio);
-    }
-    const observer = typeof ResizeObserver === "function" ? new ResizeObserver(resize) : null;
-    observer?.observe(canvas);
-    window.addEventListener("resize", resize);
-    resize();
-    function draw(time) {
-      if (disposed) return;
-      if (ratio !== Math.max(1, window.devicePixelRatio || 1)) resize();
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      context.clearRect(0, 0, width, height);
-      const raw = Number(controller.meter?.level?.() ?? 0);
-      const level = enabled && Number.isFinite(raw) ? Math.min(1, Math.max(0, raw)) : 0;
-      const color = getComputedStyle(canvas).color;
-      for (let layer = 0; layer < 3; layer += 1) {
-        context.beginPath();
-        context.strokeStyle = layer === 1 ? "#38bdf8" : color;
-        context.globalAlpha = 0.4 + layer * 0.25;
-        context.lineWidth = layer === 2 ? 2 : 1;
-        const phase = motion?.matches ? 0 : time / (500 + layer * 170);
-        for (let x2 = 0; x2 <= width; x2 += 2) {
-          const envelope = Math.sin(Math.PI * x2 / width);
-          const y2 = height / 2 + Math.sin(x2 / width * Math.PI * (4 + layer * 2) + phase) * envelope * level * height * (0.43 - layer * 0.08);
-          if (x2 === 0) context.moveTo(x2, y2);
-          else context.lineTo(x2, y2);
-        }
-        context.stroke();
-      }
-      context.globalAlpha = 1;
-      frame = window.requestAnimationFrame(draw);
-    }
-    frame = window.requestAnimationFrame(draw);
-    return () => {
-      disposed = true;
-      window.cancelAnimationFrame(frame);
-      observer?.disconnect();
-      window.removeEventListener("resize", resize);
-    };
-  }, [controller, enabled]);
-  return /* @__PURE__ */ import_react53.default.createElement("canvas", { ref, className: "dlv-wave", "aria-hidden": true });
 }
 
 // src/modules/conversation/components/conversationStatus.ts
@@ -7194,6 +7674,7 @@ function resolveConversationStatus(state, remaining, language) {
 function ConversationStatusBar({
   controller,
   questionOnly = false,
+  includeSpeech = true,
   overlay = false,
   overlayStyle
 }) {
@@ -7203,8 +7684,8 @@ function ConversationStatusBar({
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const state = useConversationController(controller);
   const { invoke, error, clearError } = useConversationActions(controller);
-  const [now, setNow] = import_react54.default.useState(Date.now());
-  import_react54.default.useEffect(() => {
+  const [now, setNow] = import_react57.default.useState(Date.now());
+  import_react57.default.useEffect(() => {
     if (!state.autoSendAt) return;
     setNow(Date.now());
     const timer = setInterval(() => setNow(Date.now()), 200);
@@ -7221,82 +7702,60 @@ function ConversationStatusBar({
     settings,
     speak
   });
-  const autoPlayback = state.settings.announceAssistantMessages !== false;
-  const playbackTitle = state.speechSegmentsRemaining > 0 ? speak.autoPlayback[state.speechSegmentsRemaining === 1 ? "remainingOne" : "remainingOther"]({
-    state: autoPlayback ? commons.on() : commons.off(),
-    count: state.speechSegmentsRemaining
-  }) : speak.autoPlayback.status({
-    state: autoPlayback ? commons.on() : commons.off()
-  });
-  return /* @__PURE__ */ import_react54.default.createElement(
+  return /* @__PURE__ */ import_react57.default.createElement(
     "div",
     {
-      className: overlay ? "dlv-bar-wrap dlv-question-overlay" : "dlv-bar-wrap",
+      className: overlay ? "dlv-bar-wrap dlv-bar-stack dlv-question-overlay" : "dlv-bar-wrap dlv-bar-stack",
       style: overlay ? overlayStyle : void 0
     },
-    /* @__PURE__ */ import_react54.default.createElement(SpeechStatusBar, { controller }),
-    (state.conversation || capture || state.error || error) && /* @__PURE__ */ import_react54.default.createElement("div", { className: "dlv-pill", role: "group", "aria-label": commons.controls.title() }, capture && !state.conversation ? /* @__PURE__ */ import_react54.default.createElement(
-      IconButton,
+    includeSpeech && /* @__PURE__ */ import_react57.default.createElement(SpeechStatusBar, { controller }),
+    (state.conversation || capture || state.error || error) && /* @__PURE__ */ import_react57.default.createElement(
+      RecognitionBar,
       {
-        label: recognition.dictation.cancel(),
-        icon: "close",
-        onClick: () => invoke("cancelDictation")
-      }
-    ) : null, state.conversation ? /* @__PURE__ */ import_react54.default.createElement(
-      IconButton,
-      {
-        label: commons.conversation.end(),
-        icon: "close",
-        onClick: () => invoke("endConversation")
-      }
-    ) : null, /* @__PURE__ */ import_react54.default.createElement(Waveform, { controller, enabled: Boolean(state.listening) }), /* @__PURE__ */ import_react54.default.createElement("span", { className: "dlv-status", role: "status", "aria-live": "polite" }, status), /* @__PURE__ */ import_react54.default.createElement(
-      DeliveryModeButton,
-      {
-        mode: state.settings.sendingMode || "manual",
-        onChange: (sendingMode) => invoke("updateSettings", { sendingMode })
-      }
-    ), /* @__PURE__ */ import_react54.default.createElement(
-      IconButton,
-      {
-        className: `dlv-live-toggle${state.speechSegmentsRemaining > 0 ? " dlv-live-toggle-expanded" : ""}`,
-        label: speak.autoPlayback.label(),
-        title: playbackTitle,
-        icon: autoPlayback ? "speaker" : "speakerOff",
-        visibleLabel: !autoPlayback ? commons.toggle.offBadge() : state.speechSegmentsRemaining > 0 ? String(state.speechSegmentsRemaining) : commons.on(),
-        role: "switch",
-        "aria-checked": autoPlayback,
-        onClick: () => invoke("updateSettings", { announceAssistantMessages: !autoPlayback })
-      }
-    ), remaining ? /* @__PURE__ */ import_react54.default.createElement(
-      IconButton,
-      {
-        label: settings.autoSend.cancel(),
-        icon: "close",
-        onClick: () => invoke("cancelAutoSend")
-      }
-    ) : null, state.conversation && !capture ? /* @__PURE__ */ import_react54.default.createElement(
-      IconButton,
-      {
-        label: recognition.microphone.takeControl(),
-        icon: "mic",
-        onClick: () => invoke("startConversation")
-      }
-    ) : null, capture ? /* @__PURE__ */ import_react54.default.createElement(
-      IconButton,
-      {
-        className: "dlv-live-toggle dlv-mic-state",
-        label: state.muted ? recognition.microphone.resume() : recognition.microphone.ignore(),
-        title: recognition.microphone.inputStatus({
-          state: state.muted ? commons.input.ignoring() : commons.input.listening()
-        }),
-        icon: state.muted ? "micOff" : "mic",
-        visibleLabel: state.muted ? commons.input.ignoringBadge() : commons.input.listeningBadge(),
-        "aria-pressed": Boolean(state.muted),
-        "data-muted": state.muted ? "true" : "false",
-        onClick: () => invoke(state.muted ? "resumeListeningInput" : "muteListening")
-      }
-    ) : null),
-    /* @__PURE__ */ import_react54.default.createElement(
+        controller,
+        listening: state.listening,
+        label: commons.controls.title(),
+        status,
+        leading: /* @__PURE__ */ import_react57.default.createElement(import_react57.default.Fragment, null, state.conversation && !capture ? /* @__PURE__ */ import_react57.default.createElement(
+          IconButton,
+          {
+            label: recognition.microphone.takeControl(),
+            icon: "mic",
+            onClick: () => invoke("startConversation")
+          }
+        ) : null, capture ? /* @__PURE__ */ import_react57.default.createElement(
+          ToggleButton,
+          {
+            className: "dlv-mic-state",
+            label: state.muted ? recognition.microphone.resume() : recognition.microphone.ignore(),
+            title: recognition.microphone.inputStatus({
+              state: state.muted ? commons.input.ignoring() : commons.input.listening()
+            }),
+            icon: state.muted ? "micOff" : "mic",
+            visibleLabel: state.muted ? commons.input.ignoringBadge() : commons.input.listeningBadge(),
+            pressed: !state.muted,
+            "data-muted": state.muted ? "true" : "false",
+            onClick: () => invoke(state.muted ? "resumeListeningInput" : "muteListening")
+          }
+        ) : null)
+      },
+      /* @__PURE__ */ import_react57.default.createElement(
+        DeliveryModeButton,
+        {
+          mode: state.settings.sendingMode || "manual",
+          onChange: (sendingMode) => invoke("updateSettings", { sendingMode })
+        }
+      ),
+      remaining ? /* @__PURE__ */ import_react57.default.createElement(
+        IconButton,
+        {
+          label: settings.autoSend.cancel(),
+          icon: "close",
+          onClick: () => invoke("cancelAutoSend")
+        }
+      ) : null
+    ),
+    /* @__PURE__ */ import_react57.default.createElement(
       ErrorMessage,
       {
         error: error || state.error,
@@ -7312,7 +7771,7 @@ function ConversationStatusBar({
 }
 
 // src/modules/conversation/components/SpeakButton.tsx
-var import_react55 = __toESM(require("react"), 1);
+var import_react58 = __toESM(require("react"), 1);
 function SpeakButton({
   active = false,
   disabled = false,
@@ -7321,7 +7780,7 @@ function SpeakButton({
 }) {
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const resolvedLabel = label ?? (active ? speak.playback.stop() : speak.playback.message());
-  return /* @__PURE__ */ import_react55.default.createElement(
+  return /* @__PURE__ */ import_react58.default.createElement(
     IconButton,
     {
       className: "dlv-speaker",
@@ -7443,7 +7902,9 @@ var styles = `
 .dlv-icon-button:disabled{opacity:.4;cursor:default}
 .dlv-icon-button:focus-visible,.dlv-settings :is(input,select):focus-visible{outline:2px solid var(--dsw-alias-label-primary);outline-offset:3px}
 .dlv-bar-wrap{width:100%;min-width:0}
-.dlv-speech-bar{margin-bottom:8px}.dlv-speech-pill{height:52px;min-height:52px;flex-wrap:nowrap!important}.dlv-caption{flex:1;min-width:0;overflow:hidden;white-space:nowrap;font-size:13px;line-height:1.4;color:var(--dsw-alias-label-primary)}.dlv-caption-stack{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}.dlv-caption-progress{visibility:hidden;height:2px;border-radius:2px;overflow:hidden;background:var(--dsw-alias-border-l1)}.dlv-caption-progress>span{display:block;height:100%;border-radius:inherit;background:var(--dsw-alias-label-primary);transition:width .1s linear}.dlv-speech-count{flex:none;font-size:11px;color:var(--dsw-alias-label-secondary)}
+.dlv-bar-stack{display:flex;flex-direction:column;gap:2px;width:100%;min-width:0}.dlv-bar-stack:empty{display:none}
+.dlv-meeting-bars{width:100%}
+.dlv-speech-bar{margin:0}.dlv-speech-pill{height:52px;min-height:52px;flex-wrap:nowrap!important}.dlv-caption{flex:1;min-width:0;overflow:hidden;white-space:nowrap;font-size:13px;line-height:1.4;color:var(--dsw-alias-label-primary)}.dlv-caption-stack{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}.dlv-caption-progress{visibility:hidden;height:2px;border-radius:2px;overflow:hidden;background:var(--dsw-alias-border-l1)}.dlv-caption-progress>span{display:block;height:100%;border-radius:inherit;background:var(--dsw-alias-label-primary);transition:width .1s linear}.dlv-speech-count{flex:none;font-size:11px;color:var(--dsw-alias-label-secondary)}
 .dlv-caption-stage{position:relative;min-width:0;overflow:hidden;height:20px}.dlv-caption-scroll{display:block;width:100%;height:20px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-behavior:auto}.dlv-caption-scroll::-webkit-scrollbar{display:none}.dlv-caption-line{display:inline-block;white-space:pre}.dlv-caption-marker{position:absolute;left:0;top:0;height:20px;width:90px;border-radius:5px;pointer-events:none;background:linear-gradient(to right,transparent,color-mix(in srgb,var(--dsw-alias-label-primary) 15%,transparent) 35%,color-mix(in srgb,var(--dsw-alias-label-primary) 15%,transparent) 65%,transparent);box-shadow:inset 0 -2px 0 color-mix(in srgb,var(--dsw-alias-label-primary) 40%,transparent);will-change:transform}
 .dlv-caption-progress[data-loading=true]{visibility:visible}.dlv-caption-progress[data-loading=true]>span{width:30%;animation:dlv-caption-loading 1.2s ease-in-out infinite;transition:none}@keyframes dlv-caption-loading{from{transform:translateX(-100%)}to{transform:translateX(350%)}}@media(prefers-reduced-motion:reduce){.dlv-caption-progress[data-loading=true]>span{animation:none;transform:translateX(115%)}}
 .dlv-question-overlay{position:fixed;z-index:10000;bottom:8px;transform:translateX(-50%);max-width:calc(100vw - 32px);pointer-events:none}
@@ -7456,10 +7917,11 @@ var styles = `
 .dlv-toggle-state{max-width:0;opacity:0;overflow:hidden;white-space:nowrap;font-size:10px;font-weight:700;line-height:1;letter-spacing:.04em;text-align:left;transition:max-width .16s ease,opacity .12s ease}
 .dlv-live-toggle:hover,.dlv-live-toggle:focus-visible,.dlv-live-toggle-expanded{width:78px;gap:5px;background:var(--dsw-alias-bg-layer-2)}
 .dlv-live-toggle:hover .dlv-toggle-state,.dlv-live-toggle:focus-visible .dlv-toggle-state,.dlv-live-toggle-expanded .dlv-toggle-state{max-width:38px;opacity:1}
-.dlv-live-toggle[aria-checked=false],.dlv-live-toggle[data-mode=manual],.dlv-mic-state[data-muted=true]{color:var(--dsw-alias-label-tertiary);border-color:var(--dsw-alias-border-l1);opacity:.55}
+.dlv-live-toggle[data-toggle-active=false],.dlv-live-toggle[aria-checked=false],.dlv-live-toggle[data-mode=manual],.dlv-mic-state[data-muted=true]{color:var(--dsw-alias-label-tertiary);border-color:var(--dsw-alias-border-l1);opacity:.55}
 .dlv-mic-state:hover,.dlv-mic-state:focus-visible{width:102px}.dlv-mic-state:hover .dlv-toggle-state,.dlv-mic-state:focus-visible .dlv-toggle-state{max-width:64px}
-.dlv-live-toggle[aria-checked=true]{background:var(--dsw-alias-bg-layer-2)}
-.dlv-wave{display:block;flex:1 1 180px;min-width:30px;width:100%;height:40px;color:var(--dsw-alias-label-primary)}
+.dlv-live-toggle[data-toggle-active=true],.dlv-live-toggle[aria-checked=true]{background:var(--dsw-alias-bg-layer-2)}
+.dlv-timestamp-toggle:hover,.dlv-timestamp-toggle:focus-visible{width:124px}.dlv-timestamp-toggle:hover .dlv-toggle-state,.dlv-timestamp-toggle:focus-visible .dlv-toggle-state{max-width:86px}
+.dlv-wave{display:block;flex:1 1 180px;min-width:30px;width:0;height:40px;color:var(--dsw-alias-label-primary)}
 .dlv-status{flex:1 1 120px;min-width:0;font-size:13px;line-height:1.4;color:var(--dsw-alias-label-secondary)}
 .dlv-error{color:var(--dsw-alias-state-error-primary);overflow-wrap:anywhere;font-size:13px;max-width:720px;margin:8px auto}
 .dlv-settings{box-sizing:border-box;padding:18px;width:100%;display:grid;gap:16px;max-width:640px;color:var(--dsw-alias-label-primary)}
@@ -7549,9 +8011,9 @@ function readCoordinatorDiagnostics(controller, includeContent = false) {
     recognition: {
       pendingTranscriptions: number(state.pendingTranscriptions),
       activeRequest: Boolean(recognition?.activeRequest),
-      queue: (recognition?.transcriptionQueue ?? []).map((samples) => ({
-        samples: samples.length,
-        durationMs: controller.meter?.context?.sampleRate ? samples.length / controller.meter.context.sampleRate * 1e3 : null
+      queue: (recognition?.transcriptionQueue ?? []).map((chunk) => ({
+        samples: (chunk.samples ?? chunk).length,
+        durationMs: controller.meter?.context?.sampleRate ? (chunk.samples ?? chunk).length / controller.meter.context.sampleRate * 1e3 : null
       }))
     },
     delivery: {
@@ -7739,10 +8201,14 @@ function apply(ctx) {
     entry.questionCapture = null;
     entry.controller.patch({ answeringQuestion: false });
     publishVoiceContext(entry, false);
+    entry.unsubscribeMeetingMicrophone?.();
     entry.chatListeners.clear();
     if (controllers.get(entry.key) === entry) controllers.delete(entry.key);
     notifyDiagnostics();
-    const done = run(entry.controller, entry.controller.dispose());
+    const done = run(
+      entry.controller,
+      Promise.all([entry.controller.dispose(), entry.meeting?.dispose()])
+    );
     const barrier = { endConversation: () => done };
     retiring.add(barrier);
     void done.finally(() => retiring.delete(barrier));
@@ -7784,6 +8250,13 @@ function apply(ctx) {
       meter,
       composer: {
         getDraft: () => entry.draft,
+        appendFinal: (text, startedAt) => {
+          if (entry.meeting?.getSnapshot().shared.listening) {
+            entry.meeting.transcript.append("microphone", text, startedAt);
+            return entry.draft;
+          }
+          return null;
+        },
         submit: (mode = "queue") => {
           const owner = [...entry.composers.values()].at(-1);
           if (!owner) return;
@@ -7947,6 +8420,35 @@ function apply(ctx) {
         );
       };
     }
+    entry.meeting = new MeetingController({
+      composer: entry.controller.composer,
+      settings: () => entry.controller.getSnapshot().settings,
+      translate: (key2) => t("dsh-live-voice.meeting." + key2),
+      createSource: (source, settings2) => {
+        const meter2 = source === "shared" ? new SharedAudioMeter() : new MicrophoneMeter();
+        return { meter: meter2, engine: recognitionFor(settings2, meter2) };
+      }
+    });
+    entry.startMeetingSource = (source) => {
+      try {
+        const request = requestSharedAudio();
+        request.catch(() => {
+        });
+        void entry.meeting.start(source, request);
+      } catch {
+        entry.meeting.patch(source, { error: t("dsh-live-voice.meeting.failed") });
+      }
+    };
+    let microphoneActive = false;
+    const unsubscribeMeetingMicrophone = controller.subscribe(() => {
+      const state = controller.getSnapshot();
+      const next = Boolean((state.listening || state.starting) && !state.muted);
+      if (next !== microphoneActive) {
+        microphoneActive = next;
+        entry.meeting.transcript.setActive("microphone", next);
+      }
+    });
+    entry.unsubscribeMeetingMicrophone = unsubscribeMeetingMicrophone;
     controllers.set(key, entry);
     void preferences.ready.catch(() => {
       if (!entry.closed)
@@ -7956,8 +8458,8 @@ function apply(ctx) {
     return entry;
   }
   function useEntry(sessionId, kind) {
-    const [entry, setEntry] = import_react56.default.useState(null);
-    import_react56.default.useLayoutEffect(() => {
+    const [entry, setEntry] = import_react59.default.useState(null);
+    import_react59.default.useLayoutEffect(() => {
       if (disposed) return;
       const current = get(sessionId);
       current.refs++;
@@ -7977,14 +8479,14 @@ function apply(ctx) {
   function useComposer(entry, props) {
     const subscribedInput = props.useInput?.((value) => value);
     const input = subscribedInput ?? props.input;
-    const token = import_react56.default.useRef({});
-    import_react56.default.useLayoutEffect(() => {
+    const token = import_react59.default.useRef({});
+    import_react59.default.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed) return;
       return () => {
         entry.composers.delete(token.current);
       };
     }, [entry]);
-    import_react56.default.useLayoutEffect(() => {
+    import_react59.default.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed) return;
       if (!input || typeof props.inputActions?.setDraft !== "function") return;
       entry.composers.set(token.current, {
@@ -8010,7 +8512,7 @@ function apply(ctx) {
       if (voiceModeActive && !entry.controller.getSnapshot().conversation)
         run(entry.controller, entry.controller.startConversation());
     }, [entry, input, props.inputActions]);
-    import_react56.default.useLayoutEffect(() => {
+    import_react59.default.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed || !input) return;
       const published = typeof input.draft === "string" ? input.draft : "";
       entry.publishedDraft = published;
@@ -8028,11 +8530,21 @@ function apply(ctx) {
   function Buttons(props) {
     const entry = useEntry(props.sessionId, "buttons");
     useComposer(entry, props);
-    return entry ? /* @__PURE__ */ import_react56.default.createElement(ConversationControls, { controller: entry.controller }) : null;
+    return entry ? /* @__PURE__ */ import_react59.default.createElement(import_react59.default.Fragment, null, /* @__PURE__ */ import_react59.default.createElement(
+      MeetingToggle,
+      {
+        meeting: entry.meeting,
+        onToggle: () => {
+          const value = entry.meeting.getSnapshot().shared;
+          if (value.starting || value.listening) void entry.meeting.stop("shared");
+          else entry.startMeetingSource("shared");
+        }
+      }
+    ), /* @__PURE__ */ import_react59.default.createElement(ConversationControls, { controller: entry.controller })) : null;
   }
   function Settings() {
-    const [controller, setController] = import_react56.default.useState(null);
-    import_react56.default.useEffect(() => {
+    const [controller, setController] = import_react59.default.useState(null);
+    import_react59.default.useEffect(() => {
       const settings = preferences.getSnapshot();
       const browser = new BrowserSpeakingEngine({ lang: settings.lang });
       const qwen = new QwenHttpSpeakingEngine({ lang: settings.lang });
@@ -8091,7 +8603,9 @@ function apply(ctx) {
         const [savedSettings] = await Promise.all([
           saved,
           c.endConversation(),
-          ...active.map((entry) => entry.controller.endConversation())
+          ...active.map(
+            (entry) => Promise.all([entry.controller.endConversation(), entry.meeting.end()])
+          )
         ]);
         if (revision !== settingsRevision || disposed || c.disposed) return;
         for (const entry of controllers.values()) {
@@ -8116,21 +8630,21 @@ function apply(ctx) {
         void c.dispose();
       };
     }, []);
-    return controller ? /* @__PURE__ */ import_react56.default.createElement(SettingsPanel, { controller }) : null;
+    return controller ? /* @__PURE__ */ import_react59.default.createElement(SettingsPanel, { controller }) : null;
   }
   registerSettingsSlot(ctx, Settings, () => t("dsh-live-voice.commons.pluginName"));
   function Dock(props) {
     const entry = useEntry(props.sessionId, "dock");
     useComposer(entry, props);
-    return entry ? /* @__PURE__ */ import_react56.default.createElement(ConversationStatusBar, { controller: entry.controller }) : null;
+    return entry ? /* @__PURE__ */ import_react59.default.createElement("div", { className: "dlv-bar-stack" }, /* @__PURE__ */ import_react59.default.createElement(SpeechStatusBar, { controller: entry.controller }), /* @__PURE__ */ import_react59.default.createElement(MeetingBars, { meeting: entry.meeting }), /* @__PURE__ */ import_react59.default.createElement(ConversationStatusBar, { controller: entry.controller, includeSpeech: false })) : null;
   }
   function QuestionStatusView({ entry }) {
-    const snapshot = import_react56.default.useSyncExternalStore(
+    const snapshot = import_react59.default.useSyncExternalStore(
       entry.controller.subscribe,
       entry.controller.getSnapshot
     );
-    const [overlayStyle, setOverlayStyle] = import_react56.default.useState();
-    import_react56.default.useLayoutEffect(() => {
+    const [overlayStyle, setOverlayStyle] = import_react59.default.useState();
+    import_react59.default.useLayoutEffect(() => {
       if (!snapshot.answeringQuestion) return;
       const seat = document.querySelector("[data-composer-seat]");
       if (!seat) return;
@@ -8152,7 +8666,7 @@ function apply(ctx) {
     }, [snapshot.answeringQuestion]);
     const target = typeof document === "undefined" ? null : document.body;
     return snapshot.answeringQuestion && target && overlayStyle ? (0, import_react_dom.createPortal)(
-      /* @__PURE__ */ import_react56.default.createElement(
+      /* @__PURE__ */ import_react59.default.createElement(
         ConversationStatusBar,
         {
           controller: entry.controller,
@@ -8166,19 +8680,19 @@ function apply(ctx) {
   }
   function QuestionStatus(props) {
     const entry = useEntry(props.sessionId, "question-status");
-    return entry ? /* @__PURE__ */ import_react56.default.createElement(QuestionStatusView, { entry }) : null;
+    return entry ? /* @__PURE__ */ import_react59.default.createElement(QuestionStatusView, { entry }) : null;
   }
   function ActionView({ entry, messageId }) {
-    const snapshot = import_react56.default.useSyncExternalStore(
+    const snapshot = import_react59.default.useSyncExternalStore(
       entry.controller.subscribe,
       entry.controller.getSnapshot
     );
-    const chat = import_react56.default.useSyncExternalStore(entry.subscribeChat, entry.readChat);
+    const chat = import_react59.default.useSyncExternalStore(entry.subscribeChat, entry.readChat);
     const message2 = addressedTurn(assistantMessages(chat), messageId);
     const capability = snapshot.capabilities[snapshot.settings.engine];
     const active = snapshot.speaking && message2.id === snapshot.activeMessageId;
     const unavailable = capability?.supported !== true;
-    return /* @__PURE__ */ import_react56.default.createElement(
+    return /* @__PURE__ */ import_react59.default.createElement(
       SpeakButton,
       {
         active,
@@ -8193,7 +8707,7 @@ function apply(ctx) {
   }
   function Action(props) {
     const entry = useEntry(props.sessionId, "action");
-    return entry ? /* @__PURE__ */ import_react56.default.createElement(ActionView, { entry, messageId: props.messageId }) : null;
+    return entry ? /* @__PURE__ */ import_react59.default.createElement(ActionView, { entry, messageId: props.messageId }) : null;
   }
   ctx.effect(() => {
     const style = document.createElement("style");
@@ -8210,8 +8724,10 @@ function apply(ctx) {
   ctx.effect(() => {
     const stop = () => {
       ownership.cancel();
-      for (const entry of controllers.values())
+      for (const entry of controllers.values()) {
         run(entry.controller, entry.controller.endConversation());
+        void entry.meeting.end();
+      }
     };
     let holdToTalk = null;
     const candidate = () => {

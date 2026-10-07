@@ -1,5 +1,12 @@
 // @ts-nocheck
 import React from 'react';
+import { SpeechStatusBar } from '../../modules/conversation/components/SpeechStatusBar.js';
+import { MeetingController } from '../../modules/conversation/models/meeting.js';
+import { SharedAudioMeter, requestSharedAudio } from '../../modules/core/sharedAudio.js';
+import {
+  MeetingToggle,
+  MeetingBars,
+} from '../../modules/conversation/components/MeetingControls.js';
 import { createPortal } from 'react-dom';
 import { preserveComposerSelection } from './composerSelection.js';
 import { MicrophoneMeter, VoiceCoordinator, VoiceOwnership } from '../../modules/core/index.js';
@@ -188,11 +195,15 @@ export function apply(ctx) {
     entry.questionCapture = null;
     entry.controller.patch({ answeringQuestion: false });
     publishVoiceContext(entry, false);
+    entry.unsubscribeMeetingMicrophone?.();
     entry.chatListeners.clear();
     if (controllers.get(entry.key) === entry) controllers.delete(entry.key);
     notifyDiagnostics();
     // Keep teardown in the hardware handoff barrier, not in the session registry.
-    const done = run(entry.controller, entry.controller.dispose());
+    const done = run(
+      entry.controller,
+      Promise.all([entry.controller.dispose(), entry.meeting?.dispose()]),
+    );
     const barrier = { endConversation: () => done };
     retiring.add(barrier);
     void done.finally(() => retiring.delete(barrier));
@@ -234,6 +245,13 @@ export function apply(ctx) {
       meter,
       composer: {
         getDraft: () => entry.draft,
+        appendFinal: (text, startedAt) => {
+          if (entry.meeting?.getSnapshot().shared.listening) {
+            entry.meeting.transcript.append('microphone', text, startedAt);
+            return entry.draft;
+          }
+          return null;
+        },
         submit: (mode = 'queue') => {
           const owner = [...entry.composers.values()].at(-1);
           if (!owner) return;
@@ -414,6 +432,34 @@ export function apply(ctx) {
         );
       };
     }
+    entry.meeting = new MeetingController({
+      composer: entry.controller.composer,
+      settings: () => entry.controller.getSnapshot().settings,
+      translate: (key) => t('dsh-live-voice.meeting.' + key),
+      createSource: (source, settings) => {
+        const meter = source === 'shared' ? new SharedAudioMeter() : new MicrophoneMeter();
+        return { meter, engine: recognitionFor(settings, meter) };
+      },
+    });
+    entry.startMeetingSource = (source) => {
+      try {
+        const request = requestSharedAudio();
+        request.catch(() => {});
+        void entry.meeting.start(source, request);
+      } catch {
+        entry.meeting.patch(source, { error: t('dsh-live-voice.meeting.failed') });
+      }
+    };
+    let microphoneActive = false;
+    const unsubscribeMeetingMicrophone = controller.subscribe(() => {
+      const state = controller.getSnapshot();
+      const next = Boolean((state.listening || state.starting) && !state.muted);
+      if (next !== microphoneActive) {
+        microphoneActive = next;
+        entry.meeting.transcript.setActive('microphone', next);
+      }
+    });
+    entry.unsubscribeMeetingMicrophone = unsubscribeMeetingMicrophone;
     controllers.set(key, entry);
     void preferences.ready.catch(() => {
       if (!entry.closed)
@@ -518,7 +564,19 @@ export function apply(ctx) {
   function Buttons(props) {
     const entry = useEntry(props.sessionId, 'buttons');
     useComposer(entry, props);
-    return entry ? <ConversationControls controller={entry.controller} /> : null;
+    return entry ? (
+      <>
+        <MeetingToggle
+          meeting={entry.meeting}
+          onToggle={() => {
+            const value = entry.meeting.getSnapshot().shared;
+            if (value.starting || value.listening) void entry.meeting.stop('shared');
+            else entry.startMeetingSource('shared');
+          }}
+        />
+        <ConversationControls controller={entry.controller} />
+      </>
+    ) : null;
   }
   function Settings() {
     const [controller, setController] = React.useState(null);
@@ -581,7 +639,9 @@ export function apply(ctx) {
         const [savedSettings] = await Promise.all([
           saved,
           c.endConversation(),
-          ...active.map((entry) => entry.controller.endConversation()),
+          ...active.map((entry) =>
+            Promise.all([entry.controller.endConversation(), entry.meeting.end()]),
+          ),
         ]);
         if (revision !== settingsRevision || disposed || c.disposed) return;
         for (const entry of controllers.values()) {
@@ -612,7 +672,13 @@ export function apply(ctx) {
   function Dock(props) {
     const entry = useEntry(props.sessionId, 'dock');
     useComposer(entry, props);
-    return entry ? <ConversationStatusBar controller={entry.controller} /> : null;
+    return entry ? (
+      <div className="dlv-bar-stack">
+        <SpeechStatusBar controller={entry.controller} />
+        <MeetingBars meeting={entry.meeting} />
+        <ConversationStatusBar controller={entry.controller} includeSpeech={false} />
+      </div>
+    ) : null;
   }
   function QuestionStatusView({ entry }) {
     const snapshot = React.useSyncExternalStore(
@@ -703,8 +769,10 @@ export function apply(ctx) {
   ctx.effect(() => {
     const stop = () => {
       ownership.cancel();
-      for (const entry of controllers.values())
+      for (const entry of controllers.values()) {
         run(entry.controller, entry.controller.endConversation());
+        void entry.meeting.end();
+      }
     };
     let holdToTalk = null;
     const candidate = () => {

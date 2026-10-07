@@ -47,6 +47,24 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.commons.version.label': 'DSH Live Voice v{version}',
   'dsh-live-voice.commons.version.link': 'DSH Live Voice v{version}. Ouvrir la liste des versions',
   'dsh-live-voice.commons.version.title': 'Informations de version',
+  'dsh-live-voice.meeting.failed': 'Échec de reconnaissance.',
+  'dsh-live-voice.meeting.help':
+    'Sources indépendantes ; envoyez les transcriptions manuellement depuis l’éditeur.',
+  'dsh-live-voice.meeting.httpRequired': 'Utilisez Qwen ou Whisper HTTP en mode réunion.',
+  'dsh-live-voice.meeting.inactive': 'Inactif',
+  'dsh-live-voice.meeting.listening': 'Écoute',
+  'dsh-live-voice.meeting.microphone': 'Microphone',
+  'dsh-live-voice.meeting.noAudio':
+    'Aucun audio partagé. Activez l’audio dans la fenêtre de partage.',
+  'dsh-live-voice.meeting.processing': 'Transcription…',
+  'dsh-live-voice.meeting.shared': 'Audio partagé',
+  'dsh-live-voice.meeting.start': 'Démarrer la source',
+  'dsh-live-voice.meeting.starting': 'Démarrage…',
+  'dsh-live-voice.meeting.stop': 'Arrêter la source',
+  'dsh-live-voice.meeting.timestamps': 'Horodatage des transcriptions',
+  'dsh-live-voice.meeting.timestampsBadge': 'Horodatage',
+  'dsh-live-voice.meeting.title': 'Mode réunion',
+  'dsh-live-voice.meeting.unavailable': 'Reconnaissance indisponible.',
   'dsh-live-voice.recognition.autoSend.countdownHelp':
     'Le compte à rebours démarre après la reconnaissance définitive d’une phrase. Toute nouvelle parole ou modification l’annule.',
   'dsh-live-voice.recognition.browser.autoInstallPack':
