@@ -798,6 +798,11 @@ test('composer autoplay remains between shared audio and microphone while idle, 
   const buttons = [...document.querySelectorAll('button')];
   assert.equal(buttons[0].getAttribute('aria-label'), 'Shared audio');
   assert.equal(buttons[1].getAttribute('role'), 'switch');
+  assert.equal(buttons[1].classList.contains('dlv-live-toggle'), false);
+  assert.equal(buttons[1].querySelector('.dlv-toggle-state'), null);
+  assert.match(buttons[1].title, /Disable automatic assistant speech/);
+  assert.equal(buttons[0].title, 'Start audio sharing');
+  assert.ok(buttons[2].title);
   assert.equal(buttons[2].classList.contains('dlv-mic'), true);
   const c = f.controllers[0];
   let updates = [];
@@ -809,6 +814,7 @@ test('composer autoplay remains between shared audio and microphone while idle, 
   await act(async () => buttons[1].click());
   assert.deepEqual(updates, [{ announceAssistantMessages: false }]);
   assert.equal(buttons[1].getAttribute('aria-checked'), 'false');
+  assert.match(buttons[1].title, /Enable automatic assistant speech/);
   await act(async () => buttons[1].click());
   assert.equal(buttons[1].getAttribute('aria-checked'), 'true');
   assert.equal(f.calls.length, before, 'capture and speech lifecycle actions are untouched');

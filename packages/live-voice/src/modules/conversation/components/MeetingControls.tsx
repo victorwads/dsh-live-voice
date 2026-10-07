@@ -9,6 +9,9 @@ export function MeetingToggle({ meeting, onToggle }: any) {
     <IconButton
       icon="meeting"
       label={(copy as any).shared()}
+      title={(copy as any)[
+        state.shared.listening || state.shared.starting ? 'stopShared' : 'startShared'
+      ]()}
       className="dlv-mic"
       aria-pressed={Boolean(state.shared.listening || state.shared.starting)}
       onClick={onToggle}

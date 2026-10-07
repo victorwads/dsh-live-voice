@@ -55,8 +55,10 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.meeting.processing': string;
   'dsh-live-voice.meeting.shared': string;
   'dsh-live-voice.meeting.start': string;
+  'dsh-live-voice.meeting.startShared': string;
   'dsh-live-voice.meeting.starting': string;
   'dsh-live-voice.meeting.stop': string;
+  'dsh-live-voice.meeting.stopShared': string;
   'dsh-live-voice.meeting.timestamps': string;
   'dsh-live-voice.meeting.timestampsBadge': string;
   'dsh-live-voice.meeting.title': string;
@@ -175,6 +177,8 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.speak.agentContext.help': string;
   'dsh-live-voice.speak.agentContext.label': string;
   'dsh-live-voice.speak.agentContext.restore': string;
+  'dsh-live-voice.speak.autoPlayback.disable': string;
+  'dsh-live-voice.speak.autoPlayback.enable': string;
   'dsh-live-voice.speak.autoPlayback.enabled': string;
   'dsh-live-voice.speak.autoPlayback.help': string;
   'dsh-live-voice.speak.autoPlayback.label': string;

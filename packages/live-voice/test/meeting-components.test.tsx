@@ -63,6 +63,10 @@ test('shared audio toggle starts directly and only renders its own active bar wi
   assert.equal(document.querySelectorAll('[role="group"]').length, 0);
   await act(async () => document.querySelector('button[aria-label="Shared audio"]').click());
   assert.equal(starts, 1);
+  assert.equal(
+    document.querySelector('button[aria-label="Shared audio"]').title,
+    'Stop audio sharing',
+  );
   assert.equal(document.querySelectorAll('[role="group"]').length, 1);
   assert.equal(document.querySelector('p'), null);
   assert.equal(document.querySelector('[role="status"]').textContent, 'Listening');

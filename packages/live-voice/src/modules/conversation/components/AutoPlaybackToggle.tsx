@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../../../app/client/i18n/index.js';
-import { ToggleButton } from '../../../shared/design-system/index.js';
+import { IconButton } from '../../../shared/design-system/index.js';
 export function AutoPlaybackToggle({ state, invoke, error }: any) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
@@ -16,12 +16,13 @@ export function AutoPlaybackToggle({ state, invoke, error }: any) {
           state: active ? (commons as any).on() : (commons as any).off(),
         });
   return (
-    <ToggleButton
-      pressed={active}
+    <IconButton
+      className="dlv-composer-toggle"
+      aria-pressed={active}
+      data-toggle-active={String(active)}
       label={(speak as any).autoPlayback.label()}
-      title={error || title}
+      title={error || (speak as any).autoPlayback[active ? 'disable' : 'enable']() + ' — ' + title}
       icon={active ? 'speaker' : 'speakerOff'}
-      visibleLabel={active ? (commons as any).on() : (commons as any).toggle.offBadge()}
       role="switch"
       aria-checked={active}
       onClick={() => invoke('updateSettings', { announceAssistantMessages: !active })}

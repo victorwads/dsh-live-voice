@@ -4,6 +4,8 @@ export const styles = `
 .dlv-icon-button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex-shrink:0;cursor:pointer;background:transparent;color:var(--dsw-alias-label-secondary);padding:0;font:inherit}
 .dlv-icon-button svg{display:block;width:20px;height:20px}
 .dlv-mic{width:30px;height:30px;border:1px solid var(--dsw-alias-border-l1);border-radius:50%}
+.dlv-composer-toggle{width:30px;height:30px;border:1px solid var(--dsw-alias-border-l1);border-radius:50%}.dlv-composer-toggle:hover{border-color:var(--dsw-alias-border-l2)}
+.dlv-composer-toggle[data-toggle-active=false]{opacity:.55;color:var(--dsw-alias-label-tertiary)}.dlv-composer-toggle[data-toggle-active=true]{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary)}
 .dlv-mic:hover{color:var(--dsw-alias-label-primary);border-color:var(--dsw-alias-border-l2)}
 .dlv-speaker{width:28px;height:28px;border:0;border-radius:28px;padding:5px;color:var(--dsw-alias-label-tertiary)}
 .dlv-speaker:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}

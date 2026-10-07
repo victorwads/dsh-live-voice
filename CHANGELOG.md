@@ -14,12 +14,12 @@ This minor release introduces a dedicated speech bar with smoothly scrolling app
 
 ### Features
 
-- ⭐⭐ **Meeting Mode** — add explicitly shared audio alongside normal microphone recognition and speech playback.
-  - Open sharing directly from the composer toggle, with independent source lifecycles and a shared recognition-bar component. Browser sharing requires permission and an available audio track.
-  - Merge final chunks with `Me:`/`Them:` labels on source changes when both sources capture; consecutive chunks from the same source continue without repeating the label.
-  - Use configured Qwen/Whisper HTTP settings for shared audio without triggering voice commands or automatic sending; normal microphone delivery and speaking remain unchanged.
-  - Offer optional, default-off timestamps using local chunk-onset time on new source blocks.
-  - Keep the composer microphone visible as a toggle, with reusable state toggles exposing active/inactive styles and hover labels.
+- ⭐⭐ **Meeting Mode** — bring your DSH agent into the conversation, not just the work you do after the meeting.
+  - Capture your voice and the other participants’ shared audio during a call, keeping an editable transcript ready to send to the agent without having to retell the discussion.
+  - When someone asks a question, send the relevant meeting context with a request such as “Help us answer this point.” The agent can combine that discussion with the project code, spreadsheet, or documents you have made available in DSH.
+  - Let the agent answer aloud. When your meeting app is configured to share the agent’s playback audio, everyone can hear the response—making room for a conversation between you, the agent, and the other people on the call.
+  - Use it for code reviews, project discussions, or working through a spreadsheet together in Google Meet, Teams, or another meeting app, wherever your browser and operating system support audio sharing. Meeting audio capture and sharing the agent’s voice back into the call require separate sharing setup; this is not a built-in meeting-app integration.
+  - Stay in control of what reaches the agent: review and edit the transcript, distinguish your contributions from the shared conversation with `Me:`/`Them:`, and optionally include timestamps. Start or stop either audio source independently; shared meeting audio does not send itself or execute voice commands.
 - Normalize Markdown for speech using the Marked parser: remove visual formatting, announce links and images without reading full URLs, shorten file paths with line references, read task lists and table headers/rows, and abbreviate long identifiers. Feed the same normalized text to playback and live captions, preserving the existing code-block line limit.
 - ⭐ **Dedicated Speech Bar with Live Captions** — a new 52px bar above recognition controls.
   - Show approximate captions on one clipped line, using host audio timing or a pause-aware native-synthesis estimate; captions are not word-aligned.

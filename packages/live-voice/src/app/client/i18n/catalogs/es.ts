@@ -58,8 +58,10 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.meeting.processing': 'Transcribiendo…',
   'dsh-live-voice.meeting.shared': 'Audio compartido',
   'dsh-live-voice.meeting.start': 'Iniciar fuente',
+  'dsh-live-voice.meeting.startShared': 'Iniciar audio compartido',
   'dsh-live-voice.meeting.starting': 'Iniciando…',
   'dsh-live-voice.meeting.stop': 'Detener fuente',
+  'dsh-live-voice.meeting.stopShared': 'Detener audio compartido',
   'dsh-live-voice.meeting.timestamps': 'Marcas de tiempo de transcripción',
   'dsh-live-voice.meeting.timestampsBadge': 'Tiempo',
   'dsh-live-voice.meeting.title': 'Modo reunión',
@@ -223,6 +225,8 @@ const es: LiveVoiceTranslation = {
     'Esta instrucción en inglés se envía al agente solo durante una conversación de voz activa con habla automática del asistente activada.',
   'dsh-live-voice.speak.agentContext.label': 'Contexto de voz del agente',
   'dsh-live-voice.speak.agentContext.restore': 'Restaurar predeterminado',
+  'dsh-live-voice.speak.autoPlayback.disable': 'Desactivar voz automática del asistente',
+  'dsh-live-voice.speak.autoPlayback.enable': 'Activar voz automática del asistente',
   'dsh-live-voice.speak.autoPlayback.enabled':
     'Leer automáticamente los nuevos mensajes del asistente en voz alta',
   'dsh-live-voice.speak.autoPlayback.help':
