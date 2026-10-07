@@ -238,12 +238,12 @@ export function apply(ctx) {
           const owner = [...entry.composers.values()].at(-1);
           if (!owner) return;
           const busyEnter = entry.controller.getSnapshot().settings.dshBusyEnterBehavior;
-          if (mode !== busyEnter) {
-            // InputActions exposes no delivery-mode argument. Ctrl/Cmd+Enter selects
-            // the opposite of the user's reported busy-Enter behavior. Read the
-            // current preference at delivery time, including pending auto-send.
+          if (mode !== busyEnter || busyEnter === 'steer') {
+            // InputActions.submit() always queues; it does not emulate normal Enter.
+            // Use an actual Enter gesture for steering-default composers, adding Ctrl
+            // only for the opposite mode. Read the preference at delivery time.
             // Never fall back to normal submit: that would deliver the wrong mode.
-            owner.submitAccelerated?.();
+            owner.submitAccelerated?.(mode !== busyEnter);
             return;
           }
           owner.actions.submit?.();
@@ -466,7 +466,7 @@ export function apply(ctx) {
       if (!input || typeof props.inputActions?.setDraft !== 'function') return;
       entry.composers.set(token.current, {
         actions: props.inputActions,
-        submitAccelerated: () => {
+        submitAccelerated: (accelerated = true) => {
           const active = document.activeElement;
           const editor =
             active?.nodeType === 1 && active.isContentEditable
@@ -480,7 +480,7 @@ export function apply(ctx) {
             new KeyboardEventCtor('keydown', {
               key: 'Enter',
               code: 'Enter',
-              ctrlKey: true,
+              ctrlKey: accelerated,
               bubbles: true,
               cancelable: true,
             }),

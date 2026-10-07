@@ -619,7 +619,7 @@ test('steer delivery dispatches an accelerated composer gesture instead of norma
   calls.length = 0;
   controller.composer.submit('steer');
   controller.composer.submit('queue');
-  assert.deepEqual(calls, [['normal-submit'], ['Enter', true, false]]);
+  assert.deepEqual(calls, [['Enter', false, false], ['Enter', true, false]]);
 
   // A missing accelerated editor must not fall back to the wrong delivery mode.
   editor.remove();

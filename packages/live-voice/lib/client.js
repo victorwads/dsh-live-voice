@@ -7763,8 +7763,8 @@ function apply(ctx) {
           const owner = [...entry.composers.values()].at(-1);
           if (!owner) return;
           const busyEnter = entry.controller.getSnapshot().settings.dshBusyEnterBehavior;
-          if (mode !== busyEnter) {
-            owner.submitAccelerated?.();
+          if (mode !== busyEnter || busyEnter === "steer") {
+            owner.submitAccelerated?.(mode !== busyEnter);
             return;
           }
           owner.actions.submit?.();
@@ -7964,7 +7964,7 @@ function apply(ctx) {
       if (!input || typeof props.inputActions?.setDraft !== "function") return;
       entry.composers.set(token.current, {
         actions: props.inputActions,
-        submitAccelerated: () => {
+        submitAccelerated: (accelerated = true) => {
           const active = document.activeElement;
           const editor = active?.nodeType === 1 && active.isContentEditable ? active : document.querySelector('[contenteditable="true"]');
           if (!editor || editor.nodeType !== 1) return;
@@ -7975,7 +7975,7 @@ function apply(ctx) {
             new KeyboardEventCtor("keydown", {
               key: "Enter",
               code: "Enter",
-              ctrlKey: true,
+              ctrlKey: accelerated,
               bubbles: true,
               cancelable: true
             })
