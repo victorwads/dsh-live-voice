@@ -3,7 +3,7 @@ import { useLanguage } from '../../../app/client/i18n/index.js';
 import { ErrorMessage, IconButton } from '../../../shared/design-system/index.js';
 import { useConversationActions, useConversationController } from '../hooks/index.js';
 import { PlaybackControls } from './PlaybackControls.js';
-import { remainingSpeechCaption } from './speechCaption.js';
+import { ScrollingSpeechCaption } from './ScrollingSpeechCaption.js';
 export function SpeechStatusBar({ controller }: { controller: any }) {
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
@@ -27,7 +27,6 @@ export function SpeechStatusBar({ controller }: { controller: any }) {
   )
     return null;
   const text = state.speechText ?? '';
-  const caption = remainingSpeechCaption(text, progress);
   const ratio =
     progress &&
     Number.isFinite(progress.durationSeconds) &&
@@ -52,13 +51,14 @@ export function SpeechStatusBar({ controller }: { controller: any }) {
           onClick={() => invoke('previousSpeechSegment')}
         />
         <div className="dlv-caption-stack">
-          <span
-            className="dlv-caption"
-            title={text || (speak as any).status.playing()}
-            aria-label={(speak as any).captions.approximate()}
-          >
-            {caption || (speak as any).status.playing()}
-          </span>
+          <ScrollingSpeechCaption
+            text={text || (speak as any).status.playing()}
+            label={(speak as any).captions.approximate()}
+            controller={controller}
+            segment={index}
+            paused={state.paused || !state.speaking}
+            loading={loading}
+          />
           <div
             className="dlv-caption-progress"
             data-loading={loading ? 'true' : 'false'}

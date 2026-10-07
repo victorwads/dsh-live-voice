@@ -34,7 +34,7 @@ __export(apply_exports, {
   inject: () => inject
 });
 module.exports = __toCommonJS(apply_exports);
-var import_react55 = __toESM(require("react"), 1);
+var import_react56 = __toESM(require("react"), 1);
 var import_react_dom = require("react-dom");
 
 // src/app/client/composerSelection.ts
@@ -5349,7 +5349,7 @@ function ConversationControls({ controller }) {
 }
 
 // src/modules/conversation/components/ConversationStatusBar.tsx
-var import_react53 = __toESM(require("react"), 1);
+var import_react54 = __toESM(require("react"), 1);
 
 // src/modules/conversation/components/DeliveryModeButton.tsx
 var import_react49 = __toESM(require("react"), 1);
@@ -5381,7 +5381,7 @@ function DeliveryModeButton({
 }
 
 // src/modules/conversation/components/SpeechStatusBar.tsx
-var import_react51 = __toESM(require("react"), 1);
+var import_react52 = __toESM(require("react"), 1);
 
 // src/modules/conversation/components/PlaybackControls.tsx
 var import_react50 = __toESM(require("react"), 1);
@@ -5431,23 +5431,84 @@ function PlaybackControls({
   ) : null);
 }
 
-// src/modules/conversation/components/speechCaption.ts
-function remainingSpeechCaption(text, progress) {
-  if (!progress || !Number.isFinite(progress.durationSeconds) || progress.durationSeconds <= 0 || !Number.isFinite(progress.positionSeconds))
-    return text;
-  const characters = Array.from(text);
-  let index = Math.min(
-    characters.length - 1,
-    Math.floor(
-      characters.length * Math.max(0, Math.min(1, progress.positionSeconds / progress.durationSeconds))
-    )
-  );
-  if (/\s/u.test(characters[index])) {
-    while (index < characters.length - 1 && /\s/u.test(characters[index])) index++;
-  } else if (/\s/u.test(text)) {
-    while (index > 0 && !/\s/u.test(characters[index - 1])) index--;
-  }
-  return characters.slice(Math.max(0, index)).join("").trimStart();
+// src/modules/conversation/components/ScrollingSpeechCaption.tsx
+var import_react51 = __toESM(require("react"), 1);
+function ScrollingSpeechCaption({
+  text,
+  label,
+  controller,
+  segment,
+  paused,
+  loading
+}) {
+  const viewport = import_react51.default.useRef(null);
+  const line = import_react51.default.useRef(null);
+  const marker = import_react51.default.useRef(null);
+  const current = import_react51.default.useRef({ paused, loading });
+  current.current = { paused, loading };
+  import_react51.default.useEffect(() => {
+    const box = viewport.current;
+    const content = line.current;
+    const band = marker.current;
+    if (!box || !content || !band) return;
+    const host = box.ownerDocument.defaultView;
+    let width = box.clientWidth;
+    let textWidth = content.scrollWidth;
+    let fraction = 0;
+    let previousTime = 0;
+    let frame = 0;
+    box.scrollLeft = 0;
+    band.style.transform = "translateX(0px)";
+    const measure = () => {
+      width = box.clientWidth;
+      textWidth = content.scrollWidth;
+    };
+    const observer = typeof host.ResizeObserver === "function" ? new host.ResizeObserver(measure) : null;
+    observer?.observe(box);
+    observer?.observe(content);
+    const reduced = host.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const tick = (time) => {
+      const delta = Math.min(100, previousTime ? time - previousTime : 16);
+      previousTime = time;
+      const state = current.current;
+      if (!state.paused && !state.loading) {
+        const progress = controller.getSpeechProgress?.();
+        if (progress && Number.isFinite(progress.durationSeconds) && progress.durationSeconds > 0 && Number.isFinite(progress.positionSeconds)) {
+          const target = Math.max(
+            0,
+            Math.min(1, progress.positionSeconds / progress.durationSeconds)
+          );
+          fraction = reduced ? target : fraction + (target - fraction) * (1 - Math.exp(-delta / 90));
+        }
+      }
+      const bandWidth = Math.min(90, width, textWidth);
+      const position = fraction * Math.max(0, textWidth - bandWidth);
+      const scroll = Math.max(
+        0,
+        Math.min(Math.max(0, textWidth - width), position - (width - bandWidth) / 2)
+      );
+      box.scrollLeft = scroll;
+      band.style.width = bandWidth + "px";
+      band.style.transform = "translateX(" + Math.max(0, position - box.scrollLeft) + "px)";
+      band.style.opacity = state.loading ? "0" : "1";
+      frame = host.requestAnimationFrame(tick);
+    };
+    frame = host.requestAnimationFrame(tick);
+    return () => {
+      host.cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
+  }, [controller, text, segment]);
+  return /* @__PURE__ */ import_react51.default.createElement("div", { className: "dlv-caption-stage" }, /* @__PURE__ */ import_react51.default.createElement(
+    "div",
+    {
+      ref: viewport,
+      className: "dlv-caption dlv-caption-scroll",
+      title: text,
+      "aria-label": label
+    },
+    /* @__PURE__ */ import_react51.default.createElement("span", { ref: line, className: "dlv-caption-line" }, text)
+  ), /* @__PURE__ */ import_react51.default.createElement("span", { ref: marker, className: "dlv-caption-marker", "aria-hidden": "true" }));
 }
 
 // src/modules/conversation/components/SpeechStatusBar.tsx
@@ -5456,8 +5517,8 @@ function SpeechStatusBar({ controller }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const state = useConversationController(controller);
   const { invoke, error, clearError } = useConversationActions(controller);
-  const [progress, setProgress] = import_react51.default.useState(null);
-  import_react51.default.useEffect(() => {
+  const [progress, setProgress] = import_react52.default.useState(null);
+  import_react52.default.useEffect(() => {
     setProgress(null);
     if (!state.speechText || !state.speaking) return;
     const update = () => setProgress(controller.getSpeechProgress?.() ?? null);
@@ -5469,19 +5530,18 @@ function SpeechStatusBar({ controller }) {
   if (!state.speaking && !state.paused && !state.speechRunActive && !(state.speechSegmentsRemaining > 0))
     return null;
   const text = state.speechText ?? "";
-  const caption = remainingSpeechCaption(text, progress);
   const ratio = progress && Number.isFinite(progress.durationSeconds) && progress.durationSeconds > 0 && Number.isFinite(progress.positionSeconds) ? Math.max(0, Math.min(1, progress.positionSeconds / progress.durationSeconds)) : null;
   const loading = state.speechLoading === true && state.speaking && !state.paused;
   const index = state.speechSegmentIndex ?? 0;
   const total = state.speechSegmentsTotal ?? state.speechSegmentsRemaining ?? 0;
-  return /* @__PURE__ */ import_react51.default.createElement("div", { className: "dlv-bar-wrap dlv-speech-bar" }, /* @__PURE__ */ import_react51.default.createElement(
+  return /* @__PURE__ */ import_react52.default.createElement("div", { className: "dlv-bar-wrap dlv-speech-bar" }, /* @__PURE__ */ import_react52.default.createElement(
     "div",
     {
       className: "dlv-pill dlv-speech-pill",
       role: "group",
       "aria-label": speak.captions.title()
     },
-    /* @__PURE__ */ import_react51.default.createElement(
+    /* @__PURE__ */ import_react52.default.createElement(
       IconButton,
       {
         label: speak.playback.previous(),
@@ -5490,15 +5550,17 @@ function SpeechStatusBar({ controller }) {
         onClick: () => invoke("previousSpeechSegment")
       }
     ),
-    /* @__PURE__ */ import_react51.default.createElement("div", { className: "dlv-caption-stack" }, /* @__PURE__ */ import_react51.default.createElement(
-      "span",
+    /* @__PURE__ */ import_react52.default.createElement("div", { className: "dlv-caption-stack" }, /* @__PURE__ */ import_react52.default.createElement(
+      ScrollingSpeechCaption,
       {
-        className: "dlv-caption",
-        title: text || speak.status.playing(),
-        "aria-label": speak.captions.approximate()
-      },
-      caption || speak.status.playing()
-    ), /* @__PURE__ */ import_react51.default.createElement(
+        text: text || speak.status.playing(),
+        label: speak.captions.approximate(),
+        controller,
+        segment: index,
+        paused: state.paused || !state.speaking,
+        loading
+      }
+    ), /* @__PURE__ */ import_react52.default.createElement(
       "div",
       {
         className: "dlv-caption-progress",
@@ -5509,9 +5571,9 @@ function SpeechStatusBar({ controller }) {
         "aria-valuemax": 100,
         "aria-valuenow": loading || ratio === null ? void 0 : Math.round(ratio * 100)
       },
-      /* @__PURE__ */ import_react51.default.createElement("span", { style: loading ? void 0 : { width: (ratio ?? 0) * 100 + "%" } })
+      /* @__PURE__ */ import_react52.default.createElement("span", { style: loading ? void 0 : { width: (ratio ?? 0) * 100 + "%" } })
     )),
-    /* @__PURE__ */ import_react51.default.createElement(
+    /* @__PURE__ */ import_react52.default.createElement(
       IconButton,
       {
         label: speak.playback.next(),
@@ -5520,7 +5582,7 @@ function SpeechStatusBar({ controller }) {
         onClick: () => invoke("skipSpeechSegment")
       }
     ),
-    /* @__PURE__ */ import_react51.default.createElement(
+    /* @__PURE__ */ import_react52.default.createElement(
       "span",
       {
         className: "dlv-speech-count",
@@ -5530,8 +5592,8 @@ function SpeechStatusBar({ controller }) {
       "/",
       total
     ),
-    /* @__PURE__ */ import_react51.default.createElement(PlaybackControls, { state, invoke, navigation: false })
-  ), /* @__PURE__ */ import_react51.default.createElement(
+    /* @__PURE__ */ import_react52.default.createElement(PlaybackControls, { state, invoke, navigation: false })
+  ), /* @__PURE__ */ import_react52.default.createElement(
     ErrorMessage,
     {
       error,
@@ -5543,10 +5605,10 @@ function SpeechStatusBar({ controller }) {
 }
 
 // src/modules/conversation/components/Waveform.tsx
-var import_react52 = __toESM(require("react"), 1);
+var import_react53 = __toESM(require("react"), 1);
 function Waveform({ controller, enabled }) {
-  const ref = import_react52.default.useRef(null);
-  import_react52.default.useEffect(() => {
+  const ref = import_react53.default.useRef(null);
+  import_react53.default.useEffect(() => {
     const canvas = ref.current;
     const context = canvas?.getContext("2d");
     if (!canvas || !context) return;
@@ -5598,7 +5660,7 @@ function Waveform({ controller, enabled }) {
       window.removeEventListener("resize", resize);
     };
   }, [controller, enabled]);
-  return /* @__PURE__ */ import_react52.default.createElement("canvas", { ref, className: "dlv-wave", "aria-hidden": true });
+  return /* @__PURE__ */ import_react53.default.createElement("canvas", { ref, className: "dlv-wave", "aria-hidden": true });
 }
 
 // src/modules/conversation/components/conversationStatus.ts
@@ -5627,8 +5689,8 @@ function ConversationStatusBar({
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const state = useConversationController(controller);
   const { invoke, error, clearError } = useConversationActions(controller);
-  const [now, setNow] = import_react53.default.useState(Date.now());
-  import_react53.default.useEffect(() => {
+  const [now, setNow] = import_react54.default.useState(Date.now());
+  import_react54.default.useEffect(() => {
     if (!state.autoSendAt) return;
     setNow(Date.now());
     const timer = setInterval(() => setNow(Date.now()), 200);
@@ -5652,34 +5714,34 @@ function ConversationStatusBar({
   }) : speak.autoPlayback.status({
     state: autoPlayback ? commons.on() : commons.off()
   });
-  return /* @__PURE__ */ import_react53.default.createElement(
+  return /* @__PURE__ */ import_react54.default.createElement(
     "div",
     {
       className: overlay ? "dlv-bar-wrap dlv-question-overlay" : "dlv-bar-wrap",
       style: overlay ? overlayStyle : void 0
     },
-    /* @__PURE__ */ import_react53.default.createElement(SpeechStatusBar, { controller }),
-    (state.conversation || capture || state.error || error) && /* @__PURE__ */ import_react53.default.createElement("div", { className: "dlv-pill", role: "group", "aria-label": commons.controls.title() }, capture && !state.conversation ? /* @__PURE__ */ import_react53.default.createElement(
+    /* @__PURE__ */ import_react54.default.createElement(SpeechStatusBar, { controller }),
+    (state.conversation || capture || state.error || error) && /* @__PURE__ */ import_react54.default.createElement("div", { className: "dlv-pill", role: "group", "aria-label": commons.controls.title() }, capture && !state.conversation ? /* @__PURE__ */ import_react54.default.createElement(
       IconButton,
       {
         label: recognition.dictation.cancel(),
         icon: "close",
         onClick: () => invoke("cancelDictation")
       }
-    ) : null, state.conversation ? /* @__PURE__ */ import_react53.default.createElement(
+    ) : null, state.conversation ? /* @__PURE__ */ import_react54.default.createElement(
       IconButton,
       {
         label: commons.conversation.end(),
         icon: "close",
         onClick: () => invoke("endConversation")
       }
-    ) : null, /* @__PURE__ */ import_react53.default.createElement(Waveform, { controller, enabled: Boolean(state.listening) }), /* @__PURE__ */ import_react53.default.createElement("span", { className: "dlv-status", role: "status", "aria-live": "polite" }, status), /* @__PURE__ */ import_react53.default.createElement(
+    ) : null, /* @__PURE__ */ import_react54.default.createElement(Waveform, { controller, enabled: Boolean(state.listening) }), /* @__PURE__ */ import_react54.default.createElement("span", { className: "dlv-status", role: "status", "aria-live": "polite" }, status), /* @__PURE__ */ import_react54.default.createElement(
       DeliveryModeButton,
       {
         mode: state.settings.sendingMode || "manual",
         onChange: (sendingMode) => invoke("updateSettings", { sendingMode })
       }
-    ), /* @__PURE__ */ import_react53.default.createElement(
+    ), /* @__PURE__ */ import_react54.default.createElement(
       IconButton,
       {
         className: `dlv-live-toggle${state.speechSegmentsRemaining > 0 ? " dlv-live-toggle-expanded" : ""}`,
@@ -5691,21 +5753,21 @@ function ConversationStatusBar({
         "aria-checked": autoPlayback,
         onClick: () => invoke("updateSettings", { announceAssistantMessages: !autoPlayback })
       }
-    ), remaining ? /* @__PURE__ */ import_react53.default.createElement(
+    ), remaining ? /* @__PURE__ */ import_react54.default.createElement(
       IconButton,
       {
         label: settings.autoSend.cancel(),
         icon: "close",
         onClick: () => invoke("cancelAutoSend")
       }
-    ) : null, state.conversation && !capture ? /* @__PURE__ */ import_react53.default.createElement(
+    ) : null, state.conversation && !capture ? /* @__PURE__ */ import_react54.default.createElement(
       IconButton,
       {
         label: recognition.microphone.takeControl(),
         icon: "mic",
         onClick: () => invoke("startConversation")
       }
-    ) : null, capture ? /* @__PURE__ */ import_react53.default.createElement(
+    ) : null, capture ? /* @__PURE__ */ import_react54.default.createElement(
       IconButton,
       {
         className: "dlv-live-toggle dlv-mic-state",
@@ -5720,7 +5782,7 @@ function ConversationStatusBar({
         onClick: () => invoke(state.muted ? "resumeListeningInput" : "muteListening")
       }
     ) : null),
-    /* @__PURE__ */ import_react53.default.createElement(
+    /* @__PURE__ */ import_react54.default.createElement(
       ErrorMessage,
       {
         error: error || state.error,
@@ -5736,7 +5798,7 @@ function ConversationStatusBar({
 }
 
 // src/modules/conversation/components/SpeakButton.tsx
-var import_react54 = __toESM(require("react"), 1);
+var import_react55 = __toESM(require("react"), 1);
 function SpeakButton({
   active = false,
   disabled = false,
@@ -5745,7 +5807,7 @@ function SpeakButton({
 }) {
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const resolvedLabel = label ?? (active ? speak.playback.stop() : speak.playback.message());
-  return /* @__PURE__ */ import_react54.default.createElement(
+  return /* @__PURE__ */ import_react55.default.createElement(
     IconButton,
     {
       className: "dlv-speaker",
@@ -5861,6 +5923,7 @@ var styles = `
 .dlv-icon-button:focus-visible,.dlv-settings :is(input,select):focus-visible{outline:2px solid var(--dsw-alias-label-primary);outline-offset:3px}
 .dlv-bar-wrap{width:100%;min-width:0}
 .dlv-speech-bar{margin-bottom:8px}.dlv-speech-pill{height:52px;min-height:52px;flex-wrap:nowrap!important}.dlv-caption{flex:1;min-width:0;overflow:hidden;white-space:nowrap;font-size:13px;line-height:1.4;color:var(--dsw-alias-label-primary)}.dlv-caption-stack{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}.dlv-caption-progress{height:2px;border-radius:2px;overflow:hidden;background:var(--dsw-alias-border-l1)}.dlv-caption-progress>span{display:block;height:100%;border-radius:inherit;background:var(--dsw-alias-label-primary);transition:width .1s linear}.dlv-speech-count{flex:none;font-size:11px;color:var(--dsw-alias-label-secondary)}
+.dlv-caption-stage{position:relative;min-width:0;overflow:hidden;height:20px}.dlv-caption-scroll{display:block;width:100%;height:20px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-behavior:auto}.dlv-caption-scroll::-webkit-scrollbar{display:none}.dlv-caption-line{display:inline-block;white-space:pre}.dlv-caption-marker{position:absolute;left:0;top:0;height:20px;width:90px;border-radius:5px;pointer-events:none;background:linear-gradient(to right,transparent,color-mix(in srgb,var(--dsw-alias-label-primary) 15%,transparent) 35%,color-mix(in srgb,var(--dsw-alias-label-primary) 15%,transparent) 65%,transparent);box-shadow:inset 0 -2px 0 color-mix(in srgb,var(--dsw-alias-label-primary) 40%,transparent);will-change:transform}
 .dlv-caption-progress[data-loading=true]>span{width:30%;animation:dlv-caption-loading 1.2s ease-in-out infinite;transition:none}@keyframes dlv-caption-loading{from{transform:translateX(-100%)}to{transform:translateX(350%)}}@media(prefers-reduced-motion:reduce){.dlv-caption-progress[data-loading=true]>span{animation:none;transform:translateX(115%)}}
 .dlv-question-overlay{position:fixed;z-index:10000;bottom:8px;transform:translateX(-50%);max-width:calc(100vw - 32px);pointer-events:none}
 .dlv-question-overlay .dlv-pill{pointer-events:auto}
@@ -6371,8 +6434,8 @@ function apply(ctx) {
     return entry;
   }
   function useEntry(sessionId, kind) {
-    const [entry, setEntry] = import_react55.default.useState(null);
-    import_react55.default.useLayoutEffect(() => {
+    const [entry, setEntry] = import_react56.default.useState(null);
+    import_react56.default.useLayoutEffect(() => {
       if (disposed) return;
       const current = get(sessionId);
       current.refs++;
@@ -6392,14 +6455,14 @@ function apply(ctx) {
   function useComposer(entry, props) {
     const subscribedInput = props.useInput?.((value) => value);
     const input = subscribedInput ?? props.input;
-    const token = import_react55.default.useRef({});
-    import_react55.default.useLayoutEffect(() => {
+    const token = import_react56.default.useRef({});
+    import_react56.default.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed) return;
       return () => {
         entry.composers.delete(token.current);
       };
     }, [entry]);
-    import_react55.default.useLayoutEffect(() => {
+    import_react56.default.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed) return;
       if (!input || typeof props.inputActions?.setDraft !== "function") return;
       entry.composers.set(token.current, {
@@ -6425,7 +6488,7 @@ function apply(ctx) {
       if (voiceModeActive && !entry.controller.getSnapshot().conversation)
         run(entry.controller, entry.controller.startConversation());
     }, [entry, input, props.inputActions]);
-    import_react55.default.useLayoutEffect(() => {
+    import_react56.default.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed || !input) return;
       const published = typeof input.draft === "string" ? input.draft : "";
       entry.publishedDraft = published;
@@ -6443,11 +6506,11 @@ function apply(ctx) {
   function Buttons(props) {
     const entry = useEntry(props.sessionId, "buttons");
     useComposer(entry, props);
-    return entry ? /* @__PURE__ */ import_react55.default.createElement(ConversationControls, { controller: entry.controller }) : null;
+    return entry ? /* @__PURE__ */ import_react56.default.createElement(ConversationControls, { controller: entry.controller }) : null;
   }
   function Settings() {
-    const [controller, setController] = import_react55.default.useState(null);
-    import_react55.default.useEffect(() => {
+    const [controller, setController] = import_react56.default.useState(null);
+    import_react56.default.useEffect(() => {
       const settings = preferences.getSnapshot();
       const browser = new BrowserSpeakingEngine({ lang: settings.lang });
       const qwen = new QwenHttpSpeakingEngine({ lang: settings.lang });
@@ -6530,21 +6593,21 @@ function apply(ctx) {
         void c.dispose();
       };
     }, []);
-    return controller ? /* @__PURE__ */ import_react55.default.createElement(SettingsPanel, { controller }) : null;
+    return controller ? /* @__PURE__ */ import_react56.default.createElement(SettingsPanel, { controller }) : null;
   }
   registerSettingsSlot(ctx, Settings, () => t("dsh-live-voice.commons.pluginName"));
   function Dock(props) {
     const entry = useEntry(props.sessionId, "dock");
     useComposer(entry, props);
-    return entry ? /* @__PURE__ */ import_react55.default.createElement(ConversationStatusBar, { controller: entry.controller }) : null;
+    return entry ? /* @__PURE__ */ import_react56.default.createElement(ConversationStatusBar, { controller: entry.controller }) : null;
   }
   function QuestionStatusView({ entry }) {
-    const snapshot = import_react55.default.useSyncExternalStore(
+    const snapshot = import_react56.default.useSyncExternalStore(
       entry.controller.subscribe,
       entry.controller.getSnapshot
     );
-    const [overlayStyle, setOverlayStyle] = import_react55.default.useState();
-    import_react55.default.useLayoutEffect(() => {
+    const [overlayStyle, setOverlayStyle] = import_react56.default.useState();
+    import_react56.default.useLayoutEffect(() => {
       if (!snapshot.answeringQuestion) return;
       const seat = document.querySelector("[data-composer-seat]");
       if (!seat) return;
@@ -6566,7 +6629,7 @@ function apply(ctx) {
     }, [snapshot.answeringQuestion]);
     const target = typeof document === "undefined" ? null : document.body;
     return snapshot.answeringQuestion && target && overlayStyle ? (0, import_react_dom.createPortal)(
-      /* @__PURE__ */ import_react55.default.createElement(
+      /* @__PURE__ */ import_react56.default.createElement(
         ConversationStatusBar,
         {
           controller: entry.controller,
@@ -6580,19 +6643,19 @@ function apply(ctx) {
   }
   function QuestionStatus(props) {
     const entry = useEntry(props.sessionId, "question-status");
-    return entry ? /* @__PURE__ */ import_react55.default.createElement(QuestionStatusView, { entry }) : null;
+    return entry ? /* @__PURE__ */ import_react56.default.createElement(QuestionStatusView, { entry }) : null;
   }
   function ActionView({ entry, messageId }) {
-    const snapshot = import_react55.default.useSyncExternalStore(
+    const snapshot = import_react56.default.useSyncExternalStore(
       entry.controller.subscribe,
       entry.controller.getSnapshot
     );
-    const chat = import_react55.default.useSyncExternalStore(entry.subscribeChat, entry.readChat);
+    const chat = import_react56.default.useSyncExternalStore(entry.subscribeChat, entry.readChat);
     const message2 = addressedTurn(assistantMessages(chat), messageId);
     const capability = snapshot.capabilities[snapshot.settings.engine];
     const active = snapshot.speaking && message2.id === snapshot.activeMessageId;
     const unavailable = capability?.supported !== true;
-    return /* @__PURE__ */ import_react55.default.createElement(
+    return /* @__PURE__ */ import_react56.default.createElement(
       SpeakButton,
       {
         active,
@@ -6607,7 +6670,7 @@ function apply(ctx) {
   }
   function Action(props) {
     const entry = useEntry(props.sessionId, "action");
-    return entry ? /* @__PURE__ */ import_react55.default.createElement(ActionView, { entry, messageId: props.messageId }) : null;
+    return entry ? /* @__PURE__ */ import_react56.default.createElement(ActionView, { entry, messageId: props.messageId }) : null;
   }
   ctx.effect(() => {
     const style = document.createElement("style");
