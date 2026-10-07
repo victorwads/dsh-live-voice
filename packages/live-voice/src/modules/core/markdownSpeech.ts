@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { marked } from 'marked';
+import { resolveCodeNotice } from './speechDefaults.js';
 
 // Spoken phrases follow the TTS language, independently of the interface locale.
 const phrases = {
@@ -7,8 +8,8 @@ const phrases = {
     'Link to',
     'Image:',
     'Table with columns:',
-    'Completed:',
-    'Pending:',
+    'Checked:',
+    'Unchecked:',
     'line',
     'lines',
     'to',
@@ -18,8 +19,8 @@ const phrases = {
     'Link para',
     'Imagem:',
     'Tabela com colunas:',
-    'Concluído:',
-    'Pendente:',
+    'Marcado:',
+    'Desmarcado:',
     'linha',
     'linhas',
     'a',
@@ -29,8 +30,8 @@ const phrases = {
     'Enlace a',
     'Imagen:',
     'Tabla con columnas:',
-    'Completado:',
-    'Pendiente:',
+    'Marcado:',
+    'Desmarcado:',
     'línea',
     'líneas',
     'a',
@@ -40,8 +41,8 @@ const phrases = {
     'Lien vers',
     'Image :',
     'Tableau avec les colonnes :',
-    'Terminé :',
-    'En attente :',
+    'Coché :',
+    'Décoché :',
     'ligne',
     'lignes',
     'à',
@@ -51,14 +52,14 @@ const phrases = {
     'लिंक',
     'चित्र:',
     'तालिका के स्तंभ:',
-    'पूर्ण:',
-    'लंबित:',
+    'चिह्नित:',
+    'अचिह्नित:',
     'पंक्ति',
     'पंक्तियाँ',
     'से',
     'पहचानकर्ता',
   ],
-  zh: ['链接到', '图片：', '表格列：', '已完成：', '待处理：', '行', '行', '至', '标识符'],
+  zh: ['链接到', '图片：', '表格列：', '已勾选：', '未勾选：', '行', '行', '至', '标识符'],
 };
 export function markdownSpeech(source, options = {}) {
   const p = phrases[String(options.lang || 'en').split('-')[0]] || phrases.en;
@@ -112,7 +113,7 @@ export function markdownSpeech(source, options = {}) {
         if (t.type === 'code')
           return options.filterCodeBlocks !== false &&
             t.text.split(/\r?\n/).length > (options.codeBlockMaxLines ?? 5)
-            ? options.codeBlockNotice || 'Look the code on out conversation'
+            ? resolveCodeNotice(options.codeBlockNotice, options.lang)
             : t.text;
         if (t.type === 'blockquote') return blocks(t.tokens);
         if (t.type === 'list')

@@ -34,7 +34,10 @@ test('speech output reads short code and replaces code longer than its line limi
   const short = 'Before\n\n' + fence + 'js\na()\nb()\n' + fence + '\nAfter';
   assert.equal(filterSpeechOutput(short), 'Before\n\na()\nb()\nAfter');
   const long = 'Before\n' + fence + 'js\n1\n2\n3\n4\n5\n6\n' + fence + '\nAfter';
-  assert.equal(filterSpeechOutput(long), 'Before\nLook the code on out conversation\nAfter');
+  assert.equal(
+    filterSpeechOutput(long),
+    'Before\nYou can see the code in our conversation history.\nAfter',
+  );
   assert.equal(
     filterSpeechOutput(long, { filterCodeBlocks: false }),
     'Before\n1\n2\n3\n4\n5\n6\nAfter',
@@ -64,7 +67,7 @@ test('Markdown speech normalizes formatting, links, images, lists, paths and tab
   assert.equal(filterSpeechOutput('![Diagrama](image.png)', options), 'Imagem: Diagrama');
   assert.equal(
     filterSpeechOutput('- [x] Feito\n- [ ] Falta', options),
-    'Concluído: Feito\nPendente: Falta',
+    'Marcado: Feito\nDesmarcado: Falta',
   );
   assert.equal(filterSpeechOutput('1. Abra\n2. Execute', options), '1. Abra\n2. Execute');
   assert.equal(
@@ -88,5 +91,29 @@ test('Markdown speech normalizes formatting, links, images, lists, paths and tab
   assert.equal(
     filterSpeechOutput('[**Guia**][ref]\n\n[ref]: https://example.com', options),
     'Link para Guia',
+  );
+});
+
+test('default code notice follows TTS language including persisted legacy text', () => {
+  const code = '~~~\n1\n2\n3\n~~~';
+  assert.equal(
+    filterSpeechOutput(code, {
+      codeBlockMaxLines: 1,
+      lang: 'pt-BR',
+      codeBlockNotice: 'Look the code on out conversation',
+    }),
+    'Você pode ver o código no histórico da nossa conversa.',
+  );
+  assert.equal(
+    filterSpeechOutput(code, {
+      codeBlockMaxLines: 1,
+      lang: 'fr',
+      codeBlockNotice: 'Custom notice',
+    }),
+    'Custom notice',
+  );
+  assert.equal(
+    filterSpeechOutput(code, { codeBlockMaxLines: 1, lang: 'en' }),
+    'You can see the code in our conversation history.',
   );
 });

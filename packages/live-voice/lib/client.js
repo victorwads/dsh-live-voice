@@ -119,6 +119,26 @@ var TranscriptDraft = class {
   }
 };
 
+// src/modules/core/speechDefaults.ts
+var notices = {
+  en: "You can see the code in our conversation history.",
+  pt: "Voc\xEA pode ver o c\xF3digo no hist\xF3rico da nossa conversa.",
+  es: "Puedes ver el c\xF3digo en el historial de nuestra conversaci\xF3n.",
+  fr: "Vous pouvez voir le code dans l\u2019historique de notre conversation.",
+  hi: "\u0906\u092A \u0939\u092E\u093E\u0930\u0940 \u092C\u093E\u0924\u091A\u0940\u0924 \u0915\u0947 \u0907\u0924\u093F\u0939\u093E\u0938 \u092E\u0947\u0902 \u0915\u094B\u0921 \u0926\u0947\u0916 \u0938\u0915\u0924\u0947 \u0939\u0948\u0902\u0964",
+  zh: "\u4F60\u53EF\u4EE5\u5728\u6211\u4EEC\u7684\u5BF9\u8BDD\u5386\u53F2\u4E2D\u67E5\u770B\u4EE3\u7801\u3002"
+};
+var defaults = /* @__PURE__ */ new Set([
+  ...Object.values(notices),
+  "Look the code on out conversation",
+  "You can see the code on our conversation history.",
+  "You can see the code on our conversation history"
+]);
+function resolveCodeNotice(value, lang = "en") {
+  const text = typeof value === "string" ? value.trim() : "";
+  return !text || defaults.has(text) ? notices[String(lang).toLowerCase().split("-")[0]] || notices.en : text;
+}
+
 // src/modules/core/settings.ts
 var voiceDetectionPresets = Object.freeze({
   short: Object.freeze({
@@ -189,7 +209,7 @@ var defaultSettings = Object.freeze({
   voiceCommandClear: "clear all, clear message",
   outputCodeFilterEnabled: true,
   outputCodeMaxLines: 5,
-  outputCodeNotice: "Look the code on out conversation",
+  outputCodeNotice: resolveCodeNotice(void 0, "pt-BR"),
   rate: 1,
   segmentGapMs: 400
 });
@@ -257,7 +277,7 @@ function normalizeSettings(value) {
     ),
     outputCodeFilterEnabled: typeof source.outputCodeFilterEnabled === "boolean" ? source.outputCodeFilterEnabled : defaultSettings.outputCodeFilterEnabled,
     outputCodeMaxLines: Number.isInteger(source.outputCodeMaxLines) && source.outputCodeMaxLines >= 0 && source.outputCodeMaxLines <= 100 ? source.outputCodeMaxLines : defaultSettings.outputCodeMaxLines,
-    outputCodeNotice: typeof source.outputCodeNotice === "string" && source.outputCodeNotice.trim() && source.outputCodeNotice.length <= 300 && !source.outputCodeNotice.includes("\0") ? source.outputCodeNotice.trim() : defaultSettings.outputCodeNotice,
+    outputCodeNotice: typeof source.outputCodeNotice === "string" && source.outputCodeNotice.trim() && source.outputCodeNotice.length <= 300 && !source.outputCodeNotice.includes("\0") ? resolveCodeNotice(source.outputCodeNotice, source.lang || defaultSettings.lang) : resolveCodeNotice(defaultSettings.outputCodeNotice, source.lang || defaultSettings.lang),
     rate: Number.isFinite(source.rate) && source.rate >= 0.1 && source.rate <= 3 ? source.rate : 1,
     segmentGapMs: Number.isFinite(source.segmentGapMs) && source.segmentGapMs >= 0 && source.segmentGapMs <= 2e3 ? Math.round(source.segmentGapMs) : 400
   };
@@ -1603,8 +1623,8 @@ var phrases = {
     "Link to",
     "Image:",
     "Table with columns:",
-    "Completed:",
-    "Pending:",
+    "Checked:",
+    "Unchecked:",
     "line",
     "lines",
     "to",
@@ -1614,8 +1634,8 @@ var phrases = {
     "Link para",
     "Imagem:",
     "Tabela com colunas:",
-    "Conclu\xEDdo:",
-    "Pendente:",
+    "Marcado:",
+    "Desmarcado:",
     "linha",
     "linhas",
     "a",
@@ -1625,8 +1645,8 @@ var phrases = {
     "Enlace a",
     "Imagen:",
     "Tabla con columnas:",
-    "Completado:",
-    "Pendiente:",
+    "Marcado:",
+    "Desmarcado:",
     "l\xEDnea",
     "l\xEDneas",
     "a",
@@ -1636,8 +1656,8 @@ var phrases = {
     "Lien vers",
     "Image :",
     "Tableau avec les colonnes :",
-    "Termin\xE9 :",
-    "En attente :",
+    "Coch\xE9 :",
+    "D\xE9coch\xE9 :",
     "ligne",
     "lignes",
     "\xE0",
@@ -1647,14 +1667,14 @@ var phrases = {
     "\u0932\u093F\u0902\u0915",
     "\u091A\u093F\u0924\u094D\u0930:",
     "\u0924\u093E\u0932\u093F\u0915\u093E \u0915\u0947 \u0938\u094D\u0924\u0902\u092D:",
-    "\u092A\u0942\u0930\u094D\u0923:",
-    "\u0932\u0902\u092C\u093F\u0924:",
+    "\u091A\u093F\u0939\u094D\u0928\u093F\u0924:",
+    "\u0905\u091A\u093F\u0939\u094D\u0928\u093F\u0924:",
     "\u092A\u0902\u0915\u094D\u0924\u093F",
     "\u092A\u0902\u0915\u094D\u0924\u093F\u092F\u093E\u0901",
     "\u0938\u0947",
     "\u092A\u0939\u091A\u093E\u0928\u0915\u0930\u094D\u0924\u093E"
   ],
-  zh: ["\u94FE\u63A5\u5230", "\u56FE\u7247\uFF1A", "\u8868\u683C\u5217\uFF1A", "\u5DF2\u5B8C\u6210\uFF1A", "\u5F85\u5904\u7406\uFF1A", "\u884C", "\u884C", "\u81F3", "\u6807\u8BC6\u7B26"]
+  zh: ["\u94FE\u63A5\u5230", "\u56FE\u7247\uFF1A", "\u8868\u683C\u5217\uFF1A", "\u5DF2\u52FE\u9009\uFF1A", "\u672A\u52FE\u9009\uFF1A", "\u884C", "\u884C", "\u81F3", "\u6807\u8BC6\u7B26"]
 };
 function markdownSpeech(source, options = {}) {
   const p = phrases[String(options.lang || "en").split("-")[0]] || phrases.en;
@@ -1690,7 +1710,7 @@ function markdownSpeech(source, options = {}) {
     if (t.type === "space") return t.raw;
     if (t.type === "hr" || t.type === "def" || t.type === "html") return "";
     if (t.type === "code")
-      return options.filterCodeBlocks !== false && t.text.split(/\r?\n/).length > (options.codeBlockMaxLines ?? 5) ? options.codeBlockNotice || "Look the code on out conversation" : t.text;
+      return options.filterCodeBlocks !== false && t.text.split(/\r?\n/).length > (options.codeBlockMaxLines ?? 5) ? resolveCodeNotice(options.codeBlockNotice, options.lang) : t.text;
     if (t.type === "blockquote") return blocks(t.tokens);
     if (t.type === "list")
       return t.items.map(

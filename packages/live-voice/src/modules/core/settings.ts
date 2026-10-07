@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { resolveCodeNotice } from './speechDefaults.js';
 export const voiceDetectionPresets = Object.freeze({
   short: Object.freeze({
     silenceMs: 500,
@@ -70,7 +71,7 @@ export const defaultSettings = Object.freeze({
   voiceCommandClear: 'clear all, clear message',
   outputCodeFilterEnabled: true,
   outputCodeMaxLines: 5,
-  outputCodeNotice: 'Look the code on out conversation',
+  outputCodeNotice: resolveCodeNotice(undefined, 'pt-BR'),
   rate: 1,
   segmentGapMs: 400,
 });
@@ -261,8 +262,8 @@ export function normalizeSettings(value) {
       source.outputCodeNotice.trim() &&
       source.outputCodeNotice.length <= 300 &&
       !source.outputCodeNotice.includes('\0')
-        ? source.outputCodeNotice.trim()
-        : defaultSettings.outputCodeNotice,
+        ? resolveCodeNotice(source.outputCodeNotice, source.lang || defaultSettings.lang)
+        : resolveCodeNotice(defaultSettings.outputCodeNotice, source.lang || defaultSettings.lang),
     rate: Number.isFinite(source.rate) && source.rate >= 0.1 && source.rate <= 3 ? source.rate : 1,
     segmentGapMs:
       Number.isFinite(source.segmentGapMs) &&

@@ -167,7 +167,10 @@ test('filter settings use safe defaults and reject malformed values', () => {
   assert.equal(defaultSettings.recognitionMinimumWords, 2);
   assert.equal(defaultSettings.outputCodeFilterEnabled, true);
   assert.equal(defaultSettings.outputCodeMaxLines, 5);
-  assert.equal(defaultSettings.outputCodeNotice, 'Look the code on out conversation');
+  assert.equal(
+    defaultSettings.outputCodeNotice,
+    'Você pode ver o código no histórico da nossa conversa.',
+  );
   const invalid = normalizeSettings({
     recognitionMinimumWords: 0,
     outputCodeMaxLines: 101,

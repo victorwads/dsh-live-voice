@@ -4,6 +4,26 @@ import { homedir as homedir2 } from "node:os";
 import { dirname as dirname2, join as join2 } from "node:path";
 import { randomUUID as randomUUID2 } from "node:crypto";
 
+// src/modules/core/speechDefaults.ts
+var notices = {
+  en: "You can see the code in our conversation history.",
+  pt: "Voc\xEA pode ver o c\xF3digo no hist\xF3rico da nossa conversa.",
+  es: "Puedes ver el c\xF3digo en el historial de nuestra conversaci\xF3n.",
+  fr: "Vous pouvez voir le code dans l\u2019historique de notre conversation.",
+  hi: "\u0906\u092A \u0939\u092E\u093E\u0930\u0940 \u092C\u093E\u0924\u091A\u0940\u0924 \u0915\u0947 \u0907\u0924\u093F\u0939\u093E\u0938 \u092E\u0947\u0902 \u0915\u094B\u0921 \u0926\u0947\u0916 \u0938\u0915\u0924\u0947 \u0939\u0948\u0902\u0964",
+  zh: "\u4F60\u53EF\u4EE5\u5728\u6211\u4EEC\u7684\u5BF9\u8BDD\u5386\u53F2\u4E2D\u67E5\u770B\u4EE3\u7801\u3002"
+};
+var defaults = /* @__PURE__ */ new Set([
+  ...Object.values(notices),
+  "Look the code on out conversation",
+  "You can see the code on our conversation history.",
+  "You can see the code on our conversation history"
+]);
+function resolveCodeNotice(value, lang = "en") {
+  const text = typeof value === "string" ? value.trim() : "";
+  return !text || defaults.has(text) ? notices[String(lang).toLowerCase().split("-")[0]] || notices.en : text;
+}
+
 // src/modules/core/settings.ts
 var voiceDetectionPresets = Object.freeze({
   short: Object.freeze({
@@ -74,7 +94,7 @@ var defaultSettings = Object.freeze({
   voiceCommandClear: "clear all, clear message",
   outputCodeFilterEnabled: true,
   outputCodeMaxLines: 5,
-  outputCodeNotice: "Look the code on out conversation",
+  outputCodeNotice: resolveCodeNotice(void 0, "pt-BR"),
   rate: 1,
   segmentGapMs: 400
 });
@@ -141,7 +161,7 @@ function normalizeSettings(value) {
     ),
     outputCodeFilterEnabled: typeof source.outputCodeFilterEnabled === "boolean" ? source.outputCodeFilterEnabled : defaultSettings.outputCodeFilterEnabled,
     outputCodeMaxLines: Number.isInteger(source.outputCodeMaxLines) && source.outputCodeMaxLines >= 0 && source.outputCodeMaxLines <= 100 ? source.outputCodeMaxLines : defaultSettings.outputCodeMaxLines,
-    outputCodeNotice: typeof source.outputCodeNotice === "string" && source.outputCodeNotice.trim() && source.outputCodeNotice.length <= 300 && !source.outputCodeNotice.includes("\0") ? source.outputCodeNotice.trim() : defaultSettings.outputCodeNotice,
+    outputCodeNotice: typeof source.outputCodeNotice === "string" && source.outputCodeNotice.trim() && source.outputCodeNotice.length <= 300 && !source.outputCodeNotice.includes("\0") ? resolveCodeNotice(source.outputCodeNotice, source.lang || defaultSettings.lang) : resolveCodeNotice(defaultSettings.outputCodeNotice, source.lang || defaultSettings.lang),
     rate: Number.isFinite(source.rate) && source.rate >= 0.1 && source.rate <= 3 ? source.rate : 1,
     segmentGapMs: Number.isFinite(source.segmentGapMs) && source.segmentGapMs >= 0 && source.segmentGapMs <= 2e3 ? Math.round(source.segmentGapMs) : 400
   };
