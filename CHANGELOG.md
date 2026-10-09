@@ -8,6 +8,12 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ## [0.4.1] - 2026-10-09
 
+### Release highlight — meeting reliability
+
+Meeting mode in 0.4.0 shipped with too many bugs. I’m sorry for the frustration and interruptions this caused. This release focuses on making that experience more reliable, with fixes and improvements to shared-audio capture, transcription delivery, playback interruption and recovery, and continuity when switching chats or changing settings.
+
+That work also benefits microphone mode: both inputs now share a consistent set of controls and coordination rules, bringing the same improvements to everyday voice conversations. Thank you for your patience while these issues were addressed.
+
 ### Improved
 
 - Make composer voice controls easier to scan: group meeting audio, assistant speech, and microphone toggles into one rounded capsule with subtle dividers. Give each toggle distinct on/off icons and reduced icon opacity when off, while preserving existing start/stop behavior.
