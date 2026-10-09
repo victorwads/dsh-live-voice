@@ -84,7 +84,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.dictation.cancel': '取消听写',
   'dsh-live-voice.recognition.engine.label': '识别引擎',
   'dsh-live-voice.recognition.headphoneMode.help':
-    '开放麦克风会在播放回复时继续聆听。检测到你说话时，播放会暂停，并仅在你选择恢复时继续。',
+    '播放时麦克风保持开启。识别到非回声语音后，可在设定延迟后暂停播放；麦克风和共享会议音频持续静音达到该时长后恢复。手动暂停后需点击恢复。',
   'dsh-live-voice.recognition.headphoneMode.label': '耳机 — 开放麦克风',
   'dsh-live-voice.recognition.holdToTalk.enabled': '按住 Control 键说话',
   'dsh-live-voice.recognition.holdToTalk.help':
@@ -100,7 +100,8 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.device': '输入设备',
   'dsh-live-voice.recognition.microphone.failure': '麦克风：{reason}',
   'dsh-live-voice.recognition.microphone.ignore': '忽略消息输入框的语音输入',
-  'dsh-live-voice.recognition.microphone.inputStatus': '麦克风输入：{state}',
+  'dsh-live-voice.recognition.microphone.inputStatus':
+    '麦克风输入：{state}。忽略只丢弃听写，不停止采集：语音打断仍可用；已启用的自定义语音命令仍有效。停止语音会结束麦克风采集。',
   'dsh-live-voice.recognition.microphone.label': '麦克风',
   'dsh-live-voice.recognition.microphone.permissionHelp':
     '仅在你开始听写或语音对话时才会请求麦克风权限。',
@@ -145,7 +146,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': '发送前停顿',
   'dsh-live-voice.recognition.silenceDetection.title': '静音检测设置',
   'dsh-live-voice.recognition.speakerMode.help':
-    '门控聆听会在播放回复时释放麦克风，防止扬声器音频被识别。使用“接管麦克风”可打断播放。',
+    '播放时释放麦克风以减少扬声器反馈。接管麦克风可手动打断；共享会议音频中识别到的非回声参与者语音也可暂停播放，持续静音后恢复。',
   'dsh-live-voice.recognition.speakerMode.label': '扬声器 — 门控聆听',
   'dsh-live-voice.recognition.status.answer': '正在识别回答…',
   'dsh-live-voice.recognition.status.awaitingAnswer': '正在聆听你的回答…',

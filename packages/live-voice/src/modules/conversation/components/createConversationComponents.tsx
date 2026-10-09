@@ -421,7 +421,7 @@ export function createConversationComponents(
                       : 'dsh-live-voice.commons.input.listening',
                   ),
                 })}
-                icon={state.muted ? 'micOff' : 'mic'}
+                icon="mic"
                 visibleLabel={
                   state.muted
                     ? 'dsh-live-voice.commons.input.ignoringBadge'

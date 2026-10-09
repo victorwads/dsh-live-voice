@@ -143,7 +143,7 @@ export class VoiceCoordinator {
     this.patch({
       settings,
       muted: settings.microphoneEnabled === false,
-      recognizing: settings.microphoneEnabled === false ? false : this.snapshot.recognizing,
+      recognizing: this.snapshot.recognizing,
       error: null,
     });
     if (settings.sendingMode === 'manual') this.cancelAutoSend();
@@ -240,7 +240,7 @@ export class VoiceCoordinator {
     // Discard pending recognition without rewriting the composer.
     this.transcript.reset();
     this.updateSettings({ microphoneEnabled: false });
-    if (!this.snapshot.settings.voiceCommandsEnabled) return this.stopListening();
+    // Ignoring discards text; capture and interruption remain active even without voice commands.
   }
   resumeListeningInput() {
     this.transcript.reset();
@@ -517,6 +517,7 @@ export class VoiceCoordinator {
     // Pending structured questions own recognition while waiting for a hands-free
     // answer. Keep their interim and final text out of the normal chat composer.
     if (
+      !this.snapshot.muted &&
       typeof this.composer.handleQuestionResult === 'function' &&
       this.composer.handleQuestionResult({ final, interim })
     ) {
@@ -567,7 +568,13 @@ export class VoiceCoordinator {
       if (this.snapshot.muted) {
         // Discard pending recognition without rewriting the composer.
         this.transcript.reset();
-        this.patch({ recognizing: false });
+        this.patch({ recognizing: !!interim });
+        this._handleSpeechInterruption(this._speechActivity());
+        if (!interim) {
+          this.assistantSpeechNotBefore =
+            Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
+          this._drain();
+        }
         return;
       }
       if (

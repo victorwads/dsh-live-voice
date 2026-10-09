@@ -165,7 +165,9 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.match(conversation.textContent, /Assistant response delay/);
     assert.match(conversation.textContent, /continuous silence/);
     assert.match(conversation.textContent, /Sending mode/);
-    assert.match(conversation.textContent, /Gated listening releases the microphone/);
+    assert.match(conversation.textContent, /Playback releases the microphone/);
+    assert.match(conversation.textContent, /participants in shared meeting audio/);
+    assert.match(conversation.textContent, /resumes after stable silence/);
     await act(async () =>
       tabs[2].dispatchEvent(
         new window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }),

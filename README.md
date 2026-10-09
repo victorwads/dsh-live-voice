@@ -17,7 +17,7 @@ DSH Live Voice is a local-first voice plugin for DeepSeek Harness (DSH), with sp
 
 - **Work by voice:** dictate a request, talk through code or documents, and hear the assistant’s response while staying focused on your work.
 - **Ask questions during meetings:** capture shared meeting audio alongside your microphone, review the transcript, and send relevant context to the DSH assistant while the discussion is still happening.
-- **Stay in control:** edit before sending, choose manual or automatic microphone delivery, and pause, resume, or stop spoken answers.
+- **Stay in control:** edit before sending, choose manual or automatic microphone delivery, and pause, resume, or stop spoken answers. **Ignoring** discards microphone dictation without closing capture or disabling speech interruption. Automatic interruptions recover after stable silence; manual pauses wait for Resume.
 - **Choose your speech setup:** use local recognition and speech engines where supported, or configure an HTTP endpoint. Local-first voice does not mean DSH or its AI provider is fully offline.
 
 ---

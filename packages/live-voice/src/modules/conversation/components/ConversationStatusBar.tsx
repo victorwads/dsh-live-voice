@@ -92,7 +92,7 @@ export function ConversationStatusBar({
                       ? (commons as any).input.ignoring()
                       : (commons as any).input.listening(),
                   })}
-                  icon={state.muted ? 'micOff' : 'mic'}
+                  icon="mic"
                   visibleLabel={
                     state.muted
                       ? (commons as any).input.ignoringBadge()

@@ -57,9 +57,10 @@ sequenceDiagram
 
 ### Headphones — Open Microphone
 With headphones, the microphone remains open during playback:
-- **Speech-detected pause:** When you begin speaking, the assistant automatically pauses.
-- **Debounced interruption:** Requires at least one recognized word to prevent accidental pauses from coughs or background noise.
-- **Explicit resumption:** Silence alone does not automatically resume obsolete playback.
+- **Debounced interruption:** Recognized non-echo speech confirms an interruption; sustained activity pauses playback after the configured Assistant Response Delay. Noise alone does not confirm it. Shared meeting participants can also interrupt in Speakers mode.
+- **Automatic recovery:** After the microphone and shared meeting audio remain silent for that delay, automatically paused audio resumes at its retained position. Renewed speech resets the countdown.
+- **Manual control:** Manual Pause waits for Resume. Stop cancels playback and its queue; it does not end voice input.
+- **Ignoring:** Discards microphone dictation and pending question answers, but keeps capture and speech interruption active, even with voice commands disabled. Enabled configured commands still work. It is not hardware mute; use Stop voice to end microphone capture. Shared meeting transcription is controlled separately by its sharing button.
 
 ---
 
@@ -127,7 +128,7 @@ When voice commands are enabled, you can speak exact trigger phrases to control 
 | **Send Message** | `send`, `send message` |
 | **Queue Message** | `queue`, `queue message` |
 | **End Conversation** | `end`, `end conversation` |
-| **Mute Microphone** | `mute`, `stop listening` |
+| **Ignore Microphone Dictation (capture stays active)** | `mute`, `stop listening` |
 | **Resume Microphone** | `resume`, `start listening` |
 | **Stop Speech** | `stop talking`, `stop speaking`, `shut up` |
 | **Clear Input** | `clear all`, `clear message` |

@@ -120,7 +120,7 @@ var en = {
   "dsh-live-voice.recognition.commands.title": "Voice commands",
   "dsh-live-voice.recognition.dictation.cancel": "Cancel dictation",
   "dsh-live-voice.recognition.engine.label": "Recognition engine",
-  "dsh-live-voice.recognition.headphoneMode.help": "Open microphone keeps listening while responses play. When your speech is detected, playback pauses and resumes only when you choose.",
+  "dsh-live-voice.recognition.headphoneMode.help": "The microphone stays open during playback. Recognized non-echo speech can pause playback after the configured delay; it resumes after microphone and shared meeting audio stay silent for that delay. Manual Pause requires Resume.",
   "dsh-live-voice.recognition.headphoneMode.label": "Headphones \u2014 open microphone",
   "dsh-live-voice.recognition.holdToTalk.enabled": "Hold Control to talk",
   "dsh-live-voice.recognition.holdToTalk.help": "While a composer is open, hold Control anywhere on the page to capture speech. Release it to flush queued transcription, wait the configured send delay, queue the message, and close voice capture. Press Escape while holding to cancel.",
@@ -133,7 +133,7 @@ var en = {
   "dsh-live-voice.recognition.microphone.device": "Input device",
   "dsh-live-voice.recognition.microphone.failure": "Microphone: {reason}",
   "dsh-live-voice.recognition.microphone.ignore": "Ignore composer input",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Microphone input: {state}",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Microphone input: {state}. Ignoring discards dictation, not capture: speech interruption stays active; configured voice commands still work when enabled. Stop voice ends microphone capture.",
   "dsh-live-voice.recognition.microphone.label": "Microphone",
   "dsh-live-voice.recognition.microphone.permissionHelp": "Microphone permission will be requested only when you start dictation or a voice conversation.",
   "dsh-live-voice.recognition.microphone.resume": "Resume listening",
@@ -169,7 +169,7 @@ var en = {
   "dsh-live-voice.recognition.silenceDetection.label": "Silence detection",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pause before sending",
   "dsh-live-voice.recognition.silenceDetection.title": "Silence detection settings",
-  "dsh-live-voice.recognition.speakerMode.help": "Gated listening releases the microphone while responses play, preventing speaker audio from being recognized. Use Take microphone to interrupt.",
+  "dsh-live-voice.recognition.speakerMode.help": "Playback releases the microphone to reduce speaker feedback. Take microphone interrupts manually; recognized non-echo participants in shared meeting audio can pause playback and it resumes after stable silence.",
   "dsh-live-voice.recognition.speakerMode.label": "Speakers \u2014 gated listening",
   "dsh-live-voice.recognition.status.answer": "Recognizing answer\u2026",
   "dsh-live-voice.recognition.status.awaitingAnswer": "Listening for your answer\u2026",
@@ -378,7 +378,7 @@ var es = {
   "dsh-live-voice.recognition.commands.title": "Comandos de voz",
   "dsh-live-voice.recognition.dictation.cancel": "Cancelar dictado",
   "dsh-live-voice.recognition.engine.label": "Motor de reconocimiento",
-  "dsh-live-voice.recognition.headphoneMode.help": "El micr\xF3fono abierto sigue escuchando mientras se reproducen las respuestas. Al detectar tu voz, la reproducci\xF3n se pausa y solo se reanuda cuando t\xFA lo decides.",
+  "dsh-live-voice.recognition.headphoneMode.help": "El micr\xF3fono sigue abierto durante la reproducci\xF3n. El habla reconocida sin eco puede pausarla tras el retraso configurado; se reanuda cuando el micr\xF3fono y el audio compartido guardan silencio durante ese intervalo. La pausa manual requiere Reanudar.",
   "dsh-live-voice.recognition.headphoneMode.label": "Auriculares \u2014 micr\xF3fono abierto",
   "dsh-live-voice.recognition.holdToTalk.enabled": "Mantener Control pulsado para hablar",
   "dsh-live-voice.recognition.holdToTalk.help": "Con un cuadro de mensaje abierto, mant\xE9n Control pulsado en cualquier parte de la p\xE1gina para capturar tu voz. Al soltarlo, se procesa la transcripci\xF3n pendiente, se espera el retraso de env\xEDo configurado, se a\xF1ade el mensaje a la cola y se cierra la captura de voz. Pulsa Escape mientras mantienes Control para cancelar.",
@@ -391,7 +391,7 @@ var es = {
   "dsh-live-voice.recognition.microphone.device": "Dispositivo de entrada",
   "dsh-live-voice.recognition.microphone.failure": "Micr\xF3fono: {reason}",
   "dsh-live-voice.recognition.microphone.ignore": "Ignorar la entrada de voz en el cuadro de mensaje",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada del micr\xF3fono: {state}",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada del micr\xF3fono: {state}. Ignorar descarta el dictado, no la captura: la interrupci\xF3n por voz sigue activa; los comandos configurados funcionan si est\xE1n habilitados. Detener voz termina la captura del micr\xF3fono.",
   "dsh-live-voice.recognition.microphone.label": "Micr\xF3fono",
   "dsh-live-voice.recognition.microphone.permissionHelp": "Solo se solicitar\xE1 permiso para usar el micr\xF3fono cuando inicies un dictado o una conversaci\xF3n por voz.",
   "dsh-live-voice.recognition.microphone.resume": "Reanudar escucha",
@@ -427,7 +427,7 @@ var es = {
   "dsh-live-voice.recognition.silenceDetection.label": "Detecci\xF3n de silencio",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pausa antes de enviar",
   "dsh-live-voice.recognition.silenceDetection.title": "Configuraci\xF3n de detecci\xF3n de silencio",
-  "dsh-live-voice.recognition.speakerMode.help": "La escucha controlada libera el micr\xF3fono mientras se reproducen las respuestas para evitar que se reconozca el audio de los altavoces. Usa \xABTomar el control del micr\xF3fono\xBB para interrumpir la reproducci\xF3n.",
+  "dsh-live-voice.recognition.speakerMode.help": "La reproducci\xF3n libera el micr\xF3fono para reducir el retorno de los altavoces. Tomar micr\xF3fono interrumpe manualmente; participantes reconocidos sin eco en el audio compartido pueden pausar la reproducci\xF3n, que se reanuda tras silencio estable.",
   "dsh-live-voice.recognition.speakerMode.label": "Altavoces \u2014 escucha controlada",
   "dsh-live-voice.recognition.status.answer": "Reconociendo respuesta\u2026",
   "dsh-live-voice.recognition.status.awaitingAnswer": "Escuchando tu respuesta\u2026",
@@ -636,7 +636,7 @@ var fr = {
   "dsh-live-voice.recognition.commands.title": "Commandes vocales",
   "dsh-live-voice.recognition.dictation.cancel": "Annuler la dict\xE9e",
   "dsh-live-voice.recognition.engine.label": "Moteur de reconnaissance",
-  "dsh-live-voice.recognition.headphoneMode.help": "Le microphone ouvert continue d\u2019\xE9couter pendant la lecture des r\xE9ponses. Lorsque votre voix est d\xE9tect\xE9e, la lecture se met en pause et ne reprend que lorsque vous le d\xE9cidez.",
+  "dsh-live-voice.recognition.headphoneMode.help": "Le microphone reste ouvert pendant la lecture. La parole reconnue sans \xE9cho peut la mettre en pause apr\xE8s le d\xE9lai configur\xE9 ; elle reprend lorsque le microphone et le son partag\xE9 restent silencieux pendant ce d\xE9lai. Une pause manuelle n\xE9cessite Reprendre.",
   "dsh-live-voice.recognition.headphoneMode.label": "Casque \u2014 microphone ouvert",
   "dsh-live-voice.recognition.holdToTalk.enabled": "Maintenir Ctrl pour parler",
   "dsh-live-voice.recognition.holdToTalk.help": "Lorsqu\u2019une zone de r\xE9daction est ouverte, maintenez Ctrl n\u2019importe o\xF9 sur la page pour capturer votre voix. Rel\xE2chez la touche pour traiter la transcription en attente, attendre le d\xE9lai d\u2019envoi configur\xE9, mettre le message en file d\u2019attente et arr\xEAter la capture vocale. Appuyez sur \xC9chap tout en maintenant Ctrl pour annuler.",
@@ -649,7 +649,7 @@ var fr = {
   "dsh-live-voice.recognition.microphone.device": "P\xE9riph\xE9rique d\u2019entr\xE9e",
   "dsh-live-voice.recognition.microphone.failure": "Microphone : {reason}",
   "dsh-live-voice.recognition.microphone.ignore": "Ignorer la saisie vocale dans la zone de r\xE9daction",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Entr\xE9e du microphone : {state}",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Entr\xE9e du microphone : {state}. Ignorer \xE9carte la dict\xE9e, pas la capture : les interruptions vocales restent actives ; les commandes configur\xE9es fonctionnent si elles sont activ\xE9es. Arr\xEAter la voix termine la capture du microphone.",
   "dsh-live-voice.recognition.microphone.label": "Microphone",
   "dsh-live-voice.recognition.microphone.permissionHelp": "L\u2019autorisation d\u2019utiliser le microphone ne sera demand\xE9e que lorsque vous d\xE9marrerez une dict\xE9e ou une conversation vocale.",
   "dsh-live-voice.recognition.microphone.resume": "Reprendre l\u2019\xE9coute",
@@ -685,7 +685,7 @@ var fr = {
   "dsh-live-voice.recognition.silenceDetection.label": "D\xE9tection du silence",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pause avant l\u2019envoi",
   "dsh-live-voice.recognition.silenceDetection.title": "Param\xE8tres de d\xE9tection du silence",
-  "dsh-live-voice.recognition.speakerMode.help": "L\u2019\xE9coute contr\xF4l\xE9e lib\xE8re le microphone pendant la lecture des r\xE9ponses pour \xE9viter que le son des haut-parleurs soit reconnu. Utilisez \xAB Prendre le contr\xF4le du microphone \xBB pour interrompre la lecture.",
+  "dsh-live-voice.recognition.speakerMode.help": "La lecture lib\xE8re le microphone pour r\xE9duire le retour des haut-parleurs. Prendre le microphone interrompt manuellement ; les participants reconnus sans \xE9cho dans le son partag\xE9 peuvent mettre la lecture en pause, puis elle reprend apr\xE8s un silence stable.",
   "dsh-live-voice.recognition.speakerMode.label": "Haut-parleurs \u2014 \xE9coute contr\xF4l\xE9e",
   "dsh-live-voice.recognition.status.answer": "Reconnaissance de la r\xE9ponse\u2026",
   "dsh-live-voice.recognition.status.awaitingAnswer": "\xC9coute de votre r\xE9ponse\u2026",
@@ -894,7 +894,7 @@ var hi = {
   "dsh-live-voice.recognition.commands.title": "\u0935\u0949\u0907\u0938 \u0915\u092E\u093E\u0902\u0921",
   "dsh-live-voice.recognition.dictation.cancel": "\u0921\u093F\u0915\u094D\u091F\u0947\u0936\u0928 \u0930\u0926\u094D\u0926 \u0915\u0930\u0947\u0902",
   "dsh-live-voice.recognition.engine.label": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928 \u0907\u0902\u091C\u0928",
-  "dsh-live-voice.recognition.headphoneMode.help": "\u0916\u0941\u0932\u093E \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u091C\u0935\u093E\u092C \u091A\u0932\u0928\u0947 \u0915\u0947 \u0926\u094C\u0930\u093E\u0928 \u092D\u0940 \u0938\u0941\u0928\u0924\u093E \u0930\u0939\u0924\u093E \u0939\u0948\u0964 \u0906\u092A\u0915\u0947 \u092C\u094B\u0932\u0928\u0947 \u0915\u093E \u092A\u0924\u093E \u091A\u0932\u0928\u0947 \u092A\u0930 \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0920\u0939\u0930 \u091C\u093E\u0924\u093E \u0939\u0948 \u0914\u0930 \u0906\u092A\u0915\u0947 \u091A\u0941\u0928\u0928\u0947 \u092A\u0930 \u0939\u0940 \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0939\u094B\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.headphoneMode.help": "\u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0915\u0947 \u0926\u094C\u0930\u093E\u0928 \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u091A\u093E\u0932\u0942 \u0930\u0939\u0924\u093E \u0939\u0948\u0964 \u092C\u093F\u0928\u093E \u092A\u094D\u0930\u0924\u093F\u0927\u094D\u0935\u0928\u093F \u0915\u0940 \u092A\u0939\u091A\u093E\u0928\u0940 \u0917\u0908 \u0906\u0935\u093E\u091C\u093C \u0928\u093F\u0930\u094D\u0927\u093E\u0930\u093F\u0924 \u0935\u093F\u0932\u0902\u092C \u0915\u0947 \u092C\u093E\u0926 \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0930\u094B\u0915 \u0938\u0915\u0924\u0940 \u0939\u0948; \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0914\u0930 \u0938\u093E\u091D\u093E \u092E\u0940\u091F\u093F\u0902\u0917 \u0911\u0921\u093F\u092F\u094B \u0909\u0924\u0928\u0940 \u0926\u0947\u0930 \u0936\u093E\u0902\u0924 \u0930\u0939\u0928\u0947 \u092A\u0930 \u092F\u0939 \u092B\u093F\u0930 \u091A\u0932\u0924\u093E \u0939\u0948\u0964 \u092E\u0948\u0928\u094D\u092F\u0941\u0905\u0932 \u0935\u093F\u0930\u093E\u092E \u0915\u0947 \u092C\u093E\u0926 \u092B\u093F\u0930 \u091A\u0932\u093E\u090F\u0901 \u0926\u092C\u093E\u090F\u0901\u0964",
   "dsh-live-voice.recognition.headphoneMode.label": "\u0939\u0947\u0921\u092B\u093C\u094B\u0928 \u2014 \u0916\u0941\u0932\u093E \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928",
   "dsh-live-voice.recognition.holdToTalk.enabled": "\u092C\u094B\u0932\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F Control \u0926\u092C\u093E\u090F \u0930\u0916\u0947\u0902",
   "dsh-live-voice.recognition.holdToTalk.help": "\u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u0916\u0941\u0932\u093E \u0939\u094B\u0928\u0947 \u092A\u0930, \u092A\u0947\u091C \u092A\u0930 \u0915\u0939\u0940\u0902 \u092D\u0940 Control \u0926\u092C\u093E\u090F \u0930\u0916\u0915\u0930 \u0906\u0935\u093E\u091C\u093C \u0930\u093F\u0915\u0949\u0930\u094D\u0921 \u0915\u0930\u0947\u0902\u0964 \u091B\u094B\u0921\u093C\u0928\u0947 \u092A\u0930 \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u092E\u094C\u091C\u0942\u0926 \u091F\u094D\u0930\u093E\u0902\u0938\u0915\u094D\u0930\u093F\u092A\u094D\u0936\u0928 \u092A\u0942\u0930\u093E \u0915\u093F\u092F\u093E \u091C\u093E\u0924\u093E \u0939\u0948, \u0924\u092F \u092D\u0947\u091C\u0928\u0947 \u0915\u0947 \u0935\u093F\u0932\u0902\u092C \u0924\u0915 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0939\u094B\u0924\u0940 \u0939\u0948, \u0938\u0902\u0926\u0947\u0936 \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u091C\u0941\u0921\u093C\u0924\u093E \u0939\u0948 \u0914\u0930 \u0906\u0935\u093E\u091C\u093C \u0930\u093F\u0915\u0949\u0930\u094D\u0921 \u0915\u0930\u0928\u093E \u092C\u0902\u0926 \u0939\u094B \u091C\u093E\u0924\u093E \u0939\u0948\u0964 \u0930\u0926\u094D\u0926 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F Control \u0926\u092C\u093E\u090F \u0930\u0916\u0924\u0947 \u0939\u0941\u090F Escape \u0926\u092C\u093E\u090F\u0901\u0964",
@@ -907,7 +907,7 @@ var hi = {
   "dsh-live-voice.recognition.microphone.device": "\u0907\u0928\u092A\u0941\u091F \u0921\u093F\u0935\u093E\u0907\u0938",
   "dsh-live-voice.recognition.microphone.failure": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928: {reason}",
   "dsh-live-voice.recognition.microphone.ignore": "\u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u0915\u093E \u0935\u0949\u0907\u0938 \u0907\u0928\u092A\u0941\u091F \u0905\u0928\u0926\u0947\u0916\u093E \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.microphone.inputStatus": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0907\u0928\u092A\u0941\u091F: {state}",
+  "dsh-live-voice.recognition.microphone.inputStatus": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0907\u0928\u092A\u0941\u091F: {state}\u0964 \u0905\u0928\u0926\u0947\u0916\u093E \u0915\u0930\u0947\u0902 \u0915\u0947\u0935\u0932 \u0932\u093F\u0916\u0940 \u091C\u093E\u0928\u0947 \u0935\u093E\u0932\u0940 \u0906\u0935\u093E\u091C\u093C \u091B\u094B\u0921\u093C\u0924\u093E \u0939\u0948, \u0915\u0948\u092A\u094D\u091A\u0930 \u0928\u0939\u0940\u0902: \u092C\u094B\u0932\u0915\u0930 \u092C\u093E\u0927\u093E \u0921\u093E\u0932\u0928\u093E \u0938\u0915\u094D\u0930\u093F\u092F \u0930\u0939\u0924\u093E \u0939\u0948; \u0938\u0915\u094D\u0937\u092E \u0939\u094B\u0928\u0947 \u092A\u0930 \u0915\u0949\u0928\u094D\u092B\u093C\u093F\u0917\u0930 \u0915\u093F\u090F \u0917\u090F \u0935\u0949\u0907\u0938 \u0915\u092E\u093E\u0902\u0921 \u091A\u0932\u0924\u0947 \u0939\u0948\u0902\u0964 \u0935\u0949\u0907\u0938 \u0930\u094B\u0915\u0947\u0902 \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u0948\u092A\u094D\u091A\u0930 \u092C\u0902\u0926 \u0915\u0930\u0924\u093E \u0939\u0948\u0964",
   "dsh-live-voice.recognition.microphone.label": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928",
   "dsh-live-voice.recognition.microphone.permissionHelp": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u0940 \u0905\u0928\u0941\u092E\u0924\u093F \u0915\u0947\u0935\u0932 \u0924\u092D\u0940 \u092E\u093E\u0901\u0917\u0940 \u091C\u093E\u090F\u0917\u0940 \u091C\u092C \u0906\u092A \u0921\u093F\u0915\u094D\u091F\u0947\u0936\u0928 \u092F\u093E \u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902\u0917\u0947\u0964",
   "dsh-live-voice.recognition.microphone.resume": "\u0938\u0941\u0928\u0928\u093E \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
@@ -943,7 +943,7 @@ var hi = {
   "dsh-live-voice.recognition.silenceDetection.label": "\u092E\u094C\u0928 \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u093E",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "\u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0915\u093E \u0935\u093F\u0930\u093E\u092E",
   "dsh-live-voice.recognition.silenceDetection.title": "\u092E\u094C\u0928 \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u0947 \u0915\u0940 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938",
-  "dsh-live-voice.recognition.speakerMode.help": "\u0928\u093F\u092F\u0902\u0924\u094D\u0930\u093F\u0924 \u0938\u0941\u0928\u0928\u0947 \u0915\u093E \u092E\u094B\u0921 \u091C\u0935\u093E\u092C \u091A\u0932\u0924\u0947 \u0938\u092E\u092F \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u091B\u094B\u0921\u093C \u0926\u0947\u0924\u093E \u0939\u0948, \u0924\u093E\u0915\u093F \u0938\u094D\u092A\u0940\u0915\u0930 \u0915\u093E \u0911\u0921\u093F\u092F\u094B \u092A\u0939\u091A\u093E\u0928\u093E \u0928 \u091C\u093E\u090F\u0964 \u092C\u0940\u091A \u092E\u0947\u0902 \u0930\u094B\u0915\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F \u201C\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u093E \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u0923 \u0932\u0947\u0902\u201D \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.recognition.speakerMode.help": "\u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0938\u094D\u092A\u0940\u0915\u0930 \u092B\u093C\u0940\u0921\u092C\u0948\u0915 \u0918\u091F\u093E\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u091B\u094B\u0921\u093C \u0926\u0947\u0924\u093E \u0939\u0948\u0964 \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0932\u0947\u0902 \u0938\u0947 \u092E\u0948\u0928\u094D\u092F\u0941\u0905\u0932 \u092C\u093E\u0927\u093E \u0921\u093E\u0932\u0947\u0902; \u0938\u093E\u091D\u093E \u092E\u0940\u091F\u093F\u0902\u0917 \u0911\u0921\u093F\u092F\u094B \u092E\u0947\u0902 \u092C\u093F\u0928\u093E \u092A\u094D\u0930\u0924\u093F\u0927\u094D\u0935\u0928\u093F \u0915\u0940 \u092A\u0939\u091A\u093E\u0928\u0940 \u0917\u0908 \u0906\u0935\u093E\u091C\u093C \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0930\u094B\u0915 \u0938\u0915\u0924\u0940 \u0939\u0948 \u0914\u0930 \u0938\u094D\u0925\u093F\u0930 \u092E\u094C\u0928 \u0915\u0947 \u092C\u093E\u0926 \u092F\u0939 \u092B\u093F\u0930 \u091A\u0932\u0924\u093E \u0939\u0948\u0964",
   "dsh-live-voice.recognition.speakerMode.label": "\u0938\u094D\u092A\u0940\u0915\u0930 \u2014 \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u093F\u0924 \u0938\u0941\u0928\u0928\u093E",
   "dsh-live-voice.recognition.status.answer": "\u0909\u0924\u094D\u0924\u0930 \u092A\u0939\u091A\u093E\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
   "dsh-live-voice.recognition.status.awaitingAnswer": "\u0906\u092A\u0915\u093E \u0909\u0924\u094D\u0924\u0930 \u0938\u0941\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
@@ -1152,7 +1152,7 @@ var ptBR = {
   "dsh-live-voice.recognition.commands.title": "Comandos de voz",
   "dsh-live-voice.recognition.dictation.cancel": "Cancelar ditado",
   "dsh-live-voice.recognition.engine.label": "Mecanismo de reconhecimento",
-  "dsh-live-voice.recognition.headphoneMode.help": "O microfone aberto continua ouvindo enquanto as respostas s\xE3o reproduzidas. Ao detectar sua fala, a reprodu\xE7\xE3o pausa e s\xF3 continua quando voc\xEA escolher.",
+  "dsh-live-voice.recognition.headphoneMode.help": "O microfone fica aberto durante a reprodu\xE7\xE3o. Fala reconhecida sem eco pode pausar ap\xF3s o atraso configurado; a reprodu\xE7\xE3o retoma quando microfone e \xE1udio compartilhado da reuni\xE3o ficam em sil\xEAncio por esse intervalo. Pausa manual exige Retomar.",
   "dsh-live-voice.recognition.headphoneMode.label": "Fones de ouvido \u2014 microfone aberto",
   "dsh-live-voice.recognition.holdToTalk.enabled": "Segure Control para falar",
   "dsh-live-voice.recognition.holdToTalk.help": "Com o editor aberto, segure Control em qualquer lugar da p\xE1gina para capturar a fala. Solte para concluir as transcri\xE7\xF5es pendentes, aguardar o atraso configurado, enfileirar a mensagem e encerrar a captura. Pressione Escape enquanto segura para cancelar.",
@@ -1165,7 +1165,7 @@ var ptBR = {
   "dsh-live-voice.recognition.microphone.device": "Dispositivo de entrada",
   "dsh-live-voice.recognition.microphone.failure": "Microfone: {reason}",
   "dsh-live-voice.recognition.microphone.ignore": "Ignorar entrada do editor de mensagens",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada do microfone: {state}",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada do microfone: {state}. Ignorando descarta o ditado, n\xE3o a captura: a interrup\xE7\xE3o por fala continua ativa; comandos configurados funcionam quando habilitados. Encerrar voz encerra a captura do microfone.",
   "dsh-live-voice.recognition.microphone.label": "Microfone",
   "dsh-live-voice.recognition.microphone.permissionHelp": "A permiss\xE3o do microfone ser\xE1 solicitada apenas quando voc\xEA iniciar a ditado ou uma conversa por voz.",
   "dsh-live-voice.recognition.microphone.resume": "Retomar escuta",
@@ -1201,7 +1201,7 @@ var ptBR = {
   "dsh-live-voice.recognition.silenceDetection.label": "Detec\xE7\xE3o de sil\xEAncio",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pausa antes de enviar",
   "dsh-live-voice.recognition.silenceDetection.title": "Configura\xE7\xF5es de detec\xE7\xE3o de sil\xEAncio",
-  "dsh-live-voice.recognition.speakerMode.help": 'A escuta controlada libera o microfone enquanto as respostas s\xE3o reproduzidas, evitando que o som dos alto-falantes seja reconhecido. Use "Assumir microfone" para interromper.',
+  "dsh-live-voice.recognition.speakerMode.help": "A reprodu\xE7\xE3o libera o microfone para reduzir o retorno dos alto-falantes. Assumir microfone interrompe manualmente; participantes reconhecidos sem eco no \xE1udio compartilhado podem pausar a reprodu\xE7\xE3o, que retoma ap\xF3s sil\xEAncio est\xE1vel.",
   "dsh-live-voice.recognition.speakerMode.label": "Alto-falantes \u2014 escuta controlada",
   "dsh-live-voice.recognition.status.answer": "Reconhecendo resposta\u2026",
   "dsh-live-voice.recognition.status.awaitingAnswer": "Ouvindo sua resposta\u2026",
@@ -1410,7 +1410,7 @@ var zh = {
   "dsh-live-voice.recognition.commands.title": "\u8BED\u97F3\u547D\u4EE4",
   "dsh-live-voice.recognition.dictation.cancel": "\u53D6\u6D88\u542C\u5199",
   "dsh-live-voice.recognition.engine.label": "\u8BC6\u522B\u5F15\u64CE",
-  "dsh-live-voice.recognition.headphoneMode.help": "\u5F00\u653E\u9EA6\u514B\u98CE\u4F1A\u5728\u64AD\u653E\u56DE\u590D\u65F6\u7EE7\u7EED\u8046\u542C\u3002\u68C0\u6D4B\u5230\u4F60\u8BF4\u8BDD\u65F6\uFF0C\u64AD\u653E\u4F1A\u6682\u505C\uFF0C\u5E76\u4EC5\u5728\u4F60\u9009\u62E9\u6062\u590D\u65F6\u7EE7\u7EED\u3002",
+  "dsh-live-voice.recognition.headphoneMode.help": "\u64AD\u653E\u65F6\u9EA6\u514B\u98CE\u4FDD\u6301\u5F00\u542F\u3002\u8BC6\u522B\u5230\u975E\u56DE\u58F0\u8BED\u97F3\u540E\uFF0C\u53EF\u5728\u8BBE\u5B9A\u5EF6\u8FDF\u540E\u6682\u505C\u64AD\u653E\uFF1B\u9EA6\u514B\u98CE\u548C\u5171\u4EAB\u4F1A\u8BAE\u97F3\u9891\u6301\u7EED\u9759\u97F3\u8FBE\u5230\u8BE5\u65F6\u957F\u540E\u6062\u590D\u3002\u624B\u52A8\u6682\u505C\u540E\u9700\u70B9\u51FB\u6062\u590D\u3002",
   "dsh-live-voice.recognition.headphoneMode.label": "\u8033\u673A \u2014 \u5F00\u653E\u9EA6\u514B\u98CE",
   "dsh-live-voice.recognition.holdToTalk.enabled": "\u6309\u4F4F Control \u952E\u8BF4\u8BDD",
   "dsh-live-voice.recognition.holdToTalk.help": "\u6D88\u606F\u8F93\u5165\u6846\u6253\u5F00\u65F6\uFF0C\u5728\u9875\u9762\u4EFB\u610F\u4F4D\u7F6E\u6309\u4F4F Control \u952E\u5373\u53EF\u91C7\u96C6\u8BED\u97F3\u3002\u677E\u5F00\u540E\u4F1A\u5904\u7406\u5B8C\u961F\u5217\u4E2D\u7684\u8F6C\u5199\uFF0C\u7B49\u5F85\u8BBE\u5B9A\u7684\u53D1\u9001\u5EF6\u8FDF\uFF0C\u5C06\u6D88\u606F\u52A0\u5165\u961F\u5217\uFF0C\u7136\u540E\u5173\u95ED\u8BED\u97F3\u91C7\u96C6\u3002\u6309\u4F4F\u671F\u95F4\u6309 Escape \u952E\u53EF\u53D6\u6D88\u3002",
@@ -1423,7 +1423,7 @@ var zh = {
   "dsh-live-voice.recognition.microphone.device": "\u8F93\u5165\u8BBE\u5907",
   "dsh-live-voice.recognition.microphone.failure": "\u9EA6\u514B\u98CE\uFF1A{reason}",
   "dsh-live-voice.recognition.microphone.ignore": "\u5FFD\u7565\u6D88\u606F\u8F93\u5165\u6846\u7684\u8BED\u97F3\u8F93\u5165",
-  "dsh-live-voice.recognition.microphone.inputStatus": "\u9EA6\u514B\u98CE\u8F93\u5165\uFF1A{state}",
+  "dsh-live-voice.recognition.microphone.inputStatus": "\u9EA6\u514B\u98CE\u8F93\u5165\uFF1A{state}\u3002\u5FFD\u7565\u53EA\u4E22\u5F03\u542C\u5199\uFF0C\u4E0D\u505C\u6B62\u91C7\u96C6\uFF1A\u8BED\u97F3\u6253\u65AD\u4ECD\u53EF\u7528\uFF1B\u5DF2\u542F\u7528\u7684\u81EA\u5B9A\u4E49\u8BED\u97F3\u547D\u4EE4\u4ECD\u6709\u6548\u3002\u505C\u6B62\u8BED\u97F3\u4F1A\u7ED3\u675F\u9EA6\u514B\u98CE\u91C7\u96C6\u3002",
   "dsh-live-voice.recognition.microphone.label": "\u9EA6\u514B\u98CE",
   "dsh-live-voice.recognition.microphone.permissionHelp": "\u4EC5\u5728\u4F60\u5F00\u59CB\u542C\u5199\u6216\u8BED\u97F3\u5BF9\u8BDD\u65F6\u624D\u4F1A\u8BF7\u6C42\u9EA6\u514B\u98CE\u6743\u9650\u3002",
   "dsh-live-voice.recognition.microphone.resume": "\u6062\u590D\u8046\u542C",
@@ -1459,7 +1459,7 @@ var zh = {
   "dsh-live-voice.recognition.silenceDetection.label": "\u9759\u97F3\u68C0\u6D4B",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "\u53D1\u9001\u524D\u505C\u987F",
   "dsh-live-voice.recognition.silenceDetection.title": "\u9759\u97F3\u68C0\u6D4B\u8BBE\u7F6E",
-  "dsh-live-voice.recognition.speakerMode.help": "\u95E8\u63A7\u8046\u542C\u4F1A\u5728\u64AD\u653E\u56DE\u590D\u65F6\u91CA\u653E\u9EA6\u514B\u98CE\uFF0C\u9632\u6B62\u626C\u58F0\u5668\u97F3\u9891\u88AB\u8BC6\u522B\u3002\u4F7F\u7528\u201C\u63A5\u7BA1\u9EA6\u514B\u98CE\u201D\u53EF\u6253\u65AD\u64AD\u653E\u3002",
+  "dsh-live-voice.recognition.speakerMode.help": "\u64AD\u653E\u65F6\u91CA\u653E\u9EA6\u514B\u98CE\u4EE5\u51CF\u5C11\u626C\u58F0\u5668\u53CD\u9988\u3002\u63A5\u7BA1\u9EA6\u514B\u98CE\u53EF\u624B\u52A8\u6253\u65AD\uFF1B\u5171\u4EAB\u4F1A\u8BAE\u97F3\u9891\u4E2D\u8BC6\u522B\u5230\u7684\u975E\u56DE\u58F0\u53C2\u4E0E\u8005\u8BED\u97F3\u4E5F\u53EF\u6682\u505C\u64AD\u653E\uFF0C\u6301\u7EED\u9759\u97F3\u540E\u6062\u590D\u3002",
   "dsh-live-voice.recognition.speakerMode.label": "\u626C\u58F0\u5668 \u2014 \u95E8\u63A7\u8046\u542C",
   "dsh-live-voice.recognition.status.answer": "\u6B63\u5728\u8BC6\u522B\u56DE\u7B54\u2026",
   "dsh-live-voice.recognition.status.awaitingAnswer": "\u6B63\u5728\u8046\u542C\u4F60\u7684\u56DE\u7B54\u2026",
@@ -4720,7 +4720,7 @@ var VoiceCoordinator = class _VoiceCoordinator {
     this.patch({
       settings,
       muted: settings.microphoneEnabled === false,
-      recognizing: settings.microphoneEnabled === false ? false : this.snapshot.recognizing,
+      recognizing: this.snapshot.recognizing,
       error: null
     });
     if (settings.sendingMode === "manual") this.cancelAutoSend();
@@ -4810,7 +4810,6 @@ var VoiceCoordinator = class _VoiceCoordinator {
     this.cancelAutoSend();
     this.transcript.reset();
     this.updateSettings({ microphoneEnabled: false });
-    if (!this.snapshot.settings.voiceCommandsEnabled) return this.stopListening();
   }
   resumeListeningInput() {
     this.transcript.reset();
@@ -5027,7 +5026,7 @@ var VoiceCoordinator = class _VoiceCoordinator {
       this.interruptionTranscriptConfirmed = true;
       this._handleSpeechInterruption(true);
     }
-    if (typeof this.composer.handleQuestionResult === "function" && this.composer.handleQuestionResult({ final, interim })) {
+    if (!this.snapshot.muted && typeof this.composer.handleQuestionResult === "function" && this.composer.handleQuestionResult({ final, interim })) {
       this.cancelAutoSend();
       this.transcript.reset();
       this.patch({ recognizing: !!interim });
@@ -5067,7 +5066,12 @@ var VoiceCoordinator = class _VoiceCoordinator {
       }
       if (this.snapshot.muted) {
         this.transcript.reset();
-        this.patch({ recognizing: false });
+        this.patch({ recognizing: !!interim });
+        this._handleSpeechInterruption(this._speechActivity());
+        if (!interim) {
+          this.assistantSpeechNotBefore = Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1e3;
+          this._drain();
+        }
         return;
       }
       if (this.snapshot.settings.recognitionFilterEnabled && !hasMinimumWords(final, this.snapshot.settings.recognitionMinimumWords)) {
@@ -7870,7 +7874,7 @@ function ConversationStatusBar({
             title: recognition.microphone.inputStatus({
               state: state.muted ? commons.input.ignoring() : commons.input.listening()
             }),
-            icon: state.muted ? "micOff" : "mic",
+            icon: "mic",
             visibleLabel: state.muted ? commons.input.ignoringBadge() : commons.input.listeningBadge(),
             pressed: !state.muted,
             "data-muted": state.muted ? "true" : "false",

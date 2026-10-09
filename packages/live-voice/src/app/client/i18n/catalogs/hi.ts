@@ -87,7 +87,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.dictation.cancel': 'डिक्टेशन रद्द करें',
   'dsh-live-voice.recognition.engine.label': 'वाक् पहचान इंजन',
   'dsh-live-voice.recognition.headphoneMode.help':
-    'खुला माइक्रोफ़ोन जवाब चलने के दौरान भी सुनता रहता है। आपके बोलने का पता चलने पर प्लेबैक ठहर जाता है और आपके चुनने पर ही फिर शुरू होता है।',
+    'प्लेबैक के दौरान माइक्रोफ़ोन चालू रहता है। बिना प्रतिध्वनि की पहचानी गई आवाज़ निर्धारित विलंब के बाद प्लेबैक रोक सकती है; माइक्रोफ़ोन और साझा मीटिंग ऑडियो उतनी देर शांत रहने पर यह फिर चलता है। मैन्युअल विराम के बाद फिर चलाएँ दबाएँ।',
   'dsh-live-voice.recognition.headphoneMode.label': 'हेडफ़ोन — खुला माइक्रोफ़ोन',
   'dsh-live-voice.recognition.holdToTalk.enabled': 'बोलने के लिए Control दबाए रखें',
   'dsh-live-voice.recognition.holdToTalk.help':
@@ -103,7 +103,8 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.device': 'इनपुट डिवाइस',
   'dsh-live-voice.recognition.microphone.failure': 'माइक्रोफ़ोन: {reason}',
   'dsh-live-voice.recognition.microphone.ignore': 'संदेश बॉक्स का वॉइस इनपुट अनदेखा करें',
-  'dsh-live-voice.recognition.microphone.inputStatus': 'माइक्रोफ़ोन इनपुट: {state}',
+  'dsh-live-voice.recognition.microphone.inputStatus':
+    'माइक्रोफ़ोन इनपुट: {state}। अनदेखा करें केवल लिखी जाने वाली आवाज़ छोड़ता है, कैप्चर नहीं: बोलकर बाधा डालना सक्रिय रहता है; सक्षम होने पर कॉन्फ़िगर किए गए वॉइस कमांड चलते हैं। वॉइस रोकें माइक्रोफ़ोन कैप्चर बंद करता है।',
   'dsh-live-voice.recognition.microphone.label': 'माइक्रोफ़ोन',
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'माइक्रोफ़ोन की अनुमति केवल तभी माँगी जाएगी जब आप डिक्टेशन या वॉइस बातचीत शुरू करेंगे।',
@@ -152,7 +153,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'भेजने से पहले का विराम',
   'dsh-live-voice.recognition.silenceDetection.title': 'मौन का पता लगाने की सेटिंग्स',
   'dsh-live-voice.recognition.speakerMode.help':
-    'नियंत्रित सुनने का मोड जवाब चलते समय माइक्रोफ़ोन छोड़ देता है, ताकि स्पीकर का ऑडियो पहचाना न जाए। बीच में रोकने के लिए “माइक्रोफ़ोन का नियंत्रण लें” का उपयोग करें।',
+    'प्लेबैक स्पीकर फ़ीडबैक घटाने के लिए माइक्रोफ़ोन छोड़ देता है। माइक्रोफ़ोन लें से मैन्युअल बाधा डालें; साझा मीटिंग ऑडियो में बिना प्रतिध्वनि की पहचानी गई आवाज़ प्लेबैक रोक सकती है और स्थिर मौन के बाद यह फिर चलता है।',
   'dsh-live-voice.recognition.speakerMode.label': 'स्पीकर — नियंत्रित सुनना',
   'dsh-live-voice.recognition.status.answer': 'उत्तर पहचाना जा रहा है…',
   'dsh-live-voice.recognition.status.awaitingAnswer': 'आपका उत्तर सुना जा रहा है…',

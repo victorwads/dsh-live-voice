@@ -1231,3 +1231,52 @@ test('explicit pause during automatic quiet countdown prevents automatic resume'
   await c.dispose();
   await speech;
 });
+
+for (const voiceCommandsEnabled of [true, false]) {
+  test(
+    'Ignoring retains interruption and silence recovery with commands ' + voiceCommandsEnabled,
+    async (t) => {
+      t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
+      const f = fixture({
+        mode: 'headphones',
+        voiceCommandsEnabled,
+        assistantSpeechDelaySeconds: 1,
+        sendingMode: 'automatic',
+      });
+      const c = f.coordinator;
+      await c.startConversation();
+      const speech = c.speak('An answer worth retaining');
+      await turn();
+      f.sessions.at(-1).onActivity(true);
+      const stops = f.log.filter((x) => x === 'input:stop').length;
+      await c.muteListening();
+      assert.equal(c.getSnapshot().recognizing, true);
+      assert.equal(c.getSnapshot().listening, true);
+      assert.equal(f.log.filter((x) => x === 'input:stop').length, stops);
+      let questionResults = 0;
+      c.composer.handleQuestionResult = () => {
+        questionResults++;
+        return true;
+      };
+      f.sessions.at(-1).onResult({ interim: 'different human request' });
+      t.mock.timers.tick(1000);
+      await turn();
+      assert.equal(c.getSnapshot().paused, true);
+      f.sessions.at(-1).onResult({ final: 'different human request' });
+      assert.equal(f.draft(), 'typed');
+      assert.equal(questionResults, 0);
+      assert.equal(c.getSnapshot().autoSendAt, null);
+      t.mock.timers.tick(1000);
+      await turn();
+      assert.equal(c.getSnapshot().paused, false);
+      assert.equal(f.spoken.length, 1);
+      assert.equal(c.getSnapshot().muted, true);
+      delete c.composer.handleQuestionResult;
+      await c.resumeListeningInput();
+      f.sessions.at(-1).onResult({ final: 'new dictation works' });
+      assert.equal(f.draft(), 'typed new dictation works');
+      await c.dispose();
+      await speech;
+    },
+  );
+}

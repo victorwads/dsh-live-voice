@@ -89,7 +89,7 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.dictation.cancel': 'Cancel dictation',
   'dsh-live-voice.recognition.engine.label': 'Recognition engine',
   'dsh-live-voice.recognition.headphoneMode.help':
-    'Open microphone keeps listening while responses play. When your speech is detected, playback pauses and resumes only when you choose.',
+    'The microphone stays open during playback. Recognized non-echo speech can pause playback after the configured delay; it resumes after microphone and shared meeting audio stay silent for that delay. Manual Pause requires Resume.',
   'dsh-live-voice.recognition.headphoneMode.label': 'Headphones — open microphone',
   'dsh-live-voice.recognition.holdToTalk.enabled': 'Hold Control to talk',
   'dsh-live-voice.recognition.holdToTalk.help':
@@ -105,7 +105,8 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.device': 'Input device',
   'dsh-live-voice.recognition.microphone.failure': 'Microphone: {reason}',
   'dsh-live-voice.recognition.microphone.ignore': 'Ignore composer input',
-  'dsh-live-voice.recognition.microphone.inputStatus': 'Microphone input: {state}',
+  'dsh-live-voice.recognition.microphone.inputStatus':
+    'Microphone input: {state}. Ignoring discards dictation, not capture: speech interruption stays active; configured voice commands still work when enabled. Stop voice ends microphone capture.',
   'dsh-live-voice.recognition.microphone.label': 'Microphone',
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'Microphone permission will be requested only when you start dictation or a voice conversation.',
@@ -151,7 +152,7 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'Pause before sending',
   'dsh-live-voice.recognition.silenceDetection.title': 'Silence detection settings',
   'dsh-live-voice.recognition.speakerMode.help':
-    'Gated listening releases the microphone while responses play, preventing speaker audio from being recognized. Use Take microphone to interrupt.',
+    'Playback releases the microphone to reduce speaker feedback. Take microphone interrupts manually; recognized non-echo participants in shared meeting audio can pause playback and it resumes after stable silence.',
   'dsh-live-voice.recognition.speakerMode.label': 'Speakers — gated listening',
   'dsh-live-voice.recognition.status.answer': 'Recognizing answer…',
   'dsh-live-voice.recognition.status.awaitingAnswer': 'Listening for your answer…',

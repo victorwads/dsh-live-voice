@@ -42,7 +42,7 @@ Capture, recognition, user speech activity, message delivery, agent generation, 
 | Transition | Required result |
 | --- | --- |
 | Start input | Acquire current ownership; never inherit stale soft mute or transcript state |
-| Soft mute | Keep recognition available for the resume command, but discard dictation |
+| Ignoring (soft mute) | Discard microphone dictation and pending question answers; keep capture, activity, and interruption active regardless of voice-command preference. Enabled commands remain available. Shared meeting transcription is separate |
 | Resume | Clear only the current session's soft mute |
 | Stop input | Cancel starts, capture, recognition, partial hypotheses, and delivery timers |
 | End conversation | Stop input and playback, clear queues/timers/transient errors, release ownership |

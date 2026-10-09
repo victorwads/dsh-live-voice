@@ -94,7 +94,7 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.dictation.cancel': 'Annuler la dictée',
   'dsh-live-voice.recognition.engine.label': 'Moteur de reconnaissance',
   'dsh-live-voice.recognition.headphoneMode.help':
-    'Le microphone ouvert continue d’écouter pendant la lecture des réponses. Lorsque votre voix est détectée, la lecture se met en pause et ne reprend que lorsque vous le décidez.',
+    'Le microphone reste ouvert pendant la lecture. La parole reconnue sans écho peut la mettre en pause après le délai configuré ; elle reprend lorsque le microphone et le son partagé restent silencieux pendant ce délai. Une pause manuelle nécessite Reprendre.',
   'dsh-live-voice.recognition.headphoneMode.label': 'Casque — microphone ouvert',
   'dsh-live-voice.recognition.holdToTalk.enabled': 'Maintenir Ctrl pour parler',
   'dsh-live-voice.recognition.holdToTalk.help':
@@ -112,7 +112,8 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.failure': 'Microphone : {reason}',
   'dsh-live-voice.recognition.microphone.ignore':
     'Ignorer la saisie vocale dans la zone de rédaction',
-  'dsh-live-voice.recognition.microphone.inputStatus': 'Entrée du microphone : {state}',
+  'dsh-live-voice.recognition.microphone.inputStatus':
+    'Entrée du microphone : {state}. Ignorer écarte la dictée, pas la capture : les interruptions vocales restent actives ; les commandes configurées fonctionnent si elles sont activées. Arrêter la voix termine la capture du microphone.',
   'dsh-live-voice.recognition.microphone.label': 'Microphone',
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'L’autorisation d’utiliser le microphone ne sera demandée que lorsque vous démarrerez une dictée ou une conversation vocale.',
@@ -163,7 +164,7 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'Pause avant l’envoi',
   'dsh-live-voice.recognition.silenceDetection.title': 'Paramètres de détection du silence',
   'dsh-live-voice.recognition.speakerMode.help':
-    'L’écoute contrôlée libère le microphone pendant la lecture des réponses pour éviter que le son des haut-parleurs soit reconnu. Utilisez « Prendre le contrôle du microphone » pour interrompre la lecture.',
+    'La lecture libère le microphone pour réduire le retour des haut-parleurs. Prendre le microphone interrompt manuellement ; les participants reconnus sans écho dans le son partagé peuvent mettre la lecture en pause, puis elle reprend après un silence stable.',
   'dsh-live-voice.recognition.speakerMode.label': 'Haut-parleurs — écoute contrôlée',
   'dsh-live-voice.recognition.status.answer': 'Reconnaissance de la réponse…',
   'dsh-live-voice.recognition.status.awaitingAnswer': 'Écoute de votre réponse…',

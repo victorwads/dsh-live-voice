@@ -10,6 +10,8 @@ Todas as alterações relevantes do DSH Live Voice estão documentadas neste arq
 
 ### Correções de bugs
 
+- Mantém captura do microfone e interrupções úteis em Ignorando, inclusive sem comandos de voz; descarta ditado e respostas a perguntas sem perder a retomada após silêncio. Esclarece interrupções automáticas do microfone/reunião versus controles manuais em todos os idiomas da interface.
+
 - Aplica preferências de saída e interface sem encerrar conversas, captura compartilhada ou reprodução. Serializa somente recursos de microfone/reconhecimento alterados, agrupa edições rápidas e respeita parada explícita durante reconfiguração.
 
 - Retoma a reprodução interrompida automaticamente após um intervalo completo de silêncio, inclusive ao finalizar reconhecimento sem evento de fim de atividade; nova fala reinicia o intervalo e pausa/cancelamento explícitos impedem retomada automática, sem reiniciar o áudio.
