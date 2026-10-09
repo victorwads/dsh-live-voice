@@ -235,6 +235,9 @@ export class VoiceCoordinator {
   startConversation() {
     return this.startListening(true);
   }
+  toggleTimestamps() {
+    this.patch({ timestamps: !this.snapshot.timestamps });
+  }
   muteListening() {
     this.cancelAutoSend();
     // Discard pending recognition without rewriting the composer.
@@ -344,14 +347,14 @@ export class VoiceCoordinator {
             if (!valid()) return;
             const count = Number.isSafeInteger(pending) && pending >= 0 ? pending : 0;
             this.patch({ pendingTranscriptions: count });
-            if (count > 0) this.cancelAutoSend();
+            if (count > 0) this.cancelAutoSend({ preserveIntent: true });
             else if (this.holdToTalkRelease) this._finishHoldToTalk();
             else this.maybeScheduleAutoSend();
           },
           onActivity: (active) => {
             if (!valid()) return;
             if (active) {
-              this.cancelAutoSend();
+              this.cancelAutoSend({ preserveIntent: true });
               this.assistantSpeechNotBefore = Infinity;
               this._cancelAssistantSpeechTimer();
             } else
@@ -359,7 +362,7 @@ export class VoiceCoordinator {
                 Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
             this.patch({ recognizing: active });
             this._handleSpeechInterruption(this._speechActivity());
-            if (!active) this._drain();
+            if (!active) { this.refreshDeliveryReadiness(); this._drain(); }
           },
           onError: (error) => {
             if (!valid()) return;
@@ -584,47 +587,64 @@ export class VoiceCoordinator {
         // Discard pending recognition without rewriting the composer.
         this.transcript.reset();
         this.patch({ recognizing: false });
+        this.refreshDeliveryReadiness();
         return;
       }
+      this.cancelAutoSend();
       const appended = this.composer.appendFinal?.(final, startedAt);
       const next = appended ?? this.transcript.update(this.composer.getDraft(), final, true);
       if (appended == null) this.composer.setDraft(next);
+      if (this.snapshot.settings.sendingMode !== 'manual') this.autoSendIntent = next;
       this.maybeScheduleAutoSend(next);
     }
     if (interim) {
-      this.cancelAutoSend();
+      this.cancelAutoSend({ preserveIntent: true });
       // Interim hypotheses affect recognition status only, never composer content.
     }
     if (!interim && this.snapshot.recognizing)
       this.assistantSpeechNotBefore =
         Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
     this.patch({ recognizing: !!interim });
+    this.refreshDeliveryReadiness();
     this._handleSpeechInterruption(this._speechActivity());
     this._drain();
   }
-  maybeScheduleAutoSend(draft = this.composer.getDraft()) {
+  maybeScheduleAutoSend(draft = this.autoSendIntent) {
+    if (draft == null || draft !== this.composer.getDraft()) return;
+    if (this.autoSendTimer !== null) return;
     if (
       this.snapshot.settings.sendingMode === 'manual' ||
+      this.snapshot.muted ||
+      this.composer.canAutoSend?.() === false ||
       this.snapshot.recognizing ||
       this.snapshot.pendingTranscriptions > 0
     )
       return;
     this.scheduleAutoSend(draft);
   }
+  refreshDeliveryReadiness() {
+    if (this.composer.canAutoSend?.() === false || this.snapshot.recognizing || this.snapshot.pendingTranscriptions > 0)
+      this.cancelAutoSend({ preserveIntent: true });
+    else this.maybeScheduleAutoSend();
+  }
   scheduleAutoSend(draft, { force = false, stopAfter = false } = {}) {
     this.cancelAutoSend();
     if (!draft.trim() || typeof this.composer.submit !== 'function') return;
     const delay = this.snapshot.settings.autoSendDelaySeconds * 1000;
     this.autoSendDraft = draft;
+    this.autoSendIntent = draft;
     this.patch({ autoSendAt: Date.now() + delay });
     this.autoSendTimer = setTimeout(() => {
       this.autoSendTimer = null;
       const expected = this.autoSendDraft;
+      this.autoSendIntent = null;
       this.autoSendDraft = null;
       this.patch({ autoSendAt: null });
       if (
         !this.disposed &&
         (force || this.snapshot.settings.sendingMode !== 'manual') &&
+        !this.snapshot.muted &&
+        this.composer.canAutoSend?.() !== false &&
         expected === this.composer.getDraft()
       ) {
         try {
@@ -646,18 +666,22 @@ export class VoiceCoordinator {
           this._drain();
         }
       } else {
+        if (!this.disposed && !this.snapshot.muted && expected === this.composer.getDraft() &&
+            this.snapshot.settings.sendingMode !== 'manual' && this.composer.canAutoSend?.() === false)
+          this.autoSendIntent = expected;
         this._drain();
       }
     }, delay);
   }
-  cancelAutoSend() {
+  cancelAutoSend({ preserveIntent = false } = {}) {
+    if (!preserveIntent) this.autoSendIntent = null;
     if (this.autoSendTimer !== null) clearTimeout(this.autoSendTimer);
     this.autoSendTimer = null;
     this.autoSendDraft = null;
     if (this.snapshot?.autoSendAt !== null) this.patch({ autoSendAt: null });
   }
   composerChanged(draft) {
-    if (this.autoSendDraft !== null && draft !== this.autoSendDraft) this.cancelAutoSend();
+    if (this.autoSendIntent != null && draft !== this.autoSendIntent) this.cancelAutoSend();
   }
   stopListening() {
     this.holdToTalkRelease = false;

@@ -8,6 +8,7 @@ import {
   MeetingToggle,
   MeetingBars,
 } from '../src/modules/conversation/components/MeetingControls.js';
+import { VoiceCoordinator } from '../src/modules/core/coordinator.ts';
 import { LiveVoiceTranslationProvider } from '../src/app/client/i18n/index.js';
 test('shared audio toggle starts directly and only renders its own active bar without explanatory text', async (t) => {
   const dom = new JSDOM('<div id="root"></div>', { pretendToBeVisual: true });
@@ -27,7 +28,9 @@ test('shared audio toggle starts directly and only renders its own active bar wi
   const listeners = new Set();
   let snapshot = { shared: {}, microphone: { listening: true } };
   let starts = 0;
+  const input = new VoiceCoordinator({ recognition: { stop: async () => {} }, meter: { stop: async () => {} }, engines: {}, composer: { getDraft: () => '', setDraft() {} } });
   const meeting = {
+    input: () => input,
     jobs: new Map(),
     subscribe: (fn) => {
       listeners.add(fn);
@@ -52,6 +55,7 @@ test('shared audio toggle starts directly and only renders its own active bar wi
           meeting={meeting}
           onToggle={() => {
             starts++;
+            input.patch({ listening: true });
             snapshot = { ...snapshot, shared: { listening: true } };
             listeners.forEach((fn) => fn());
           }}
@@ -69,13 +73,21 @@ test('shared audio toggle starts directly and only renders its own active bar wi
   );
   assert.equal(document.querySelectorAll('[role="group"]').length, 1);
   assert.equal(document.querySelector('p'), null);
-  assert.equal(document.querySelector('[role="status"]').textContent, 'Listening');
+  assert.equal(document.querySelector('[role="status"]').textContent, 'Listening — waiting for speech');
   const clock = document.querySelector('[aria-label="Transcript timestamps"]');
   assert.equal(clock.getAttribute('data-toggle-active'), 'false');
   assert.equal(clock.textContent, 'Timestamp');
   await act(async () => clock.click());
   assert.equal(clock.getAttribute('data-toggle-active'), 'true');
   await act(async () => document.querySelector('[role="group"] button').click());
-  assert.equal(document.querySelectorAll('[role="group"]').length, 0);
+  assert.equal(document.querySelectorAll('[role="group"]').length, 1);
+  assert.equal(input.getSnapshot().muted, true);
+  assert.equal(input.getSnapshot().listening, true);
   assert.equal(snapshot.microphone.listening, true);
+  await act(async () => document.querySelector('[role="group"] button').click());
+  assert.equal(input.getSnapshot().muted, false);
+  assert.ok(document.querySelector('[aria-label="Enable exact voice commands"]'));
+  await act(async () => input.patch({ recognizing: false, pendingTranscriptions: 1 }));
+  assert.match(document.querySelector('[role="status"]').textContent, /Recognizing speech/);
+  input.cancelAutoSend();
 });

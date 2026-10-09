@@ -8,11 +8,14 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ### Improved
 
+- Mirror microphone and shared-meeting input bars with the same Listening / Ignoring action, independent exact-command and timestamp toggles, and Manual / Queue / Steer delivery controls, countdown, and cancellation. Both use the same input coordinator policy; assistant playback remains a single shared resource.
 - Extend translations to more interface text, including the Live Voice name, macOS voice guidance, and accessibility labels.
 - Add a voice-name option for the macOS Say engine in Settings. Leave it empty to use the macOS default voice.
 
 ### Fixes
 
+- The shared-audio bar’s leading icon now toggles Ignoring instead of ending sharing. Explicit source-stop buttons still release capture. Fresh shared capture does not inherit microphone Ignore state, and pending HTTP transcription shows Processing.
+- Preserve accepted-source automatic-delivery intent while either input is speaking or transcribing, and rearm after both are idle without sending typed text alone or duplicating delivery. Manual edits, cancellation, Stop, navigation, and disposal invalidate the old deadline.
 - Changing settings no longer interrupts active voice conversations, shared meeting capture, or playback. Explicit stops remain respected during reconfiguration.
 - Shared meeting capture stays active when switching chats, and new transcription goes to the current chat.
 - Switching chats no longer causes old answers to play automatically, including history loaded later.

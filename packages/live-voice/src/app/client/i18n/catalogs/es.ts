@@ -110,7 +110,7 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.ignore':
     'Ignorar la entrada de voz en el cuadro de mensaje',
   'dsh-live-voice.recognition.microphone.inputStatus':
-    'Entrada del micrófono: {state}. Ignorar descarta el dictado, no la captura: la interrupción por voz sigue activa; los comandos configurados funcionan si están habilitados. Detener voz termina la captura del micrófono.',
+    'Entrada de audio: {state}. Ignorar descarta el dictado, no la captura: la interrupción por voz sigue activa; los comandos configurados funcionan si están habilitados. Detén la captura con el botón de la fuente en el campo de mensaje.',
   'dsh-live-voice.recognition.microphone.label': 'Micrófono',
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'Solo se solicitará permiso para usar el micrófono cuando inicies un dictado o una conversación por voz.',

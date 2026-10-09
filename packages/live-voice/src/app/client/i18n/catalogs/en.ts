@@ -106,7 +106,7 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.failure': 'Microphone: {reason}',
   'dsh-live-voice.recognition.microphone.ignore': 'Ignore composer input',
   'dsh-live-voice.recognition.microphone.inputStatus':
-    'Microphone input: {state}. Ignoring discards dictation, not capture: speech interruption stays active; configured voice commands still work when enabled. Stop voice ends microphone capture.',
+    'Audio input: {state}. Ignoring discards dictation, not capture: speech interruption stays active; configured voice commands still work when enabled. Stop capture with the source button in the composer.',
   'dsh-live-voice.recognition.microphone.label': 'Microphone',
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'Microphone permission will be requested only when you start dictation or a voice conversation.',

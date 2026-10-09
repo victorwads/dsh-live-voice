@@ -788,7 +788,8 @@ test('all three bars stay ordered captions, shared audio, microphone with no dup
   assert.equal(bars[2].getAttribute('aria-label'), 'Voice controls');
   assert.equal(bars[2].querySelectorAll('.dlv-mic-state').length, 1);
   assert.equal(bars[2].firstElementChild.classList.contains('dlv-mic-state'), true);
-  assert.equal(bars[2].querySelectorAll('button').length, 2, 'only microphone and delivery mode');
+  assert.equal(bars[2].querySelectorAll('button').length, 4, 'ignore, commands, timestamps and delivery mode');
+  assert.equal(bars[1].querySelectorAll('button').length, 4, 'shared input mirrors microphone');
   assert.equal(bars[2].querySelector('[role="switch"]'), null);
   assert.equal(bars[2].querySelector('.dlv-speech-count'), null);
   assert.equal(bars[0].querySelector('[role="switch"]'), null);

@@ -104,7 +104,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.failure': 'माइक्रोफ़ोन: {reason}',
   'dsh-live-voice.recognition.microphone.ignore': 'संदेश बॉक्स का वॉइस इनपुट अनदेखा करें',
   'dsh-live-voice.recognition.microphone.inputStatus':
-    'माइक्रोफ़ोन इनपुट: {state}। अनदेखा करें केवल लिखी जाने वाली आवाज़ छोड़ता है, कैप्चर नहीं: बोलकर बाधा डालना सक्रिय रहता है; सक्षम होने पर कॉन्फ़िगर किए गए वॉइस कमांड चलते हैं। वॉइस रोकें माइक्रोफ़ोन कैप्चर बंद करता है।',
+    'ऑडियो इनपुट: {state}। अनदेखा करना डिक्टेशन छोड़ता है, कैप्चर नहीं: बोलकर बाधा डालना सक्रिय रहता है; सक्षम वॉइस कमांड काम करते हैं। संदेश फ़ील्ड में स्रोत बटन से कैप्चर रोकें।',
   'dsh-live-voice.recognition.microphone.label': 'माइक्रोफ़ोन',
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'माइक्रोफ़ोन की अनुमति केवल तभी माँगी जाएगी जब आप डिक्टेशन या वॉइस बातचीत शुरू करेंगे।',

@@ -13,6 +13,8 @@ export type ConversationStatusBarProps = {
   includeSpeech?: boolean;
   overlay?: boolean;
   overlayStyle?: React.CSSProperties;
+  sourceIcon?: 'mic' | 'meeting';
+  sourceLabel?: string;
 };
 export function ConversationStatusBar({
   controller,
@@ -20,11 +22,14 @@ export function ConversationStatusBar({
   includeSpeech = true,
   overlay = false,
   overlayStyle,
+  sourceIcon = 'mic',
+  sourceLabel,
 }: ConversationStatusBarProps) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const { scoped: settings } = useLanguage((ctx) => ctx.settings);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
+  const { scoped: meeting } = useLanguage((ctx) => ctx.meeting);
   const state = useConversationController<any>(controller);
   const { invoke, error, clearError } = useConversationActions(controller);
   const [now, setNow] = React.useState(Date.now());
@@ -34,7 +39,7 @@ export function ConversationStatusBar({
     const timer = setInterval(() => setNow(Date.now()), 200);
     return () => clearInterval(timer);
   }, [state.autoSendAt]);
-  const capture = state.starting || state.listening || state.recognizing;
+  const capture = state.starting || state.listening || state.recognizing || state.pendingTranscriptions > 0;
   if (questionOnly && !state.answeringQuestion) return null;
   if (
     !state.conversation &&
@@ -68,14 +73,14 @@ export function ConversationStatusBar({
         <RecognitionBar
           controller={controller}
           listening={state.listening}
-          label={(commons as any).controls.title()}
+          label={sourceLabel || (commons as any).controls.title()}
           status={status}
           leading={
             <>
               {state.conversation && !capture ? (
                 <IconButton
                   label={(recognition as any).microphone.takeControl()}
-                  icon="mic"
+                  icon={sourceIcon}
                   onClick={() => invoke('startConversation')}
                 />
               ) : null}
@@ -92,7 +97,7 @@ export function ConversationStatusBar({
                       ? (commons as any).input.ignoring()
                       : (commons as any).input.listening(),
                   })}
-                  icon="mic"
+                  icon={sourceIcon}
                   visibleLabel={
                     state.muted
                       ? (commons as any).input.ignoringBadge()
@@ -106,6 +111,21 @@ export function ConversationStatusBar({
             </>
           }
         >
+          <ToggleButton
+            icon="filter"
+            label={(recognition as any).commands.enabled()}
+            visibleLabel={state.settings.voiceCommandsEnabled ? (commons as any).on() : (commons as any).off()}
+            pressed={Boolean(state.settings.voiceCommandsEnabled)}
+            onClick={() => invoke('updateSettings', { voiceCommandsEnabled: !state.settings.voiceCommandsEnabled })}
+          />
+          <ToggleButton
+            className="dlv-timestamp-toggle"
+            icon="clock"
+            label={(meeting as any).timestamps()}
+            visibleLabel={(meeting as any).timestampsBadge()}
+            pressed={Boolean(state.timestamps)}
+            onClick={() => invoke('toggleTimestamps')}
+          />
           <DeliveryModeButton
             mode={state.settings.sendingMode || 'manual'}
             onChange={(sendingMode) => invoke('updateSettings', { sendingMode })}

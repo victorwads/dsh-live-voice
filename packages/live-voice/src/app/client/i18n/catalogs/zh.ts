@@ -101,7 +101,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.failure': '麦克风：{reason}',
   'dsh-live-voice.recognition.microphone.ignore': '忽略消息输入框的语音输入',
   'dsh-live-voice.recognition.microphone.inputStatus':
-    '麦克风输入：{state}。忽略只丢弃听写，不停止采集：语音打断仍可用；已启用的自定义语音命令仍有效。停止语音会结束麦克风采集。',
+    '音频输入：{state}。忽略仅丢弃听写，不会停止采集：语音打断仍然有效；启用后，配置的语音命令仍可使用。通过消息输入框中的音源按钮停止采集。',
   'dsh-live-voice.recognition.microphone.label': '麦克风',
   'dsh-live-voice.recognition.microphone.permissionHelp':
     '仅在你开始听写或语音对话时才会请求麦克风权限。',

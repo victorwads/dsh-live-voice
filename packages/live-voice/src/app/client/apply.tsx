@@ -61,12 +61,26 @@ export function apply(ctx) {
       if (source !== 'shared') return;
       sharedSpeechActive = active;
       meetingEntry?.controller.setExternalSpeechActivity(active);
+      meetingEntry?.controller.refreshDeliveryReadiness();
     },
     onSpeech: (source, text) =>
       source !== 'shared' || meetingEntry?.controller.confirmExternalSpeech(text) !== false,
+    stopSpeech: () => meetingEntry?.controller.stopSpeech(),
     composer: {
       getDraft: () => meetingEntry?.draft || '',
-      setDraft: (text) => meetingEntry?.controller.composer.setDraft(text),
+      setDraft: (text) => {
+        meetingEntry?.controller.cancelAutoSend();
+        meetingEntry?.controller.composer.setDraft(text);
+      },
+      submit: (mode) => {
+        meeting.cancelDelivery();
+        meetingEntry?.controller.cancelAutoSend();
+        meetingEntry?.controller.composer.submit(mode);
+      },
+      updatePlaybackSettings: (next) => meetingEntry?.controller.updateSettings(next),
+      handleQuestionResult: (result) => meetingEntry?.controller.composer.handleQuestionResult?.(result),
+      canAutoSend: () => !!meetingEntry && !meetingEntry.controller.getSnapshot().recognizing &&
+        !meetingEntry.controller.getSnapshot().pendingTranscriptions,
     },
     settings: () => preferences.getSnapshot(),
     translate: (key) => t('dsh-live-voice.meeting.' + key),
@@ -75,6 +89,8 @@ export function apply(ctx) {
       return { meter, engine: recognitionFor(settings, meter) };
     },
   });
+  const unsubscribeMeetingDelivery = meeting.subscribe(() => meetingEntry?.controller.refreshDeliveryReadiness());
+  ctx.effect(() => () => unsubscribeMeetingDelivery(), 'dsh-live-voice: remove meeting delivery subscription');
   const diagnosticListeners = new Set();
   const notifyDiagnostics = () => {
     for (const listener of diagnosticListeners) {
@@ -183,6 +199,7 @@ export function apply(ctx) {
   }
   const unsubscribePreferences = preferences.subscribe((settings) => {
     if (disposed) return;
+    meeting.applySettings(settings);
     for (const entry of controllers.values()) {
       if (entry.closed) continue;
       entry.applySettings(settings);
@@ -205,6 +222,7 @@ export function apply(ctx) {
     if (entry.closed) return;
     entry.closed = true;
     if (meetingEntry === entry) {
+      meeting.cancelDelivery();
       meetingEntry = null;
       meeting.transcript.setActive('microphone', false);
     }
@@ -266,14 +284,18 @@ export function apply(ctx) {
       meter,
       composer: {
         getDraft: () => entry.draft,
+        canAutoSend: () => !meeting.getSnapshot().shared.pending && !meeting.input().getSnapshot().recognizing,
         appendFinal: (text, startedAt) => {
-          if (meetingEntry === entry && entry.meeting?.getSnapshot().shared.listening) {
+          meeting.cancelDelivery();
+          if (meetingEntry === entry && (entry.meeting?.getSnapshot().shared.listening || entry.controller.getSnapshot().timestamps)) {
+            meeting.transcript.setSourceTimestamps('microphone', !!entry.controller.getSnapshot().timestamps);
             entry.meeting.transcript.append('microphone', text, startedAt);
             return entry.draft;
           }
           return null;
         },
         submit: (mode = 'queue') => {
+          meeting.cancelDelivery();
           const owner = [...entry.composers.values()].at(-1);
           if (!owner) return;
           const busyEnter = entry.controller.getSnapshot().settings.dshBusyEnterBehavior;
@@ -510,7 +532,8 @@ export function apply(ctx) {
     let microphoneActive = false;
     const unsubscribeMeetingMicrophone = controller.subscribe(() => {
       const state = controller.getSnapshot();
-      const next = Boolean((state.listening || state.starting) && !state.muted);
+      const next = Boolean(state.listening || state.starting);
+      if (meetingEntry === entry) entry.meeting.refreshDeliveryReadiness();
       if (meetingEntry === entry && next !== microphoneActive) {
         microphoneActive = next;
         entry.meeting.transcript.setActive('microphone', next);
@@ -559,6 +582,7 @@ export function apply(ctx) {
       return () => {
         entry.composers.delete(token.current);
         if (meetingEntry === entry && !entry.composers.size) {
+          meeting.cancelDelivery();
           meetingEntry = null;
           meeting.transcript.setActive('microphone', false);
         }
@@ -572,6 +596,7 @@ export function apply(ctx) {
       if (!entry || entry.closed || disposed) return;
       if (!input || typeof props.inputActions?.setDraft !== 'function') return;
       if (meetingEntry !== entry) {
+        meeting.cancelDelivery();
         meetingEntry = entry;
         entry.controller.setExternalSpeechActivity(sharedSpeechActive);
         const state = entry.controller.getSnapshot();
@@ -629,6 +654,7 @@ export function apply(ctx) {
         entry.staleDrafts.clear();
       }
       entry.controller.composerChanged(entry.draft);
+      if (meetingEntry === entry) meeting.composerChanged(entry.draft);
     });
   }
   function Buttons(props) {

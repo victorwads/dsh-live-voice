@@ -42,7 +42,7 @@ Capture, recognition, user speech activity, message delivery, agent generation, 
 | Transition | Required result |
 | --- | --- |
 | Start input | Acquire current ownership; never inherit stale soft mute or transcript state |
-| Ignoring (soft mute) | Discard microphone dictation and pending question answers; keep capture, activity, and interruption active regardless of voice-command preference. Enabled commands remain available. Shared meeting transcription is separate |
+| Ignoring (soft mute) | Discard dictation and pending question answers from that input only; keep capture, activity, and interruption active regardless of voice-command preference. Enabled commands remain available. Microphone and shared input have independent Ignore state |
 | Resume | Clear only the current session's soft mute |
 | Stop input | Cancel starts, capture, recognition, partial hypotheses, and delivery timers |
 | End conversation | Stop input and playback, clear queues/timers/transient errors, release ownership |
@@ -52,6 +52,8 @@ Capture, recognition, user speech activity, message delivery, agent generation, 
 | Late async result | Ignore it unless its session and operation generation are still current |
 
 ## Speech bar and approximate captions
+
+Microphone and shared-input bars render the same `ConversationStatusBar`, with independent `VoiceCoordinator` input-policy instances. Shared capture remains application-owned; its policy does not create a second microphone or assistant player. Both leading icons toggle Listening / Ignoring; explicit composer source buttons stop capture. Exact commands, per-source timestamps, delivery modes, countdown/cancellation, and pending-transcription status follow the same policy. Preserve an accepted final’s expected-draft delivery intent while either source is busy, rearm after both are idle, and invalidate on manual edit, cancel, Stop, submit, navigation, or disposal. Idle/pending callbacks cannot create intent from another source’s draft.
 
 The speech bar is separate from the recognition pill, with the same 52px pill geometry and shared buttons. It displays the active speech segment on one clipped line and owns playback pause/resume, next, stop and microphone takeover during speaker gating. Stop clears pending speech and closes the speech bar without ending voice conversation; pause preserves it. The recognition pill retains capture and delivery preferences. The automatic-speech toggle remains available in the composer between shared audio and microphone, even when there is no active playback; it is not duplicated in either bar.
 

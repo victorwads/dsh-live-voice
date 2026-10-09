@@ -8,7 +8,7 @@ export function resolveConversationStatus(
   if (state.answeringQuestion && state.listening) return recognition.status.awaitingAnswer();
   if (remaining) return settings.autoSend.countdown({ remaining });
   if (state.starting) return recognition.microphone.starting();
-  if (state.recognizing) return recognition.status.processing();
+  if (state.recognizing || state.pendingTranscriptions > 0) return recognition.status.processing();
   if (state.listening) return recognition.status.listening();
   if (state.conversation) return commons.conversation.idle();
   return commons.status.ready();

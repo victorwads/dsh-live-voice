@@ -133,7 +133,7 @@ var en = {
   "dsh-live-voice.recognition.microphone.device": "Input device",
   "dsh-live-voice.recognition.microphone.failure": "Microphone: {reason}",
   "dsh-live-voice.recognition.microphone.ignore": "Ignore composer input",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Microphone input: {state}. Ignoring discards dictation, not capture: speech interruption stays active; configured voice commands still work when enabled. Stop voice ends microphone capture.",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Audio input: {state}. Ignoring discards dictation, not capture: speech interruption stays active; configured voice commands still work when enabled. Stop capture with the source button in the composer.",
   "dsh-live-voice.recognition.microphone.label": "Microphone",
   "dsh-live-voice.recognition.microphone.permissionHelp": "Microphone permission will be requested only when you start dictation or a voice conversation.",
   "dsh-live-voice.recognition.microphone.resume": "Resume listening",
@@ -391,7 +391,7 @@ var es = {
   "dsh-live-voice.recognition.microphone.device": "Dispositivo de entrada",
   "dsh-live-voice.recognition.microphone.failure": "Micr\xF3fono: {reason}",
   "dsh-live-voice.recognition.microphone.ignore": "Ignorar la entrada de voz en el cuadro de mensaje",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada del micr\xF3fono: {state}. Ignorar descarta el dictado, no la captura: la interrupci\xF3n por voz sigue activa; los comandos configurados funcionan si est\xE1n habilitados. Detener voz termina la captura del micr\xF3fono.",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada de audio: {state}. Ignorar descarta el dictado, no la captura: la interrupci\xF3n por voz sigue activa; los comandos configurados funcionan si est\xE1n habilitados. Det\xE9n la captura con el bot\xF3n de la fuente en el campo de mensaje.",
   "dsh-live-voice.recognition.microphone.label": "Micr\xF3fono",
   "dsh-live-voice.recognition.microphone.permissionHelp": "Solo se solicitar\xE1 permiso para usar el micr\xF3fono cuando inicies un dictado o una conversaci\xF3n por voz.",
   "dsh-live-voice.recognition.microphone.resume": "Reanudar escucha",
@@ -649,7 +649,7 @@ var fr = {
   "dsh-live-voice.recognition.microphone.device": "P\xE9riph\xE9rique d\u2019entr\xE9e",
   "dsh-live-voice.recognition.microphone.failure": "Microphone : {reason}",
   "dsh-live-voice.recognition.microphone.ignore": "Ignorer la saisie vocale dans la zone de r\xE9daction",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Entr\xE9e du microphone : {state}. Ignorer \xE9carte la dict\xE9e, pas la capture : les interruptions vocales restent actives ; les commandes configur\xE9es fonctionnent si elles sont activ\xE9es. Arr\xEAter la voix termine la capture du microphone.",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Entr\xE9e audio : {state}. Ignorer \xE9carte la dict\xE9e, pas la capture : les interruptions vocales restent actives ; les commandes configur\xE9es fonctionnent si elles sont activ\xE9es. Arr\xEAtez la capture avec le bouton de la source dans le champ du message.",
   "dsh-live-voice.recognition.microphone.label": "Microphone",
   "dsh-live-voice.recognition.microphone.permissionHelp": "L\u2019autorisation d\u2019utiliser le microphone ne sera demand\xE9e que lorsque vous d\xE9marrerez une dict\xE9e ou une conversation vocale.",
   "dsh-live-voice.recognition.microphone.resume": "Reprendre l\u2019\xE9coute",
@@ -907,7 +907,7 @@ var hi = {
   "dsh-live-voice.recognition.microphone.device": "\u0907\u0928\u092A\u0941\u091F \u0921\u093F\u0935\u093E\u0907\u0938",
   "dsh-live-voice.recognition.microphone.failure": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928: {reason}",
   "dsh-live-voice.recognition.microphone.ignore": "\u0938\u0902\u0926\u0947\u0936 \u092C\u0949\u0915\u094D\u0938 \u0915\u093E \u0935\u0949\u0907\u0938 \u0907\u0928\u092A\u0941\u091F \u0905\u0928\u0926\u0947\u0916\u093E \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.recognition.microphone.inputStatus": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0907\u0928\u092A\u0941\u091F: {state}\u0964 \u0905\u0928\u0926\u0947\u0916\u093E \u0915\u0930\u0947\u0902 \u0915\u0947\u0935\u0932 \u0932\u093F\u0916\u0940 \u091C\u093E\u0928\u0947 \u0935\u093E\u0932\u0940 \u0906\u0935\u093E\u091C\u093C \u091B\u094B\u0921\u093C\u0924\u093E \u0939\u0948, \u0915\u0948\u092A\u094D\u091A\u0930 \u0928\u0939\u0940\u0902: \u092C\u094B\u0932\u0915\u0930 \u092C\u093E\u0927\u093E \u0921\u093E\u0932\u0928\u093E \u0938\u0915\u094D\u0930\u093F\u092F \u0930\u0939\u0924\u093E \u0939\u0948; \u0938\u0915\u094D\u0937\u092E \u0939\u094B\u0928\u0947 \u092A\u0930 \u0915\u0949\u0928\u094D\u092B\u093C\u093F\u0917\u0930 \u0915\u093F\u090F \u0917\u090F \u0935\u0949\u0907\u0938 \u0915\u092E\u093E\u0902\u0921 \u091A\u0932\u0924\u0947 \u0939\u0948\u0902\u0964 \u0935\u0949\u0907\u0938 \u0930\u094B\u0915\u0947\u0902 \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u0948\u092A\u094D\u091A\u0930 \u092C\u0902\u0926 \u0915\u0930\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.recognition.microphone.inputStatus": "\u0911\u0921\u093F\u092F\u094B \u0907\u0928\u092A\u0941\u091F: {state}\u0964 \u0905\u0928\u0926\u0947\u0916\u093E \u0915\u0930\u0928\u093E \u0921\u093F\u0915\u094D\u091F\u0947\u0936\u0928 \u091B\u094B\u0921\u093C\u0924\u093E \u0939\u0948, \u0915\u0948\u092A\u094D\u091A\u0930 \u0928\u0939\u0940\u0902: \u092C\u094B\u0932\u0915\u0930 \u092C\u093E\u0927\u093E \u0921\u093E\u0932\u0928\u093E \u0938\u0915\u094D\u0930\u093F\u092F \u0930\u0939\u0924\u093E \u0939\u0948; \u0938\u0915\u094D\u0937\u092E \u0935\u0949\u0907\u0938 \u0915\u092E\u093E\u0902\u0921 \u0915\u093E\u092E \u0915\u0930\u0924\u0947 \u0939\u0948\u0902\u0964 \u0938\u0902\u0926\u0947\u0936 \u092B\u093C\u0940\u0932\u094D\u0921 \u092E\u0947\u0902 \u0938\u094D\u0930\u094B\u0924 \u092C\u091F\u0928 \u0938\u0947 \u0915\u0948\u092A\u094D\u091A\u0930 \u0930\u094B\u0915\u0947\u0902\u0964",
   "dsh-live-voice.recognition.microphone.label": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928",
   "dsh-live-voice.recognition.microphone.permissionHelp": "\u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0915\u0940 \u0905\u0928\u0941\u092E\u0924\u093F \u0915\u0947\u0935\u0932 \u0924\u092D\u0940 \u092E\u093E\u0901\u0917\u0940 \u091C\u093E\u090F\u0917\u0940 \u091C\u092C \u0906\u092A \u0921\u093F\u0915\u094D\u091F\u0947\u0936\u0928 \u092F\u093E \u0935\u0949\u0907\u0938 \u092C\u093E\u0924\u091A\u0940\u0924 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902\u0917\u0947\u0964",
   "dsh-live-voice.recognition.microphone.resume": "\u0938\u0941\u0928\u0928\u093E \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
@@ -1165,7 +1165,7 @@ var ptBR = {
   "dsh-live-voice.recognition.microphone.device": "Dispositivo de entrada",
   "dsh-live-voice.recognition.microphone.failure": "Microfone: {reason}",
   "dsh-live-voice.recognition.microphone.ignore": "Ignorar entrada do editor de mensagens",
-  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada do microfone: {state}. Ignorando descarta o ditado, n\xE3o a captura: a interrup\xE7\xE3o por fala continua ativa; comandos configurados funcionam quando habilitados. Encerrar voz encerra a captura do microfone.",
+  "dsh-live-voice.recognition.microphone.inputStatus": "Entrada de \xE1udio: {state}. Ignorar descarta o ditado, n\xE3o a captura: a interrup\xE7\xE3o por fala continua ativa; comandos configurados funcionam quando habilitados. Encerre a captura pelo bot\xE3o da fonte no campo de mensagem.",
   "dsh-live-voice.recognition.microphone.label": "Microfone",
   "dsh-live-voice.recognition.microphone.permissionHelp": "A permiss\xE3o do microfone ser\xE1 solicitada apenas quando voc\xEA iniciar a ditado ou uma conversa por voz.",
   "dsh-live-voice.recognition.microphone.resume": "Retomar escuta",
@@ -1423,7 +1423,7 @@ var zh = {
   "dsh-live-voice.recognition.microphone.device": "\u8F93\u5165\u8BBE\u5907",
   "dsh-live-voice.recognition.microphone.failure": "\u9EA6\u514B\u98CE\uFF1A{reason}",
   "dsh-live-voice.recognition.microphone.ignore": "\u5FFD\u7565\u6D88\u606F\u8F93\u5165\u6846\u7684\u8BED\u97F3\u8F93\u5165",
-  "dsh-live-voice.recognition.microphone.inputStatus": "\u9EA6\u514B\u98CE\u8F93\u5165\uFF1A{state}\u3002\u5FFD\u7565\u53EA\u4E22\u5F03\u542C\u5199\uFF0C\u4E0D\u505C\u6B62\u91C7\u96C6\uFF1A\u8BED\u97F3\u6253\u65AD\u4ECD\u53EF\u7528\uFF1B\u5DF2\u542F\u7528\u7684\u81EA\u5B9A\u4E49\u8BED\u97F3\u547D\u4EE4\u4ECD\u6709\u6548\u3002\u505C\u6B62\u8BED\u97F3\u4F1A\u7ED3\u675F\u9EA6\u514B\u98CE\u91C7\u96C6\u3002",
+  "dsh-live-voice.recognition.microphone.inputStatus": "\u97F3\u9891\u8F93\u5165\uFF1A{state}\u3002\u5FFD\u7565\u4EC5\u4E22\u5F03\u542C\u5199\uFF0C\u4E0D\u4F1A\u505C\u6B62\u91C7\u96C6\uFF1A\u8BED\u97F3\u6253\u65AD\u4ECD\u7136\u6709\u6548\uFF1B\u542F\u7528\u540E\uFF0C\u914D\u7F6E\u7684\u8BED\u97F3\u547D\u4EE4\u4ECD\u53EF\u4F7F\u7528\u3002\u901A\u8FC7\u6D88\u606F\u8F93\u5165\u6846\u4E2D\u7684\u97F3\u6E90\u6309\u94AE\u505C\u6B62\u91C7\u96C6\u3002",
   "dsh-live-voice.recognition.microphone.label": "\u9EA6\u514B\u98CE",
   "dsh-live-voice.recognition.microphone.permissionHelp": "\u4EC5\u5728\u4F60\u5F00\u59CB\u542C\u5199\u6216\u8BED\u97F3\u5BF9\u8BDD\u65F6\u624D\u4F1A\u8BF7\u6C42\u9EA6\u514B\u98CE\u6743\u9650\u3002",
   "dsh-live-voice.recognition.microphone.resume": "\u6062\u590D\u8046\u542C",
@@ -2312,6 +2312,12 @@ var MeetingTranscript = class {
   last = null;
   expected = null;
   timestamps = false;
+  sourceTimestamps = /* @__PURE__ */ new Map();
+  setSourceTimestamps(source, enabled) {
+    if (this.sourceTimestamps.get(source) === enabled) return;
+    this.sourceTimestamps.set(source, enabled);
+    this.last = null;
+  }
   setTimestamps(enabled) {
     this.timestamps = enabled;
     this.last = null;
@@ -2327,16 +2333,17 @@ var MeetingTranscript = class {
     const draft = this.composer.getDraft();
     if (draft !== this.expected) this.last = null;
     const labelled = this.active.size > 1;
-    const changed = labelled && this.last !== source;
+    const timestamps = this.sourceTimestamps.get(source) ?? this.timestamps;
+    const changed = (labelled || timestamps) && this.last !== source;
     const date = new Date(Number.isFinite(startedAt) ? startedAt : Date.now());
     const pad = (value) => String(value).padStart(2, "0");
-    const stamp = this.timestamps && changed ? "[" + date.getFullYear() + "/" + pad(date.getMonth() + 1) + "/" + pad(date.getDate()) + " " + pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds()) + "] " : "";
-    const prefix = changed ? stamp + (source === "microphone" ? "Me: " : "Them: ") : "";
+    const stamp = timestamps && changed ? "[" + date.getFullYear() + "/" + pad(date.getMonth() + 1) + "/" + pad(date.getDate()) + " " + pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds()) + "] " : "";
+    const prefix = changed ? stamp + (labelled ? source === "microphone" ? "Me: " : "Them: " : "") : "";
     const separator = draft ? changed ? "\n\n" : "\n" : "";
     const next = draft + separator + prefix + chunk;
     this.composer.setDraft(next);
     this.expected = next;
-    this.last = labelled ? source : null;
+    this.last = labelled || timestamps ? source : null;
   }
   reset() {
     this.active.clear();
@@ -2344,590 +2351,6 @@ var MeetingTranscript = class {
     this.expected = null;
   }
 };
-
-// src/modules/conversation/models/meeting.ts
-var MeetingController = class {
-  constructor({ composer, settings, createSource, translate, onActivity, onSpeech }) {
-    this.settings = settings;
-    this.createSource = createSource;
-    this.t = translate;
-    this.onActivity = onActivity;
-    this.onSpeech = onSpeech;
-    this.transcript = new MeetingTranscript(composer);
-    this.jobs = /* @__PURE__ */ new Map();
-    this.generations = /* @__PURE__ */ new Map();
-    this.listeners = /* @__PURE__ */ new Set();
-    this.snapshot = {
-      active: false,
-      timestamps: false,
-      microphone: { starting: false, listening: false, pending: 0, error: null },
-      shared: { starting: false, listening: false, pending: 0, error: null }
-    };
-  }
-  getSnapshot = () => this.snapshot;
-  subscribe = (listener) => {
-    this.listeners.add(listener);
-    return () => this.listeners.delete(listener);
-  };
-  patch(source, next) {
-    this.snapshot = {
-      ...this.snapshot,
-      ...source ? { [source]: { ...this.snapshot[source], ...next } } : next
-    };
-    for (const listener of this.listeners) listener();
-  }
-  toggleTimestamps() {
-    const enabled = !this.snapshot.timestamps;
-    this.transcript.setTimestamps(enabled);
-    this.patch(null, { timestamps: enabled });
-  }
-  async start(source, request) {
-    if (this.disposed) {
-      request?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
-      });
-      return;
-    }
-    const stopping = this.stop(source);
-    const generation = this.generations.get(source);
-    await stopping;
-    if (this.disposed || this.generations.get(source) !== generation) {
-      request?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
-      });
-      return;
-    }
-    this.patch(null, { active: true });
-    const abort = new AbortController();
-    const job = { abort };
-    this.jobs.set(source, job);
-    const valid = () => this.jobs.get(source) === job && !abort.signal.aborted;
-    this.patch(source, { starting: true, error: null });
-    try {
-      const settings = this.settings();
-      if (settings.recognitionEngine === "browser") throw new Error(this.t("httpRequired"));
-      const { meter, engine } = this.createSource(source, settings);
-      Object.assign(job, { meter, engine });
-      if (source === "shared") meter.provide(request);
-      meter.deviceId = settings.inputDeviceId;
-      const capability = await engine.capability();
-      if (!valid()) return;
-      if (!capability.supported) throw new Error(capability.reason || this.t("unavailable"));
-      if (!await meter.start({ signal: abort.signal }) || !valid()) return;
-      this.transcript.setActive(source, true);
-      for (const track of meter.stream?.getTracks() || [])
-        track.addEventListener(
-          "ended",
-          () => {
-            if (valid()) void this.stop(source);
-          },
-          { once: true }
-        );
-      await engine.start({
-        lang: settings.recognitionLang,
-        signal: abort.signal,
-        onResult: ({ final, interim, startedAt }) => {
-          if (!valid()) return;
-          const accepted = this.onSpeech?.(source, final || interim) !== false;
-          if (final && accepted) this.transcript.append(source, final, startedAt);
-        },
-        onActivity: (active) => {
-          if (valid()) this.onActivity?.(source, active);
-        },
-        onProcessingChange: ({ pending }) => {
-          if (valid()) this.patch(source, { pending });
-        },
-        onError: (error) => {
-          if (valid()) {
-            this.patch(source, { error: this.t("failed") });
-            void this.stop(source);
-          }
-        }
-      });
-      if (valid()) this.patch(source, { starting: false, listening: true });
-    } catch (error) {
-      if (valid()) {
-        this.patch(source, {
-          error: source === "shared" && error.message === "No shared audio track was returned." ? this.t("noAudio") : error.message === this.t("httpRequired") ? error.message : this.t("failed")
-        });
-        await this.stop(source);
-      }
-    } finally {
-      if (!valid()) {
-        await job.engine?.stop();
-        await job.meter?.stop();
-      }
-      if (source === "shared" && !job.meter?.stream)
-        request?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
-        });
-    }
-  }
-  async stop(source) {
-    this.generations.set(source, (this.generations.get(source) || 0) + 1);
-    const job = this.jobs.get(source);
-    this.jobs.delete(source);
-    this.onActivity?.(source, false);
-    job?.abort.abort();
-    this.transcript.setActive(source, false);
-    this.patch(source, { starting: false, listening: false, pending: 0 });
-    await job?.engine?.stop();
-    await job?.meter?.stop();
-  }
-  async end() {
-    await Promise.all(["microphone", "shared"].map((source) => this.stop(source)));
-    this.transcript.reset();
-    this.patch(null, { active: false });
-  }
-  async dispose() {
-    this.disposed = true;
-    await this.end();
-    this.listeners.clear();
-  }
-};
-
-// src/modules/core/microphone.ts
-var MicrophoneMeter = class {
-  constructor(globals = globalThis) {
-    this.g = globals;
-    this.deviceId = "";
-    this.epoch = 0;
-    this.current = null;
-    this.stream = this.context = this.source = this.analyser = this.samples = null;
-  }
-  async capability() {
-    const secure = this.g.isSecureContext === true || ["localhost", "127.0.0.1", "::1"].includes(this.g.location?.hostname);
-    if (!secure)
-      return {
-        supported: false,
-        permission: "unavailable",
-        reason: "Microphone capture requires a secure or loopback page."
-      };
-    if (typeof this.g.navigator?.mediaDevices?.getUserMedia !== "function")
-      return {
-        supported: false,
-        permission: "unavailable",
-        reason: "This browser does not expose microphone capture."
-      };
-    const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
-    if (typeof AudioContext !== "function")
-      return {
-        supported: false,
-        permission: "unavailable",
-        reason: "This browser does not expose Web Audio for the live waveform."
-      };
-    let permission = "prompt";
-    try {
-      const status = await this.g.navigator.permissions?.query?.({ name: "microphone" });
-      if (["granted", "denied", "prompt"].includes(status?.state)) permission = status.state;
-    } catch {
-    }
-    return permission === "denied" ? {
-      supported: false,
-      permission,
-      reason: "Microphone permission is denied. Allow it in browser settings, then refresh availability."
-    } : { supported: true, permission };
-  }
-  async start({ signal } = {}) {
-    this.stop();
-    if (signal?.aborted) return false;
-    const job = {
-      signal,
-      stream: null,
-      context: null,
-      source: null,
-      analyser: null,
-      samples: null
-    };
-    const cancelled2 = new Promise((resolve) => {
-      job.cancelled = resolve;
-    });
-    job.cancel = () => {
-      if (this.current === job) this.stop();
-    };
-    this.current = job;
-    signal?.addEventListener("abort", job.cancel, { once: true });
-    if (signal?.aborted) {
-      job.cancel();
-      return false;
-    }
-    const valid = () => this.current === job;
-    const capture = async () => {
-      try {
-        const stream = await this.g.navigator.mediaDevices.getUserMedia({
-          audio: {
-            ...this.deviceId ? { deviceId: { exact: this.deviceId } } : {},
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true
-          }
-        });
-        job.stream = stream;
-        if (!valid()) {
-          this._dispose(job);
-          return false;
-        }
-        this.stream = stream;
-        const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
-        job.context = new AudioContext();
-        job.analyser = job.context.createAnalyser();
-        job.analyser.fftSize = 256;
-        job.source = job.context.createMediaStreamSource(stream);
-        job.source.connect(job.analyser);
-        job.samples = new Float32Array(job.analyser.fftSize);
-        this.context = job.context;
-        this.source = job.source;
-        this.analyser = job.analyser;
-        this.samples = job.samples;
-        await job.context.resume();
-        return valid();
-      } catch (error) {
-        if (!valid()) {
-          this._dispose(job);
-          return false;
-        }
-        this.current = null;
-        this._clear();
-        this._dispose(job);
-        throw error;
-      }
-    };
-    return Promise.race([capture(), cancelled2]);
-  }
-  level() {
-    if (!this.analyser || !this.samples) return 0;
-    this.analyser.getFloatTimeDomainData(this.samples);
-    return Math.min(
-      1,
-      Math.sqrt(this.samples.reduce((s, x2) => s + x2 * x2, 0) / this.samples.length) * 5
-    );
-  }
-  _clear() {
-    this.stream = this.context = this.source = this.analyser = this.samples = null;
-  }
-  _dispose(job) {
-    job.signal?.removeEventListener("abort", job.cancel);
-    const stream = job.stream, source = job.source, context = job.context;
-    job.stream = job.source = job.context = job.analyser = job.samples = null;
-    if (stream) {
-      for (const track of stream.getTracks()) {
-        try {
-          track.stop();
-        } catch {
-        }
-      }
-    }
-    try {
-      source?.disconnect();
-    } catch {
-    }
-    try {
-      if (context && context.state !== "closed") Promise.resolve(context.close()).catch(() => {
-      });
-    } catch {
-    }
-  }
-  async release() {
-    return this.stop();
-  }
-  async stop() {
-    ++this.epoch;
-    const job = this.current;
-    this.current = null;
-    this._clear();
-    if (!job) return;
-    job.cancelled(false);
-    this._dispose(job);
-  }
-};
-
-// src/modules/core/sharedAudio.ts
-function requestSharedAudio(globals = globalThis) {
-  return globals.navigator.mediaDevices.getDisplayMedia({
-    video: true,
-    audio: true,
-    // Chromium hints exclude this application's own tab; unsupported browsers ignore them.
-    selfBrowserSurface: "exclude",
-    restrictOwnAudio: true
-  });
-}
-var SharedAudioMeter = class extends MicrophoneMeter {
-  constructor(globals = globalThis) {
-    super(globals);
-    this.pending = null;
-  }
-  provide(request) {
-    this.pending = Promise.resolve(request);
-    this.pending.catch(() => {
-    });
-  }
-  async capability() {
-    return {
-      supported: typeof this.g.navigator?.mediaDevices?.getDisplayMedia === "function" && typeof (this.g.AudioContext || this.g.webkitAudioContext) === "function"
-    };
-  }
-  async stop() {
-    const pending = this.pending;
-    this.pending = null;
-    pending?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
-    });
-    return super.stop();
-  }
-  async start({ signal } = {}) {
-    const pending = this.pending;
-    this.pending = null;
-    await super.stop();
-    if (!pending) throw new Error("Shared audio permission was not requested.");
-    const job = {
-      signal,
-      stream: null,
-      context: null,
-      source: null,
-      cancel: () => {
-        if (this.current === job) void this.stop();
-      },
-      cancelled: () => {
-      }
-    };
-    this.current = job;
-    signal?.addEventListener("abort", job.cancel, { once: true });
-    try {
-      const stream = await pending;
-      job.stream = stream;
-      if (signal?.aborted || this.current !== job) {
-        this._dispose(job);
-        return false;
-      }
-      const tracks = stream.getAudioTracks();
-      if (!tracks.length) throw new Error("No shared audio track was returned.");
-      const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
-      job.context = new AudioContext();
-      job.source = job.context.createMediaStreamSource(new this.g.MediaStream(tracks));
-      job.analyser = job.context.createAnalyser();
-      job.analyser.fftSize = 256;
-      job.source.connect(job.analyser);
-      job.samples = new Float32Array(job.analyser.fftSize);
-      this.stream = stream;
-      this.context = job.context;
-      this.source = job.source;
-      this.analyser = job.analyser;
-      this.samples = job.samples;
-      await job.context.resume();
-      return this.current === job;
-    } catch (error) {
-      if (this.current === job) {
-        this.current = null;
-        this._clear();
-      }
-      this._dispose(job);
-      if (signal?.aborted) return false;
-      throw error;
-    }
-  }
-};
-
-// src/modules/conversation/components/MeetingControls.tsx
-var import_react27 = __toESM(require("react"), 1);
-
-// src/modules/conversation/components/RecognitionBar.tsx
-var import_react26 = __toESM(require("react"), 1);
-
-// src/modules/conversation/components/Waveform.tsx
-var import_react25 = __toESM(require("react"), 1);
-function Waveform({ controller, enabled }) {
-  const ref = import_react25.default.useRef(null);
-  const current = import_react25.default.useRef({ controller, enabled });
-  current.current = { controller, enabled };
-  import_react25.default.useEffect(() => {
-    const canvas = ref.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
-    let frame = 0, width = 1, height = 40, ratio = 1;
-    let disposed = false;
-    const motion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    function resize() {
-      const bounds = canvas.getBoundingClientRect();
-      width = Math.max(1, bounds.width);
-      height = Math.max(1, bounds.height || 40);
-      ratio = Math.max(1, window.devicePixelRatio || 1);
-      const nextWidth = Math.round(width * ratio);
-      const nextHeight = Math.round(height * ratio);
-      if (canvas.width !== nextWidth) canvas.width = nextWidth;
-      if (canvas.height !== nextHeight) canvas.height = nextHeight;
-    }
-    const observer = typeof ResizeObserver === "function" ? new ResizeObserver(resize) : null;
-    observer?.observe(canvas);
-    window.addEventListener("resize", resize);
-    resize();
-    function draw(time) {
-      if (disposed) return;
-      if (ratio !== Math.max(1, window.devicePixelRatio || 1)) resize();
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      context.clearRect(0, 0, width, height);
-      const { controller: controller2, enabled: enabled2 } = current.current;
-      const raw = Number(controller2.meter?.level?.() ?? 0);
-      const level = enabled2 && Number.isFinite(raw) ? Math.min(1, Math.max(0, raw)) : 0;
-      const color = getComputedStyle(canvas).color;
-      for (let layer = 0; layer < 3; layer += 1) {
-        context.beginPath();
-        context.strokeStyle = layer === 1 ? "#38bdf8" : color;
-        context.globalAlpha = 0.4 + layer * 0.25;
-        context.lineWidth = layer === 2 ? 2 : 1;
-        const phase = motion?.matches ? 0 : time / (500 + layer * 170);
-        for (let x2 = 0; x2 <= width; x2 += 2) {
-          const envelope = Math.sin(Math.PI * x2 / width);
-          const y2 = height / 2 + Math.sin(x2 / width * Math.PI * (4 + layer * 2) + phase) * envelope * level * height * (0.43 - layer * 0.08);
-          if (x2 === 0) context.moveTo(x2, y2);
-          else context.lineTo(x2, y2);
-        }
-        context.stroke();
-      }
-      context.globalAlpha = 1;
-      frame = window.requestAnimationFrame(draw);
-    }
-    frame = window.requestAnimationFrame(draw);
-    return () => {
-      disposed = true;
-      window.cancelAnimationFrame(frame);
-      observer?.disconnect();
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-  return /* @__PURE__ */ import_react25.default.createElement("canvas", { ref, className: "dlv-wave", "aria-hidden": true });
-}
-
-// src/modules/conversation/components/RecognitionBar.tsx
-function RecognitionBar({ controller, listening, label, status, leading, children }) {
-  return /* @__PURE__ */ import_react26.default.createElement("div", { className: "dlv-pill", role: "group", "aria-label": label }, leading, /* @__PURE__ */ import_react26.default.createElement(Waveform, { controller, enabled: Boolean(listening) }), /* @__PURE__ */ import_react26.default.createElement("span", { className: "dlv-status", role: "status", "aria-live": "polite" }, status), children);
-}
-
-// src/modules/conversation/components/MeetingControls.tsx
-function MeetingToggle({ meeting, onToggle }) {
-  const { scoped: copy } = useLanguage((ctx) => ctx.meeting);
-  const state = import_react27.default.useSyncExternalStore(meeting.subscribe, meeting.getSnapshot);
-  return /* @__PURE__ */ import_react27.default.createElement(
-    IconButton,
-    {
-      icon: "meeting",
-      label: copy.shared(),
-      title: copy[state.shared.listening || state.shared.starting ? "stopShared" : "startShared"](),
-      className: "dlv-mic",
-      "aria-pressed": Boolean(state.shared.listening || state.shared.starting),
-      onClick: onToggle
-    }
-  );
-}
-function MeetingBars({ meeting }) {
-  const { scoped: copy } = useLanguage((ctx) => ctx.meeting);
-  const state = import_react27.default.useSyncExternalStore(meeting.subscribe, meeting.getSnapshot);
-  const value = state.shared;
-  if (!value.listening && !value.starting && !value.error) return null;
-  const label = copy.shared();
-  const status = value.error || (value.starting ? copy.starting() : value.pending ? copy.processing() : copy.listening());
-  return /* @__PURE__ */ import_react27.default.createElement("div", { className: "dlv-bar-wrap dlv-meeting-bars" }, /* @__PURE__ */ import_react27.default.createElement(
-    RecognitionBar,
-    {
-      controller: { meter: meeting.jobs.get("shared")?.meter },
-      listening: value.listening,
-      label,
-      status,
-      leading: /* @__PURE__ */ import_react27.default.createElement(
-        IconButton,
-        {
-          icon: "meeting",
-          label,
-          "aria-pressed": Boolean(value.listening || value.starting),
-          onClick: () => {
-            void meeting.stop("shared");
-            meeting.patch("shared", { error: null });
-          }
-        }
-      )
-    },
-    /* @__PURE__ */ import_react27.default.createElement(
-      ToggleButton,
-      {
-        visibleLabel: copy.timestampsBadge(),
-        icon: "clock",
-        label: copy.timestamps(),
-        className: "dlv-timestamp-toggle",
-        pressed: Boolean(state.timestamps),
-        onClick: () => meeting.toggleTimestamps()
-      }
-    )
-  ));
-}
-
-// src/app/client/apply.tsx
-var import_react_dom = require("react-dom");
-
-// src/app/client/composerSelection.ts
-function preserveComposerSelection(write, doc = document) {
-  const active = doc.activeElement;
-  const selection = doc.getSelection();
-  const editable = active?.closest('[contenteditable="true"]');
-  const ownsSelection = editable && selection?.anchorNode && selection.focusNode && editable.contains(selection.anchorNode) && editable.contains(selection.focusNode);
-  const offset = (node, at2) => {
-    const range = doc.createRange();
-    range.selectNodeContents(editable);
-    range.setEnd(node, at2);
-    return range.toString().length;
-  };
-  const anchor = ownsSelection ? offset(selection.anchorNode, selection.anchorOffset) : null;
-  const focus = ownsSelection ? offset(selection.focusNode, selection.focusOffset) : null;
-  const outside = !ownsSelection && selection?.rangeCount ? selection.getRangeAt(0).cloneRange() : null;
-  const input = active;
-  const inputSelection = input && typeof input.selectionStart === "number" ? {
-    start: input.selectionStart,
-    end: input.selectionEnd,
-    direction: input.selectionDirection
-  } : null;
-  const scrollTop = active?.scrollTop, scrollLeft = active?.scrollLeft;
-  const bookmark = (node, at2) => {
-    const path = [];
-    let child = node;
-    while (child !== editable && child.parentNode) {
-      path.unshift(Array.prototype.indexOf.call(child.parentNode.childNodes, child));
-      child = child.parentNode;
-    }
-    return { path, at: at2, type: node.nodeType, text: node.textContent };
-  };
-  const anchorMark = ownsSelection ? bookmark(selection.anchorNode, selection.anchorOffset) : null;
-  const focusMark = ownsSelection ? bookmark(selection.focusNode, selection.focusOffset) : null;
-  write();
-  if (active?.isConnected && doc.activeElement !== active) active.focus({ preventScroll: true });
-  if (ownsSelection && editable.isConnected) {
-    const point = (at2) => {
-      const walker = doc.createTreeWalker(editable, 4);
-      let node;
-      let last = editable;
-      while (node = walker.nextNode()) {
-        last = node;
-        const length = node.textContent?.length ?? 0;
-        if (at2 <= length) return [node, at2];
-        at2 -= length;
-      }
-      return [last, last === editable ? last.childNodes.length : last.textContent?.length ?? 0];
-    };
-    const restorePoint = (mark, at2) => {
-      let node = editable;
-      for (const index of mark.path) node = node?.childNodes[index];
-      if (node && node.nodeType === mark.type && (node.nodeType !== 3 || node.textContent?.startsWith(mark.text ?? "")) && mark.at <= (node.nodeType === 3 ? node.textContent.length : node.childNodes.length))
-        return [node, mark.at];
-      return point(at2);
-    };
-    const [a, ao] = restorePoint(anchorMark, anchor);
-    const [f, fo] = restorePoint(focusMark, focus);
-    selection.setBaseAndExtent(a, ao, f, fo);
-    doc.dispatchEvent(new doc.defaultView.Event("selectionchange"));
-  } else if (inputSelection && active?.isConnected) {
-    input.setSelectionRange(inputSelection.start, inputSelection.end, inputSelection.direction);
-  } else if (outside?.startContainer.isConnected && outside.endContainer.isConnected) {
-    selection?.removeAllRanges();
-    selection?.addRange(outside);
-  }
-  if (active?.isConnected) {
-    active.scrollTop = scrollTop;
-    active.scrollLeft = scrollLeft;
-  }
-}
 
 // src/modules/core/transcript.ts
 var TranscriptDraft = class {
@@ -4806,6 +4229,9 @@ var VoiceCoordinator = class _VoiceCoordinator {
   startConversation() {
     return this.startListening(true);
   }
+  toggleTimestamps() {
+    this.patch({ timestamps: !this.snapshot.timestamps });
+  }
   muteListening() {
     this.cancelAutoSend();
     this.transcript.reset();
@@ -4898,21 +4324,24 @@ var VoiceCoordinator = class _VoiceCoordinator {
             if (!valid()) return;
             const count = Number.isSafeInteger(pending) && pending >= 0 ? pending : 0;
             this.patch({ pendingTranscriptions: count });
-            if (count > 0) this.cancelAutoSend();
+            if (count > 0) this.cancelAutoSend({ preserveIntent: true });
             else if (this.holdToTalkRelease) this._finishHoldToTalk();
             else this.maybeScheduleAutoSend();
           },
           onActivity: (active) => {
             if (!valid()) return;
             if (active) {
-              this.cancelAutoSend();
+              this.cancelAutoSend({ preserveIntent: true });
               this.assistantSpeechNotBefore = Infinity;
               this._cancelAssistantSpeechTimer();
             } else
               this.assistantSpeechNotBefore = Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1e3;
             this.patch({ recognizing: active });
             this._handleSpeechInterruption(this._speechActivity());
-            if (!active) this._drain();
+            if (!active) {
+              this.refreshDeliveryReadiness();
+              this._drain();
+            }
           },
           onError: (error) => {
             if (!valid()) return;
@@ -5077,39 +4506,52 @@ var VoiceCoordinator = class _VoiceCoordinator {
       if (this.snapshot.settings.recognitionFilterEnabled && !hasMinimumWords(final, this.snapshot.settings.recognitionMinimumWords)) {
         this.transcript.reset();
         this.patch({ recognizing: false });
+        this.refreshDeliveryReadiness();
         return;
       }
+      this.cancelAutoSend();
       const appended = this.composer.appendFinal?.(final, startedAt);
       const next = appended ?? this.transcript.update(this.composer.getDraft(), final, true);
       if (appended == null) this.composer.setDraft(next);
+      if (this.snapshot.settings.sendingMode !== "manual") this.autoSendIntent = next;
       this.maybeScheduleAutoSend(next);
     }
     if (interim) {
-      this.cancelAutoSend();
+      this.cancelAutoSend({ preserveIntent: true });
     }
     if (!interim && this.snapshot.recognizing)
       this.assistantSpeechNotBefore = Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1e3;
     this.patch({ recognizing: !!interim });
+    this.refreshDeliveryReadiness();
     this._handleSpeechInterruption(this._speechActivity());
     this._drain();
   }
-  maybeScheduleAutoSend(draft = this.composer.getDraft()) {
-    if (this.snapshot.settings.sendingMode === "manual" || this.snapshot.recognizing || this.snapshot.pendingTranscriptions > 0)
+  maybeScheduleAutoSend(draft = this.autoSendIntent) {
+    if (draft == null || draft !== this.composer.getDraft()) return;
+    if (this.autoSendTimer !== null) return;
+    if (this.snapshot.settings.sendingMode === "manual" || this.snapshot.muted || this.composer.canAutoSend?.() === false || this.snapshot.recognizing || this.snapshot.pendingTranscriptions > 0)
       return;
     this.scheduleAutoSend(draft);
+  }
+  refreshDeliveryReadiness() {
+    if (this.composer.canAutoSend?.() === false || this.snapshot.recognizing || this.snapshot.pendingTranscriptions > 0)
+      this.cancelAutoSend({ preserveIntent: true });
+    else this.maybeScheduleAutoSend();
   }
   scheduleAutoSend(draft, { force = false, stopAfter = false } = {}) {
     this.cancelAutoSend();
     if (!draft.trim() || typeof this.composer.submit !== "function") return;
     const delay = this.snapshot.settings.autoSendDelaySeconds * 1e3;
     this.autoSendDraft = draft;
+    this.autoSendIntent = draft;
     this.patch({ autoSendAt: Date.now() + delay });
     this.autoSendTimer = setTimeout(() => {
       this.autoSendTimer = null;
       const expected = this.autoSendDraft;
+      this.autoSendIntent = null;
       this.autoSendDraft = null;
       this.patch({ autoSendAt: null });
-      if (!this.disposed && (force || this.snapshot.settings.sendingMode !== "manual") && expected === this.composer.getDraft()) {
+      if (!this.disposed && (force || this.snapshot.settings.sendingMode !== "manual") && !this.snapshot.muted && this.composer.canAutoSend?.() !== false && expected === this.composer.getDraft()) {
         try {
           this.composer.submit(
             this.snapshot.settings.sendingMode === "steer" && !force ? "steer" : "queue"
@@ -5123,18 +4565,21 @@ var VoiceCoordinator = class _VoiceCoordinator {
           this._drain();
         }
       } else {
+        if (!this.disposed && !this.snapshot.muted && expected === this.composer.getDraft() && this.snapshot.settings.sendingMode !== "manual" && this.composer.canAutoSend?.() === false)
+          this.autoSendIntent = expected;
         this._drain();
       }
     }, delay);
   }
-  cancelAutoSend() {
+  cancelAutoSend({ preserveIntent = false } = {}) {
+    if (!preserveIntent) this.autoSendIntent = null;
     if (this.autoSendTimer !== null) clearTimeout(this.autoSendTimer);
     this.autoSendTimer = null;
     this.autoSendDraft = null;
     if (this.snapshot?.autoSendAt !== null) this.patch({ autoSendAt: null });
   }
   composerChanged(draft) {
-    if (this.autoSendDraft !== null && draft !== this.autoSendDraft) this.cancelAutoSend();
+    if (this.autoSendIntent != null && draft !== this.autoSendIntent) this.cancelAutoSend();
   }
   stopListening() {
     this.holdToTalkRelease = false;
@@ -5576,6 +5021,838 @@ var VoiceCoordinator = class _VoiceCoordinator {
   }
 };
 
+// src/modules/conversation/models/meeting.ts
+var MeetingController = class {
+  constructor({ composer, settings, createSource, translate, onActivity, onSpeech, stopSpeech }) {
+    this.composer = composer;
+    this.stopSpeech = stopSpeech;
+    this.inputs = /* @__PURE__ */ new Map();
+    this.inputOverrides = /* @__PURE__ */ new Map();
+    this.settings = settings;
+    this.createSource = createSource;
+    this.t = translate;
+    this.onActivity = onActivity;
+    this.onSpeech = onSpeech;
+    this.transcript = new MeetingTranscript(composer);
+    this.jobs = /* @__PURE__ */ new Map();
+    this.generations = /* @__PURE__ */ new Map();
+    this.listeners = /* @__PURE__ */ new Set();
+    this.snapshot = {
+      active: false,
+      timestamps: false,
+      microphone: { starting: false, listening: false, pending: 0, error: null },
+      shared: { starting: false, listening: false, pending: 0, error: null }
+    };
+  }
+  getSnapshot = () => this.snapshot;
+  subscribe = (listener) => {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  };
+  patch(source, next) {
+    if (source) {
+      const input = this.inputs.get(source) || (next.listening || next.starting || next.error ? this.input(source) : null);
+      const policy = {};
+      for (const key of ["starting", "listening", "error"])
+        if (Object.hasOwn(next, key)) policy[key] = next[key];
+      if (Object.hasOwn(next, "pending")) policy.pendingTranscriptions = next.pending;
+      input?.patch(policy);
+    }
+    this.snapshot = {
+      ...this.snapshot,
+      ...source ? { [source]: { ...this.snapshot[source], ...next } } : next
+    };
+    for (const listener of this.listeners) listener();
+  }
+  input(source = "shared") {
+    if (this.inputs.has(source)) return this.inputs.get(source);
+    const input = new VoiceCoordinator({
+      recognition: { stop: async () => {
+      } },
+      engines: {},
+      meter: { stop: async () => {
+      } },
+      settings: { ...this.settings(), microphoneEnabled: true },
+      composer: {
+        getDraft: () => this.composer.getDraft(),
+        setDraft: (text) => this.composer.setDraft(text),
+        appendFinal: (text, startedAt) => {
+          this.transcript.append(source, text, startedAt);
+          return this.composer.getDraft();
+        },
+        submit: (mode) => this.composer.submit?.(mode),
+        handleQuestionResult: (result) => this.composer.handleQuestionResult?.(result),
+        canAutoSend: () => this.composer.canAutoSend?.() !== false
+      }
+    });
+    this.inputOverrides.set(source, {
+      sendingMode: input.getSnapshot().settings.sendingMode,
+      voiceCommandsEnabled: input.getSnapshot().settings.voiceCommandsEnabled
+    });
+    const update = input.updateSettings.bind(input);
+    input.updateSettings = (next) => {
+      this.inputOverrides.set(source, { ...this.inputOverrides.get(source), ...next });
+      update(next);
+    };
+    input.clearError = () => this.patch(source, { error: null });
+    input.endConversation = () => this.stop(source);
+    input.stopSpeech = () => this.stopSpeech?.();
+    const updatePolicy = input.updateSettings;
+    input.updateSettings = (next) => {
+      if (Object.hasOwn(next, "announceAssistantMessages"))
+        this.composer.updatePlaybackSettings?.({ announceAssistantMessages: next.announceAssistantMessages });
+      return updatePolicy(next);
+    };
+    input.toggleTimestamps = () => {
+      const timestamps = !input.getSnapshot().timestamps;
+      this.transcript.setSourceTimestamps(source, timestamps);
+      input.patch({ timestamps });
+    };
+    this.inputs.set(source, input);
+    return input;
+  }
+  applySettings(settings) {
+    for (const [source, input] of this.inputs)
+      VoiceCoordinator.prototype.updateSettings.call(input, {
+        ...settings,
+        ...this.inputOverrides.get(source),
+        microphoneEnabled: !input.getSnapshot().muted
+      });
+  }
+  composerChanged(draft) {
+    for (const input of this.inputs.values()) input.composerChanged(draft);
+  }
+  refreshDeliveryReadiness() {
+    for (const input of this.inputs.values()) input.refreshDeliveryReadiness();
+  }
+  cancelDelivery() {
+    for (const input of this.inputs.values()) input.cancelAutoSend();
+  }
+  toggleTimestamps() {
+    const enabled = !this.snapshot.timestamps;
+    this.transcript.setTimestamps(enabled);
+    this.patch(null, { timestamps: enabled });
+  }
+  async start(source, request) {
+    if (this.disposed) {
+      request?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
+      });
+      return;
+    }
+    this.input(source);
+    const stopping = this.stop(source);
+    const generation = this.generations.get(source);
+    await stopping;
+    if (this.disposed || this.generations.get(source) !== generation) {
+      request?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
+      });
+      return;
+    }
+    this.patch(null, { active: true });
+    const abort = new AbortController();
+    const job = { abort };
+    this.jobs.set(source, job);
+    const valid = () => this.jobs.get(source) === job && !abort.signal.aborted;
+    this.patch(source, { starting: true, error: null });
+    try {
+      const settings = this.settings();
+      if (settings.recognitionEngine === "browser") throw new Error(this.t("httpRequired"));
+      const { meter, engine } = this.createSource(source, settings);
+      const input = this.input(source);
+      input.meter = meter;
+      input.updateSettings({ microphoneEnabled: true });
+      this.applySettings(settings);
+      input.patch({ conversation: true, starting: true, error: null });
+      Object.assign(job, { meter, engine });
+      if (source === "shared") meter.provide(request);
+      meter.deviceId = settings.inputDeviceId;
+      const capability = await engine.capability();
+      if (!valid()) return;
+      if (!capability.supported) throw new Error(capability.reason || this.t("unavailable"));
+      if (!await meter.start({ signal: abort.signal })) {
+        if (valid()) await this.stop(source);
+        return;
+      }
+      if (!valid()) return;
+      this.transcript.setActive(source, true);
+      for (const track of meter.stream?.getTracks() || [])
+        track.addEventListener(
+          "ended",
+          () => {
+            if (valid()) void this.stop(source);
+          },
+          { once: true }
+        );
+      await engine.start({
+        lang: settings.recognitionLang,
+        signal: abort.signal,
+        onResult: ({ final, interim, startedAt }) => {
+          if (!valid()) return;
+          const accepted = this.onSpeech?.(source, final || interim) !== false;
+          if (accepted) input.onResult({ final, interim, startedAt });
+          else if (final) input.patch({ recognizing: false });
+          if (final && !interim) {
+            this.onActivity?.(source, false);
+            input.refreshDeliveryReadiness();
+          }
+        },
+        onActivity: (active) => {
+          if (!valid()) return;
+          if (active) input.cancelAutoSend({ preserveIntent: true });
+          input.patch({ recognizing: active });
+          this.onActivity?.(source, active);
+          input.refreshDeliveryReadiness();
+        },
+        onProcessingChange: ({ pending }) => {
+          if (!valid()) return;
+          input.patch({ pendingTranscriptions: pending });
+          this.patch(source, { pending });
+          if (pending) input.cancelAutoSend({ preserveIntent: true });
+          else if (!input.getSnapshot().muted) input.maybeScheduleAutoSend();
+        },
+        onError: (error) => {
+          if (valid()) {
+            this.patch(source, { error: this.t("failed") });
+            void this.stop(source);
+          }
+        }
+      });
+      if (valid()) {
+        input.patch({ starting: false, listening: true });
+        this.patch(source, { starting: false, listening: true });
+      }
+    } catch (error) {
+      if (valid()) {
+        this.patch(source, {
+          error: source === "shared" && error.message === "No shared audio track was returned." ? this.t("noAudio") : error.message === this.t("httpRequired") ? error.message : this.t("failed")
+        });
+        await this.stop(source);
+      }
+    } finally {
+      if (!valid()) {
+        await job.engine?.stop();
+        await job.meter?.stop();
+      }
+      if (source === "shared" && !job.meter?.stream)
+        request?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
+        });
+    }
+  }
+  async stop(source) {
+    this.generations.set(source, (this.generations.get(source) || 0) + 1);
+    const job = this.jobs.get(source);
+    this.jobs.delete(source);
+    const input = this.inputs.get(source);
+    input?.cancelAutoSend();
+    input?.patch({ conversation: false, starting: false, listening: false, recognizing: false, pendingTranscriptions: 0 });
+    this.onActivity?.(source, false);
+    job?.abort.abort();
+    this.transcript.setActive(source, false);
+    this.patch(source, { starting: false, listening: false, pending: 0 });
+    await job?.engine?.stop();
+    await job?.meter?.stop();
+  }
+  async end() {
+    await Promise.all(["microphone", "shared"].map((source) => this.stop(source)));
+    this.transcript.reset();
+    this.patch(null, { active: false });
+  }
+  async dispose() {
+    this.disposed = true;
+    await this.end();
+    for (const input of this.inputs.values()) {
+      input.cancelAutoSend();
+      input.disposed = true;
+      input.listeners.clear();
+    }
+    this.listeners.clear();
+  }
+};
+
+// src/modules/core/microphone.ts
+var MicrophoneMeter = class {
+  constructor(globals = globalThis) {
+    this.g = globals;
+    this.deviceId = "";
+    this.epoch = 0;
+    this.current = null;
+    this.stream = this.context = this.source = this.analyser = this.samples = null;
+  }
+  async capability() {
+    const secure = this.g.isSecureContext === true || ["localhost", "127.0.0.1", "::1"].includes(this.g.location?.hostname);
+    if (!secure)
+      return {
+        supported: false,
+        permission: "unavailable",
+        reason: "Microphone capture requires a secure or loopback page."
+      };
+    if (typeof this.g.navigator?.mediaDevices?.getUserMedia !== "function")
+      return {
+        supported: false,
+        permission: "unavailable",
+        reason: "This browser does not expose microphone capture."
+      };
+    const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
+    if (typeof AudioContext !== "function")
+      return {
+        supported: false,
+        permission: "unavailable",
+        reason: "This browser does not expose Web Audio for the live waveform."
+      };
+    let permission = "prompt";
+    try {
+      const status = await this.g.navigator.permissions?.query?.({ name: "microphone" });
+      if (["granted", "denied", "prompt"].includes(status?.state)) permission = status.state;
+    } catch {
+    }
+    return permission === "denied" ? {
+      supported: false,
+      permission,
+      reason: "Microphone permission is denied. Allow it in browser settings, then refresh availability."
+    } : { supported: true, permission };
+  }
+  async start({ signal } = {}) {
+    this.stop();
+    if (signal?.aborted) return false;
+    const job = {
+      signal,
+      stream: null,
+      context: null,
+      source: null,
+      analyser: null,
+      samples: null
+    };
+    const cancelled2 = new Promise((resolve) => {
+      job.cancelled = resolve;
+    });
+    job.cancel = () => {
+      if (this.current === job) this.stop();
+    };
+    this.current = job;
+    signal?.addEventListener("abort", job.cancel, { once: true });
+    if (signal?.aborted) {
+      job.cancel();
+      return false;
+    }
+    const valid = () => this.current === job;
+    const capture = async () => {
+      try {
+        const stream = await this.g.navigator.mediaDevices.getUserMedia({
+          audio: {
+            ...this.deviceId ? { deviceId: { exact: this.deviceId } } : {},
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        });
+        job.stream = stream;
+        if (!valid()) {
+          this._dispose(job);
+          return false;
+        }
+        this.stream = stream;
+        const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
+        job.context = new AudioContext();
+        job.analyser = job.context.createAnalyser();
+        job.analyser.fftSize = 256;
+        job.source = job.context.createMediaStreamSource(stream);
+        job.source.connect(job.analyser);
+        job.samples = new Float32Array(job.analyser.fftSize);
+        this.context = job.context;
+        this.source = job.source;
+        this.analyser = job.analyser;
+        this.samples = job.samples;
+        await job.context.resume();
+        return valid();
+      } catch (error) {
+        if (!valid()) {
+          this._dispose(job);
+          return false;
+        }
+        this.current = null;
+        this._clear();
+        this._dispose(job);
+        throw error;
+      }
+    };
+    return Promise.race([capture(), cancelled2]);
+  }
+  level() {
+    if (!this.analyser || !this.samples) return 0;
+    this.analyser.getFloatTimeDomainData(this.samples);
+    return Math.min(
+      1,
+      Math.sqrt(this.samples.reduce((s, x2) => s + x2 * x2, 0) / this.samples.length) * 5
+    );
+  }
+  _clear() {
+    this.stream = this.context = this.source = this.analyser = this.samples = null;
+  }
+  _dispose(job) {
+    job.signal?.removeEventListener("abort", job.cancel);
+    const stream = job.stream, source = job.source, context = job.context;
+    job.stream = job.source = job.context = job.analyser = job.samples = null;
+    if (stream) {
+      for (const track of stream.getTracks()) {
+        try {
+          track.stop();
+        } catch {
+        }
+      }
+    }
+    try {
+      source?.disconnect();
+    } catch {
+    }
+    try {
+      if (context && context.state !== "closed") Promise.resolve(context.close()).catch(() => {
+      });
+    } catch {
+    }
+  }
+  async release() {
+    return this.stop();
+  }
+  async stop() {
+    ++this.epoch;
+    const job = this.current;
+    this.current = null;
+    this._clear();
+    if (!job) return;
+    job.cancelled(false);
+    this._dispose(job);
+  }
+};
+
+// src/modules/core/sharedAudio.ts
+function requestSharedAudio(globals = globalThis) {
+  return globals.navigator.mediaDevices.getDisplayMedia({
+    video: true,
+    audio: true,
+    // Chromium hints exclude this application's own tab; unsupported browsers ignore them.
+    selfBrowserSurface: "exclude",
+    restrictOwnAudio: true
+  });
+}
+var SharedAudioMeter = class extends MicrophoneMeter {
+  constructor(globals = globalThis) {
+    super(globals);
+    this.pending = null;
+  }
+  provide(request) {
+    this.pending = Promise.resolve(request);
+    this.pending.catch(() => {
+    });
+  }
+  async capability() {
+    return {
+      supported: typeof this.g.navigator?.mediaDevices?.getDisplayMedia === "function" && typeof (this.g.AudioContext || this.g.webkitAudioContext) === "function"
+    };
+  }
+  async stop() {
+    const pending = this.pending;
+    this.pending = null;
+    pending?.then((stream) => stream.getTracks().forEach((track) => track.stop())).catch(() => {
+    });
+    return super.stop();
+  }
+  async start({ signal } = {}) {
+    const pending = this.pending;
+    this.pending = null;
+    await super.stop();
+    if (!pending) throw new Error("Shared audio permission was not requested.");
+    const job = {
+      signal,
+      stream: null,
+      context: null,
+      source: null,
+      cancel: () => {
+        if (this.current === job) void this.stop();
+      },
+      cancelled: () => {
+      }
+    };
+    this.current = job;
+    signal?.addEventListener("abort", job.cancel, { once: true });
+    try {
+      const stream = await pending;
+      job.stream = stream;
+      if (signal?.aborted || this.current !== job) {
+        this._dispose(job);
+        return false;
+      }
+      const tracks = stream.getAudioTracks();
+      if (!tracks.length) throw new Error("No shared audio track was returned.");
+      const AudioContext = this.g.AudioContext || this.g.webkitAudioContext;
+      job.context = new AudioContext();
+      job.source = job.context.createMediaStreamSource(new this.g.MediaStream(tracks));
+      job.analyser = job.context.createAnalyser();
+      job.analyser.fftSize = 256;
+      job.source.connect(job.analyser);
+      job.samples = new Float32Array(job.analyser.fftSize);
+      this.stream = stream;
+      this.context = job.context;
+      this.source = job.source;
+      this.analyser = job.analyser;
+      this.samples = job.samples;
+      await job.context.resume();
+      return this.current === job;
+    } catch (error) {
+      if (this.current === job) {
+        this.current = null;
+        this._clear();
+      }
+      this._dispose(job);
+      if (signal?.aborted) return false;
+      throw error;
+    }
+  }
+};
+
+// src/modules/conversation/components/MeetingControls.tsx
+var import_react29 = __toESM(require("react"), 1);
+
+// src/modules/conversation/components/ConversationStatusBar.tsx
+var import_react28 = __toESM(require("react"), 1);
+
+// src/modules/conversation/components/DeliveryModeButton.tsx
+var import_react25 = __toESM(require("react"), 1);
+function nextDeliveryMode(mode) {
+  return mode === "queue" ? "steer" : mode === "steer" ? "manual" : "queue";
+}
+function DeliveryModeButton({
+  mode = "manual",
+  onChange
+}) {
+  const { scoped: commons } = useLanguage((ctx) => ctx.commons);
+  const { scoped: settings } = useLanguage((ctx) => ctx.settings);
+  const description = mode === "steer" ? settings.delivery.steerDescription() : mode === "queue" ? commons.queue() : commons.manual();
+  const status = settings.delivery.status({ mode: description });
+  const visible = mode === "steer" ? commons.send() : mode === "queue" ? commons.delivery.queueBadge() : commons.toggle.offBadge();
+  return /* @__PURE__ */ import_react25.default.createElement(
+    ToggleButton,
+    {
+      className: "dlv-live-toggle",
+      label: status,
+      title: status,
+      icon: mode === "queue" ? "queue" : "send",
+      visibleLabel: visible,
+      pressed: mode !== "manual",
+      "data-mode": mode,
+      onClick: () => onChange(nextDeliveryMode(mode))
+    }
+  );
+}
+
+// src/modules/conversation/components/RecognitionBar.tsx
+var import_react27 = __toESM(require("react"), 1);
+
+// src/modules/conversation/components/Waveform.tsx
+var import_react26 = __toESM(require("react"), 1);
+function Waveform({ controller, enabled }) {
+  const ref = import_react26.default.useRef(null);
+  const current = import_react26.default.useRef({ controller, enabled });
+  current.current = { controller, enabled };
+  import_react26.default.useEffect(() => {
+    const canvas = ref.current;
+    const context = canvas?.getContext("2d");
+    if (!canvas || !context) return;
+    let frame = 0, width = 1, height = 40, ratio = 1;
+    let disposed = false;
+    const motion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    function resize() {
+      const bounds = canvas.getBoundingClientRect();
+      width = Math.max(1, bounds.width);
+      height = Math.max(1, bounds.height || 40);
+      ratio = Math.max(1, window.devicePixelRatio || 1);
+      const nextWidth = Math.round(width * ratio);
+      const nextHeight = Math.round(height * ratio);
+      if (canvas.width !== nextWidth) canvas.width = nextWidth;
+      if (canvas.height !== nextHeight) canvas.height = nextHeight;
+    }
+    const observer = typeof ResizeObserver === "function" ? new ResizeObserver(resize) : null;
+    observer?.observe(canvas);
+    window.addEventListener("resize", resize);
+    resize();
+    function draw(time) {
+      if (disposed) return;
+      if (ratio !== Math.max(1, window.devicePixelRatio || 1)) resize();
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.clearRect(0, 0, width, height);
+      const { controller: controller2, enabled: enabled2 } = current.current;
+      const raw = Number(controller2.meter?.level?.() ?? 0);
+      const level = enabled2 && Number.isFinite(raw) ? Math.min(1, Math.max(0, raw)) : 0;
+      const color = getComputedStyle(canvas).color;
+      for (let layer = 0; layer < 3; layer += 1) {
+        context.beginPath();
+        context.strokeStyle = layer === 1 ? "#38bdf8" : color;
+        context.globalAlpha = 0.4 + layer * 0.25;
+        context.lineWidth = layer === 2 ? 2 : 1;
+        const phase = motion?.matches ? 0 : time / (500 + layer * 170);
+        for (let x2 = 0; x2 <= width; x2 += 2) {
+          const envelope = Math.sin(Math.PI * x2 / width);
+          const y2 = height / 2 + Math.sin(x2 / width * Math.PI * (4 + layer * 2) + phase) * envelope * level * height * (0.43 - layer * 0.08);
+          if (x2 === 0) context.moveTo(x2, y2);
+          else context.lineTo(x2, y2);
+        }
+        context.stroke();
+      }
+      context.globalAlpha = 1;
+      frame = window.requestAnimationFrame(draw);
+    }
+    frame = window.requestAnimationFrame(draw);
+    return () => {
+      disposed = true;
+      window.cancelAnimationFrame(frame);
+      observer?.disconnect();
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+  return /* @__PURE__ */ import_react26.default.createElement("canvas", { ref, className: "dlv-wave", "aria-hidden": true });
+}
+
+// src/modules/conversation/components/RecognitionBar.tsx
+function RecognitionBar({ controller, listening, label, status, leading, children }) {
+  return /* @__PURE__ */ import_react27.default.createElement("div", { className: "dlv-pill", role: "group", "aria-label": label }, leading, /* @__PURE__ */ import_react27.default.createElement(Waveform, { controller, enabled: Boolean(listening) }), /* @__PURE__ */ import_react27.default.createElement("span", { className: "dlv-status", role: "status", "aria-live": "polite" }, status), children);
+}
+
+// src/modules/conversation/components/conversationStatus.ts
+function resolveConversationStatus(state, remaining, language) {
+  const { commons, recognition, settings, speak } = language;
+  if (state.answeringQuestion && state.recognizing) return recognition.status.answer();
+  if (state.answeringQuestion && state.listening) return recognition.status.awaitingAnswer();
+  if (remaining) return settings.autoSend.countdown({ remaining });
+  if (state.starting) return recognition.microphone.starting();
+  if (state.recognizing || state.pendingTranscriptions > 0) return recognition.status.processing();
+  if (state.listening) return recognition.status.listening();
+  if (state.conversation) return commons.conversation.idle();
+  return commons.status.ready();
+}
+
+// src/modules/conversation/components/ConversationStatusBar.tsx
+function ConversationStatusBar({
+  controller,
+  questionOnly = false,
+  includeSpeech = true,
+  overlay = false,
+  overlayStyle,
+  sourceIcon = "mic",
+  sourceLabel
+}) {
+  const { scoped: commons } = useLanguage((ctx) => ctx.commons);
+  const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
+  const { scoped: settings } = useLanguage((ctx) => ctx.settings);
+  const { scoped: speak } = useLanguage((ctx) => ctx.speak);
+  const { scoped: meeting } = useLanguage((ctx) => ctx.meeting);
+  const state = useConversationController(controller);
+  const { invoke, error, clearError } = useConversationActions(controller);
+  const [now, setNow] = import_react28.default.useState(Date.now());
+  import_react28.default.useEffect(() => {
+    if (!state.autoSendAt) return;
+    setNow(Date.now());
+    const timer = setInterval(() => setNow(Date.now()), 200);
+    return () => clearInterval(timer);
+  }, [state.autoSendAt]);
+  const capture = state.starting || state.listening || state.recognizing || state.pendingTranscriptions > 0;
+  if (questionOnly && !state.answeringQuestion) return null;
+  if (!state.conversation && !capture && !state.speaking && !state.paused && !state.speechRunActive && !(state.speechSegmentsRemaining > 0) && !state.error && !error)
+    return null;
+  const remaining = state.autoSendAt ? Math.max(1, Math.ceil((state.autoSendAt - now) / 1e3)) : null;
+  const status = resolveConversationStatus(state, remaining, {
+    commons,
+    recognition,
+    settings,
+    speak
+  });
+  return /* @__PURE__ */ import_react28.default.createElement(
+    "div",
+    {
+      className: overlay ? "dlv-bar-wrap dlv-bar-stack dlv-question-overlay" : "dlv-bar-wrap dlv-bar-stack",
+      style: overlay ? overlayStyle : void 0
+    },
+    includeSpeech && /* @__PURE__ */ import_react28.default.createElement(SpeechStatusBar, { controller }),
+    (state.conversation || capture || state.error || error) && /* @__PURE__ */ import_react28.default.createElement(
+      RecognitionBar,
+      {
+        controller,
+        listening: state.listening,
+        label: sourceLabel || commons.controls.title(),
+        status,
+        leading: /* @__PURE__ */ import_react28.default.createElement(import_react28.default.Fragment, null, state.conversation && !capture ? /* @__PURE__ */ import_react28.default.createElement(
+          IconButton,
+          {
+            label: recognition.microphone.takeControl(),
+            icon: sourceIcon,
+            onClick: () => invoke("startConversation")
+          }
+        ) : null, capture ? /* @__PURE__ */ import_react28.default.createElement(
+          ToggleButton,
+          {
+            className: "dlv-mic-state",
+            label: state.muted ? recognition.microphone.resume() : recognition.microphone.ignore(),
+            title: recognition.microphone.inputStatus({
+              state: state.muted ? commons.input.ignoring() : commons.input.listening()
+            }),
+            icon: sourceIcon,
+            visibleLabel: state.muted ? commons.input.ignoringBadge() : commons.input.listeningBadge(),
+            pressed: !state.muted,
+            "data-muted": state.muted ? "true" : "false",
+            onClick: () => invoke(state.muted ? "resumeListeningInput" : "muteListening")
+          }
+        ) : null)
+      },
+      /* @__PURE__ */ import_react28.default.createElement(
+        ToggleButton,
+        {
+          icon: "filter",
+          label: recognition.commands.enabled(),
+          visibleLabel: state.settings.voiceCommandsEnabled ? commons.on() : commons.off(),
+          pressed: Boolean(state.settings.voiceCommandsEnabled),
+          onClick: () => invoke("updateSettings", { voiceCommandsEnabled: !state.settings.voiceCommandsEnabled })
+        }
+      ),
+      /* @__PURE__ */ import_react28.default.createElement(
+        ToggleButton,
+        {
+          className: "dlv-timestamp-toggle",
+          icon: "clock",
+          label: meeting.timestamps(),
+          visibleLabel: meeting.timestampsBadge(),
+          pressed: Boolean(state.timestamps),
+          onClick: () => invoke("toggleTimestamps")
+        }
+      ),
+      /* @__PURE__ */ import_react28.default.createElement(
+        DeliveryModeButton,
+        {
+          mode: state.settings.sendingMode || "manual",
+          onChange: (sendingMode) => invoke("updateSettings", { sendingMode })
+        }
+      ),
+      remaining ? /* @__PURE__ */ import_react28.default.createElement(
+        IconButton,
+        {
+          label: settings.autoSend.cancel(),
+          icon: "close",
+          onClick: () => invoke("cancelAutoSend")
+        }
+      ) : null
+    ),
+    /* @__PURE__ */ import_react28.default.createElement(
+      ErrorMessage,
+      {
+        error: error || state.error,
+        dismissLabel: commons.dismissError(),
+        dismissText: commons.dismiss(),
+        onDismiss: () => {
+          clearError();
+          controller.clearError();
+        }
+      }
+    )
+  );
+}
+
+// src/modules/conversation/components/MeetingControls.tsx
+function MeetingToggle({ meeting, onToggle }) {
+  const { scoped: copy } = useLanguage((ctx) => ctx.meeting);
+  const state = import_react29.default.useSyncExternalStore(meeting.subscribe, meeting.getSnapshot);
+  return /* @__PURE__ */ import_react29.default.createElement(
+    IconButton,
+    {
+      icon: "meeting",
+      label: copy.shared(),
+      title: copy[state.shared.listening || state.shared.starting ? "stopShared" : "startShared"](),
+      className: "dlv-mic",
+      "aria-pressed": Boolean(state.shared.listening || state.shared.starting),
+      onClick: onToggle
+    }
+  );
+}
+function MeetingBars({ meeting }) {
+  const { scoped: copy } = useLanguage((ctx) => ctx.meeting);
+  const state = import_react29.default.useSyncExternalStore(meeting.subscribe, meeting.getSnapshot);
+  const value = state.shared;
+  if (!value.listening && !value.starting && !value.error) return null;
+  const label = copy.shared();
+  const input = meeting.input("shared");
+  return /* @__PURE__ */ import_react29.default.createElement("div", { className: "dlv-meeting-bars" }, /* @__PURE__ */ import_react29.default.createElement(ConversationStatusBar, { controller: input, includeSpeech: false, sourceIcon: "meeting", sourceLabel: label }));
+}
+
+// src/app/client/apply.tsx
+var import_react_dom = require("react-dom");
+
+// src/app/client/composerSelection.ts
+function preserveComposerSelection(write, doc = document) {
+  const active = doc.activeElement;
+  const selection = doc.getSelection();
+  const editable = active?.closest('[contenteditable="true"]');
+  const ownsSelection = editable && selection?.anchorNode && selection.focusNode && editable.contains(selection.anchorNode) && editable.contains(selection.focusNode);
+  const offset = (node, at2) => {
+    const range = doc.createRange();
+    range.selectNodeContents(editable);
+    range.setEnd(node, at2);
+    return range.toString().length;
+  };
+  const anchor = ownsSelection ? offset(selection.anchorNode, selection.anchorOffset) : null;
+  const focus = ownsSelection ? offset(selection.focusNode, selection.focusOffset) : null;
+  const outside = !ownsSelection && selection?.rangeCount ? selection.getRangeAt(0).cloneRange() : null;
+  const input = active;
+  const inputSelection = input && typeof input.selectionStart === "number" ? {
+    start: input.selectionStart,
+    end: input.selectionEnd,
+    direction: input.selectionDirection
+  } : null;
+  const scrollTop = active?.scrollTop, scrollLeft = active?.scrollLeft;
+  const bookmark = (node, at2) => {
+    const path = [];
+    let child = node;
+    while (child !== editable && child.parentNode) {
+      path.unshift(Array.prototype.indexOf.call(child.parentNode.childNodes, child));
+      child = child.parentNode;
+    }
+    return { path, at: at2, type: node.nodeType, text: node.textContent };
+  };
+  const anchorMark = ownsSelection ? bookmark(selection.anchorNode, selection.anchorOffset) : null;
+  const focusMark = ownsSelection ? bookmark(selection.focusNode, selection.focusOffset) : null;
+  write();
+  if (active?.isConnected && doc.activeElement !== active) active.focus({ preventScroll: true });
+  if (ownsSelection && editable.isConnected) {
+    const point = (at2) => {
+      const walker = doc.createTreeWalker(editable, 4);
+      let node;
+      let last = editable;
+      while (node = walker.nextNode()) {
+        last = node;
+        const length = node.textContent?.length ?? 0;
+        if (at2 <= length) return [node, at2];
+        at2 -= length;
+      }
+      return [last, last === editable ? last.childNodes.length : last.textContent?.length ?? 0];
+    };
+    const restorePoint = (mark, at2) => {
+      let node = editable;
+      for (const index of mark.path) node = node?.childNodes[index];
+      if (node && node.nodeType === mark.type && (node.nodeType !== 3 || node.textContent?.startsWith(mark.text ?? "")) && mark.at <= (node.nodeType === 3 ? node.textContent.length : node.childNodes.length))
+        return [node, mark.at];
+      return point(at2);
+    };
+    const [a, ao] = restorePoint(anchorMark, anchor);
+    const [f, fo] = restorePoint(focusMark, focus);
+    selection.setBaseAndExtent(a, ao, f, fo);
+    doc.dispatchEvent(new doc.defaultView.Event("selectionchange"));
+  } else if (inputSelection && active?.isConnected) {
+    input.setSelectionRange(inputSelection.start, inputSelection.end, inputSelection.direction);
+  } else if (outside?.startContainer.isConnected && outside.endContainer.isConnected) {
+    selection?.removeAllRanges();
+    selection?.addRange(outside);
+  }
+  if (active?.isConnected) {
+    active.scrollTop = scrollTop;
+    active.scrollLeft = scrollLeft;
+  }
+}
+
 // src/modules/core/ownership.ts
 var VoiceOwnership = class {
   constructor() {
@@ -5610,7 +5887,7 @@ var VoiceOwnership = class {
 };
 
 // src/modules/recognition/components/RecognitionCapabilityStatus.tsx
-var import_react28 = __toESM(require("react"), 1);
+var import_react30 = __toESM(require("react"), 1);
 
 // src/modules/recognition/engines/browser/BrowserRecognitionEngine.ts
 var abortError = () => Object.assign(new Error("Speech recognition was cancelled."), { name: "AbortError" });
@@ -6536,16 +6813,16 @@ var QwenHttpSpeakingEngine = class extends HostAudioSpeakingEngine {
 };
 
 // src/modules/settings/components/createLiveVoiceSettings.tsx
-var import_react52 = __toESM(require("react"), 1);
+var import_react54 = __toESM(require("react"), 1);
 
 // src/modules/settings/components/LiveVoiceSettings.tsx
-var import_react51 = __toESM(require("react"), 1);
+var import_react53 = __toESM(require("react"), 1);
 
 // src/modules/settings/hooks/useAudioDevices.ts
-var import_react29 = __toESM(require("react"), 1);
+var import_react31 = __toESM(require("react"), 1);
 function useAudioDevices() {
-  const [audioDevices, setAudioDevices] = import_react29.default.useState([]);
-  import_react29.default.useEffect(() => {
+  const [audioDevices, setAudioDevices] = import_react31.default.useState([]);
+  import_react31.default.useEffect(() => {
     let active = true;
     const refresh = async () => {
       try {
@@ -6575,7 +6852,7 @@ function createDeviceOptions(devices, kind, systemDefault, fallback) {
 }
 
 // src/modules/settings/hooks/useReleaseStatus.ts
-var import_react30 = __toESM(require("react"), 1);
+var import_react32 = __toESM(require("react"), 1);
 
 // src/modules/settings/services/releases.ts
 var CURRENT_VERSION = "0.4.1";
@@ -6680,10 +6957,10 @@ function hasNewerRelease(release, currentVersion = CURRENT_VERSION) {
 
 // src/modules/settings/hooks/useReleaseStatus.ts
 function useReleaseStatus() {
-  const [latestRelease, setLatestRelease] = import_react30.default.useState(
+  const [latestRelease, setLatestRelease] = import_react32.default.useState(
     null
   );
-  import_react30.default.useEffect(() => {
+  import_react32.default.useEffect(() => {
     let active = true;
     void checkLatestRelease().then((result) => {
       if (active) setLatestRelease(result.release);
@@ -6696,10 +6973,10 @@ function useReleaseStatus() {
 }
 
 // src/modules/settings/sections/conversation/ConversationSettingsSection.tsx
-var import_react36 = __toESM(require("react"), 1);
+var import_react38 = __toESM(require("react"), 1);
 
 // src/modules/settings/sections/conversation/DeliverySettings.tsx
-var import_react31 = __toESM(require("react"), 1);
+var import_react33 = __toESM(require("react"), 1);
 function DeliverySettings({
   settings,
   updateSettings
@@ -6707,8 +6984,8 @@ function DeliverySettings({
   const { scoped } = useLanguage((ctx) => ctx.settings);
   const mode = settings.sendingMode || "manual";
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
-  const busyEnterHelpId = import_react31.default.useId();
-  return /* @__PURE__ */ import_react31.default.createElement(import_react31.default.Fragment, null, /* @__PURE__ */ import_react31.default.createElement(
+  const busyEnterHelpId = import_react33.default.useId();
+  return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null, /* @__PURE__ */ import_react33.default.createElement(
     SelectField,
     {
       label: scoped.delivery.label(),
@@ -6720,7 +6997,7 @@ function DeliverySettings({
       ],
       onChange: (event) => updateSettings({ sendingMode: event.target.value })
     }
-  ), /* @__PURE__ */ import_react31.default.createElement(
+  ), /* @__PURE__ */ import_react33.default.createElement(
     SelectField,
     {
       label: scoped.delivery.dshEnterQuestion(),
@@ -6732,7 +7009,7 @@ function DeliverySettings({
       ],
       onChange: (event) => updateSettings({ dshBusyEnterBehavior: event.target.value })
     }
-  ), /* @__PURE__ */ import_react31.default.createElement("p", { id: busyEnterHelpId, className: "dlv-setting-description" }, scoped.delivery.dshEnterHelp()), mode !== "manual" ? /* @__PURE__ */ import_react31.default.createElement(
+  ), /* @__PURE__ */ import_react33.default.createElement("p", { id: busyEnterHelpId, className: "dlv-setting-description" }, scoped.delivery.dshEnterHelp()), mode !== "manual" ? /* @__PURE__ */ import_react33.default.createElement(
     SelectField,
     {
       label: scoped.autoSend.delay(),
@@ -6743,17 +7020,17 @@ function DeliverySettings({
       })),
       onChange: (event) => updateSettings({ autoSendDelaySeconds: Number(event.target.value) })
     }
-  ) : /* @__PURE__ */ import_react31.default.createElement("p", { className: "dlv-setting-description" }, scoped.delivery.manualLabel()));
+  ) : /* @__PURE__ */ import_react33.default.createElement("p", { className: "dlv-setting-description" }, scoped.delivery.manualLabel()));
 }
 
 // src/modules/settings/sections/conversation/HoldToTalkSettings.tsx
-var import_react32 = __toESM(require("react"), 1);
+var import_react34 = __toESM(require("react"), 1);
 function HoldToTalkSettings({
   settings,
   updateSettings
 }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
-  return /* @__PURE__ */ import_react32.default.createElement(
+  return /* @__PURE__ */ import_react34.default.createElement(
     CheckboxField,
     {
       label: recognition.holdToTalk.enabled(),
@@ -6765,14 +7042,14 @@ function HoldToTalkSettings({
 }
 
 // src/modules/settings/sections/conversation/VoiceModeSettings.tsx
-var import_react33 = __toESM(require("react"), 1);
+var import_react35 = __toESM(require("react"), 1);
 function VoiceModeSettings({
   settings,
   updateSettings
 }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const mode = settings.mode || "speaker";
-  return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null, /* @__PURE__ */ import_react33.default.createElement(
+  return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement(
     SelectField,
     {
       label: recognition.mode.label(),
@@ -6783,16 +7060,16 @@ function VoiceModeSettings({
       ],
       onChange: (event) => updateSettings({ mode: event.target.value })
     }
-  ), /* @__PURE__ */ import_react33.default.createElement("p", { className: "dlv-setting-description" }, mode === "headphones" ? recognition.headphoneMode.help() : recognition.speakerMode.help()));
+  ), /* @__PURE__ */ import_react35.default.createElement("p", { className: "dlv-setting-description" }, mode === "headphones" ? recognition.headphoneMode.help() : recognition.speakerMode.help()));
 }
 
 // src/modules/settings/sections/conversation/ConversationDelaySettings.tsx
-var import_react34 = __toESM(require("react"), 1);
+var import_react36 = __toESM(require("react"), 1);
 var DELAYS = [0, 1, 2, 3, 4];
 function ConversationDelaySettings({ settings, updateSettings }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
-  return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null, /* @__PURE__ */ import_react34.default.createElement(
+  return /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null, /* @__PURE__ */ import_react36.default.createElement(
     SelectField,
     {
       label: speak.responseDelay.label(),
@@ -6803,41 +7080,41 @@ function ConversationDelaySettings({ settings, updateSettings }) {
       })),
       onChange: (event) => updateSettings({ assistantSpeechDelaySeconds: Number(event.target.value) })
     }
-  ), /* @__PURE__ */ import_react34.default.createElement("p", { className: "dlv-setting-description" }, speak.responseDelay.help()));
+  ), /* @__PURE__ */ import_react36.default.createElement("p", { className: "dlv-setting-description" }, speak.responseDelay.help()));
 }
 
 // src/modules/settings/sections/speak/PlaybackPolicySettings.tsx
-var import_react35 = __toESM(require("react"), 1);
+var import_react37 = __toESM(require("react"), 1);
 function PlaybackPolicySettings({ settings, updateSettings }) {
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
-  return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement(
+  return /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null, /* @__PURE__ */ import_react37.default.createElement(
     CheckboxField,
     {
       label: speak.autoPlayback.label(),
       checked: settings.announceAssistantMessages !== false,
       onChange: (event) => updateSettings({ announceAssistantMessages: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react35.default.createElement("p", null, speak.autoPlayback.help()), /* @__PURE__ */ import_react35.default.createElement(
+  ), /* @__PURE__ */ import_react37.default.createElement("p", null, speak.autoPlayback.help()), /* @__PURE__ */ import_react37.default.createElement(
     CheckboxField,
     {
       label: speak.interruption.enabled(),
       checked: Boolean(settings.interruptSpeechOnUserMessage),
       onChange: (event) => updateSettings({ interruptSpeechOnUserMessage: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react35.default.createElement("p", null, settings.interruptSpeechOnUserMessage ? speak.interruption.enabledHelp() : speak.interruption.disabledHelp()));
+  ), /* @__PURE__ */ import_react37.default.createElement("p", null, settings.interruptSpeechOnUserMessage ? speak.interruption.enabledHelp() : speak.interruption.disabledHelp()));
 }
 
 // src/modules/settings/sections/conversation/ConversationSettingsSection.tsx
 function ConversationSettingsSection(props) {
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
-  return /* @__PURE__ */ import_react36.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react36.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "send" }, /* @__PURE__ */ import_react36.default.createElement("div", { className: "dlv-conversation-fields" }, /* @__PURE__ */ import_react36.default.createElement(DeliverySettings, { ...props }), /* @__PURE__ */ import_react36.default.createElement(HoldToTalkSettings, { ...props }), /* @__PURE__ */ import_react36.default.createElement(VoiceModeSettings, { ...props }), /* @__PURE__ */ import_react36.default.createElement(PlaybackPolicySettings, { ...props }), /* @__PURE__ */ import_react36.default.createElement(ConversationDelaySettings, { ...props })))));
+  return /* @__PURE__ */ import_react38.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react38.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react38.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "send" }, /* @__PURE__ */ import_react38.default.createElement("div", { className: "dlv-conversation-fields" }, /* @__PURE__ */ import_react38.default.createElement(DeliverySettings, { ...props }), /* @__PURE__ */ import_react38.default.createElement(HoldToTalkSettings, { ...props }), /* @__PURE__ */ import_react38.default.createElement(VoiceModeSettings, { ...props }), /* @__PURE__ */ import_react38.default.createElement(PlaybackPolicySettings, { ...props }), /* @__PURE__ */ import_react38.default.createElement(ConversationDelaySettings, { ...props })))));
 }
 
 // src/modules/settings/sections/recognition/RecognitionEngineSettings.tsx
-var import_react39 = __toESM(require("react"), 1);
+var import_react41 = __toESM(require("react"), 1);
 
 // src/modules/core/qwen/QwenSettings.tsx
-var import_react37 = __toESM(require("react"), 1);
+var import_react39 = __toESM(require("react"), 1);
 var BASE = "/api/dsh-live-voice/qwen";
 var UNLOADED = "dsh-live-voice.speak.qwen.restartRequired";
 async function qwenSettingsRequest(path, { method = "GET", config, signal } = {}, fetchImpl = globalThis.fetch) {
@@ -6866,15 +7143,15 @@ function QwenSettings({ controller }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
-  const [draft, setDraft] = import_react37.default.useState({
+  const [draft, setDraft] = import_react39.default.useState({
     baseUrl: "http://127.0.0.1:8080/",
     timeoutMs: 3e5
   });
-  const [busy, setBusy] = import_react37.default.useState(true);
-  const [loaded, setLoaded] = import_react37.default.useState(false);
-  const [error, setError] = import_react37.default.useState("");
-  const [message2, setMessage] = import_react37.default.useState("");
-  const active = import_react37.default.useRef(null);
+  const [busy, setBusy] = import_react39.default.useState(true);
+  const [loaded, setLoaded] = import_react39.default.useState(false);
+  const [error, setError] = import_react39.default.useState("");
+  const [message2, setMessage] = import_react39.default.useState("");
+  const active = import_react39.default.useRef(null);
   const translateStatus = (value) => ({
     "dsh-live-voice.commons.connection.unsaved": commons.connection.unsaved(),
     "dsh-live-voice.speak.qwen.saved": speak.qwen.saved(),
@@ -6928,13 +7205,13 @@ function QwenSettings({ controller }) {
       if (!abort.signal.aborted) setBusy(false);
     }
   }
-  import_react37.default.useEffect(() => {
+  import_react39.default.useEffect(() => {
     void run("load");
     return () => active.current?.abort();
   }, []);
   const field = (label, key, type = "text") => {
     const Field = type === "number" ? NumberField : TextField;
-    return /* @__PURE__ */ import_react37.default.createElement(
+    return /* @__PURE__ */ import_react39.default.createElement(
       Field,
       {
         label,
@@ -6950,11 +7227,11 @@ function QwenSettings({ controller }) {
       }
     );
   };
-  return /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null, /* @__PURE__ */ import_react37.default.createElement("p", null, recognition.qwen.hostHelp()), field(speak.qwen.endpoint(), "baseUrl"), field(commons.connection.timeout(), "timeoutMs", "number"), /* @__PURE__ */ import_react37.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react37.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("save") }, speak.qwen.save()), /* @__PURE__ */ import_react37.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("test") }, speak.qwen.test()), /* @__PURE__ */ import_react37.default.createElement("button", { type: "button", disabled: busy, onClick: () => run("load") }, commons.connection.reload())), busy && /* @__PURE__ */ import_react37.default.createElement("p", { role: "status" }, commons.connection.contactingHost()), message2 && /* @__PURE__ */ import_react37.default.createElement("p", { role: "status" }, translateStatus(message2)), error && /* @__PURE__ */ import_react37.default.createElement("p", { role: "alert" }, translateStatus(error)));
+  return /* @__PURE__ */ import_react39.default.createElement(import_react39.default.Fragment, null, /* @__PURE__ */ import_react39.default.createElement("p", null, recognition.qwen.hostHelp()), field(speak.qwen.endpoint(), "baseUrl"), field(commons.connection.timeout(), "timeoutMs", "number"), /* @__PURE__ */ import_react39.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react39.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("save") }, speak.qwen.save()), /* @__PURE__ */ import_react39.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("test") }, speak.qwen.test()), /* @__PURE__ */ import_react39.default.createElement("button", { type: "button", disabled: busy, onClick: () => run("load") }, commons.connection.reload())), busy && /* @__PURE__ */ import_react39.default.createElement("p", { role: "status" }, commons.connection.contactingHost()), message2 && /* @__PURE__ */ import_react39.default.createElement("p", { role: "status" }, translateStatus(message2)), error && /* @__PURE__ */ import_react39.default.createElement("p", { role: "alert" }, translateStatus(error)));
 }
 
 // src/modules/recognition/engines/whisper/WhisperSettings.tsx
-var import_react38 = __toESM(require("react"), 1);
+var import_react40 = __toESM(require("react"), 1);
 var BASE2 = "/api/dsh-live-voice/whisper";
 var UNLOADED2 = "dsh-live-voice.recognition.whisper.restartRequired";
 async function whisperSettingsRequest(path, { method = "GET", config, signal } = {}, fetchImpl = globalThis.fetch) {
@@ -6983,16 +7260,16 @@ function WhisperSettings({ controller }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const { scoped: settings } = useLanguage((ctx) => ctx.settings);
-  const [draft, setDraft] = import_react38.default.useState({
+  const [draft, setDraft] = import_react40.default.useState({
     url: "http://127.0.0.1:8080/inference",
     healthUrl: "/health",
     timeoutMs: 3e4
   });
-  const [busy, setBusy] = import_react38.default.useState(true);
-  const [loaded, setLoaded] = import_react38.default.useState(false);
-  const [error, setError] = import_react38.default.useState("");
-  const [message2, setMessage] = import_react38.default.useState("");
-  const active = import_react38.default.useRef(null);
+  const [busy, setBusy] = import_react40.default.useState(true);
+  const [loaded, setLoaded] = import_react40.default.useState(false);
+  const [error, setError] = import_react40.default.useState("");
+  const [message2, setMessage] = import_react40.default.useState("");
+  const active = import_react40.default.useRef(null);
   const translateStatus = (value) => ({
     "dsh-live-voice.commons.connection.unsaved": commons.connection.unsaved(),
     "dsh-live-voice.recognition.whisper.saved": recognition.whisper.saved(),
@@ -7046,13 +7323,13 @@ function WhisperSettings({ controller }) {
       if (!abort.signal.aborted) setBusy(false);
     }
   }
-  import_react38.default.useEffect(() => {
+  import_react40.default.useEffect(() => {
     void run("load");
     return () => active.current?.abort();
   }, []);
   const field = (label, key, type = "text") => {
     const Field = type === "number" ? NumberField : TextField;
-    return /* @__PURE__ */ import_react38.default.createElement(
+    return /* @__PURE__ */ import_react40.default.createElement(
       Field,
       {
         label,
@@ -7068,7 +7345,7 @@ function WhisperSettings({ controller }) {
       }
     );
   };
-  return /* @__PURE__ */ import_react38.default.createElement(import_react38.default.Fragment, null, /* @__PURE__ */ import_react38.default.createElement("p", null, settings.whisper.hostHelp()), field(commons.connection.endpoint(), "url"), field(commons.connection.healthEndpoint(), "healthUrl"), field(commons.connection.timeout(), "timeoutMs", "number"), /* @__PURE__ */ import_react38.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react38.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("save") }, recognition.whisper.save()), /* @__PURE__ */ import_react38.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("test") }, commons.connection.test()), /* @__PURE__ */ import_react38.default.createElement("button", { type: "button", disabled: busy, onClick: () => run("load") }, commons.connection.reload())), busy && /* @__PURE__ */ import_react38.default.createElement("p", { role: "status" }, commons.connection.contactingHost()), message2 && /* @__PURE__ */ import_react38.default.createElement("p", { role: "status" }, translateStatus(message2)), error && /* @__PURE__ */ import_react38.default.createElement("p", { role: "alert" }, translateStatus(error)));
+  return /* @__PURE__ */ import_react40.default.createElement(import_react40.default.Fragment, null, /* @__PURE__ */ import_react40.default.createElement("p", null, settings.whisper.hostHelp()), field(commons.connection.endpoint(), "url"), field(commons.connection.healthEndpoint(), "healthUrl"), field(commons.connection.timeout(), "timeoutMs", "number"), /* @__PURE__ */ import_react40.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react40.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("save") }, recognition.whisper.save()), /* @__PURE__ */ import_react40.default.createElement("button", { type: "button", disabled: busy || !loaded, onClick: () => run("test") }, commons.connection.test()), /* @__PURE__ */ import_react40.default.createElement("button", { type: "button", disabled: busy, onClick: () => run("load") }, commons.connection.reload())), busy && /* @__PURE__ */ import_react40.default.createElement("p", { role: "status" }, commons.connection.contactingHost()), message2 && /* @__PURE__ */ import_react40.default.createElement("p", { role: "status" }, translateStatus(message2)), error && /* @__PURE__ */ import_react40.default.createElement("p", { role: "alert" }, translateStatus(error)));
 }
 
 // src/modules/settings/sections/recognition/RecognitionEngineSettings.tsx
@@ -7085,7 +7362,7 @@ function RecognitionEngineSettings({
   const setEngine = (next) => updateSettings(
     next === "browser" && settings.recognitionLang === "auto" ? { recognitionEngine: next, recognitionLang: "pt-BR" } : { recognitionEngine: next }
   );
-  return /* @__PURE__ */ import_react39.default.createElement(import_react39.default.Fragment, null, /* @__PURE__ */ import_react39.default.createElement(
+  return /* @__PURE__ */ import_react41.default.createElement(import_react41.default.Fragment, null, /* @__PURE__ */ import_react41.default.createElement(
     SelectField,
     {
       label: recognition.engine.label(),
@@ -7110,7 +7387,7 @@ function RecognitionEngineSettings({
       ],
       onChange: (event) => setEngine(event.target.value)
     }
-  ), /* @__PURE__ */ import_react39.default.createElement(
+  ), /* @__PURE__ */ import_react41.default.createElement(
     SelectField,
     {
       label: recognition.microphone.device(),
@@ -7123,7 +7400,7 @@ function RecognitionEngineSettings({
       ),
       onChange: (event) => updateSettings({ inputDeviceId: event.target.value })
     }
-  ), /* @__PURE__ */ import_react39.default.createElement(
+  ), /* @__PURE__ */ import_react41.default.createElement(
     SelectField,
     {
       label: recognition.language.label(),
@@ -7135,29 +7412,29 @@ function RecognitionEngineSettings({
       ],
       onChange: (event) => updateSettings({ recognitionLang: event.target.value })
     }
-  ), engine === "browser" && /* @__PURE__ */ import_react39.default.createElement(import_react39.default.Fragment, null, /* @__PURE__ */ import_react39.default.createElement("p", null, recognition.browser.help()), /* @__PURE__ */ import_react39.default.createElement(
+  ), engine === "browser" && /* @__PURE__ */ import_react41.default.createElement(import_react41.default.Fragment, null, /* @__PURE__ */ import_react41.default.createElement("p", null, recognition.browser.help()), /* @__PURE__ */ import_react41.default.createElement(
     CheckboxField,
     {
       label: recognition.browser.localProcessing(),
       checked: settings.recognitionProcessLocally !== false,
       onChange: (event) => updateSettings({ recognitionProcessLocally: event.target.checked })
     }
-  ), settings.recognitionProcessLocally !== false ? /* @__PURE__ */ import_react39.default.createElement(
+  ), settings.recognitionProcessLocally !== false ? /* @__PURE__ */ import_react41.default.createElement(
     CheckboxField,
     {
       label: recognition.browser.autoInstallPack(),
       checked: settings.recognitionAutoInstall !== false,
       onChange: (event) => updateSettings({ recognitionAutoInstall: event.target.checked })
     }
-  ) : /* @__PURE__ */ import_react39.default.createElement("p", { role: "status" }, recognition.browser.remoteServiceWarning())), engine === "whisper-http" && /* @__PURE__ */ import_react39.default.createElement(SettingsSubcard, { title: commons.connection.title(), icon: "link" }, /* @__PURE__ */ import_react39.default.createElement("p", null, recognition.whisper.captureHelp()), /* @__PURE__ */ import_react39.default.createElement(WhisperSettings, { controller })), engine === "qwen-http" && /* @__PURE__ */ import_react39.default.createElement(SettingsSubcard, { title: commons.connection.title(), icon: "link" }, /* @__PURE__ */ import_react39.default.createElement("p", null, recognition.qwen.captureHelp()), settings.engine !== "qwen-http" && /* @__PURE__ */ import_react39.default.createElement(QwenSettings, { controller })));
+  ) : /* @__PURE__ */ import_react41.default.createElement("p", { role: "status" }, recognition.browser.remoteServiceWarning())), engine === "whisper-http" && /* @__PURE__ */ import_react41.default.createElement(SettingsSubcard, { title: commons.connection.title(), icon: "link" }, /* @__PURE__ */ import_react41.default.createElement("p", null, recognition.whisper.captureHelp()), /* @__PURE__ */ import_react41.default.createElement(WhisperSettings, { controller })), engine === "qwen-http" && /* @__PURE__ */ import_react41.default.createElement(SettingsSubcard, { title: commons.connection.title(), icon: "link" }, /* @__PURE__ */ import_react41.default.createElement("p", null, recognition.qwen.captureHelp()), settings.engine !== "qwen-http" && /* @__PURE__ */ import_react41.default.createElement(QwenSettings, { controller })));
 }
 
 // src/modules/settings/sections/recognition/RecognitionFilterSettings.tsx
-var import_react40 = __toESM(require("react"), 1);
+var import_react42 = __toESM(require("react"), 1);
 function RecognitionFilterSettings({ settings, updateSettings }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const enabled = settings.recognitionFilterEnabled !== false;
-  return /* @__PURE__ */ import_react40.default.createElement(SettingsSubcard, { title: recognition.minimumWords.label(), icon: "filter" }, /* @__PURE__ */ import_react40.default.createElement(
+  return /* @__PURE__ */ import_react42.default.createElement(SettingsSubcard, { title: recognition.minimumWords.label(), icon: "filter" }, /* @__PURE__ */ import_react42.default.createElement(
     CheckboxField,
     {
       label: recognition.minimumWords.enabled(),
@@ -7165,7 +7442,7 @@ function RecognitionFilterSettings({ settings, updateSettings }) {
       checked: enabled,
       onChange: (event) => updateSettings({ recognitionFilterEnabled: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react40.default.createElement(
+  ), /* @__PURE__ */ import_react42.default.createElement(
     NumberField,
     {
       label: recognition.minimumWords.label(),
@@ -7183,24 +7460,24 @@ function RecognitionFilterSettings({ settings, updateSettings }) {
 }
 
 // src/modules/settings/sections/recognition/RecognitionSettingsSection.tsx
-var import_react44 = __toESM(require("react"), 1);
+var import_react46 = __toESM(require("react"), 1);
 
 // src/modules/settings/sections/recognition/SilenceDetectionSettings.tsx
-var import_react41 = __toESM(require("react"), 1);
+var import_react43 = __toESM(require("react"), 1);
 function SilenceDetectionSettings({ settings, updateSettings }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const savedCustomMs = normalizeCustomSilenceMs(settings.voiceDetectionCustomSilenceMs);
   if (!usesPluginVoiceDetection(settings.recognitionEngine)) return null;
   const selected = settings.voiceDetectionPreset || defaultSettings.voiceDetectionPreset;
-  return /* @__PURE__ */ import_react41.default.createElement(
+  return /* @__PURE__ */ import_react43.default.createElement(
     SettingsSubcard,
     {
       title: recognition.silenceDetection.label(),
       ariaLabel: recognition.silenceDetection.title(),
       icon: "pause"
     },
-    /* @__PURE__ */ import_react41.default.createElement("p", null, recognition.silenceDetection.help()),
-    /* @__PURE__ */ import_react41.default.createElement(
+    /* @__PURE__ */ import_react43.default.createElement("p", null, recognition.silenceDetection.help()),
+    /* @__PURE__ */ import_react43.default.createElement(
       NumberField,
       {
         label: recognition.maxUtterance.label(),
@@ -7215,15 +7492,15 @@ function SilenceDetectionSettings({ settings, updateSettings }) {
         }
       }
     ),
-    /* @__PURE__ */ import_react41.default.createElement("small", null, recognition.maxUtterance.help()),
-    /* @__PURE__ */ import_react41.default.createElement(
+    /* @__PURE__ */ import_react43.default.createElement("small", null, recognition.maxUtterance.help()),
+    /* @__PURE__ */ import_react43.default.createElement(
       "div",
       {
         className: "dlv-preset-group",
         role: "radiogroup",
         "aria-label": recognition.silenceDetection.pauseLabel()
       },
-      [...Object.keys(voiceDetectionPresets), "custom"].map((value) => /* @__PURE__ */ import_react41.default.createElement("label", { key: value, className: "dlv-preset" }, /* @__PURE__ */ import_react41.default.createElement(
+      [...Object.keys(voiceDetectionPresets), "custom"].map((value) => /* @__PURE__ */ import_react43.default.createElement("label", { key: value, className: "dlv-preset" }, /* @__PURE__ */ import_react43.default.createElement(
         "input",
         {
           type: "radio",
@@ -7232,9 +7509,9 @@ function SilenceDetectionSettings({ settings, updateSettings }) {
           checked: selected === value,
           onChange: () => updateSettings({ voiceDetectionPreset: value })
         }
-      ), /* @__PURE__ */ import_react41.default.createElement("span", null, /* @__PURE__ */ import_react41.default.createElement("strong", null, recognition.presets[value].label()), /* @__PURE__ */ import_react41.default.createElement("small", null, recognition.presets[value].description()))))
+      ), /* @__PURE__ */ import_react43.default.createElement("span", null, /* @__PURE__ */ import_react43.default.createElement("strong", null, recognition.presets[value].label()), /* @__PURE__ */ import_react43.default.createElement("small", null, recognition.presets[value].description()))))
     ),
-    selected === "custom" && /* @__PURE__ */ import_react41.default.createElement(import_react41.default.Fragment, null, /* @__PURE__ */ import_react41.default.createElement(
+    selected === "custom" && /* @__PURE__ */ import_react43.default.createElement(import_react43.default.Fragment, null, /* @__PURE__ */ import_react43.default.createElement(
       NumberField,
       {
         label: recognition.silenceDetection.customLabel(),
@@ -7248,15 +7525,15 @@ function SilenceDetectionSettings({ settings, updateSettings }) {
             updateSettings({ voiceDetectionCustomSilenceMs: value });
         }
       }
-    ), /* @__PURE__ */ import_react41.default.createElement("small", null, recognition.silenceDetection.customHelp())),
-    /* @__PURE__ */ import_react41.default.createElement("p", { className: "dlv-vad-summary" }, recognition.silenceDetection.duration({
+    ), /* @__PURE__ */ import_react43.default.createElement("small", null, recognition.silenceDetection.customHelp())),
+    /* @__PURE__ */ import_react43.default.createElement("p", { className: "dlv-vad-summary" }, recognition.silenceDetection.duration({
       milliseconds: voiceDetectionSilenceMs(settings)
     }))
   );
 }
 
 // src/modules/settings/sections/recognition/VoiceCommandSettings.tsx
-var import_react42 = __toESM(require("react"), 1);
+var import_react44 = __toESM(require("react"), 1);
 var COMMANDS = [
   ["send", "voiceCommandSend", "send message, send it"],
   ["queue", "voiceCommandQueue", "queue message, queue it"],
@@ -7269,14 +7546,14 @@ var COMMANDS = [
 function VoiceCommandSettings({ settings, updateSettings }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const enabled = settings.voiceCommandsEnabled !== false;
-  return /* @__PURE__ */ import_react42.default.createElement(SettingsSubcard, { title: recognition.commands.title(), icon: "send" }, /* @__PURE__ */ import_react42.default.createElement(
+  return /* @__PURE__ */ import_react44.default.createElement(SettingsSubcard, { title: recognition.commands.title(), icon: "send" }, /* @__PURE__ */ import_react44.default.createElement(
     CheckboxField,
     {
       label: recognition.commands.enabled(),
       checked: enabled,
       onChange: (event) => updateSettings({ voiceCommandsEnabled: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react42.default.createElement("p", { className: "dlv-setting-description" }, recognition.voiceCommands.help()), COMMANDS.map(([label, key, fallback]) => /* @__PURE__ */ import_react42.default.createElement(
+  ), /* @__PURE__ */ import_react44.default.createElement("p", { className: "dlv-setting-description" }, recognition.voiceCommands.help()), COMMANDS.map(([label, key, fallback]) => /* @__PURE__ */ import_react44.default.createElement(
     TextAreaField,
     {
       key,
@@ -7291,31 +7568,31 @@ function VoiceCommandSettings({ settings, updateSettings }) {
 }
 
 // src/modules/settings/sections/recognition/RecognitionStatus.tsx
-var import_react43 = __toESM(require("react"), 1);
+var import_react45 = __toESM(require("react"), 1);
 function RecognitionStatus({ capabilities = {} }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
-  return /* @__PURE__ */ import_react43.default.createElement(import_react43.default.Fragment, null, capabilities.capture?.supported === false ? /* @__PURE__ */ import_react43.default.createElement("p", { role: "status" }, recognition.microphone.failure({ reason: capabilities.capture.reason || "" })) : capabilities.capture?.permission === "prompt" ? /* @__PURE__ */ import_react43.default.createElement("p", { role: "status" }, recognition.microphone.permissionHelp()) : null, capabilities.recognition?.supported === false && /* @__PURE__ */ import_react43.default.createElement("p", { role: "status" }, capabilities.recognition.reason));
+  return /* @__PURE__ */ import_react45.default.createElement(import_react45.default.Fragment, null, capabilities.capture?.supported === false ? /* @__PURE__ */ import_react45.default.createElement("p", { role: "status" }, recognition.microphone.failure({ reason: capabilities.capture.reason || "" })) : capabilities.capture?.permission === "prompt" ? /* @__PURE__ */ import_react45.default.createElement("p", { role: "status" }, recognition.microphone.permissionHelp()) : null, capabilities.recognition?.supported === false && /* @__PURE__ */ import_react45.default.createElement("p", { role: "status" }, capabilities.recognition.reason));
 }
 
 // src/modules/settings/sections/recognition/RecognitionSettingsSection.tsx
 function RecognitionSettingsSection(props) {
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
-  return /* @__PURE__ */ import_react44.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react44.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react44.default.createElement(RecognitionStatus, { ...props }), /* @__PURE__ */ import_react44.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "mic" }, /* @__PURE__ */ import_react44.default.createElement(RecognitionEngineSettings, { ...props })), /* @__PURE__ */ import_react44.default.createElement(VoiceCommandSettings, { ...props }), /* @__PURE__ */ import_react44.default.createElement(RecognitionFilterSettings, { ...props }), /* @__PURE__ */ import_react44.default.createElement(SilenceDetectionSettings, { ...props })));
+  return /* @__PURE__ */ import_react46.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react46.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react46.default.createElement(RecognitionStatus, { ...props }), /* @__PURE__ */ import_react46.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "mic" }, /* @__PURE__ */ import_react46.default.createElement(RecognitionEngineSettings, { ...props })), /* @__PURE__ */ import_react46.default.createElement(VoiceCommandSettings, { ...props }), /* @__PURE__ */ import_react46.default.createElement(RecognitionFilterSettings, { ...props }), /* @__PURE__ */ import_react46.default.createElement(SilenceDetectionSettings, { ...props })));
 }
 
 // src/modules/settings/sections/speak/OutputFilterSettings.tsx
-var import_react45 = __toESM(require("react"), 1);
+var import_react47 = __toESM(require("react"), 1);
 function OutputFilterSettings({ settings, updateSettings }) {
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const enabled = settings.outputCodeFilterEnabled !== false;
-  return /* @__PURE__ */ import_react45.default.createElement(SettingsSubcard, { title: speak.filters.code.enabled(), icon: "filter" }, /* @__PURE__ */ import_react45.default.createElement(
+  return /* @__PURE__ */ import_react47.default.createElement(SettingsSubcard, { title: speak.filters.code.enabled(), icon: "filter" }, /* @__PURE__ */ import_react47.default.createElement(
     CheckboxField,
     {
       label: speak.filters.code.enabled(),
       checked: enabled,
       onChange: (event) => updateSettings({ outputCodeFilterEnabled: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react45.default.createElement(
+  ), /* @__PURE__ */ import_react47.default.createElement(
     NumberField,
     {
       label: speak.filters.code.maxLines(),
@@ -7329,7 +7606,7 @@ function OutputFilterSettings({ settings, updateSettings }) {
           updateSettings({ outputCodeMaxLines: value });
       }
     }
-  ), /* @__PURE__ */ import_react45.default.createElement(
+  ), /* @__PURE__ */ import_react47.default.createElement(
     TextField,
     {
       label: speak.filters.code.replacement(),
@@ -7341,16 +7618,16 @@ function OutputFilterSettings({ settings, updateSettings }) {
 }
 
 // src/modules/settings/sections/speak/SpeakSettingsSection.tsx
-var import_react48 = __toESM(require("react"), 1);
+var import_react50 = __toESM(require("react"), 1);
 
 // src/modules/settings/sections/speak/SpeechEngineSettings.tsx
-var import_react46 = __toESM(require("react"), 1);
+var import_react48 = __toESM(require("react"), 1);
 function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const engine = settings.engine || "browser";
   const browserVoices = capabilities?.browser?.voices || [];
-  return /* @__PURE__ */ import_react46.default.createElement(import_react46.default.Fragment, null, /* @__PURE__ */ import_react46.default.createElement(
+  return /* @__PURE__ */ import_react48.default.createElement(import_react48.default.Fragment, null, /* @__PURE__ */ import_react48.default.createElement(
     SelectField,
     {
       label: speak.engine.label(),
@@ -7374,7 +7651,7 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       ],
       onChange: (event) => updateSettings({ engine: event.target.value })
     }
-  ), engine === "browser" && /* @__PURE__ */ import_react46.default.createElement(
+  ), engine === "browser" && /* @__PURE__ */ import_react48.default.createElement(
     SelectField,
     {
       label: speak.browser.voice(),
@@ -7388,7 +7665,7 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       ],
       onChange: (event) => updateSettings({ voice: event.target.value })
     }
-  ), engine === "say" && /* @__PURE__ */ import_react46.default.createElement(import_react46.default.Fragment, null, /* @__PURE__ */ import_react46.default.createElement(
+  ), engine === "say" && /* @__PURE__ */ import_react48.default.createElement(import_react48.default.Fragment, null, /* @__PURE__ */ import_react48.default.createElement(
     TextField,
     {
       label: speak.macos.voice(),
@@ -7396,7 +7673,7 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       placeholder: commons.systemDefault(),
       onCommit: (value) => updateSettings({ voice: value.trim() })
     }
-  ), /* @__PURE__ */ import_react46.default.createElement("p", { className: "dlv-setting-description" }, speak.macos.voiceHelp())), engine === "qwen-http" && /* @__PURE__ */ import_react46.default.createElement(
+  ), /* @__PURE__ */ import_react48.default.createElement("p", { className: "dlv-setting-description" }, speak.macos.voiceHelp())), engine === "qwen-http" && /* @__PURE__ */ import_react48.default.createElement(
     SelectField,
     {
       label: speak.qwen.voice(),
@@ -7404,7 +7681,7 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       options: qwenVoices,
       onChange: (event) => updateSettings({ voice: event.target.value })
     }
-  ), /* @__PURE__ */ import_react46.default.createElement(
+  ), /* @__PURE__ */ import_react48.default.createElement(
     NumberField,
     {
       label: speak.rate.label(),
@@ -7414,7 +7691,7 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       value: settings.rate ?? 1,
       onCommit: (value) => updateSettings({ rate: Number(value) })
     }
-  ), /* @__PURE__ */ import_react46.default.createElement(
+  ), /* @__PURE__ */ import_react48.default.createElement(
     NumberField,
     {
       label: speak.segmentGap.label(),
@@ -7424,11 +7701,11 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       value: settings.segmentGapMs ?? 400,
       onCommit: (value) => updateSettings({ segmentGapMs: Number(value) })
     }
-  ), capabilities?.[engine === "qwen-http" ? "qwen" : engine]?.supported === false && /* @__PURE__ */ import_react46.default.createElement("p", { role: "status" }, capabilities?.[engine === "qwen-http" ? "qwen" : engine]?.reason || commons.engine.failure()));
+  ), capabilities?.[engine === "qwen-http" ? "qwen" : engine]?.supported === false && /* @__PURE__ */ import_react48.default.createElement("p", { role: "status" }, capabilities?.[engine === "qwen-http" ? "qwen" : engine]?.reason || commons.engine.failure()));
 }
 
 // src/modules/settings/sections/speak/SpeechAdvancedSettings.tsx
-var import_react47 = __toESM(require("react"), 1);
+var import_react49 = __toESM(require("react"), 1);
 function SpeechAdvancedSettings({
   controller,
   settings,
@@ -7446,7 +7723,7 @@ function SpeechAdvancedSettings({
     commons.systemDefault(),
     speak.output.fallbackName()
   );
-  return /* @__PURE__ */ import_react47.default.createElement(import_react47.default.Fragment, null, settings.engine !== "say" ? /* @__PURE__ */ import_react47.default.createElement(
+  return /* @__PURE__ */ import_react49.default.createElement(import_react49.default.Fragment, null, settings.engine !== "say" ? /* @__PURE__ */ import_react49.default.createElement(
     SelectField,
     {
       label: speak.output.device(),
@@ -7454,14 +7731,14 @@ function SpeechAdvancedSettings({
       options: outputOptions,
       onChange: (event) => updateSettings({ outputDeviceId: event.target.value })
     }
-  ) : /* @__PURE__ */ import_react47.default.createElement("p", { className: "dlv-setting-description" }, speak.macos.outputHelp()), settings.engine === "qwen-http" && /* @__PURE__ */ import_react47.default.createElement(SettingsSubcard, { title: speak.qwen.connection(), icon: "link" }, /* @__PURE__ */ import_react47.default.createElement(QwenSettings, { controller })), /* @__PURE__ */ import_react47.default.createElement(SettingsSubcard, { title: speak.agentContext.label(), icon: "settings" }, /* @__PURE__ */ import_react47.default.createElement(
+  ) : /* @__PURE__ */ import_react49.default.createElement("p", { className: "dlv-setting-description" }, speak.macos.outputHelp()), settings.engine === "qwen-http" && /* @__PURE__ */ import_react49.default.createElement(SettingsSubcard, { title: speak.qwen.connection(), icon: "link" }, /* @__PURE__ */ import_react49.default.createElement(QwenSettings, { controller })), /* @__PURE__ */ import_react49.default.createElement(SettingsSubcard, { title: speak.agentContext.label(), icon: "settings" }, /* @__PURE__ */ import_react49.default.createElement(
     CheckboxField,
     {
       label: speak.agentContext.enabled(),
       checked: settings.agentVoiceContextEnabled !== false,
       onChange: (event) => updateSettings({ agentVoiceContextEnabled: event.target.checked })
     }
-  ), /* @__PURE__ */ import_react47.default.createElement(
+  ), /* @__PURE__ */ import_react49.default.createElement(
     TextAreaField,
     {
       label: speak.agentContext.label(),
@@ -7469,30 +7746,30 @@ function SpeechAdvancedSettings({
       disabled: settings.agentVoiceContextEnabled === false,
       onCommit: (value) => updateSettings({ agentVoiceContext: value })
     }
-  ), /* @__PURE__ */ import_react47.default.createElement(
+  ), /* @__PURE__ */ import_react49.default.createElement(
     "button",
     {
       type: "button",
       onClick: () => updateSettings({ agentVoiceContext: defaultAgentVoiceContext })
     },
     speak.agentContext.restore()
-  )), /* @__PURE__ */ import_react47.default.createElement("p", null, speak.engine.playbackHelp()), /* @__PURE__ */ import_react47.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react47.default.createElement("button", { type: "button", onClick: () => invoke("speak", speak.output.testPhrase()) }, speak.output.test()), speaking && /* @__PURE__ */ import_react47.default.createElement("button", { type: "button", onClick: () => invoke("stopSpeech") }, speak.output.stopTest()), /* @__PURE__ */ import_react47.default.createElement("button", { type: "button", onClick: () => invoke("refreshCapabilities") }, settingsLanguage.engine.refresh())));
+  )), /* @__PURE__ */ import_react49.default.createElement("p", null, speak.engine.playbackHelp()), /* @__PURE__ */ import_react49.default.createElement("div", { className: "dlv-settings-actions" }, /* @__PURE__ */ import_react49.default.createElement("button", { type: "button", onClick: () => invoke("speak", speak.output.testPhrase()) }, speak.output.test()), speaking && /* @__PURE__ */ import_react49.default.createElement("button", { type: "button", onClick: () => invoke("stopSpeech") }, speak.output.stopTest()), /* @__PURE__ */ import_react49.default.createElement("button", { type: "button", onClick: () => invoke("refreshCapabilities") }, settingsLanguage.engine.refresh())));
 }
 
 // src/modules/settings/sections/speak/SpeakSettingsSection.tsx
 function SpeakSettingsSection(props) {
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
-  return /* @__PURE__ */ import_react48.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react48.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react48.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "speaker" }, /* @__PURE__ */ import_react48.default.createElement(SpeechEngineSettings, { ...props }), /* @__PURE__ */ import_react48.default.createElement(SpeechAdvancedSettings, { ...props })), /* @__PURE__ */ import_react48.default.createElement(OutputFilterSettings, { ...props })));
+  return /* @__PURE__ */ import_react50.default.createElement(SettingsCard, null, /* @__PURE__ */ import_react50.default.createElement("div", { className: "dlv-settings-card-body" }, /* @__PURE__ */ import_react50.default.createElement(SettingsSubcard, { title: settingsLanguage.general.title(), icon: "speaker" }, /* @__PURE__ */ import_react50.default.createElement(SpeechEngineSettings, { ...props }), /* @__PURE__ */ import_react50.default.createElement(SpeechAdvancedSettings, { ...props })), /* @__PURE__ */ import_react50.default.createElement(OutputFilterSettings, { ...props })));
 }
 
 // src/modules/settings/components/SettingsHeader.tsx
-var import_react50 = __toESM(require("react"), 1);
+var import_react52 = __toESM(require("react"), 1);
 
 // src/modules/settings/components/VersionBadges.tsx
-var import_react49 = __toESM(require("react"), 1);
+var import_react51 = __toESM(require("react"), 1);
 function VersionBadges() {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
-  return /* @__PURE__ */ import_react49.default.createElement("div", { className: "dlv-version-badges", "aria-label": commons.version.title() }, /* @__PURE__ */ import_react49.default.createElement(
+  return /* @__PURE__ */ import_react51.default.createElement("div", { className: "dlv-version-badges", "aria-label": commons.version.title() }, /* @__PURE__ */ import_react51.default.createElement(
     "a",
     {
       className: "dlv-shields-badge",
@@ -7502,9 +7779,9 @@ function VersionBadges() {
       "aria-label": commons.version.link({ version: CURRENT_VERSION }),
       title: commons.version.label({ version: CURRENT_VERSION })
     },
-    /* @__PURE__ */ import_react49.default.createElement("img", { src: LIVE_VOICE_BADGE_URL, alt: "" }),
-    /* @__PURE__ */ import_react49.default.createElement("span", null, `v${CURRENT_VERSION}`)
-  ), /* @__PURE__ */ import_react49.default.createElement(
+    /* @__PURE__ */ import_react51.default.createElement("img", { src: LIVE_VOICE_BADGE_URL, alt: "" }),
+    /* @__PURE__ */ import_react51.default.createElement("span", null, `v${CURRENT_VERSION}`)
+  ), /* @__PURE__ */ import_react51.default.createElement(
     "a",
     {
       className: "dlv-shields-badge",
@@ -7514,8 +7791,8 @@ function VersionBadges() {
       "aria-label": commons.version.compatibilityLink({ version: TESTED_DSH_VERSION }),
       title: commons.version.compatibility({ version: TESTED_DSH_VERSION })
     },
-    /* @__PURE__ */ import_react49.default.createElement("img", { src: DSH_BADGE_URL, alt: "" }),
-    /* @__PURE__ */ import_react49.default.createElement("span", null, `v${TESTED_DSH_VERSION}`)
+    /* @__PURE__ */ import_react51.default.createElement("img", { src: DSH_BADGE_URL, alt: "" }),
+    /* @__PURE__ */ import_react51.default.createElement("span", null, `v${TESTED_DSH_VERSION}`)
   ));
 }
 
@@ -7524,7 +7801,7 @@ function SettingsHeader({ onClose }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: settings } = useLanguage((ctx) => ctx.settings);
   const { latestRelease, updateAvailable } = useReleaseStatus();
-  return /* @__PURE__ */ import_react50.default.createElement("div", { className: "dlv-settings-heading" }, /* @__PURE__ */ import_react50.default.createElement("h3", null, commons.pluginName()), /* @__PURE__ */ import_react50.default.createElement(VersionBadges, null), /* @__PURE__ */ import_react50.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true }), updateAvailable && latestRelease ? /* @__PURE__ */ import_react50.default.createElement(import_react50.default.Fragment, null, /* @__PURE__ */ import_react50.default.createElement(
+  return /* @__PURE__ */ import_react52.default.createElement("div", { className: "dlv-settings-heading" }, /* @__PURE__ */ import_react52.default.createElement("h3", null, commons.pluginName()), /* @__PURE__ */ import_react52.default.createElement(VersionBadges, null), /* @__PURE__ */ import_react52.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true }), updateAvailable && latestRelease ? /* @__PURE__ */ import_react52.default.createElement(import_react52.default.Fragment, null, /* @__PURE__ */ import_react52.default.createElement(
     "a",
     {
       className: "dlv-version-badge dlv-update-badge",
@@ -7534,9 +7811,9 @@ function SettingsHeader({ onClose }) {
       "aria-label": commons.update.link({ version: latestRelease.tag }),
       title: commons.update.version({ version: latestRelease.tag })
     },
-    /* @__PURE__ */ import_react50.default.createElement("span", { className: "dlv-update-icon", "aria-hidden": true }, "\u2191"),
+    /* @__PURE__ */ import_react52.default.createElement("span", { className: "dlv-update-icon", "aria-hidden": true }, "\u2191"),
     commons.update.label()
-  ), /* @__PURE__ */ import_react50.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true })) : null, /* @__PURE__ */ import_react50.default.createElement(
+  ), /* @__PURE__ */ import_react52.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true })) : null, /* @__PURE__ */ import_react52.default.createElement(
     "a",
     {
       className: "dlv-version-badge dlv-star-badge",
@@ -7548,7 +7825,7 @@ function SettingsHeader({ onClose }) {
     },
     "\u2605 ",
     commons.repository.starLabel()
-  ), onClose ? /* @__PURE__ */ import_react50.default.createElement(IconButton, { icon: "close", label: settings.close(), onClick: onClose }) : null);
+  ), onClose ? /* @__PURE__ */ import_react52.default.createElement(IconButton, { icon: "close", label: settings.close(), onClick: onClose }) : null);
 }
 
 // src/modules/core/developerExtension.ts
@@ -7569,9 +7846,9 @@ function LiveVoiceSettings({ controller, onClose }) {
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
   const state = useConversationController(controller);
   const { invoke, error, clearError } = useConversationActions(controller);
-  const [activeTab, setActiveTab] = import_react51.default.useState("conversation");
-  const tabsId = import_react51.default.useId();
-  const developer = import_react51.default.useSyncExternalStore(
+  const [activeTab, setActiveTab] = import_react53.default.useState("conversation");
+  const tabsId = import_react53.default.useId();
+  const developer = import_react53.default.useSyncExternalStore(
     subscribeDeveloperExtension,
     readDeveloperExtension,
     () => null
@@ -7600,7 +7877,7 @@ function LiveVoiceSettings({ controller, onClose }) {
     invoke,
     updateSettings: (next) => invoke("updateSettings", next)
   };
-  return /* @__PURE__ */ import_react51.default.createElement("section", { className: "dlv-settings", "aria-label": settingsLanguage.title() }, /* @__PURE__ */ import_react51.default.createElement(SettingsHeader, { onClose }), /* @__PURE__ */ import_react51.default.createElement(
+  return /* @__PURE__ */ import_react53.default.createElement("section", { className: "dlv-settings", "aria-label": settingsLanguage.title() }, /* @__PURE__ */ import_react53.default.createElement(SettingsHeader, { onClose }), /* @__PURE__ */ import_react53.default.createElement(
     SettingsTabs,
     {
       label: settingsLanguage.title(),
@@ -7609,7 +7886,7 @@ function LiveVoiceSettings({ controller, onClose }) {
       idPrefix: tabsId,
       onChange: setActiveTab
     }
-  ), tabs.map((tab) => /* @__PURE__ */ import_react51.default.createElement(
+  ), tabs.map((tab) => /* @__PURE__ */ import_react53.default.createElement(
     "div",
     {
       key: tab.id,
@@ -7619,8 +7896,8 @@ function LiveVoiceSettings({ controller, onClose }) {
       "aria-labelledby": `${tabsId}-tab-${tab.id}`,
       hidden: selectedTab !== tab.id
     },
-    tab.id === "developer" && Developer ? /* @__PURE__ */ import_react51.default.createElement(Developer, null) : tab.id === "speech" ? /* @__PURE__ */ import_react51.default.createElement(SpeakSettingsSection, { ...sectionProps }) : tab.id === "recognition" ? /* @__PURE__ */ import_react51.default.createElement(RecognitionSettingsSection, { ...sectionProps }) : /* @__PURE__ */ import_react51.default.createElement(ConversationSettingsSection, { ...sectionProps })
-  )), /* @__PURE__ */ import_react51.default.createElement(
+    tab.id === "developer" && Developer ? /* @__PURE__ */ import_react53.default.createElement(Developer, null) : tab.id === "speech" ? /* @__PURE__ */ import_react53.default.createElement(SpeakSettingsSection, { ...sectionProps }) : tab.id === "recognition" ? /* @__PURE__ */ import_react53.default.createElement(RecognitionSettingsSection, { ...sectionProps }) : /* @__PURE__ */ import_react53.default.createElement(ConversationSettingsSection, { ...sectionProps })
+  )), /* @__PURE__ */ import_react53.default.createElement(
     ErrorMessage,
     {
       error: error || state.error,
@@ -7637,7 +7914,7 @@ function LiveVoiceSettings({ controller, onClose }) {
 // src/modules/settings/components/createLiveVoiceSettings.tsx
 function createLiveVoiceSettings(..._legacyArguments) {
   return function SettingsPanel({ controller, onClose }) {
-    return /* @__PURE__ */ import_react52.default.createElement(LiveVoiceSettings, { controller, onClose });
+    return /* @__PURE__ */ import_react54.default.createElement(LiveVoiceSettings, { controller, onClose });
   };
 }
 
@@ -7697,16 +7974,16 @@ function createSettingsClient(fetchImpl = globalThis.fetch) {
 }
 
 // src/modules/conversation/components/ConversationControls.tsx
-var import_react55 = __toESM(require("react"), 1);
+var import_react57 = __toESM(require("react"), 1);
 
 // src/modules/conversation/components/MicrophoneButton.tsx
-var import_react53 = __toESM(require("react"), 1);
+var import_react55 = __toESM(require("react"), 1);
 function MicrophoneButton(props) {
-  return /* @__PURE__ */ import_react53.default.createElement(IconButton, { ...props, className: "dlv-mic", icon: "mic" });
+  return /* @__PURE__ */ import_react55.default.createElement(IconButton, { ...props, className: "dlv-mic", icon: "mic" });
 }
 
 // src/modules/conversation/components/AutoPlaybackToggle.tsx
-var import_react54 = __toESM(require("react"), 1);
+var import_react56 = __toESM(require("react"), 1);
 function AutoPlaybackToggle({ state, invoke, error }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
@@ -7718,7 +7995,7 @@ function AutoPlaybackToggle({ state, invoke, error }) {
   }) : speak.autoPlayback.status({
     state: active ? commons.on() : commons.off()
   });
-  return /* @__PURE__ */ import_react54.default.createElement(
+  return /* @__PURE__ */ import_react56.default.createElement(
     IconButton,
     {
       className: "dlv-composer-toggle",
@@ -7747,7 +8024,7 @@ function ConversationControls({ controller }) {
   const unavailable = capability?.supported === false || capture?.supported === false;
   const reason = capture?.supported === false ? capture.reason : capability?.reason;
   const label = busy ? commons.conversation.end() : pending ? recognition.microphone.checking() : unavailable ? reason || recognition.status.unavailable() : commons.conversation.start();
-  return /* @__PURE__ */ import_react55.default.createElement(import_react55.default.Fragment, null, /* @__PURE__ */ import_react55.default.createElement(AutoPlaybackToggle, { state, invoke, error }), /* @__PURE__ */ import_react55.default.createElement(
+  return /* @__PURE__ */ import_react57.default.createElement(import_react57.default.Fragment, null, /* @__PURE__ */ import_react57.default.createElement(AutoPlaybackToggle, { state, invoke, error }), /* @__PURE__ */ import_react57.default.createElement(
     MicrophoneButton,
     {
       label,
@@ -7757,7 +8034,7 @@ function ConversationControls({ controller }) {
         busy ? state.conversation ? "endConversation" : "cancelDictation" : unavailable ? "explainRecognition" : "startConversation"
       )
     }
-  ), /* @__PURE__ */ import_react55.default.createElement(
+  ), /* @__PURE__ */ import_react57.default.createElement(
     ErrorMessage,
     {
       error,
@@ -7766,151 +8043,6 @@ function ConversationControls({ controller }) {
       onDismiss: clearError
     }
   ));
-}
-
-// src/modules/conversation/components/ConversationStatusBar.tsx
-var import_react57 = __toESM(require("react"), 1);
-
-// src/modules/conversation/components/DeliveryModeButton.tsx
-var import_react56 = __toESM(require("react"), 1);
-function nextDeliveryMode(mode) {
-  return mode === "queue" ? "steer" : mode === "steer" ? "manual" : "queue";
-}
-function DeliveryModeButton({
-  mode = "manual",
-  onChange
-}) {
-  const { scoped: commons } = useLanguage((ctx) => ctx.commons);
-  const { scoped: settings } = useLanguage((ctx) => ctx.settings);
-  const description = mode === "steer" ? settings.delivery.steerDescription() : mode === "queue" ? commons.queue() : commons.manual();
-  const status = settings.delivery.status({ mode: description });
-  const visible = mode === "steer" ? commons.send() : mode === "queue" ? commons.delivery.queueBadge() : commons.toggle.offBadge();
-  return /* @__PURE__ */ import_react56.default.createElement(
-    ToggleButton,
-    {
-      className: "dlv-live-toggle",
-      label: status,
-      title: status,
-      icon: mode === "queue" ? "queue" : "send",
-      visibleLabel: visible,
-      pressed: mode !== "manual",
-      "data-mode": mode,
-      onClick: () => onChange(nextDeliveryMode(mode))
-    }
-  );
-}
-
-// src/modules/conversation/components/conversationStatus.ts
-function resolveConversationStatus(state, remaining, language) {
-  const { commons, recognition, settings, speak } = language;
-  if (state.answeringQuestion && state.recognizing) return recognition.status.answer();
-  if (state.answeringQuestion && state.listening) return recognition.status.awaitingAnswer();
-  if (remaining) return settings.autoSend.countdown({ remaining });
-  if (state.starting) return recognition.microphone.starting();
-  if (state.recognizing) return recognition.status.processing();
-  if (state.listening) return recognition.status.listening();
-  if (state.conversation) return commons.conversation.idle();
-  return commons.status.ready();
-}
-
-// src/modules/conversation/components/ConversationStatusBar.tsx
-function ConversationStatusBar({
-  controller,
-  questionOnly = false,
-  includeSpeech = true,
-  overlay = false,
-  overlayStyle
-}) {
-  const { scoped: commons } = useLanguage((ctx) => ctx.commons);
-  const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
-  const { scoped: settings } = useLanguage((ctx) => ctx.settings);
-  const { scoped: speak } = useLanguage((ctx) => ctx.speak);
-  const state = useConversationController(controller);
-  const { invoke, error, clearError } = useConversationActions(controller);
-  const [now, setNow] = import_react57.default.useState(Date.now());
-  import_react57.default.useEffect(() => {
-    if (!state.autoSendAt) return;
-    setNow(Date.now());
-    const timer = setInterval(() => setNow(Date.now()), 200);
-    return () => clearInterval(timer);
-  }, [state.autoSendAt]);
-  const capture = state.starting || state.listening || state.recognizing;
-  if (questionOnly && !state.answeringQuestion) return null;
-  if (!state.conversation && !capture && !state.speaking && !state.paused && !state.speechRunActive && !(state.speechSegmentsRemaining > 0) && !state.error && !error)
-    return null;
-  const remaining = state.autoSendAt ? Math.max(1, Math.ceil((state.autoSendAt - now) / 1e3)) : null;
-  const status = resolveConversationStatus(state, remaining, {
-    commons,
-    recognition,
-    settings,
-    speak
-  });
-  return /* @__PURE__ */ import_react57.default.createElement(
-    "div",
-    {
-      className: overlay ? "dlv-bar-wrap dlv-bar-stack dlv-question-overlay" : "dlv-bar-wrap dlv-bar-stack",
-      style: overlay ? overlayStyle : void 0
-    },
-    includeSpeech && /* @__PURE__ */ import_react57.default.createElement(SpeechStatusBar, { controller }),
-    (state.conversation || capture || state.error || error) && /* @__PURE__ */ import_react57.default.createElement(
-      RecognitionBar,
-      {
-        controller,
-        listening: state.listening,
-        label: commons.controls.title(),
-        status,
-        leading: /* @__PURE__ */ import_react57.default.createElement(import_react57.default.Fragment, null, state.conversation && !capture ? /* @__PURE__ */ import_react57.default.createElement(
-          IconButton,
-          {
-            label: recognition.microphone.takeControl(),
-            icon: "mic",
-            onClick: () => invoke("startConversation")
-          }
-        ) : null, capture ? /* @__PURE__ */ import_react57.default.createElement(
-          ToggleButton,
-          {
-            className: "dlv-mic-state",
-            label: state.muted ? recognition.microphone.resume() : recognition.microphone.ignore(),
-            title: recognition.microphone.inputStatus({
-              state: state.muted ? commons.input.ignoring() : commons.input.listening()
-            }),
-            icon: "mic",
-            visibleLabel: state.muted ? commons.input.ignoringBadge() : commons.input.listeningBadge(),
-            pressed: !state.muted,
-            "data-muted": state.muted ? "true" : "false",
-            onClick: () => invoke(state.muted ? "resumeListeningInput" : "muteListening")
-          }
-        ) : null)
-      },
-      /* @__PURE__ */ import_react57.default.createElement(
-        DeliveryModeButton,
-        {
-          mode: state.settings.sendingMode || "manual",
-          onChange: (sendingMode) => invoke("updateSettings", { sendingMode })
-        }
-      ),
-      remaining ? /* @__PURE__ */ import_react57.default.createElement(
-        IconButton,
-        {
-          label: settings.autoSend.cancel(),
-          icon: "close",
-          onClick: () => invoke("cancelAutoSend")
-        }
-      ) : null
-    ),
-    /* @__PURE__ */ import_react57.default.createElement(
-      ErrorMessage,
-      {
-        error: error || state.error,
-        dismissLabel: commons.dismissError(),
-        dismissText: commons.dismiss(),
-        onDismiss: () => {
-          clearError();
-          controller.clearError();
-        }
-      }
-    )
-  );
 }
 
 // src/modules/conversation/components/SpeakButton.tsx
@@ -8229,11 +8361,24 @@ function apply(ctx) {
       if (source !== "shared") return;
       sharedSpeechActive = active;
       meetingEntry?.controller.setExternalSpeechActivity(active);
+      meetingEntry?.controller.refreshDeliveryReadiness();
     },
     onSpeech: (source, text) => source !== "shared" || meetingEntry?.controller.confirmExternalSpeech(text) !== false,
+    stopSpeech: () => meetingEntry?.controller.stopSpeech(),
     composer: {
       getDraft: () => meetingEntry?.draft || "",
-      setDraft: (text) => meetingEntry?.controller.composer.setDraft(text)
+      setDraft: (text) => {
+        meetingEntry?.controller.cancelAutoSend();
+        meetingEntry?.controller.composer.setDraft(text);
+      },
+      submit: (mode) => {
+        meeting.cancelDelivery();
+        meetingEntry?.controller.cancelAutoSend();
+        meetingEntry?.controller.composer.submit(mode);
+      },
+      updatePlaybackSettings: (next) => meetingEntry?.controller.updateSettings(next),
+      handleQuestionResult: (result) => meetingEntry?.controller.composer.handleQuestionResult?.(result),
+      canAutoSend: () => !!meetingEntry && !meetingEntry.controller.getSnapshot().recognizing && !meetingEntry.controller.getSnapshot().pendingTranscriptions
     },
     settings: () => preferences.getSnapshot(),
     translate: (key) => t("dsh-live-voice.meeting." + key),
@@ -8242,6 +8387,8 @@ function apply(ctx) {
       return { meter, engine: recognitionFor(settings, meter) };
     }
   });
+  const unsubscribeMeetingDelivery = meeting.subscribe(() => meetingEntry?.controller.refreshDeliveryReadiness());
+  ctx.effect(() => () => unsubscribeMeetingDelivery(), "dsh-live-voice: remove meeting delivery subscription");
   const diagnosticListeners = /* @__PURE__ */ new Set();
   const notifyDiagnostics = () => {
     for (const listener of diagnosticListeners) {
@@ -8337,6 +8484,7 @@ function apply(ctx) {
   }
   const unsubscribePreferences = preferences.subscribe((settings) => {
     if (disposed) return;
+    meeting.applySettings(settings);
     for (const entry of controllers.values()) {
       if (entry.closed) continue;
       entry.applySettings(settings);
@@ -8359,6 +8507,7 @@ function apply(ctx) {
     if (entry.closed) return;
     entry.closed = true;
     if (meetingEntry === entry) {
+      meeting.cancelDelivery();
       meetingEntry = null;
       meeting.transcript.setActive("microphone", false);
     }
@@ -8419,14 +8568,18 @@ function apply(ctx) {
       meter,
       composer: {
         getDraft: () => entry.draft,
+        canAutoSend: () => !meeting.getSnapshot().shared.pending && !meeting.input().getSnapshot().recognizing,
         appendFinal: (text, startedAt) => {
-          if (meetingEntry === entry && entry.meeting?.getSnapshot().shared.listening) {
+          meeting.cancelDelivery();
+          if (meetingEntry === entry && (entry.meeting?.getSnapshot().shared.listening || entry.controller.getSnapshot().timestamps)) {
+            meeting.transcript.setSourceTimestamps("microphone", !!entry.controller.getSnapshot().timestamps);
             entry.meeting.transcript.append("microphone", text, startedAt);
             return entry.draft;
           }
           return null;
         },
         submit: (mode = "queue") => {
+          meeting.cancelDelivery();
           const owner = [...entry.composers.values()].at(-1);
           if (!owner) return;
           const busyEnter = entry.controller.getSnapshot().settings.dshBusyEnterBehavior;
@@ -8634,7 +8787,8 @@ function apply(ctx) {
     let microphoneActive = false;
     const unsubscribeMeetingMicrophone = controller.subscribe(() => {
       const state = controller.getSnapshot();
-      const next = Boolean((state.listening || state.starting) && !state.muted);
+      const next = Boolean(state.listening || state.starting);
+      if (meetingEntry === entry) entry.meeting.refreshDeliveryReadiness();
       if (meetingEntry === entry && next !== microphoneActive) {
         microphoneActive = next;
         entry.meeting.transcript.setActive("microphone", next);
@@ -8677,6 +8831,7 @@ function apply(ctx) {
       return () => {
         entry.composers.delete(token.current);
         if (meetingEntry === entry && !entry.composers.size) {
+          meeting.cancelDelivery();
           meetingEntry = null;
           meeting.transcript.setActive("microphone", false);
         }
@@ -8686,6 +8841,7 @@ function apply(ctx) {
       if (!entry || entry.closed || disposed) return;
       if (!input || typeof props.inputActions?.setDraft !== "function") return;
       if (meetingEntry !== entry) {
+        meeting.cancelDelivery();
         meetingEntry = entry;
         entry.controller.setExternalSpeechActivity(sharedSpeechActive);
         const state = entry.controller.getSnapshot();
@@ -8730,6 +8886,7 @@ function apply(ctx) {
         entry.staleDrafts.clear();
       }
       entry.controller.composerChanged(entry.draft);
+      if (meetingEntry === entry) meeting.composerChanged(entry.draft);
     });
   }
   function Buttons(props) {

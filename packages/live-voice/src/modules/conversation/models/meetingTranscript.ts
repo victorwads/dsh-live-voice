@@ -6,6 +6,12 @@ export class MeetingTranscript {
   private last: MeetingSource | null = null;
   private expected: string | null = null;
   private timestamps = false;
+  private sourceTimestamps = new Map<MeetingSource, boolean>();
+  setSourceTimestamps(source: MeetingSource, enabled: boolean) {
+    if (this.sourceTimestamps.get(source) === enabled) return;
+    this.sourceTimestamps.set(source, enabled);
+    this.last = null;
+  }
   setTimestamps(enabled: boolean) {
     this.timestamps = enabled;
     this.last = null;
@@ -22,11 +28,12 @@ export class MeetingTranscript {
     const draft = this.composer.getDraft();
     if (draft !== this.expected) this.last = null;
     const labelled = this.active.size > 1;
-    const changed = labelled && this.last !== source;
+    const timestamps = this.sourceTimestamps.get(source) ?? this.timestamps;
+    const changed = (labelled || timestamps) && this.last !== source;
     const date = new Date(Number.isFinite(startedAt) ? startedAt! : Date.now());
     const pad = (value: number) => String(value).padStart(2, '0');
     const stamp =
-      this.timestamps && changed
+      timestamps && changed
         ? '[' +
           date.getFullYear() +
           '/' +
@@ -41,12 +48,12 @@ export class MeetingTranscript {
           pad(date.getSeconds()) +
           '] '
         : '';
-    const prefix = changed ? stamp + (source === 'microphone' ? 'Me: ' : 'Them: ') : '';
+    const prefix = changed ? stamp + (labelled ? (source === 'microphone' ? 'Me: ' : 'Them: ') : '') : '';
     const separator = draft ? (changed ? '\n\n' : '\n') : '';
     const next = draft + separator + prefix + chunk;
     this.composer.setDraft(next);
     this.expected = next;
-    this.last = labelled ? source : null;
+    this.last = labelled || timestamps ? source : null;
   }
   reset() {
     this.active.clear();

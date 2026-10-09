@@ -108,7 +108,7 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.failure': 'Microfone: {reason}',
   'dsh-live-voice.recognition.microphone.ignore': 'Ignorar entrada do editor de mensagens',
   'dsh-live-voice.recognition.microphone.inputStatus':
-    'Entrada do microfone: {state}. Ignorando descarta o ditado, não a captura: a interrupção por fala continua ativa; comandos configurados funcionam quando habilitados. Encerrar voz encerra a captura do microfone.',
+    'Entrada de áudio: {state}. Ignorar descarta o ditado, não a captura: a interrupção por fala continua ativa; comandos configurados funcionam quando habilitados. Encerre a captura pelo botão da fonte no campo de mensagem.',
   'dsh-live-voice.recognition.microphone.label': 'Microfone',
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'A permissão do microfone será solicitada apenas quando você iniciar a ditado ou uma conversa por voz.',

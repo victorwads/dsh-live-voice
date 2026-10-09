@@ -113,7 +113,7 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.ignore':
     'Ignorer la saisie vocale dans la zone de rédaction',
   'dsh-live-voice.recognition.microphone.inputStatus':
-    'Entrée du microphone : {state}. Ignorer écarte la dictée, pas la capture : les interruptions vocales restent actives ; les commandes configurées fonctionnent si elles sont activées. Arrêter la voix termine la capture du microphone.',
+    'Entrée audio : {state}. Ignorer écarte la dictée, pas la capture : les interruptions vocales restent actives ; les commandes configurées fonctionnent si elles sont activées. Arrêtez la capture avec le bouton de la source dans le champ du message.',
   'dsh-live-voice.recognition.microphone.label': 'Microphone',
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'L’autorisation d’utiliser le microphone ne sera demandée que lorsque vous démarrerez une dictée ou une conversation vocale.',
