@@ -54,6 +54,19 @@ export function apply(ctx) {
   // A route change may replace every conversation slot, but the next committed
   // composer should inherit the user's explicit choice to remain in voice mode.
   let voiceModeActive = false;
+  let meetingEntry = null;
+  const meeting = new MeetingController({
+    composer: {
+      getDraft: () => meetingEntry?.draft || '',
+      setDraft: (text) => meetingEntry?.controller.composer.setDraft(text),
+    },
+    settings: () => preferences.getSnapshot(),
+    translate: (key) => t('dsh-live-voice.meeting.' + key),
+    createSource: (source, settings) => {
+      const meter = source === 'shared' ? new SharedAudioMeter() : new MicrophoneMeter();
+      return { meter, engine: recognitionFor(settings, meter) };
+    },
+  });
   const diagnosticListeners = new Set();
   const notifyDiagnostics = () => {
     for (const listener of diagnosticListeners) {
@@ -184,6 +197,10 @@ export function apply(ctx) {
   function retire(entry) {
     if (entry.closed) return;
     entry.closed = true;
+    if (meetingEntry === entry) {
+      meetingEntry = null;
+      meeting.transcript.setActive('microphone', false);
+    }
     entry.request++;
     entry.composers.clear();
     entry.unsubscribe?.();
@@ -200,10 +217,7 @@ export function apply(ctx) {
     if (controllers.get(entry.key) === entry) controllers.delete(entry.key);
     notifyDiagnostics();
     // Keep teardown in the hardware handoff barrier, not in the session registry.
-    const done = run(
-      entry.controller,
-      Promise.all([entry.controller.dispose(), entry.meeting?.dispose()]),
-    );
+    const done = run(entry.controller, entry.controller.dispose());
     const barrier = { endConversation: () => done };
     retiring.add(barrier);
     void done.finally(() => retiring.delete(barrier));
@@ -246,7 +260,7 @@ export function apply(ctx) {
       composer: {
         getDraft: () => entry.draft,
         appendFinal: (text, startedAt) => {
-          if (entry.meeting?.getSnapshot().shared.listening) {
+          if (meetingEntry === entry && entry.meeting?.getSnapshot().shared.listening) {
             entry.meeting.transcript.append('microphone', text, startedAt);
             return entry.draft;
           }
@@ -449,15 +463,7 @@ export function apply(ctx) {
         );
       };
     }
-    entry.meeting = new MeetingController({
-      composer: entry.controller.composer,
-      settings: () => entry.controller.getSnapshot().settings,
-      translate: (key) => t('dsh-live-voice.meeting.' + key),
-      createSource: (source, settings) => {
-        const meter = source === 'shared' ? new SharedAudioMeter() : new MicrophoneMeter();
-        return { meter, engine: recognitionFor(settings, meter) };
-      },
-    });
+    entry.meeting = meeting;
     entry.startMeetingSource = (source) => {
       try {
         const request = requestSharedAudio();
@@ -471,7 +477,7 @@ export function apply(ctx) {
     const unsubscribeMeetingMicrophone = controller.subscribe(() => {
       const state = controller.getSnapshot();
       const next = Boolean((state.listening || state.starting) && !state.muted);
-      if (next !== microphoneActive) {
+      if (meetingEntry === entry && next !== microphoneActive) {
         microphoneActive = next;
         entry.meeting.transcript.setActive('microphone', next);
       }
@@ -518,6 +524,10 @@ export function apply(ctx) {
       if (!entry || entry.closed || disposed) return;
       return () => {
         entry.composers.delete(token.current);
+        if (meetingEntry === entry && !entry.composers.size) {
+          meetingEntry = null;
+          meeting.transcript.setActive('microphone', false);
+        }
         // Message-action mounts may outlive the composer; never retain its actions.
         // Do not interpret a route-driven composer unmount as the user's request
         // to leave voice mode. Retirement still releases the old controller; the
@@ -527,6 +537,14 @@ export function apply(ctx) {
     React.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed) return;
       if (!input || typeof props.inputActions?.setDraft !== 'function') return;
+      if (meetingEntry !== entry) {
+        meetingEntry = entry;
+        const state = entry.controller.getSnapshot();
+        meeting.transcript.setActive(
+          'microphone',
+          Boolean((state.listening || state.starting) && !state.muted),
+        );
+      }
       entry.composers.set(token.current, {
         actions: props.inputActions,
         submitAccelerated: (accelerated = true) => {
@@ -786,9 +804,9 @@ export function apply(ctx) {
   ctx.effect(() => {
     const stop = () => {
       ownership.cancel();
+      void meeting.end();
       for (const entry of controllers.values()) {
         run(entry.controller, entry.controller.endConversation());
-        void entry.meeting.end();
       }
     };
     let holdToTalk = null;
@@ -861,6 +879,7 @@ export function apply(ctx) {
       window.removeEventListener('blur', releaseHoldToTalk);
       window.removeEventListener('pagehide', stop);
       for (const entry of controllers.values()) retire(entry);
+      void meeting.dispose();
     };
   });
 }

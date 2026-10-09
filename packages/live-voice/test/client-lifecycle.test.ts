@@ -1120,3 +1120,56 @@ test('switching chats baselines delayed history, preserves new streaming speech 
   await f.render(h(f.Buttons, f.props('delayed')));
   assert.ok(observed.filter((m) => m.controller === f.controllers.at(-1)).every((m) => m.baseline));
 });
+
+test('shared meeting capture survives chat replacement and routes only to the committed composer', async (t) => {
+  const f = await fixture(t);
+  let requests = 0,
+    stopped = 0;
+  const track = new EventTarget();
+  track.stop = () => {
+    stopped++;
+  };
+  const stream = { getTracks: () => [track] };
+  navigator.mediaDevices.getDisplayMedia = () => {
+    requests++;
+    return Promise.resolve(stream);
+  };
+  const creates = [];
+  t.mock.method(MeetingController.prototype, 'start', async function (source, request) {
+    await request;
+    const abort = new AbortController();
+    this.jobs.set(source, {
+      abort,
+      meter: { stop: async () => track.stop() },
+      engine: { stop: async () => {} },
+    });
+    track.addEventListener('ended', () => void this.stop(source), { once: true });
+    this.transcript.setActive(source, true);
+    this.patch(source, { listening: true });
+    creates.push(this);
+  });
+  const edits = [];
+  const a = f.props('a', { setDraft: (text) => edits.push(['a', text]) });
+  const b = f.props('b', { setDraft: (text) => edits.push(['b', text]) });
+  await f.render(h(f.Buttons, a));
+  await act(async () => document.querySelector('[aria-label="Shared audio"]').click());
+  const meeting = creates[0];
+  const job = meeting.jobs.get('shared');
+  await act(async () => meeting.transcript.append('shared', 'Before navigation'));
+  assert.deepEqual(edits, [['a', 'Draft\nBefore navigation']]);
+  await f.render(h(f.Buttons, b));
+  assert.equal(meeting.jobs.get('shared'), job);
+  assert.equal(stopped, 0);
+  assert.equal(requests, 1);
+  await act(async () => meeting.transcript.append('shared', 'After navigation'));
+  assert.deepEqual(edits.at(-1), ['b', 'Draft\nAfter navigation']);
+  await f.render(null);
+  await act(async () => meeting.transcript.append('shared', 'No destination'));
+  assert.equal(edits.length, 2);
+  assert.equal(stopped, 0);
+  await f.render(h(f.Buttons, a));
+  assert.equal(meeting.jobs.get('shared'), job);
+  await act(async () => track.dispatchEvent(new Event('ended')));
+  assert.equal(meeting.getSnapshot().shared.listening, false);
+  assert.equal(stopped, 1);
+});

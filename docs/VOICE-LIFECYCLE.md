@@ -10,7 +10,7 @@ Engine, language, input/output device, Speakers/Headphones mode, delivery mode, 
 
 ### Application continuity
 
-An explicit choice to keep voice conversation mode active may follow the committed composer across a chat route change. This continuity does not authorize transient operational state to leak into the new composer.
+An explicit choice to keep voice conversation mode active may follow the committed composer across a chat route change. Shared meeting screen/audio capture is application-owned and stays active across navigation until an explicit stop, browser track end, page exit, or plugin disposal. Its transcript destination follows the committed composer; without one, no composer is modified. This continuity does not authorize session-owned queues or draft state to leak into the new composer.
 
 ### Per-session transient state
 
