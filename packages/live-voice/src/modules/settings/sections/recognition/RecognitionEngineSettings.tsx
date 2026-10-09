@@ -33,7 +33,8 @@ export function RecognitionEngineSettings({
           {
             value: 'browser',
             label: (recognition as any).browser.label(),
-            disabled: capabilities.recognition?.supported === false,
+            // Keep Browser selectable so unavailable local processing can be reconfigured.
+            // capabilities.recognition describes the current engine, not Browser support.
           },
           {
             value: 'qwen-http',

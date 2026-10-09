@@ -36,7 +36,7 @@ export function SettingsHeader({ onClose }: { onClose?(): void }) {
         href={REPOSITORY_URL}
         target="_blank"
         rel="noreferrer"
-        aria-label={`Star DSH Live Voice on GitHub`}
+        aria-label={(commons as any).repository.starLink()}
         title={(commons as any).repository.starLabel()}
       >
         ★ {(commons as any).repository.starLabel()}

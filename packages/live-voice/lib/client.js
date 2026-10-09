@@ -247,6 +247,8 @@ var en = {
   "dsh-live-voice.speak.macos.label": "macOS say \u2014 host audio",
   "dsh-live-voice.speak.macos.name": "macOS say",
   "dsh-live-voice.speak.macos.outputHelp": "macOS say uses the output selected on the DSH host.",
+  "dsh-live-voice.speak.macos.voice": "macOS say voice",
+  "dsh-live-voice.speak.macos.voiceHelp": 'Enter the exact voice name used by say -v. Leave empty to use the macOS default voice. List host voices in Terminal with say -v "?".',
   "dsh-live-voice.speak.output.checking": "Checking speech output\u2026",
   "dsh-live-voice.speak.output.device": "Output device",
   "dsh-live-voice.speak.output.fallbackName": "Audio output",
@@ -322,10 +324,10 @@ var es = {
   "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
   "dsh-live-voice.commons.off": "desactivado",
   "dsh-live-voice.commons.on": "activado",
-  "dsh-live-voice.commons.pluginName": "Live Voice",
+  "dsh-live-voice.commons.pluginName": "Voz en vivo",
   "dsh-live-voice.commons.queue": "cola",
   "dsh-live-voice.commons.repository.starLabel": "Danos una estrella en GitHub",
-  "dsh-live-voice.commons.repository.starLink": "Dar una estrella a DSH Live Voice en GitHub",
+  "dsh-live-voice.commons.repository.starLink": "Dar una estrella a DSH Voz en vivo en GitHub",
   "dsh-live-voice.commons.second": "1 segundo",
   "dsh-live-voice.commons.seconds": "{seconds} segundos",
   "dsh-live-voice.commons.send": "ENVIAR",
@@ -338,8 +340,8 @@ var es = {
   "dsh-live-voice.commons.update.version": "Actualizaci\xF3n disponible: {version}",
   "dsh-live-voice.commons.version.compatibility": "Compatible con DSH v{version}",
   "dsh-live-voice.commons.version.compatibilityLink": "Compatible con DSH v{version}. Abrir la p\xE1gina de esta versi\xF3n",
-  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
-  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}. Abrir la lista de versiones",
+  "dsh-live-voice.commons.version.label": "DSH Voz en vivo v{version}",
+  "dsh-live-voice.commons.version.link": "DSH Voz en vivo v{version}. Abrir la lista de versiones",
   "dsh-live-voice.commons.version.title": "Informaci\xF3n de versi\xF3n",
   "dsh-live-voice.meeting.failed": "Error de reconocimiento.",
   "dsh-live-voice.meeting.help": "Fuentes independientes; env\xEDa las transcripciones manualmente desde el editor.",
@@ -447,7 +449,7 @@ var es = {
   "dsh-live-voice.settings.autoSend.countdown": "Enviando en {remaining}\u2026",
   "dsh-live-voice.settings.autoSend.delay": "Enviar despu\xE9s del silencio",
   "dsh-live-voice.settings.close": "Cerrar configuraci\xF3n de voz",
-  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice usa tu respuesta para elegir la acci\xF3n correcta para Redirigir y Cola. Esto no cambia la configuraci\xF3n de DSH; indica el comportamiento que ya usas y actualiza esta respuesta si cambia.",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Voz en vivo usa tu respuesta para elegir la acci\xF3n correcta para Redirigir y Cola. Esto no cambia la configuraci\xF3n de DSH; indica el comportamiento que ya usas y actualiza esta respuesta si cambia.",
   "dsh-live-voice.settings.delivery.dshEnterQuestion": "En tu DSH, \xBFqu\xE9 hace Enter cuando el agente est\xE1 ocupado?",
   "dsh-live-voice.settings.delivery.dshEnterQueue": "A\xF1ade el mensaje a la cola",
   "dsh-live-voice.settings.delivery.dshEnterSteer": "Env\xEDa el mensaje para redirigir al agente",
@@ -461,12 +463,12 @@ var es = {
   "dsh-live-voice.settings.engine.refresh": "Actualizar los motores disponibles",
   "dsh-live-voice.settings.filters.title": "Filtrado",
   "dsh-live-voice.settings.general.title": "General",
-  "dsh-live-voice.settings.persistence.loadError": "No se pudieron cargar los ajustes de Live Voice del servidor. Recarga para volver a intentarlo.",
-  "dsh-live-voice.settings.persistence.saveError": "No se pudieron guardar los ajustes de Live Voice en el servidor. Int\xE9ntalo de nuevo.",
+  "dsh-live-voice.settings.persistence.loadError": "No se pudieron cargar los ajustes de Voz en vivo del servidor. Recarga para volver a intentarlo.",
+  "dsh-live-voice.settings.persistence.saveError": "No se pudieron guardar los ajustes de Voz en vivo en el servidor. Int\xE9ntalo de nuevo.",
   "dsh-live-voice.settings.tabs.conversation": "Conversaci\xF3n",
   "dsh-live-voice.settings.tabs.recognition": "Reconocimiento de voz",
   "dsh-live-voice.settings.tabs.speak": "S\xEDntesis de voz",
-  "dsh-live-voice.settings.title": "Configuraci\xF3n de Live Voice",
+  "dsh-live-voice.settings.title": "Configuraci\xF3n de Voz en vivo",
   "dsh-live-voice.settings.whisper.hostHelp": "Configuraci\xF3n para todo el host. Solo se permiten URL HTTP sin autenticaci\xF3n en la interfaz de bucle local (localhost, 127.0.0.1, [::1]). El bucle local se refiere al host de DSH, no a este navegador. Todas las comprobaciones de estado y solicitudes de audio pasan por el servidor con autenticaci\xF3n.",
   "dsh-live-voice.speak.agentContext.enabled": "Activar el contexto de voz del agente",
   "dsh-live-voice.speak.agentContext.enabledHelp": "Cuando est\xE1 activado, el contexto siguiente informa al agente que sus respuestas se leer\xE1n en voz alta.",
@@ -503,12 +505,14 @@ var es = {
   "dsh-live-voice.speak.macos.label": "macOS say \u2014 audio en el host",
   "dsh-live-voice.speak.macos.name": "macOS say",
   "dsh-live-voice.speak.macos.outputHelp": "macOS say utiliza la salida seleccionada en el host de DSH.",
+  "dsh-live-voice.speak.macos.voice": "Voz de macOS say",
+  "dsh-live-voice.speak.macos.voiceHelp": 'Introduce el nombre exacto de la voz usado por say -v. D\xE9jalo vac\xEDo para usar la voz predeterminada de macOS. Lista las voces del host en Terminal con say -v "?".',
   "dsh-live-voice.speak.output.checking": "Comprobando la salida de voz\u2026",
   "dsh-live-voice.speak.output.device": "Dispositivo de salida",
   "dsh-live-voice.speak.output.fallbackName": "Salida de audio",
   "dsh-live-voice.speak.output.stopTest": "Detener la prueba de voz",
   "dsh-live-voice.speak.output.test": "Probar la salida de voz seleccionada",
-  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice. La salida de voz seleccionada funciona.",
+  "dsh-live-voice.speak.output.testPhrase": "DSH Voz en vivo. La salida de voz seleccionada funciona.",
   "dsh-live-voice.speak.output.testing": "Probando la voz\u2026",
   "dsh-live-voice.speak.playback.message": "Leer el mensaje en voz alta",
   "dsh-live-voice.speak.playback.next": "Saltar al siguiente segmento de voz",
@@ -578,10 +582,10 @@ var fr = {
   "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
   "dsh-live-voice.commons.off": "d\xE9sactiv\xE9",
   "dsh-live-voice.commons.on": "activ\xE9",
-  "dsh-live-voice.commons.pluginName": "Live Voice",
+  "dsh-live-voice.commons.pluginName": "Voix en direct",
   "dsh-live-voice.commons.queue": "file d\u2019attente",
   "dsh-live-voice.commons.repository.starLabel": "Soutenez-nous avec une \xE9toile sur GitHub",
-  "dsh-live-voice.commons.repository.starLink": "Attribuer une \xE9toile \xE0 DSH Live Voice sur GitHub",
+  "dsh-live-voice.commons.repository.starLink": "Attribuer une \xE9toile \xE0 DSH Voix en direct sur GitHub",
   "dsh-live-voice.commons.second": "1 seconde",
   "dsh-live-voice.commons.seconds": "{seconds} secondes",
   "dsh-live-voice.commons.send": "ENVOYER",
@@ -594,8 +598,8 @@ var fr = {
   "dsh-live-voice.commons.update.version": "Mise \xE0 jour disponible : {version}",
   "dsh-live-voice.commons.version.compatibility": "Compatible avec DSH v{version}",
   "dsh-live-voice.commons.version.compatibilityLink": "Compatible avec DSH v{version}. Ouvrir la page de cette version",
-  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
-  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}. Ouvrir la liste des versions",
+  "dsh-live-voice.commons.version.label": "DSH Voix en direct v{version}",
+  "dsh-live-voice.commons.version.link": "DSH Voix en direct v{version}. Ouvrir la liste des versions",
   "dsh-live-voice.commons.version.title": "Informations de version",
   "dsh-live-voice.meeting.failed": "\xC9chec de reconnaissance.",
   "dsh-live-voice.meeting.help": "Sources ind\xE9pendantes ; envoyez les transcriptions manuellement depuis l\u2019\xE9diteur.",
@@ -703,7 +707,7 @@ var fr = {
   "dsh-live-voice.settings.autoSend.countdown": "Envoi dans {remaining}\u2026",
   "dsh-live-voice.settings.autoSend.delay": "Envoyer apr\xE8s le silence",
   "dsh-live-voice.settings.close": "Fermer les param\xE8tres vocaux",
-  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice utilise votre r\xE9ponse pour choisir la bonne action pour R\xE9orienter et File d\u2019attente. Cela ne modifie pas les param\xE8tres de DSH ; indiquez le comportement actuel et mettez cette r\xE9ponse \xE0 jour s\u2019il change.",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "Voix en direct utilise votre r\xE9ponse pour choisir la bonne action pour R\xE9orienter et File d\u2019attente. Cela ne modifie pas les param\xE8tres de DSH ; indiquez le comportement actuel et mettez cette r\xE9ponse \xE0 jour s\u2019il change.",
   "dsh-live-voice.settings.delivery.dshEnterQuestion": "Dans votre DSH, que fait Entr\xE9e lorsque l\u2019agent est occup\xE9 ?",
   "dsh-live-voice.settings.delivery.dshEnterQueue": "Place le message dans la file d\u2019attente",
   "dsh-live-voice.settings.delivery.dshEnterSteer": "Envoie le message pour r\xE9orienter l\u2019agent",
@@ -717,12 +721,12 @@ var fr = {
   "dsh-live-voice.settings.engine.refresh": "Actualiser les moteurs disponibles",
   "dsh-live-voice.settings.filters.title": "Filtrage",
   "dsh-live-voice.settings.general.title": "G\xE9n\xE9ral",
-  "dsh-live-voice.settings.persistence.loadError": "Impossible de charger les param\xE8tres Live Voice depuis le serveur. Rechargez pour r\xE9essayer.",
-  "dsh-live-voice.settings.persistence.saveError": "Impossible de sauvegarder les param\xE8tres Live Voice sur le serveur. R\xE9essayez.",
+  "dsh-live-voice.settings.persistence.loadError": "Impossible de charger les param\xE8tres Voix en direct depuis le serveur. Rechargez pour r\xE9essayer.",
+  "dsh-live-voice.settings.persistence.saveError": "Impossible de sauvegarder les param\xE8tres Voix en direct sur le serveur. R\xE9essayez.",
   "dsh-live-voice.settings.tabs.conversation": "Conversation",
   "dsh-live-voice.settings.tabs.recognition": "Reconnaissance vocale",
   "dsh-live-voice.settings.tabs.speak": "Synth\xE8se vocale",
-  "dsh-live-voice.settings.title": "Param\xE8tres de Live Voice",
+  "dsh-live-voice.settings.title": "Param\xE8tres de Voix en direct",
   "dsh-live-voice.settings.whisper.hostHelp": "Param\xE8tres communs \xE0 tout l\u2019h\xF4te. Seules les URL HTTP sans authentification sur l\u2019interface de bouclage (localhost, 127.0.0.1, [::1]) sont autoris\xE9es. Le bouclage d\xE9signe l\u2019h\xF4te DSH, pas ce navigateur. Toutes les v\xE9rifications d\u2019\xE9tat et requ\xEAtes audio passent par le serveur avec authentification.",
   "dsh-live-voice.speak.agentContext.enabled": "Activer le contexte vocal de l\u2019agent",
   "dsh-live-voice.speak.agentContext.enabledHelp": "Lorsqu\u2019il est activ\xE9, le contexte ci-dessous indique \xE0 l\u2019agent que ses r\xE9ponses seront lues \xE0 voix haute.",
@@ -759,12 +763,14 @@ var fr = {
   "dsh-live-voice.speak.macos.label": "macOS say \u2014 son sur l\u2019h\xF4te",
   "dsh-live-voice.speak.macos.name": "macOS say",
   "dsh-live-voice.speak.macos.outputHelp": "macOS say utilise la sortie s\xE9lectionn\xE9e sur l\u2019h\xF4te DSH.",
+  "dsh-live-voice.speak.macos.voice": "Voix de macOS say",
+  "dsh-live-voice.speak.macos.voiceHelp": 'Saisissez le nom exact de la voix utilis\xE9 par say -v. Laissez vide pour utiliser la voix par d\xE9faut de macOS. Listez les voix de l\u2019h\xF4te dans Terminal avec say -v "?".',
   "dsh-live-voice.speak.output.checking": "V\xE9rification de la sortie vocale\u2026",
   "dsh-live-voice.speak.output.device": "P\xE9riph\xE9rique de sortie",
   "dsh-live-voice.speak.output.fallbackName": "Sortie audio",
   "dsh-live-voice.speak.output.stopTest": "Arr\xEAter le test vocal",
   "dsh-live-voice.speak.output.test": "Tester la sortie vocale s\xE9lectionn\xE9e",
-  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice. La sortie vocale s\xE9lectionn\xE9e fonctionne.",
+  "dsh-live-voice.speak.output.testPhrase": "DSH Voix en direct. La sortie vocale s\xE9lectionn\xE9e fonctionne.",
   "dsh-live-voice.speak.output.testing": "Test vocal en cours\u2026",
   "dsh-live-voice.speak.playback.message": "Lire le message \xE0 voix haute",
   "dsh-live-voice.speak.playback.next": "Passer au segment vocal suivant",
@@ -834,10 +840,10 @@ var hi = {
   "dsh-live-voice.commons.milliseconds": "{milliseconds} \u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921",
   "dsh-live-voice.commons.off": "\u092C\u0902\u0926",
   "dsh-live-voice.commons.on": "\u091A\u093E\u0932\u0942",
-  "dsh-live-voice.commons.pluginName": "Live Voice",
+  "dsh-live-voice.commons.pluginName": "\u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938",
   "dsh-live-voice.commons.queue": "\u0915\u0924\u093E\u0930",
   "dsh-live-voice.commons.repository.starLabel": "GitHub \u092A\u0930 \u0939\u092E\u0947\u0902 \u0938\u094D\u091F\u093E\u0930 \u0926\u0947\u0902",
-  "dsh-live-voice.commons.repository.starLink": "GitHub \u092A\u0930 DSH Live Voice \u0915\u094B \u0938\u094D\u091F\u093E\u0930 \u0926\u0947\u0902",
+  "dsh-live-voice.commons.repository.starLink": "GitHub \u092A\u0930 DSH \u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 \u0915\u094B \u0938\u094D\u091F\u093E\u0930 \u0926\u0947\u0902",
   "dsh-live-voice.commons.second": "1 \u0938\u0947\u0915\u0902\u0921",
   "dsh-live-voice.commons.seconds": "{seconds} \u0938\u0947\u0915\u0902\u0921",
   "dsh-live-voice.commons.send": "\u092D\u0947\u091C\u0947\u0902",
@@ -850,8 +856,8 @@ var hi = {
   "dsh-live-voice.commons.update.version": "\u0905\u092A\u0921\u0947\u091F \u0909\u092A\u0932\u092C\u094D\u0927 \u0939\u0948: {version}",
   "dsh-live-voice.commons.version.compatibility": "DSH v{version} \u0915\u0947 \u0938\u093E\u0925 \u0938\u0902\u0917\u0924",
   "dsh-live-voice.commons.version.compatibilityLink": "DSH v{version} \u0915\u0947 \u0938\u093E\u0925 \u0938\u0902\u0917\u0924\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0916\u094B\u0932\u0947\u0902",
-  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
-  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0938\u0942\u091A\u0940 \u0916\u094B\u0932\u0947\u0902",
+  "dsh-live-voice.commons.version.label": "DSH \u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 v{version}",
+  "dsh-live-voice.commons.version.link": "DSH \u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 v{version}\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0938\u0942\u091A\u0940 \u0916\u094B\u0932\u0947\u0902",
   "dsh-live-voice.commons.version.title": "\u0938\u0902\u0938\u094D\u0915\u0930\u0923 \u091C\u093E\u0928\u0915\u093E\u0930\u0940",
   "dsh-live-voice.meeting.failed": "\u092A\u0939\u091A\u093E\u0928 \u0935\u093F\u092B\u0932 \u0939\u0941\u0908\u0964",
   "dsh-live-voice.meeting.help": "\u0938\u094D\u0935\u0924\u0902\u0924\u094D\u0930 \u0938\u094D\u0930\u094B\u0924; \u0938\u0902\u092A\u093E\u0926\u0915 \u0938\u0947 \u0932\u093F\u092A\u094D\u092F\u0902\u0924\u0930\u0923 \u0938\u094D\u0935\u092F\u0902 \u092D\u0947\u091C\u0947\u0902\u0964",
@@ -959,7 +965,7 @@ var hi = {
   "dsh-live-voice.settings.autoSend.countdown": "{remaining} \u092E\u0947\u0902 \u092D\u0947\u091C\u093E \u091C\u093E\u090F\u0917\u093E\u2026",
   "dsh-live-voice.settings.autoSend.delay": "\u092E\u094C\u0928 \u0915\u0947 \u092C\u093E\u0926 \u092D\u0947\u091C\u0947\u0902",
   "dsh-live-voice.settings.close": "\u0935\u0949\u0907\u0938 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice \u0906\u092A\u0915\u0947 \u0909\u0924\u094D\u0924\u0930 \u0938\u0947 \u0926\u093F\u0936\u093E \u0926\u0947\u0928\u0947 \u0914\u0930 \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u0921\u093E\u0932\u0928\u0947 \u0915\u0940 \u0938\u0939\u0940 \u0915\u094D\u0930\u093F\u092F\u093E \u091A\u0941\u0928\u0924\u093E \u0939\u0948\u0964 \u0907\u0938\u0938\u0947 DSH \u0915\u0940 \u0938\u0947\u091F\u093F\u0902\u0917 \u0928\u0939\u0940\u0902 \u092C\u0926\u0932\u0924\u0940; \u0905\u092A\u0928\u093E \u0935\u0930\u094D\u0924\u092E\u093E\u0928 DSH \u0935\u094D\u092F\u0935\u0939\u093E\u0930 \u092C\u0924\u093E\u090F\u0902 \u0914\u0930 \u0909\u0938\u0915\u0947 \u092C\u0926\u0932\u0928\u0947 \u092A\u0930 \u092F\u0939 \u0909\u0924\u094D\u0924\u0930 \u0905\u092A\u0921\u0947\u091F \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "\u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 \u0906\u092A\u0915\u0947 \u0909\u0924\u094D\u0924\u0930 \u0938\u0947 \u0926\u093F\u0936\u093E \u0926\u0947\u0928\u0947 \u0914\u0930 \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u0921\u093E\u0932\u0928\u0947 \u0915\u0940 \u0938\u0939\u0940 \u0915\u094D\u0930\u093F\u092F\u093E \u091A\u0941\u0928\u0924\u093E \u0939\u0948\u0964 \u0907\u0938\u0938\u0947 DSH \u0915\u0940 \u0938\u0947\u091F\u093F\u0902\u0917 \u0928\u0939\u0940\u0902 \u092C\u0926\u0932\u0924\u0940; \u0905\u092A\u0928\u093E \u0935\u0930\u094D\u0924\u092E\u093E\u0928 DSH \u0935\u094D\u092F\u0935\u0939\u093E\u0930 \u092C\u0924\u093E\u090F\u0902 \u0914\u0930 \u0909\u0938\u0915\u0947 \u092C\u0926\u0932\u0928\u0947 \u092A\u0930 \u092F\u0939 \u0909\u0924\u094D\u0924\u0930 \u0905\u092A\u0921\u0947\u091F \u0915\u0930\u0947\u0902\u0964",
   "dsh-live-voice.settings.delivery.dshEnterQuestion": "\u0906\u092A\u0915\u0947 DSH \u092E\u0947\u0902, \u090F\u091C\u0947\u0902\u091F \u0935\u094D\u092F\u0938\u094D\u0924 \u0939\u094B\u0928\u0947 \u092A\u0930 Enter \u0915\u094D\u092F\u093E \u0915\u0930\u0924\u093E \u0939\u0948?",
   "dsh-live-voice.settings.delivery.dshEnterQueue": "\u0938\u0902\u0926\u0947\u0936 \u0915\u094B \u0915\u0924\u093E\u0930 \u092E\u0947\u0902 \u0921\u093E\u0932\u0924\u093E \u0939\u0948",
   "dsh-live-voice.settings.delivery.dshEnterSteer": "\u0938\u0902\u0926\u0947\u0936 \u0938\u0947 \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u0926\u093F\u0936\u093E \u0926\u0947\u0924\u093E \u0939\u0948",
@@ -973,12 +979,12 @@ var hi = {
   "dsh-live-voice.settings.engine.refresh": "\u0909\u092A\u0932\u092C\u094D\u0927 \u0907\u0902\u091C\u0928 \u0930\u0940\u092B\u093C\u094D\u0930\u0947\u0936 \u0915\u0930\u0947\u0902",
   "dsh-live-voice.settings.filters.title": "\u092B\u093C\u093F\u0932\u094D\u091F\u0930\u093F\u0902\u0917",
   "dsh-live-voice.settings.general.title": "\u0938\u093E\u092E\u093E\u0928\u094D\u092F",
-  "dsh-live-voice.settings.persistence.loadError": "\u0938\u0930\u094D\u0935\u0930 \u0938\u0947 Live Voice \u0938\u0947\u091F\u093F\u0902\u0917 \u0932\u094B\u0921 \u0928\u0939\u0940\u0902 \u0939\u094B \u0938\u0915\u0940\u0902\u0964 \u092B\u093F\u0930 \u092A\u094D\u0930\u092F\u093E\u0938 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F \u092A\u0947\u091C \u0930\u0940\u0932\u094B\u0921 \u0915\u0930\u0947\u0902\u0964",
-  "dsh-live-voice.settings.persistence.saveError": "\u0938\u0930\u094D\u0935\u0930 \u092A\u0930 Live Voice \u0938\u0947\u091F\u093F\u0902\u0917 \u0938\u0947\u0935 \u0928\u0939\u0940\u0902 \u0939\u094B \u0938\u0915\u0940\u0902\u0964 \u092B\u093F\u0930 \u092A\u094D\u0930\u092F\u093E\u0938 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.settings.persistence.loadError": "\u0938\u0930\u094D\u0935\u0930 \u0938\u0947 \u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 \u0938\u0947\u091F\u093F\u0902\u0917 \u0932\u094B\u0921 \u0928\u0939\u0940\u0902 \u0939\u094B \u0938\u0915\u0940\u0902\u0964 \u092B\u093F\u0930 \u092A\u094D\u0930\u092F\u093E\u0938 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F \u092A\u0947\u091C \u0930\u0940\u0932\u094B\u0921 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.settings.persistence.saveError": "\u0938\u0930\u094D\u0935\u0930 \u092A\u0930 \u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 \u0938\u0947\u091F\u093F\u0902\u0917 \u0938\u0947\u0935 \u0928\u0939\u0940\u0902 \u0939\u094B \u0938\u0915\u0940\u0902\u0964 \u092B\u093F\u0930 \u092A\u094D\u0930\u092F\u093E\u0938 \u0915\u0930\u0947\u0902\u0964",
   "dsh-live-voice.settings.tabs.conversation": "\u092C\u093E\u0924\u091A\u0940\u0924",
   "dsh-live-voice.settings.tabs.recognition": "\u0935\u093E\u0915\u094D \u092A\u0939\u091A\u093E\u0928",
   "dsh-live-voice.settings.tabs.speak": "\u0935\u093E\u091A\u0928",
-  "dsh-live-voice.settings.title": "Live Voice \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938",
+  "dsh-live-voice.settings.title": "\u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938",
   "dsh-live-voice.settings.whisper.hostHelp": "\u092A\u0942\u0930\u0947 \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0932\u093E\u0917\u0942 \u0939\u094B\u0928\u0947 \u0935\u093E\u0932\u0940 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938\u0964 \u0915\u0947\u0935\u0932 \u092C\u093F\u0928\u093E \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0930\u0923 \u0935\u093E\u0932\u0947 \u0932\u0942\u092A\u092C\u0948\u0915 HTTP URL (localhost, 127.0.0.1, [::1]) \u0938\u094D\u0935\u0940\u0915\u093E\u0930\u094D\u092F \u0939\u0948\u0902\u0964 \u0932\u0942\u092A\u092C\u0948\u0915 \u0915\u093E \u0905\u0930\u094D\u0925 DSH \u0939\u094B\u0938\u094D\u091F \u0939\u0948, \u092F\u0939 \u092C\u094D\u0930\u093E\u0909\u091C\u093C\u0930 \u0928\u0939\u0940\u0902\u0964 \u0938\u092D\u0940 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u091C\u093E\u0901\u091A \u0914\u0930 \u0911\u0921\u093F\u092F\u094B \u0905\u0928\u0941\u0930\u094B\u0927 \u092A\u094D\u0930\u092E\u093E\u0923\u0940\u0915\u0930\u0923 \u0935\u093E\u0932\u0947 \u092C\u0948\u0915\u090F\u0902\u0921 \u0915\u0947 \u091C\u093C\u0930\u093F\u090F \u091A\u0932\u0924\u0947 \u0939\u0948\u0902\u0964",
   "dsh-live-voice.speak.agentContext.enabled": "\u090F\u091C\u0947\u0902\u091F \u0935\u0949\u0907\u0938 \u0938\u0902\u0926\u0930\u094D\u092D \u0938\u0915\u094D\u0937\u092E \u0915\u0930\u0947\u0902",
   "dsh-live-voice.speak.agentContext.enabledHelp": "\u0938\u0915\u094D\u0937\u092E \u0939\u094B\u0928\u0947 \u092A\u0930, \u0928\u0940\u091A\u0947 \u0926\u093F\u092F\u093E \u0917\u092F\u093E \u0938\u0902\u0926\u0930\u094D\u092D \u090F\u091C\u0947\u0902\u091F \u0915\u094B \u092C\u0924\u093E\u0924\u093E \u0939\u0948 \u0915\u093F \u0909\u0938\u0915\u0947 \u0909\u0924\u094D\u0924\u0930 \u091C\u093C\u094B\u0930 \u0938\u0947 \u092C\u094B\u0932\u0947 \u091C\u093E\u090F\u0902\u0917\u0947\u0964",
@@ -1015,12 +1021,14 @@ var hi = {
   "dsh-live-voice.speak.macos.label": "macOS say \u2014 \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u0911\u0921\u093F\u092F\u094B",
   "dsh-live-voice.speak.macos.name": "macOS say",
   "dsh-live-voice.speak.macos.outputHelp": "macOS say, DSH \u0939\u094B\u0938\u094D\u091F \u092A\u0930 \u091A\u0941\u0928\u0947 \u0917\u090F \u0906\u0909\u091F\u092A\u0941\u091F \u0915\u093E \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0924\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.speak.macos.voice": "macOS say \u0915\u0940 \u0906\u0935\u093E\u091C\u093C",
+  "dsh-live-voice.speak.macos.voiceHelp": 'say -v \u092E\u0947\u0902 \u0907\u0938\u094D\u0924\u0947\u092E\u093E\u0932 \u0915\u093F\u092F\u093E \u091C\u093E\u0928\u0947 \u0935\u093E\u0932\u093E \u0906\u0935\u093E\u091C\u093C \u0915\u093E \u0938\u091F\u0940\u0915 \u0928\u093E\u092E \u0926\u0930\u094D\u091C \u0915\u0930\u0947\u0902\u0964 macOS \u0915\u0940 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F \u0906\u0935\u093E\u091C\u093C \u0915\u0947 \u0932\u093F\u090F \u0916\u093E\u0932\u0940 \u091B\u094B\u0921\u093C\u0947\u0902\u0964 \u0939\u094B\u0938\u094D\u091F \u0915\u0940 \u0906\u0935\u093E\u091C\u093C\u094B\u0902 \u0915\u0940 \u0938\u0942\u091A\u0940 Terminal \u092E\u0947\u0902 say -v "?" \u0938\u0947 \u0926\u0947\u0916\u0947\u0902\u0964',
   "dsh-live-voice.speak.output.checking": "\u0935\u093E\u0915\u094D \u0906\u0909\u091F\u092A\u0941\u091F \u091C\u093E\u0901\u091A\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
   "dsh-live-voice.speak.output.device": "\u0906\u0909\u091F\u092A\u0941\u091F \u0921\u093F\u0935\u093E\u0907\u0938",
   "dsh-live-voice.speak.output.fallbackName": "\u0911\u0921\u093F\u092F\u094B \u0906\u0909\u091F\u092A\u0941\u091F",
   "dsh-live-voice.speak.output.stopTest": "\u0935\u093E\u091A\u0928 \u092A\u0930\u0940\u0915\u094D\u0937\u0923 \u092C\u0902\u0926 \u0915\u0930\u0947\u0902",
   "dsh-live-voice.speak.output.test": "\u091A\u0941\u0928\u0947 \u0917\u090F \u0935\u093E\u0915\u094D \u0906\u0909\u091F\u092A\u0941\u091F \u0915\u0940 \u091C\u093E\u0901\u091A \u0915\u0930\u0947\u0902",
-  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice\u0964 \u091A\u0941\u0928\u093E \u0917\u092F\u093E \u0935\u093E\u0915\u094D \u0906\u0909\u091F\u092A\u0941\u091F \u0915\u093E\u092E \u0915\u0930 \u0930\u0939\u093E \u0939\u0948\u0964",
+  "dsh-live-voice.speak.output.testPhrase": "DSH \u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938\u0964 \u091A\u0941\u0928\u093E \u0917\u092F\u093E \u0935\u093E\u0915\u094D \u0906\u0909\u091F\u092A\u0941\u091F \u0915\u093E\u092E \u0915\u0930 \u0930\u0939\u093E \u0939\u0948\u0964",
   "dsh-live-voice.speak.output.testing": "\u0935\u093E\u091A\u0928 \u0915\u093E \u092A\u0930\u0940\u0915\u094D\u0937\u0923 \u0939\u094B \u0930\u0939\u093E \u0939\u0948\u2026",
   "dsh-live-voice.speak.playback.message": "\u0938\u0902\u0926\u0947\u0936 \u092A\u0922\u093C\u0915\u0930 \u0938\u0941\u0928\u093E\u090F\u0901",
   "dsh-live-voice.speak.playback.next": "\u0905\u0917\u0932\u0947 \u0935\u093E\u0923\u0940 \u0916\u0902\u0921 \u092A\u0930 \u091C\u093E\u090F\u0901",
@@ -1090,10 +1098,10 @@ var ptBR = {
   "dsh-live-voice.commons.milliseconds": "{milliseconds} ms",
   "dsh-live-voice.commons.off": "desativado",
   "dsh-live-voice.commons.on": "ativada",
-  "dsh-live-voice.commons.pluginName": "Live Voice",
+  "dsh-live-voice.commons.pluginName": "Voz ao Vivo",
   "dsh-live-voice.commons.queue": "fila",
   "dsh-live-voice.commons.repository.starLabel": "D\xEA uma estrela no GitHub",
-  "dsh-live-voice.commons.repository.starLink": "Dar estrela ao DSH Live Voice no GitHub",
+  "dsh-live-voice.commons.repository.starLink": "Dar estrela \xE0 DSH Voz ao Vivo no GitHub",
   "dsh-live-voice.commons.second": "1 segundo",
   "dsh-live-voice.commons.seconds": "{seconds} segundos",
   "dsh-live-voice.commons.send": "ENVIAR",
@@ -1106,8 +1114,8 @@ var ptBR = {
   "dsh-live-voice.commons.update.version": "Atualiza\xE7\xE3o dispon\xEDvel: {version}",
   "dsh-live-voice.commons.version.compatibility": "Compat\xEDvel com DSH v{version}",
   "dsh-live-voice.commons.version.compatibilityLink": "Compat\xEDvel com DSH v{version}. Abrir lan\xE7amento",
-  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
-  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}. Abrir vers\xF5es",
+  "dsh-live-voice.commons.version.label": "DSH Voz ao Vivo v{version}",
+  "dsh-live-voice.commons.version.link": "DSH Voz ao Vivo v{version}. Abrir vers\xF5es",
   "dsh-live-voice.commons.version.title": "Informa\xE7\xF5es da vers\xE3o",
   "dsh-live-voice.meeting.failed": "Falha no reconhecimento.",
   "dsh-live-voice.meeting.help": "Fontes independentes; as transcri\xE7\xF5es ficam no composer at\xE9 voc\xEA envi\xE1-las manualmente.",
@@ -1215,7 +1223,7 @@ var ptBR = {
   "dsh-live-voice.settings.autoSend.countdown": "Enviando em {remaining}\u2026",
   "dsh-live-voice.settings.autoSend.delay": "Enviar ap\xF3s o sil\xEAncio",
   "dsh-live-voice.settings.close": "Fechar configura\xE7\xF5es de voz",
-  "dsh-live-voice.settings.delivery.dshEnterHelp": "O Live Voice usa sua resposta para escolher a a\xE7\xE3o correta ao enviar como Steer ou colocar na Fila. Isto n\xE3o altera as configura\xE7\xF5es do DSH; informe o comportamento que voc\xEA j\xE1 usa nele e atualize esta resposta se ele mudar.",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "A Voz ao Vivo usa sua resposta para escolher a a\xE7\xE3o correta ao enviar como Steer ou colocar na Fila. Isto n\xE3o altera as configura\xE7\xF5es do DSH; informe o comportamento que voc\xEA j\xE1 usa nele e atualize esta resposta se ele mudar.",
   "dsh-live-voice.settings.delivery.dshEnterQuestion": "No seu DSH, quando o agente est\xE1 ocupado, o Enter faz o qu\xEA?",
   "dsh-live-voice.settings.delivery.dshEnterQueue": "Coloca a mensagem na fila",
   "dsh-live-voice.settings.delivery.dshEnterSteer": "Envia a mensagem como steer",
@@ -1229,12 +1237,12 @@ var ptBR = {
   "dsh-live-voice.settings.engine.refresh": "Atualizar mecanismos dispon\xEDveis",
   "dsh-live-voice.settings.filters.title": "Filtragem",
   "dsh-live-voice.settings.general.title": "Gerais",
-  "dsh-live-voice.settings.persistence.loadError": "N\xE3o foi poss\xEDvel carregar as configura\xE7\xF5es do Live Voice do servidor. Recarregue para tentar novamente.",
-  "dsh-live-voice.settings.persistence.saveError": "N\xE3o foi poss\xEDvel salvar as configura\xE7\xF5es do Live Voice no servidor. Tente novamente.",
+  "dsh-live-voice.settings.persistence.loadError": "N\xE3o foi poss\xEDvel carregar as configura\xE7\xF5es da Voz ao Vivo do servidor. Recarregue para tentar novamente.",
+  "dsh-live-voice.settings.persistence.saveError": "N\xE3o foi poss\xEDvel salvar as configura\xE7\xF5es da Voz ao Vivo no servidor. Tente novamente.",
   "dsh-live-voice.settings.tabs.conversation": "Conversa",
   "dsh-live-voice.settings.tabs.recognition": "Reconhecimento de voz",
   "dsh-live-voice.settings.tabs.speak": "Fala",
-  "dsh-live-voice.settings.title": "Configura\xE7\xF5es do Live Voice",
+  "dsh-live-voice.settings.title": "Configura\xE7\xF5es da Voz ao Vivo",
   "dsh-live-voice.settings.whisper.hostHelp": "Configura\xE7\xF5es para todo o host. Apenas URLs HTTP loopback n\xE3o autenticadas (localhost, 127.0.0.1, [::1]) s\xE3o permitidas. Loopback refere-se ao host DSH, n\xE3o a este navegador. Todas as verifica\xE7\xF5es de integridade e requisi\xE7\xF5es de \xE1udio passam pelo backend autenticado.",
   "dsh-live-voice.speak.agentContext.enabled": "Ativar contexto de voz do agente",
   "dsh-live-voice.speak.agentContext.enabledHelp": "Quando ativado, o contexto abaixo informa ao agente que suas respostas ser\xE3o faladas em voz alta.",
@@ -1271,12 +1279,14 @@ var ptBR = {
   "dsh-live-voice.speak.macos.label": "macOS say \u2014 \xE1udio no host",
   "dsh-live-voice.speak.macos.name": "macOS say",
   "dsh-live-voice.speak.macos.outputHelp": "O macOS say usa a sa\xEDda selecionada no host DSH.",
+  "dsh-live-voice.speak.macos.voice": "Voz do macOS say",
+  "dsh-live-voice.speak.macos.voiceHelp": 'Informe o nome exato da voz usado por say -v. Deixe vazio para usar a voz padr\xE3o do macOS. Liste as vozes do host no Terminal com say -v "?".',
   "dsh-live-voice.speak.output.checking": "Verificando sa\xEDda de fala\u2026",
   "dsh-live-voice.speak.output.device": "Dispositivo de sa\xEDda",
   "dsh-live-voice.speak.output.fallbackName": "Sa\xEDda de \xE1udio",
   "dsh-live-voice.speak.output.stopTest": "Parar teste de fala",
   "dsh-live-voice.speak.output.test": "Testar sa\xEDda de fala selecionada",
-  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice. A sa\xEDda de fala selecionada est\xE1 funcionando.",
+  "dsh-live-voice.speak.output.testPhrase": "DSH Voz ao Vivo. A sa\xEDda de fala selecionada est\xE1 funcionando.",
   "dsh-live-voice.speak.output.testing": "Testando fala\u2026",
   "dsh-live-voice.speak.playback.message": "Falar mensagem",
   "dsh-live-voice.speak.playback.next": "Pular para o pr\xF3ximo trecho de fala",
@@ -1346,10 +1356,10 @@ var zh = {
   "dsh-live-voice.commons.milliseconds": "{milliseconds} \u6BEB\u79D2",
   "dsh-live-voice.commons.off": "\u5173\u95ED",
   "dsh-live-voice.commons.on": "\u5F00\u542F",
-  "dsh-live-voice.commons.pluginName": "Live Voice",
+  "dsh-live-voice.commons.pluginName": "\u5B9E\u65F6\u8BED\u97F3",
   "dsh-live-voice.commons.queue": "\u961F\u5217",
   "dsh-live-voice.commons.repository.starLabel": "\u5728 GitHub \u4E0A\u4E3A\u6211\u4EEC\u52A0\u661F",
-  "dsh-live-voice.commons.repository.starLink": "\u5728 GitHub \u4E0A\u4E3A DSH Live Voice \u52A0\u661F",
+  "dsh-live-voice.commons.repository.starLink": "\u5728 GitHub \u4E0A\u4E3A DSH \u5B9E\u65F6\u8BED\u97F3 \u52A0\u661F",
   "dsh-live-voice.commons.second": "1 \u79D2",
   "dsh-live-voice.commons.seconds": "{seconds} \u79D2",
   "dsh-live-voice.commons.send": "\u53D1\u9001",
@@ -1362,8 +1372,8 @@ var zh = {
   "dsh-live-voice.commons.update.version": "\u6709\u53EF\u7528\u66F4\u65B0\uFF1A{version}",
   "dsh-live-voice.commons.version.compatibility": "\u517C\u5BB9 DSH v{version}",
   "dsh-live-voice.commons.version.compatibilityLink": "\u517C\u5BB9 DSH v{version}\u3002\u6253\u5F00\u53D1\u5E03\u9875\u9762",
-  "dsh-live-voice.commons.version.label": "DSH Live Voice v{version}",
-  "dsh-live-voice.commons.version.link": "DSH Live Voice v{version}\u3002\u6253\u5F00\u7248\u672C\u53D1\u5E03\u5217\u8868",
+  "dsh-live-voice.commons.version.label": "DSH \u5B9E\u65F6\u8BED\u97F3 v{version}",
+  "dsh-live-voice.commons.version.link": "DSH \u5B9E\u65F6\u8BED\u97F3 v{version}\u3002\u6253\u5F00\u7248\u672C\u53D1\u5E03\u5217\u8868",
   "dsh-live-voice.commons.version.title": "\u7248\u672C\u4FE1\u606F",
   "dsh-live-voice.meeting.failed": "\u8BED\u97F3\u8BC6\u522B\u5931\u8D25\u3002",
   "dsh-live-voice.meeting.help": "\u72EC\u7ACB\u6765\u6E90\uFF1B\u8BF7\u4ECE\u7F16\u8F91\u5668\u624B\u52A8\u53D1\u9001\u8F6C\u5199\u5185\u5BB9\u3002",
@@ -1471,7 +1481,7 @@ var zh = {
   "dsh-live-voice.settings.autoSend.countdown": "{remaining} \u540E\u53D1\u9001\u2026",
   "dsh-live-voice.settings.autoSend.delay": "\u9759\u97F3\u540E\u53D1\u9001",
   "dsh-live-voice.settings.close": "\u5173\u95ED\u8BED\u97F3\u8BBE\u7F6E",
-  "dsh-live-voice.settings.delivery.dshEnterHelp": "Live Voice \u6839\u636E\u60A8\u7684\u56DE\u7B54\uFF0C\u4E3A\u5F15\u5BFC\u548C\u52A0\u5165\u961F\u5217\u9009\u62E9\u6B63\u786E\u7684\u64CD\u4F5C\u3002\u8FD9\u4E0D\u4F1A\u66F4\u6539 DSH \u8BBE\u7F6E\uFF1B\u8BF7\u586B\u5199\u5F53\u524D DSH \u7684\u884C\u4E3A\uFF0C\u5E76\u5728\u8BE5\u884C\u4E3A\u53D8\u5316\u65F6\u66F4\u65B0\u6B64\u56DE\u7B54\u3002",
+  "dsh-live-voice.settings.delivery.dshEnterHelp": "\u5B9E\u65F6\u8BED\u97F3 \u6839\u636E\u60A8\u7684\u56DE\u7B54\uFF0C\u4E3A\u5F15\u5BFC\u548C\u52A0\u5165\u961F\u5217\u9009\u62E9\u6B63\u786E\u7684\u64CD\u4F5C\u3002\u8FD9\u4E0D\u4F1A\u66F4\u6539 DSH \u8BBE\u7F6E\uFF1B\u8BF7\u586B\u5199\u5F53\u524D DSH \u7684\u884C\u4E3A\uFF0C\u5E76\u5728\u8BE5\u884C\u4E3A\u53D8\u5316\u65F6\u66F4\u65B0\u6B64\u56DE\u7B54\u3002",
   "dsh-live-voice.settings.delivery.dshEnterQuestion": "\u5728\u60A8\u7684 DSH \u4E2D\uFF0C\u667A\u80FD\u4F53\u5FD9\u788C\u65F6\u6309 Enter \u4F1A\u600E\u6837\uFF1F",
   "dsh-live-voice.settings.delivery.dshEnterQueue": "\u5C06\u6D88\u606F\u52A0\u5165\u961F\u5217",
   "dsh-live-voice.settings.delivery.dshEnterSteer": "\u53D1\u9001\u6D88\u606F\u4EE5\u5F15\u5BFC\u667A\u80FD\u4F53",
@@ -1485,12 +1495,12 @@ var zh = {
   "dsh-live-voice.settings.engine.refresh": "\u5237\u65B0\u53EF\u7528\u5F15\u64CE",
   "dsh-live-voice.settings.filters.title": "\u8FC7\u6EE4",
   "dsh-live-voice.settings.general.title": "\u5E38\u89C4",
-  "dsh-live-voice.settings.persistence.loadError": "\u65E0\u6CD5\u4ECE\u670D\u52A1\u5668\u52A0\u8F7D Live Voice \u8BBE\u7F6E\u3002\u8BF7\u5237\u65B0\u540E\u91CD\u8BD5\u3002",
-  "dsh-live-voice.settings.persistence.saveError": "\u65E0\u6CD5\u5728\u670D\u52A1\u5668\u4E0A\u4FDD\u5B58 Live Voice \u8BBE\u7F6E\u3002\u8BF7\u91CD\u8BD5\u3002",
+  "dsh-live-voice.settings.persistence.loadError": "\u65E0\u6CD5\u4ECE\u670D\u52A1\u5668\u52A0\u8F7D \u5B9E\u65F6\u8BED\u97F3 \u8BBE\u7F6E\u3002\u8BF7\u5237\u65B0\u540E\u91CD\u8BD5\u3002",
+  "dsh-live-voice.settings.persistence.saveError": "\u65E0\u6CD5\u5728\u670D\u52A1\u5668\u4E0A\u4FDD\u5B58 \u5B9E\u65F6\u8BED\u97F3 \u8BBE\u7F6E\u3002\u8BF7\u91CD\u8BD5\u3002",
   "dsh-live-voice.settings.tabs.conversation": "\u5BF9\u8BDD",
   "dsh-live-voice.settings.tabs.recognition": "\u8BED\u97F3\u8BC6\u522B",
   "dsh-live-voice.settings.tabs.speak": "\u8BED\u97F3\u5408\u6210",
-  "dsh-live-voice.settings.title": "Live Voice \u8BBE\u7F6E",
+  "dsh-live-voice.settings.title": "\u5B9E\u65F6\u8BED\u97F3 \u8BBE\u7F6E",
   "dsh-live-voice.settings.whisper.hostHelp": "\u4E3B\u673A\u7EA7\u8BBE\u7F6E\u3002\u4EC5\u5141\u8BB8\u65E0\u9700\u8EAB\u4EFD\u9A8C\u8BC1\u7684\u56DE\u73AF HTTP URL\uFF08localhost\u3001127.0.0.1\u3001[::1]\uFF09\u3002\u56DE\u73AF\u5730\u5740\u6307 DSH \u4E3B\u673A\uFF0C\u800C\u975E\u6B64\u6D4F\u89C8\u5668\u3002\u6240\u6709\u5065\u5EB7\u68C0\u67E5\u548C\u97F3\u9891\u8BF7\u6C42\u90FD\u901A\u8FC7\u9700\u8981\u8EAB\u4EFD\u9A8C\u8BC1\u7684\u540E\u7AEF\u6267\u884C\u3002",
   "dsh-live-voice.speak.agentContext.enabled": "\u542F\u7528\u4EE3\u7406\u8BED\u97F3\u4E0A\u4E0B\u6587",
   "dsh-live-voice.speak.agentContext.enabledHelp": "\u542F\u7528\u540E\uFF0C\u4E0B\u65B9\u7684\u4E0A\u4E0B\u6587\u4F1A\u544A\u77E5\u4EE3\u7406\u5176\u56DE\u590D\u5C06\u88AB\u6717\u8BFB\u3002",
@@ -1527,12 +1537,14 @@ var zh = {
   "dsh-live-voice.speak.macos.label": "macOS say \u2014 \u5728\u4E3B\u673A\u64AD\u653E",
   "dsh-live-voice.speak.macos.name": "macOS say",
   "dsh-live-voice.speak.macos.outputHelp": "macOS say \u4F7F\u7528 DSH \u4E3B\u673A\u4E0A\u9009\u5B9A\u7684\u8F93\u51FA\u8BBE\u5907\u3002",
+  "dsh-live-voice.speak.macos.voice": "macOS say \u97F3\u8272",
+  "dsh-live-voice.speak.macos.voiceHelp": '\u8F93\u5165 say -v \u4F7F\u7528\u7684\u51C6\u786E\u97F3\u8272\u540D\u79F0\u3002\u7559\u7A7A\u4EE5\u4F7F\u7528 macOS \u9ED8\u8BA4\u97F3\u8272\u3002\u5728\u4E3B\u673A\u7EC8\u7AEF\u8FD0\u884C say -v "?" \u67E5\u770B\u97F3\u8272\u5217\u8868\u3002',
   "dsh-live-voice.speak.output.checking": "\u6B63\u5728\u68C0\u67E5\u8BED\u97F3\u8F93\u51FA\u2026",
   "dsh-live-voice.speak.output.device": "\u8F93\u51FA\u8BBE\u5907",
   "dsh-live-voice.speak.output.fallbackName": "\u97F3\u9891\u8F93\u51FA",
   "dsh-live-voice.speak.output.stopTest": "\u505C\u6B62\u8BED\u97F3\u6D4B\u8BD5",
   "dsh-live-voice.speak.output.test": "\u6D4B\u8BD5\u6240\u9009\u8BED\u97F3\u8F93\u51FA",
-  "dsh-live-voice.speak.output.testPhrase": "DSH Live Voice\u3002\u6240\u9009\u8BED\u97F3\u8F93\u51FA\u5DE5\u4F5C\u6B63\u5E38\u3002",
+  "dsh-live-voice.speak.output.testPhrase": "DSH \u5B9E\u65F6\u8BED\u97F3\u3002\u6240\u9009\u8BED\u97F3\u8F93\u51FA\u5DE5\u4F5C\u6B63\u5E38\u3002",
   "dsh-live-voice.speak.output.testing": "\u6B63\u5728\u6D4B\u8BD5\u8BED\u97F3\u2026",
   "dsh-live-voice.speak.playback.message": "\u6717\u8BFB\u6D88\u606F",
   "dsh-live-voice.speak.playback.next": "\u8DF3\u81F3\u4E0B\u4E00\u8BED\u97F3\u7247\u6BB5",
@@ -5101,6 +5113,18 @@ var VoiceCoordinator = class _VoiceCoordinator {
     }
     this.prefetchItems.clear();
   }
+  _speechPreparationKey() {
+    const { engine, voice, lang, rate, outputDeviceId } = this.snapshot.settings;
+    return JSON.stringify([engine, voice, lang, rate, outputDeviceId]);
+  }
+  _resetStaleSpeechItem(item, key) {
+    if (item.preparationKey === key) return;
+    item.prepared?.dispose?.();
+    item.prepared = null;
+    item.preparing = null;
+    item.prepareError = null;
+    item.preparationKey = key;
+  }
   _prefetchSpeech() {
     const engine = this.engines[this.snapshot.settings.engine];
     if (typeof engine?.prepare !== "function") return;
@@ -5110,20 +5134,24 @@ var VoiceCoordinator = class _VoiceCoordinator {
       lang: this.snapshot.settings.lang,
       outputDeviceId: this.snapshot.settings.outputDeviceId
     };
+    const key = this._speechPreparationKey();
     for (const item of this.queue.slice(0, 3)) {
+      this._resetStaleSpeechItem(item, key);
       if (item.prepared || item.preparing) continue;
       this.prefetchItems.add(item);
       const signal = this.prefetchController.signal;
       item.preparing = engine.prepare(item.text, { ...options, signal }).then((prepared) => {
-        item.preparing = null;
-        if (signal.aborted || !this.queue.includes(item) && !this.speechHistory.includes(item)) {
+        if (item.preparationKey === key) item.preparing = null;
+        if (signal.aborted || item.preparationKey !== key || !this.queue.includes(item) && !this.speechHistory.includes(item)) {
           prepared.dispose?.();
           this.prefetchItems.delete(item);
         } else item.prepared = prepared;
         return prepared;
       }).catch((error) => {
-        item.preparing = null;
-        if (!signal.aborted) item.prepareError = error;
+        if (item.preparationKey === key) {
+          item.preparing = null;
+          if (!signal.aborted) item.prepareError = error;
+        }
       });
     }
   }
@@ -5321,7 +5349,8 @@ var VoiceCoordinator = class _VoiceCoordinator {
     if (!this.speechHistory.includes(item)) this.speechHistory.push(item);
     this.speechCursor = this.speechHistory.indexOf(item);
     const epoch = ++this.speechEpoch;
-    const engine = item.engine || this.engines[this.snapshot.settings.engine];
+    const engine = this.engines[this.snapshot.settings.engine];
+    this._resetStaleSpeechItem(item, this._speechPreparationKey());
     item.engine = engine;
     if (!engine) {
       this.queue = [];
@@ -6478,7 +6507,7 @@ function createDeviceOptions(devices, kind, systemDefault, fallback) {
 var import_react30 = __toESM(require("react"), 1);
 
 // src/modules/settings/services/releases.ts
-var CURRENT_VERSION = "0.4.0";
+var CURRENT_VERSION = "0.4.1";
 var TESTED_DSH_VERSION = "0.2.1-alpha.1";
 var REPOSITORY_URL = "https://github.com/victorwads/dsh-live-voice";
 var RELEASES_URL = `${REPOSITORY_URL}/releases`;
@@ -6993,8 +7022,9 @@ function RecognitionEngineSettings({
       options: [
         {
           value: "browser",
-          label: recognition.browser.label(),
-          disabled: capabilities.recognition?.supported === false
+          label: recognition.browser.label()
+          // Keep Browser selectable so unavailable local processing can be reconfigured.
+          // capabilities.recognition describes the current engine, not Browser support.
         },
         {
           value: "qwen-http",
@@ -7287,7 +7317,15 @@ function SpeechEngineSettings({ settings, capabilities, updateSettings }) {
       ],
       onChange: (event) => updateSettings({ voice: event.target.value })
     }
-  ), engine === "qwen-http" && /* @__PURE__ */ import_react46.default.createElement(
+  ), engine === "say" && /* @__PURE__ */ import_react46.default.createElement(import_react46.default.Fragment, null, /* @__PURE__ */ import_react46.default.createElement(
+    TextField,
+    {
+      label: speak.macos.voice(),
+      value: settings.voice || "",
+      placeholder: commons.systemDefault(),
+      onCommit: (value) => updateSettings({ voice: value.trim() })
+    }
+  ), /* @__PURE__ */ import_react46.default.createElement("p", { className: "dlv-setting-description" }, speak.macos.voiceHelp())), engine === "qwen-http" && /* @__PURE__ */ import_react46.default.createElement(
     SelectField,
     {
       label: speak.qwen.voice(),
@@ -7434,7 +7472,7 @@ function SettingsHeader({ onClose }) {
       href: REPOSITORY_URL,
       target: "_blank",
       rel: "noreferrer",
-      "aria-label": `Star DSH Live Voice on GitHub`,
+      "aria-label": commons.repository.starLink(),
       title: commons.repository.starLabel()
     },
     "\u2605 ",
@@ -8050,6 +8088,9 @@ function readCoordinatorDiagnostics(controller, includeContent = false) {
       holdToTalkRelease: Boolean(controller.holdToTalkRelease)
     },
     speech: {
+      configuredEngine: state.settings?.engine ?? null,
+      activeEngine: state.speechEngine ?? null,
+      activeEndpoint: controller.engines?.[state.speechEngine]?.endpoint ?? null,
       speaking: Boolean(state.speaking),
       paused: Boolean(state.paused),
       activeMessageId: state.activeMessageId == null ? null : String(state.activeMessageId),

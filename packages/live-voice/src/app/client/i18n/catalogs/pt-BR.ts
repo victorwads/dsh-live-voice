@@ -27,10 +27,10 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.commons.milliseconds': '{milliseconds} ms',
   'dsh-live-voice.commons.off': 'desativado',
   'dsh-live-voice.commons.on': 'ativada',
-  'dsh-live-voice.commons.pluginName': 'Live Voice',
+  'dsh-live-voice.commons.pluginName': 'Voz ao Vivo',
   'dsh-live-voice.commons.queue': 'fila',
   'dsh-live-voice.commons.repository.starLabel': 'Dê uma estrela no GitHub',
-  'dsh-live-voice.commons.repository.starLink': 'Dar estrela ao DSH Live Voice no GitHub',
+  'dsh-live-voice.commons.repository.starLink': 'Dar estrela à DSH Voz ao Vivo no GitHub',
   'dsh-live-voice.commons.second': '1 segundo',
   'dsh-live-voice.commons.seconds': '{seconds} segundos',
   'dsh-live-voice.commons.send': 'ENVIAR',
@@ -44,8 +44,8 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.commons.version.compatibility': 'Compatível com DSH v{version}',
   'dsh-live-voice.commons.version.compatibilityLink':
     'Compatível com DSH v{version}. Abrir lançamento',
-  'dsh-live-voice.commons.version.label': 'DSH Live Voice v{version}',
-  'dsh-live-voice.commons.version.link': 'DSH Live Voice v{version}. Abrir versões',
+  'dsh-live-voice.commons.version.label': 'DSH Voz ao Vivo v{version}',
+  'dsh-live-voice.commons.version.link': 'DSH Voz ao Vivo v{version}. Abrir versões',
   'dsh-live-voice.commons.version.title': 'Informações da versão',
   'dsh-live-voice.meeting.failed': 'Falha no reconhecimento.',
   'dsh-live-voice.meeting.help':
@@ -187,7 +187,7 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.settings.autoSend.delay': 'Enviar após o silêncio',
   'dsh-live-voice.settings.close': 'Fechar configurações de voz',
   'dsh-live-voice.settings.delivery.dshEnterHelp':
-    'O Live Voice usa sua resposta para escolher a ação correta ao enviar como Steer ou colocar na Fila. Isto não altera as configurações do DSH; informe o comportamento que você já usa nele e atualize esta resposta se ele mudar.',
+    'A Voz ao Vivo usa sua resposta para escolher a ação correta ao enviar como Steer ou colocar na Fila. Isto não altera as configurações do DSH; informe o comportamento que você já usa nele e atualize esta resposta se ele mudar.',
   'dsh-live-voice.settings.delivery.dshEnterQuestion':
     'No seu DSH, quando o agente está ocupado, o Enter faz o quê?',
   'dsh-live-voice.settings.delivery.dshEnterQueue': 'Coloca a mensagem na fila',
@@ -204,13 +204,13 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.settings.filters.title': 'Filtragem',
   'dsh-live-voice.settings.general.title': 'Gerais',
   'dsh-live-voice.settings.persistence.loadError':
-    'Não foi possível carregar as configurações do Live Voice do servidor. Recarregue para tentar novamente.',
+    'Não foi possível carregar as configurações da Voz ao Vivo do servidor. Recarregue para tentar novamente.',
   'dsh-live-voice.settings.persistence.saveError':
-    'Não foi possível salvar as configurações do Live Voice no servidor. Tente novamente.',
+    'Não foi possível salvar as configurações da Voz ao Vivo no servidor. Tente novamente.',
   'dsh-live-voice.settings.tabs.conversation': 'Conversa',
   'dsh-live-voice.settings.tabs.recognition': 'Reconhecimento de voz',
   'dsh-live-voice.settings.tabs.speak': 'Fala',
-  'dsh-live-voice.settings.title': 'Configurações do Live Voice',
+  'dsh-live-voice.settings.title': 'Configurações da Voz ao Vivo',
   'dsh-live-voice.settings.whisper.hostHelp':
     'Configurações para todo o host. Apenas URLs HTTP loopback não autenticadas (localhost, 127.0.0.1, [::1]) são permitidas. Loopback refere-se ao host DSH, não a este navegador. Todas as verificações de integridade e requisições de áudio passam pelo backend autenticado.',
   'dsh-live-voice.speak.agentContext.enabled': 'Ativar contexto de voz do agente',
@@ -260,13 +260,16 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.speak.macos.label': 'macOS say — áudio no host',
   'dsh-live-voice.speak.macos.name': 'macOS say',
   'dsh-live-voice.speak.macos.outputHelp': 'O macOS say usa a saída selecionada no host DSH.',
+  'dsh-live-voice.speak.macos.voice': 'Voz do macOS say',
+  'dsh-live-voice.speak.macos.voiceHelp':
+    'Informe o nome exato da voz usado por say -v. Deixe vazio para usar a voz padrão do macOS. Liste as vozes do host no Terminal com say -v "?".',
   'dsh-live-voice.speak.output.checking': 'Verificando saída de fala…',
   'dsh-live-voice.speak.output.device': 'Dispositivo de saída',
   'dsh-live-voice.speak.output.fallbackName': 'Saída de áudio',
   'dsh-live-voice.speak.output.stopTest': 'Parar teste de fala',
   'dsh-live-voice.speak.output.test': 'Testar saída de fala selecionada',
   'dsh-live-voice.speak.output.testPhrase':
-    'DSH Live Voice. A saída de fala selecionada está funcionando.',
+    'DSH Voz ao Vivo. A saída de fala selecionada está funcionando.',
   'dsh-live-voice.speak.output.testing': 'Testando fala…',
   'dsh-live-voice.speak.playback.message': 'Falar mensagem',
   'dsh-live-voice.speak.playback.next': 'Pular para o próximo trecho de fala',

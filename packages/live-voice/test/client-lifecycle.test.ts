@@ -7,6 +7,8 @@ import { JSDOM } from 'jsdom';
 import { apply } from '../src/app/client/apply.tsx';
 import { VoiceCoordinator } from '../src/modules/core/coordinator.ts';
 import { MeetingController } from '../src/modules/conversation/models/meeting.js';
+import { HostAudioSpeakingEngine } from '../src/modules/speak/engines/audio/HostAudioEngine.js';
+import { BrowserSpeakingEngine } from '../src/modules/speak/engines/browser/BrowserSpeakingEngine.js';
 
 const h = React.createElement;
 function deferred() {
@@ -16,7 +18,7 @@ function deferred() {
   });
   return { promise, resolve };
 }
-async function fixture(t, { pendingStore = true } = {}) {
+async function fixture(t, { pendingStore = true, realSpeech = false, initialSettings = {} } = {}) {
   const dom = new JSDOM(
     '<!doctype html><html><head></head><body><div id="root"></div></body></html>',
     { url: 'http://localhost' },
@@ -45,7 +47,7 @@ async function fixture(t, { pendingStore = true } = {}) {
     'dsh-live-voice.settings',
     JSON.stringify({ engine: 'say', mode: 'headphones' }),
   );
-  let serverSettings = {};
+  let serverSettings = initialSettings;
   t.mock.method(globalThis, 'fetch', async (url, options = {}) => {
     if (url === '/api/dsh-live-voice/settings') {
       if (options.method === 'PUT')
@@ -80,9 +82,10 @@ async function fixture(t, { pendingStore = true } = {}) {
   t.mock.method(VoiceCoordinator.prototype, 'startConversation', async function () {
     calls.push(['conversation', this]);
   });
-  t.mock.method(VoiceCoordinator.prototype, 'speak', async function (...args) {
-    calls.push(['speak', this, ...args]);
-  });
+  if (!realSpeech)
+    t.mock.method(VoiceCoordinator.prototype, 'speak', async function (...args) {
+      calls.push(['speak', this, ...args]);
+    });
   t.mock.method(VoiceCoordinator.prototype, 'stopListening', async function () {
     calls.push(['stop', this]);
   });
@@ -818,4 +821,229 @@ test('composer autoplay remains between shared audio and microphone while idle, 
   await act(async () => buttons[1].click());
   assert.equal(buttons[1].getAttribute('aria-checked'), 'true');
   assert.equal(f.calls.length, before, 'capture and speech lifecycle actions are untouched');
+});
+
+test('Settings selected say test calls macOS backend and never browser synthesis', async (t) => {
+  const f = await fixture(t, { realSpeech: true });
+  let browserCalls = 0;
+  const requests = [];
+  t.mock.method(BrowserSpeakingEngine.prototype, 'speak', async () => {
+    browserCalls++;
+  });
+  t.mock.method(HostAudioSpeakingEngine.prototype, 'playPrepared', async (_audio, options) => {
+    options.onPlaybackStart?.();
+  });
+  t.mock.method(globalThis, 'fetch', async (url, options = {}) => {
+    if (url === '/api/dsh-live-voice/settings') {
+      if (options.method === 'PUT')
+        return Response.json({
+          ok: true,
+          value: { engine: 'say', mode: 'headphones', voice: '', lang: 'pt-BR' },
+        });
+      return Response.json({ ok: true, value: { engine: 'browser', mode: 'headphones' } });
+    }
+    if (url === '/api/dsh-live-voice/say/speech') {
+      requests.push({ url, body: JSON.parse(options.body) });
+      return new Response(new Uint8Array([1, 2, 3]), { headers: { 'content-type': 'audio/mp4' } });
+    }
+    return Response.json({ ok: true, value: { supported: true } });
+  });
+  await f.render(h(f.Settings));
+  const selector = document.querySelector('select');
+  await act(async () => {
+    selector.value = 'say';
+    selector.dispatchEvent(new window.Event('change', { bubbles: true }));
+  });
+  assert.equal(selector.value, 'say');
+  const button = [...document.querySelectorAll('button')].find(
+    (button) => button.textContent === 'Test selected speech output',
+  );
+  await act(async () => {
+    button.click();
+    await new Promise((resolve) => setImmediate(resolve));
+  });
+  assert.equal(browserCalls, 0);
+  assert.ok(requests.length > 0, 'selected say must send a real HTTP synthesis request');
+  assert.equal(requests[0].body.lang, 'pt-BR');
+  assert.equal(requests[0].body.rate, 175);
+});
+
+test('an older settings save response cannot make selected say test fall back to browser', async (t) => {
+  const f = await fixture(t, { realSpeech: true });
+  const firstSave = deferred();
+  const secondSave = deferred();
+  let put = 0;
+  let browserCalls = 0;
+  let backendCalls = 0;
+  t.mock.method(BrowserSpeakingEngine.prototype, 'speak', async () => {
+    browserCalls++;
+  });
+  t.mock.method(HostAudioSpeakingEngine.prototype, 'playPrepared', async (_audio, options) => {
+    options.onPlaybackStart?.();
+  });
+  t.mock.method(globalThis, 'fetch', async (url, options = {}) => {
+    if (url === '/api/dsh-live-voice/settings') {
+      if (options.method === 'PUT') {
+        put++;
+        return put === 1 ? firstSave.promise : secondSave.promise;
+      }
+      return Response.json({ ok: true, value: { engine: 'browser', mode: 'headphones' } });
+    }
+    if (url === '/api/dsh-live-voice/say/speech') {
+      backendCalls++;
+      return new Response(new Uint8Array([1, 2, 3]));
+    }
+    return Response.json({ ok: true, value: { supported: true } });
+  });
+  await f.render(h(f.Settings));
+  const c = f.controllers.findLast((controller) => !controller.disposed);
+  let oldSave;
+  await act(async () => {
+    oldSave = c.updateSettings({ rate: 1.2 });
+    await new Promise((resolve) => setImmediate(resolve));
+  });
+  const selector = document.querySelector('select');
+  await act(async () => {
+    selector.value = 'say';
+    selector.dispatchEvent(new window.Event('change', { bubbles: true }));
+  });
+  assert.equal(selector.value, 'say');
+  await act(async () => {
+    firstSave.resolve(
+      Response.json({ ok: true, value: { engine: 'browser', mode: 'headphones', rate: 1.2 } }),
+    );
+    await oldSave;
+  });
+  const testButton = [...document.querySelectorAll('button')].find(
+    (button) => button.textContent === 'Test selected speech output',
+  );
+  await act(async () => {
+    testButton.click();
+    await new Promise((resolve) => setImmediate(resolve));
+  });
+  secondSave.resolve(
+    Response.json({ ok: true, value: { engine: 'say', mode: 'headphones', rate: 1.2 } }),
+  );
+  await act(async () => {
+    await new Promise((resolve) => setImmediate(resolve));
+  });
+  assert.equal(
+    browserCalls,
+    0,
+    'old persistence responses must never override selected speech engine',
+  );
+  assert.ok(backendCalls > 0);
+});
+
+test('selected say failure reports error instead of silently falling back to browser speech', async (t) => {
+  const f = await fixture(t, { realSpeech: true });
+  let browserCalls = 0;
+  let backendCalls = 0;
+  t.mock.method(BrowserSpeakingEngine.prototype, 'speak', async () => {
+    browserCalls++;
+  });
+  t.mock.method(globalThis, 'fetch', async (url, options = {}) => {
+    if (url === '/api/dsh-live-voice/settings')
+      return Response.json({ ok: true, value: { engine: 'say', mode: 'headphones' } });
+    if (url === '/api/dsh-live-voice/say/speech') {
+      backendCalls++;
+      return Response.json(
+        { ok: false, error: { message: 'Simulated say backend failure' } },
+        { status: 502 },
+      );
+    }
+    return Response.json({ ok: true, value: { supported: true } });
+  });
+  await f.render(h(f.Settings));
+  const selector = document.querySelector('select');
+  await act(async () => {
+    selector.value = 'say';
+    selector.dispatchEvent(new window.Event('change', { bubbles: true }));
+  });
+  assert.equal(selector.value, 'say');
+  const button = [...document.querySelectorAll('button')].find(
+    (button) => button.textContent === 'Test selected speech output',
+  );
+  await act(async () => {
+    button.click();
+    await new Promise((resolve) => setImmediate(resolve));
+  });
+  assert.equal(browserCalls, 0);
+  assert.ok(backendCalls > 0);
+  assert.match(
+    document.querySelector('[role="alert"]').textContent,
+    /Simulated say backend failure/,
+  );
+});
+
+test('macOS say voice is visible, editable on blur, and clearing restores host default synthesis', async (t) => {
+  let saved = { engine: 'say', voice: 'Grandma (português (Brasil))', mode: 'headphones' };
+  const f = await fixture(t, { realSpeech: true, initialSettings: saved });
+  const patches = [];
+  const requests = [];
+  t.mock.method(HostAudioSpeakingEngine.prototype, 'playPrepared', async (_audio, options) =>
+    options.onPlaybackStart?.(),
+  );
+  t.mock.method(globalThis, 'fetch', async (url, options = {}) => {
+    if (url === '/api/dsh-live-voice/settings') {
+      if (options.method === 'PUT') {
+        const patch = JSON.parse(options.body);
+        patches.push(patch);
+        saved = { ...saved, ...patch };
+      }
+      return Response.json({ ok: true, value: saved });
+    }
+    if (url === '/api/dsh-live-voice/say/speech') {
+      requests.push(JSON.parse(options.body));
+      return new Response(new Uint8Array([1, 2, 3]), { headers: { 'content-type': 'audio/mp4' } });
+    }
+    return Response.json({ ok: true, value: { supported: true } });
+  });
+  await f.render(h(f.Settings));
+  await act(async () => {
+    const select = document.querySelector('select');
+    select.value = 'say';
+    select.dispatchEvent(new window.Event('change', { bubbles: true }));
+  });
+  const field = [...document.querySelectorAll('label')]
+    .find((label) => label.textContent === 'macOS say voice')
+    .querySelector('input');
+  assert.equal(field.value, 'Grandma (português (Brasil))');
+  assert.match(document.body.textContent, /Leave empty to use the macOS default voice/);
+  const setValue = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+  const before = patches.length;
+  await act(async () => {
+    setValue.call(field, '  Luciana  ');
+    field.dispatchEvent(new window.Event('input', { bubbles: true }));
+  });
+  assert.equal(patches.length, before, 'typing must not persist each keystroke');
+  await act(async () => {
+    field.dispatchEvent(new window.FocusEvent('focusout', { bubbles: true }));
+  });
+  assert.equal(f.serverSettings().voice, 'Luciana');
+  const button = [...document.querySelectorAll('button')].find(
+    (button) => button.textContent === 'Test selected speech output',
+  );
+  await act(async () => {
+    button.click();
+    await new Promise((resolve) => setImmediate(resolve));
+  });
+  assert.equal(requests.at(-1).voice, 'Luciana');
+  await act(async () => {
+    setValue.call(field, '');
+    field.dispatchEvent(new window.Event('input', { bubbles: true }));
+  });
+  await act(async () => {
+    field.dispatchEvent(new window.FocusEvent('focusout', { bubbles: true }));
+  });
+  assert.equal(f.serverSettings().voice, '');
+  await act(async () => {
+    button.click();
+    await new Promise((resolve) => setImmediate(resolve));
+  });
+  assert.equal(
+    Object.hasOwn(requests.at(-1), 'voice'),
+    false,
+    'empty voice omits -v and uses macOS default',
+  );
 });

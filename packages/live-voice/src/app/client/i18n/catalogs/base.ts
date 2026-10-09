@@ -207,6 +207,8 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.speak.macos.label': string;
   'dsh-live-voice.speak.macos.name': string;
   'dsh-live-voice.speak.macos.outputHelp': string;
+  'dsh-live-voice.speak.macos.voice': string;
+  'dsh-live-voice.speak.macos.voiceHelp': string;
   'dsh-live-voice.speak.output.checking': string;
   'dsh-live-voice.speak.output.device': string;
   'dsh-live-voice.speak.output.fallbackName': string;

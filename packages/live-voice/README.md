@@ -1,17 +1,24 @@
 # DSH Live Voice
 
-Release history: [repository changelog](https://github.com/victorwads/dsh-live-voice/blob/main/CHANGELOG.md).
+**English (primary)** | [Português (Brasil)](https://github.com/victorwads/dsh-live-voice/blob/main/README.pt.md)
 
 [![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
 [![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.1--alpha.1-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.1)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
-**Tested and working with DeepSeek Harness v0.2.1-alpha.1.** This is the current tested DSH version, recorded in the `dshTestedVersion` field in [package.json](package.json).
+**Tested and working with DeepSeek Harness v0.2.1-alpha.1.** This is the current tested DSH version, recorded in the `dshTestedVersion` field in [the main package manifest](package.json).
 
-**A local-first, hands-free voice assistant plugin for DeepSeek Harness (DSH).**
+**Talk to your AI assistant, listen to its answers, and bring meeting context into the conversation—without constantly switching back to the keyboard.**
+
+DSH Live Voice is a local-first voice plugin for DeepSeek Harness (DSH), with speech-to-text (STT), text-to-speech (TTS), and real-time meeting transcription.
 *Built in Brazil 🇧🇷 and tested daily with Brazilian Portuguese on macOS.*
 
-Speak, listen, answer prompts, and code without touching your keyboard. DSH Live Voice coordinates speech-to-text (STT) and text-to-speech (TTS) into a single, conflict-free conversational flow.
+## What can you do with it?
+
+- **Work by voice:** dictate a request, talk through code or documents, and hear the assistant’s response while staying focused on your work.
+- **Ask questions during meetings:** capture shared meeting audio alongside your microphone, review the transcript, and send relevant context to the DSH assistant while the discussion is still happening.
+- **Stay in control:** edit before sending, choose manual or automatic microphone delivery, and pause, resume, or stop spoken answers.
+- **Choose your speech setup:** use local recognition and speech engines where supported, or configure an HTTP endpoint. Local-first voice does not mean DSH or its AI provider is fully offline.
 
 ---
 
@@ -44,9 +51,10 @@ DSH Live Voice’s plugin interface is translated into the following languages. 
 
 Detailed guides for deep-diving into engines and configurations:
 
-- ⚙️ **[Configuration & Conversation Flow Guide](docs/CONFIGURATION.md)** — Settings overview, speaker vs. headphone modes, sequence diagrams, silence delays, and external engine setup.
-- 🧠 **[Choosing a Speech Recognition Engine](docs/CHOOSING-AN-ENGINE.md)** — Comparison between Browser STT, Qwen3 ASR, and Whisper, with RAM footprints and OS compatibility.
+- ⚙️ **[Configuration & Conversation Flow Guide](https://github.com/victorwads/dsh-live-voice/blob/main/docs/CONFIGURATION.md)** — Settings overview, speaker vs. headphone modes, sequence diagrams, silence delays, and external engine setup.
+- 🧠 **[Choosing a Speech Recognition Engine](https://github.com/victorwads/dsh-live-voice/blob/main/docs/CHOOSING-AN-ENGINE.md)** — Comparison between Browser STT, Qwen3 ASR, and Whisper, with RAM footprints and OS compatibility.
 - 📖 **[The Story Behind the Project](HISTORY.md)** — Why this project was built and the human story behind coordinating voice.
+- 🆕 **[Release notes](https://github.com/victorwads/dsh-live-voice/blob/main/CHANGELOG.md)** · [Português (Brasil)](https://github.com/victorwads/dsh-live-voice/blob/main/CHANGELOG.pt.md) — What changed in each version.
 
 ---
 
@@ -59,7 +67,7 @@ Detailed guides for deep-diving into engines and configurations:
 | 🪟 **Windows** | **Qwen3 ASR** or **Whisper HTTP** | ~2–3 GB | Recommended starting point; Windows browser STT varies. |
 | 🌐 **Multilingual / Other** | **Whisper HTTP (auto)** | ~2 GB | Automatic language detection across dozens of languages. |
 
-👉 *For model requirements and server setup, see [Choosing a Speech Engine](docs/CHOOSING-AN-ENGINE.md).*
+👉 *For model requirements and server setup, see [Choosing a Speech Engine](https://github.com/victorwads/dsh-live-voice/blob/main/docs/CHOOSING-AN-ENGINE.md).*
 
 ---
 
@@ -75,18 +83,37 @@ Detailed guides for deep-diving into engines and configurations:
 - 🧹 **Markdown-Aware Speech:** Remove formatting, announce links without reading full URLs, shorten file paths and line references, read checkbox states and table rows, and replace long code blocks with a localized notice. Preserve custom notices.
 - ⚡ **Responsive Conversation Settings:** Automatic-send delays of 600 ms, 800 ms, or 1–6 seconds (4 seconds by default), plus an assistant response delay of zero to 4 seconds (no delay by default). Recognition and synthesis still contribute to overall latency.
 - 🛠️ **Optional Live Voice Debugger:** Install `dsh-live-voice-debugger` separately to inspect runtime state and queues from the Developer tab in Live Voice Settings. The main plugin works without it.
-- 🏠 **Local-First & Private:** Audio runs locally on your machine (via Browser APIs, Apple MLX, or whisper.cpp); no external voice telemetry.
+- 🏠 **Local-First Speech Options:** Use local engines such as Qwen or Whisper where supported. Browser recognition and configured HTTP services have their own processing requirements; do not assume every setup keeps audio on your machine.
 - 🌐 **Remote-Ready Host Audio:** Qwen and macOS Say synthesize on the DSH host, then DSH delivers compact audio to your browser—so playback works over remote and LAN connections.
 
-### 🧑‍💻 Meeting Mode — Shared Audio Alongside Normal Voice
+## 🧑‍💻 Meeting Mode — Real-Time Meeting Transcription and Live AI Q&A
 
-Select **Qwen HTTP** or **Whisper HTTP** recognition, then click the shared-audio icon beside the composer microphone. The first click opens the browser sharing dialog directly; enable audio in that dialog. The shared source gets its own recognition bar, using the same component as normal microphone recognition, without replacing microphone controls or assistant speech playback. Click the shared-audio toggle again to stop only that source. When all three bars are visible, speech/live captions come first, shared audio second, and microphone recognition last, separated by 2px. The microphone bar has one listening/ignoring toggle on the left; queue position appears only in the speech bar, while the automatic-speech toggle remains available in the composer between shared audio and microphone.
+Keep an editable transcript of a meeting as it happens, then ask the DSH assistant questions about the discussion without having to retell it afterward. Use it for code reviews, project discussions, or working through a spreadsheet together.
 
-Normal microphone behavior, voice commands, delivery settings, and speech output remain available. The composer microphone remains a toggle while capturing, and either source can be stopped independently. The shared-audio bar also has a **Timestamp** clock toggle, off by default: new `Me:`/`Them:` blocks can include `[YYYY/MM/DD HH:MM:SS]` using the local machine time at chunk onset, not recognition completion. Consecutive chunks from the same source retain the existing block, and toggling timestamps never rewrites earlier text. With both sources capturing, source changes introduce **“Me:”** or **“Them:”**; consecutive chunks continue on new lines without repeating labels. Shared audio appends final transcripts but never triggers voice commands or automatic sending itself. Microphone transcripts retain the configured sending behavior.
+### From discussion to an answer
 
-Browser/OS support and the chosen sharing surface determine whether audio is available. Headphones are recommended to avoid unintended feedback when letting the agent speak into a shared meeting or tab. Automated capture, composer and UI tests do not replace real microphone/shared-audio validation.
+1. Select **Qwen HTTP** or **Whisper HTTP** recognition in Live Voice Settings.
+2. Click the shared-audio icon beside the composer microphone and enable audio in the browser sharing dialog. Capture your microphone too when you want to include your own contributions.
+3. Review the transcript in the composer, add a question, and send the relevant context to DSH. For example: *“What decisions have we made so far?”*, *“Help us answer this point”*, or *“Compare this proposal with the project code.”* Answers depend on the transcript you send and the code, spreadsheet, or documents you make available to the agent.
+4. Read or listen to the answer while the meeting continues. For other participants to hear it, your meeting app must separately be configured to share the assistant’s playback audio.
+
+### You control what is captured and sent
+
+- Shared audio and your microphone have separate controls and can be stopped independently. Normal voice commands and assistant speech remain available.
+- With both sources capturing, source changes introduce `Me:` or `Them:`; consecutive chunks continue on new lines. These labels distinguish audio sources, **not individual meeting participants**.
+- An optional **Timestamp** clock toggle adds local timestamps such as `[YYYY/MM/DD HH:MM:SS]` to new source blocks, using chunk onset rather than recognition completion. It is off by default and never rewrites earlier text.
+- **Shared meeting audio never sends itself or triggers voice commands.** Microphone transcripts keep your configured sending behavior; choose manual sending if you want to review all meeting context first.
+
+Audio availability depends on the browser, operating system, and sharing surface. This is **not a built-in Google Meet or Teams integration**. Capturing meeting audio and sharing the assistant’s voice back into a call require separate setup. Use headphones to reduce feedback, and obtain appropriate participant consent before capturing a meeting. Transcription and AI responses have processing latency; “real-time” does not mean instantaneous or guaranteed accurate.
+
 
 ---
+
+## 🔎 Discovery keywords / Termos de busca / 搜索关键词
+
+- **English:** real-time meeting transcription, live meeting transcription, AI questions during meetings, meeting assistant, meeting Q&A, shared audio capture, speech-to-text, text-to-speech, local-first voice assistant, DeepSeek Harness plugin.
+- **Português:** transcrição de reuniões em tempo real, transcrição ao vivo, perguntas à IA durante reuniões, assistente de reuniões, perguntas e respostas sobre reuniões, captura de áudio compartilhado, reconhecimento de fala, síntese de voz, assistente de voz com prioridade local, plugin para DeepSeek Harness.
+- **简体中文:** 实时会议转写、实时语音转文字、会议中向 AI 提问、AI 会议助手、会议问答、共享音频采集、语音识别、语音合成、本地优先语音助手、DeepSeek Harness 插件。
 
 ## 🤝 Acknowledgments & Community
 

@@ -107,6 +107,9 @@ export function readCoordinatorDiagnostics(
       holdToTalkRelease: Boolean(controller.holdToTalkRelease),
     },
     speech: {
+      configuredEngine: state.settings?.engine ?? null,
+      activeEngine: state.speechEngine ?? null,
+      activeEndpoint: controller.engines?.[state.speechEngine]?.endpoint ?? null,
       speaking: Boolean(state.speaking),
       paused: Boolean(state.paused),
       activeMessageId: state.activeMessageId == null ? null : String(state.activeMessageId),

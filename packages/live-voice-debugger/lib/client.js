@@ -256,9 +256,9 @@ var dictionaries = {
     refreshRate: "Frequ\xEAncia de atualiza\xE7\xE3o",
     resume: "Retomar atualiza\xE7\xF5es",
     states: "Estados atuais",
-    title: "Depurador Live Voice",
+    title: "Depurador da Voz ao Vivo",
     transitions: "Transi\xE7\xF5es de estado recentes",
-    waiting: "Aguardando um runtime Live Voice compat\xEDvel."
+    waiting: "Aguardando um runtime da Voz ao Vivo compat\xEDvel."
   },
   es: {
     activate: "Abrir depurador en una ventana separada",
@@ -279,9 +279,9 @@ var dictionaries = {
     refreshRate: "Frecuencia de actualizaci\xF3n",
     resume: "Reanudar actualizaciones",
     states: "Estados actuales",
-    title: "Depurador Live Voice",
+    title: "Depurador de Voz en vivo",
     transitions: "Transiciones de estado recientes",
-    waiting: "Esperando un runtime Live Voice compatible."
+    waiting: "Esperando un runtime de Voz en vivo compatible."
   },
   fr: {
     activate: "Ouvrir le d\xE9bogueur dans une fen\xEAtre s\xE9par\xE9e",
@@ -302,9 +302,9 @@ var dictionaries = {
     refreshRate: "Fr\xE9quence de mise \xE0 jour",
     resume: "Reprendre les mises \xE0 jour",
     states: "\xC9tats actuels",
-    title: "D\xE9bogueur Live Voice",
+    title: "D\xE9bogueur Voix en direct",
     transitions: "Transitions r\xE9centes des \xE9tats",
-    waiting: "En attente d\u2019un runtime Live Voice compatible."
+    waiting: "En attente d\u2019un runtime Voix en direct compatible."
   },
   hi: {
     activate: "\u0921\u0940\u092C\u0917\u0930 \u0905\u0932\u0917 \u0935\u093F\u0902\u0921\u094B \u092E\u0947\u0902 \u0916\u094B\u0932\u0947\u0902",
@@ -325,9 +325,9 @@ var dictionaries = {
     refreshRate: "\u0905\u092A\u0921\u0947\u091F \u0906\u0935\u0943\u0924\u094D\u0924\u093F",
     resume: "\u0905\u092A\u0921\u0947\u091F \u092B\u093F\u0930 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902",
     states: "\u0935\u0930\u094D\u0924\u092E\u093E\u0928 \u0938\u094D\u0925\u093F\u0924\u093F\u092F\u093E\u0901",
-    title: "Live Voice \u0921\u0940\u092C\u0917\u0930",
+    title: "\u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 \u0921\u0940\u092C\u0917\u0930",
     transitions: "\u0939\u093E\u0932 \u0915\u0947 \u0938\u094D\u091F\u0947\u091F \u091F\u094D\u0930\u093E\u0902\u091C\u093C\u093F\u0936\u0928",
-    waiting: "\u0938\u0902\u0917\u0924 Live Voice \u0930\u0928\u091F\u093E\u0907\u092E \u0915\u0940 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0939\u0948\u0964"
+    waiting: "\u0938\u0902\u0917\u0924 \u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 \u0930\u0928\u091F\u093E\u0907\u092E \u0915\u0940 \u092A\u094D\u0930\u0924\u0940\u0915\u094D\u0937\u093E \u0939\u0948\u0964"
   },
   zh: {
     activate: "\u5728\u72EC\u7ACB\u7A97\u53E3\u4E2D\u6253\u5F00\u8C03\u8BD5\u5668",
@@ -348,9 +348,9 @@ var dictionaries = {
     refreshRate: "\u66F4\u65B0\u9891\u7387",
     resume: "\u6062\u590D\u66F4\u65B0",
     states: "\u5F53\u524D\u72B6\u6001",
-    title: "Live Voice \u8C03\u8BD5\u5668",
+    title: "\u5B9E\u65F6\u8BED\u97F3\u8C03\u8BD5\u5668",
     transitions: "\u6700\u8FD1\u7684\u72B6\u6001\u8F6C\u6362",
-    waiting: "\u6B63\u5728\u7B49\u5F85\u517C\u5BB9\u7684 Live Voice \u8FD0\u884C\u65F6\u3002"
+    waiting: "\u6B63\u5728\u7B49\u5F85\u517C\u5BB9\u7684\u5B9E\u65F6\u8BED\u97F3\u8FD0\u884C\u65F6\u3002"
   }
 };
 

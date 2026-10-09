@@ -1,16 +1,58 @@
 # Changelog
 
-All notable changes to DSH Live Voice are documented in this file.
+**English (primary)** | [Português (Brasil)](CHANGELOG.pt.md)
+
+All notable changes to DSH Live Voice are documented in this file. This English changelog is the canonical release history; the Portuguese version is a translation.
+
+[Product overview](README.md) · [Visão geral em português](README.pt.md)
 
 ## [Next] - Unreleased
 
-- TODO
+### Interface and Accessibility
+
+- Localize the visible Live Voice product name throughout the five non-English interface catalogs and the optional debugger, while preserving package identifiers and the English name. Translate the GitHub star link's accessible label instead of hard-coding English.
+
+### Documentation
+
+- Add Brazilian Portuguese README and changelog translations with reciprocal links; retain English as the canonical release history.
+- Refocus root and package READMEs on voice workflows and meeting use cases, clarify audio-sharing requirements and local-first boundaries, and add discovery keywords in English, Brazilian Portuguese, and Simplified Chinese.
+- Update contributor guidance to keep translations aligned and public documentation benefit-led.
+
+### Validation
+
+- Add DOM regressions for Browser recognition selection and local-processing configuration, localized product names and accessible labels, and debugger translations. Rebuild both client bundles from the current sources.
+- Include the macOS Say settings, retained-playback, diagnostics, and synchronized 0.4.1 package-version changes documented in the 0.4.1 section below.
+
+### Bug Fixes
+
+- Keep Browser speech recognition selectable when Qwen/Whisper is unavailable or on-device recognition is unsupported. Do not use the current recognition engine’s capability to disable the Browser option; allow selecting Browser to adjust local-processing settings while retaining availability checks before capture.
+
+## [0.4.1] - 2026-10-07
+
+### Release Changes
+
+Choose and edit your macOS Say voice directly in Settings. When you change the voice or speech engine, replayed answers now use your current choice instead of an older one. Both plugin packages are versioned together at 0.4.1.
+
+### Configuration Changes
+
+- Show the existing voice preference when macOS say is selected. Edit the exact host voice name or clear the field to use the macOS default voice; preserve saved preferences until explicitly edited.
+- Add localized voice guidance in all six interface languages, including the Terminal command for listing host voices. Commit edits on blur, consistently with other text settings.
+
+### Bug Fixes
+
+- Resolve the current output engine when playing retained speech instead of reusing the engine stored on the previous playback item.
+- Dispose and regenerate prepared audio when the engine, voice, language, rate, or output device changes. Prevent stale preparation completions from replacing newer audio.
+
+### Build and Release Checks
+
+- Add Settings regressions for macOS say HTTP routing, explicit voice edits, clearing the voice, and error reporting without silent browser fallback; add retained-playback regressions for output engine and voice changes.
+- Expose configured and active speech engines and the active host endpoint in the read-only diagnostics without logging speech content.
 
 ## [0.4.0] - 2026-10-07
 
 ### Release Changes
 
-This minor release introduces a dedicated speech bar with smoothly scrolling approximate captions, queue navigation, Markdown-aware speech, and faster playback startup. It also adds ⭐⭐ Meeting Mode as independently controlled shared audio alongside normal voice, optional chunk-onset timestamps, the optional Live Voice Debugger and a two-package workspace, improves delivery and microphone recovery, and refines conversation defaults. Both plugin packages are versioned together at 0.4.0.
+Bring your AI assistant into the meeting: capture shared audio alongside your own voice, review the transcript, and send context with questions while the discussion continues. A new speech bar helps you follow spoken answers with approximate live captions, move between segments, and pause or resume playback. Answers start speaking sooner and Markdown is easier to listen to. This release also improves message delivery and microphone recovery, offers optional timestamps and a separately installable debugger, and adjusts conversation defaults. Shared meeting audio is not sent automatically. Both plugin packages are versioned together at 0.4.0; contributor build changes are listed separately below.
 
 ### Features
 

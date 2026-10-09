@@ -632,6 +632,18 @@ export class VoiceCoordinator {
     this.prefetchItems.clear();
   }
 
+  _speechPreparationKey() {
+    const { engine, voice, lang, rate, outputDeviceId } = this.snapshot.settings;
+    return JSON.stringify([engine, voice, lang, rate, outputDeviceId]);
+  }
+  _resetStaleSpeechItem(item, key) {
+    if (item.preparationKey === key) return;
+    item.prepared?.dispose?.();
+    item.prepared = null;
+    item.preparing = null;
+    item.prepareError = null;
+    item.preparationKey = key;
+  }
   _prefetchSpeech() {
     const engine = this.engines[this.snapshot.settings.engine];
     if (typeof engine?.prepare !== 'function') return;
@@ -641,16 +653,19 @@ export class VoiceCoordinator {
       lang: this.snapshot.settings.lang,
       outputDeviceId: this.snapshot.settings.outputDeviceId,
     };
+    const key = this._speechPreparationKey();
     for (const item of this.queue.slice(0, 3)) {
+      this._resetStaleSpeechItem(item, key);
       if (item.prepared || item.preparing) continue;
       this.prefetchItems.add(item);
       const signal = this.prefetchController.signal;
       item.preparing = engine
         .prepare(item.text, { ...options, signal })
         .then((prepared) => {
-          item.preparing = null;
+          if (item.preparationKey === key) item.preparing = null;
           if (
             signal.aborted ||
+            item.preparationKey !== key ||
             (!this.queue.includes(item) && !this.speechHistory.includes(item))
           ) {
             prepared.dispose?.();
@@ -659,8 +674,10 @@ export class VoiceCoordinator {
           return prepared;
         })
         .catch((error) => {
-          item.preparing = null;
-          if (!signal.aborted) item.prepareError = error;
+          if (item.preparationKey === key) {
+            item.preparing = null;
+            if (!signal.aborted) item.prepareError = error;
+          }
         });
     }
   }
@@ -883,7 +900,8 @@ export class VoiceCoordinator {
     if (!this.speechHistory.includes(item)) this.speechHistory.push(item);
     this.speechCursor = this.speechHistory.indexOf(item);
     const epoch = ++this.speechEpoch;
-    const engine = item.engine || this.engines[this.snapshot.settings.engine];
+    const engine = this.engines[this.snapshot.settings.engine];
+    this._resetStaleSpeechItem(item, this._speechPreparationKey());
     item.engine = engine;
     if (!engine) {
       this.queue = [];

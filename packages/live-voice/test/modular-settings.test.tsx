@@ -8,6 +8,56 @@ import { LiveVoiceTranslationProvider } from '../src/app/client/i18n/index.ts';
 import { defaultSettings } from '../src/modules/core/settings.ts';
 import { LiveVoiceSettings } from '../src/modules/settings/index.ts';
 import { publishDeveloperExtension } from '../src/modules/core/developerExtension.ts';
+import { RecognitionEngineSettings } from '../src/modules/settings/sections/recognition/RecognitionEngineSettings.tsx';
+
+test('Browser recognition remains selectable when the current engine or local processing is unavailable', async (t) => {
+  const dom = new JSDOM('<div id="root"></div>', { url: 'https://dsh.local/' });
+  globalThis.window = dom.window;
+  globalThis.document = dom.window.document;
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const root = createRoot(document.getElementById('root'));
+  t.after(async () => {
+    await act(async () => root.unmount());
+    dom.window.close();
+    delete globalThis.window;
+    delete globalThis.document;
+    delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+  });
+  const calls = [];
+  for (const recognitionEngine of ['qwen-http', 'whisper-http', 'browser']) {
+    await act(async () =>
+      root.render(
+        <LiveVoiceTranslationProvider>
+          <RecognitionEngineSettings
+            controller={{}}
+            settings={{ ...defaultSettings, recognitionEngine, recognitionLang: 'auto' }}
+            capabilities={{
+              recognition: { supported: false },
+              'qwen-http-recognition': { supported: false },
+              'whisper-http': { supported: false },
+            }}
+            updateSettings={(next) => calls.push(next)}
+          />
+        </LiveVoiceTranslationProvider>,
+      ),
+    );
+    const select = document.querySelector('select');
+    assert.equal(select.querySelector('option[value="browser"]').disabled, false);
+    assert.equal(select.querySelector('option[value="qwen-http"]').disabled, true);
+    assert.equal(select.querySelector('option[value="whisper-http"]').disabled, true);
+    await act(async () => {
+      select.value = 'browser';
+      select.dispatchEvent(new window.Event('change', { bubbles: true }));
+    });
+    assert.deepEqual(calls.at(-1), { recognitionEngine: 'browser', recognitionLang: 'pt-BR' });
+    if (recognitionEngine === 'browser') {
+      const localProcessing = document.querySelector('input[type="checkbox"]');
+      assert.ok(localProcessing);
+      await act(async () => localProcessing.click());
+      assert.deepEqual(calls.at(-1), { recognitionProcessLocally: false });
+    }
+  }
+});
 
 test('modular settings composes speech, recognition, and conversation tabs', async (t) => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'https://dsh.local/' });

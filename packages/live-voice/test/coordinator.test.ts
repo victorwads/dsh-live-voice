@@ -1042,3 +1042,84 @@ test('manual speech and captions share the normalized Markdown text', async () =
   await f.coordinator.stopSpeech();
   await playing;
 });
+
+test('replaying retained speech after switching output engine uses current settings, not previous browser engine', async () => {
+  const f = fixture({ mode: 'headphones' });
+  const sayCalls = [];
+  let current;
+  f.coordinator.engines.say = {
+    capability: () => ({ supported: true }),
+    speak: (text, options) => {
+      const done = deferred();
+      current = done;
+      sayCalls.push({ text, options, ...done });
+      return done.promise;
+    },
+    stop: async () => {
+      current?.reject(Object.assign(new Error('cancel'), { name: 'AbortError' }));
+    },
+  };
+  const playing = f.coordinator.speak('First sentence. Second sentence.', 'switch-output');
+  await turn();
+  f.spoken[0].resolve();
+  await turn();
+  assert.ok(f.coordinator.snapshot.speechHasPrevious);
+  f.coordinator.updateSettings({ engine: 'say' });
+  await f.coordinator.previousSpeechSegment();
+  await turn();
+  assert.equal(f.coordinator.snapshot.settings.engine, 'say');
+  assert.equal(sayCalls.length, 1, 'replay must use say, not the retained browser adapter');
+  assert.equal(sayCalls[0].text, 'First sentence.');
+  await f.coordinator.stopSpeech();
+  await playing;
+});
+
+test('prefetched speech from previous voice settings is disposed and regenerated before replay', async () => {
+  const f = fixture({ mode: 'headphones', voice: 'old', lang: 'en-US', rate: 1 });
+  const prepared = [];
+  const played = [];
+  let active;
+  f.engine.prepare = async (text, options) => {
+    const item = {
+      text,
+      options,
+      disposed: false,
+      dispose() {
+        this.disposed = true;
+      },
+    };
+    prepared.push(item);
+    return item;
+  };
+  f.engine.playPrepared = (item, options) => {
+    const done = deferred();
+    active = done;
+    played.push({ item, options, ...done });
+    return done.promise;
+  };
+  f.engine.stop = async () =>
+    active?.reject(Object.assign(new Error('cancel'), { name: 'AbortError' }));
+  const playing = f.coordinator.speak('First sentence. Second sentence.', 'voice-cache');
+  await turn();
+  played[0].resolve();
+  await turn();
+  const old = played[1].item;
+  f.coordinator.updateSettings({
+    ...f.coordinator.snapshot.settings,
+    voice: 'new',
+    lang: 'pt-BR',
+    rate: 1.4,
+  });
+  await f.coordinator.previousSpeechSegment();
+  await turn();
+  assert.equal(played[2].item.text, 'First sentence.');
+  assert.equal(played[2].options.voice, 'new');
+  played[2].resolve();
+  await turn();
+  assert.equal(old.disposed, true);
+  assert.equal(played[3].item.options.voice, 'new');
+  assert.equal(played[3].item.options.lang, 'pt-BR');
+  assert.equal(played[3].item.options.rate, 1.4);
+  await f.coordinator.stopSpeech();
+  await playing;
+});

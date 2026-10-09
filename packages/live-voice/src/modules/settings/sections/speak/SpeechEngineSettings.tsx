@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
 import { qwenVoices } from '../../../core/settings.js';
-import { NumberField, SelectField } from '../../../../shared/design-system/index.js';
+import { NumberField, SelectField, TextField } from '../../../../shared/design-system/index.js';
 export function SpeechEngineSettings({ settings, capabilities, updateSettings }: any) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
@@ -44,6 +44,17 @@ export function SpeechEngineSettings({ settings, capabilities, updateSettings }:
           ]}
           onChange={(event) => updateSettings({ voice: event.target.value })}
         />
+      )}
+      {engine === 'say' && (
+        <>
+          <TextField
+            label={(speak as any).macos.voice()}
+            value={settings.voice || ''}
+            placeholder={(commons as any).systemDefault()}
+            onCommit={(value) => updateSettings({ voice: value.trim() })}
+          />
+          <p className="dlv-setting-description">{(speak as any).macos.voiceHelp()}</p>
+        </>
       )}
       {engine === 'qwen-http' && (
         <SelectField

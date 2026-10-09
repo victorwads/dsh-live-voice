@@ -76,8 +76,6 @@ test('catalogs preserve placeholders and contain no unreviewed English copies', 
     'dsh-live-voice.commons.milliseconds',
     'dsh-live-voice.meeting.microphone',
     'dsh-live-voice.meeting.timestampsBadge',
-    'dsh-live-voice.commons.pluginName',
-    'dsh-live-voice.commons.version.label',
     'dsh-live-voice.speak.macos.name',
     'dsh-live-voice.recognition.qwen.label',
     'dsh-live-voice.recognition.whisper.label',
@@ -121,6 +119,34 @@ test('catalogs preserve placeholders and contain no unreviewed English copies', 
       if (locale !== 'en' && !shared.has(key) && !sharedWords[locale].has(key)) {
         assert.notEqual(value, liveVoiceDictionaries.en[key], locale + ': untranslated ' + key);
       }
+    }
+  }
+});
+
+test('localizes the plugin display name and every visible reference', () => {
+  const names = {
+    en: 'Live Voice',
+    'pt-BR': 'Voz ao Vivo',
+    es: 'Voz en vivo',
+    fr: 'Voix en direct',
+    hi: 'लाइव वॉइस',
+    zh: '实时语音',
+  };
+  for (const [locale, name] of Object.entries(names)) {
+    const t = createFallbackTranslator(locale);
+    assert.equal(t('dsh-live-voice.commons.pluginName'), name);
+    for (const key of [
+      'dsh-live-voice.settings.title',
+      'dsh-live-voice.commons.repository.starLink',
+      'dsh-live-voice.commons.version.label',
+      'dsh-live-voice.commons.version.link',
+      'dsh-live-voice.speak.output.testPhrase',
+    ]) {
+      assert.ok(t(key, { version: '1.0.0' }).includes(name), locale + ': ' + key);
+    }
+    if (locale !== 'en') {
+      for (const value of Object.values(liveVoiceDictionaries[locale]))
+        assert.ok(!value.includes('Live Voice'), locale + ': untranslated plugin name');
     }
   }
 });

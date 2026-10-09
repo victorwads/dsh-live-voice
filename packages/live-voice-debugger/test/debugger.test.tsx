@@ -17,6 +17,21 @@ import { copyFor, dictionaries } from '../src/locales.ts';
 import { apply } from '../src/apply.tsx';
 import { readDeveloperExtension } from '../../live-voice/src/modules/core/developerExtension.ts';
 
+test('localizes plugin references in debugger copy', () => {
+  for (const [locale, name] of Object.entries({
+    'pt-BR': 'Voz ao Vivo',
+    es: 'Voz en vivo',
+    fr: 'Voix en direct',
+    hi: 'लाइव वॉइस',
+    zh: '实时语音',
+  })) {
+    assert.ok(dictionaries[locale].title.includes(name), locale);
+    assert.ok(dictionaries[locale].waiting.includes(name), locale);
+    for (const value of Object.values(dictionaries[locale]))
+      assert.ok(!value.includes('Live Voice'), locale);
+  }
+});
+
 function fixture(t) {
   let callbacks,
     draft = '';

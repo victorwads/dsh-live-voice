@@ -249,6 +249,9 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.speak.macos.label': 'macOS say — host audio',
   'dsh-live-voice.speak.macos.name': 'macOS say',
   'dsh-live-voice.speak.macos.outputHelp': 'macOS say uses the output selected on the DSH host.',
+  'dsh-live-voice.speak.macos.voice': 'macOS say voice',
+  'dsh-live-voice.speak.macos.voiceHelp':
+    'Enter the exact voice name used by say -v. Leave empty to use the macOS default voice. List host voices in Terminal with say -v "?".',
   'dsh-live-voice.speak.output.checking': 'Checking speech output…',
   'dsh-live-voice.speak.output.device': 'Output device',
   'dsh-live-voice.speak.output.fallbackName': 'Audio output',
