@@ -264,7 +264,7 @@ test('native Settings owns preferences without a composer gear', async (t) => {
   assert.equal(f.calls.filter(([name]) => name === 'speak').length, 1);
 });
 
-test('changing Settings stops active voice, persists immediately, and applies next-run preferences', async (t) => {
+test('changing speech Settings preserves active voice and persists next-segment preferences', async (t) => {
   const f = await fixture(t);
   await f.render([h(f.Buttons, { ...f.props('a'), key: 'a' }), h(f.Settings, { key: 'settings' })]);
   const session = f.controllers[0];
@@ -279,7 +279,12 @@ test('changing Settings stops active voice, persists immediately, and applies ne
     engine: 'say',
     mode: 'headphones',
   });
-  assert.ok(f.calls.some(([name, controller]) => name === 'end' && controller === session));
+  assert.equal(
+    f.calls.some(([name, controller]) => name === 'end' && controller === session),
+    false,
+  );
+  assert.equal(session.getSnapshot().conversation, true);
+  assert.equal(session.getSnapshot().listening, true);
   assert.equal(session.getSnapshot().settings.engine, 'say');
   assert.equal(document.querySelector('[role=alert]'), null);
 });
@@ -1172,4 +1177,57 @@ test('shared meeting capture survives chat replacement and routes only to the co
   await act(async () => track.dispatchEvent(new Event('ended')));
   assert.equal(meeting.getSnapshot().shared.listening, false);
   assert.equal(stopped, 1);
+});
+
+test('input preferences coalesce to latest engine without stopping playback or meeting', async (t) => {
+  const f = await fixture(t);
+  await f.render(h(f.Buttons, f.props('a')));
+  const c = f.controllers[0];
+  const restart = [];
+  t.mock.method(c, '_startInput', async function (conversation) {
+    restart.push([conversation, this.recognition.lang]);
+    this.patch({ listening: true });
+  });
+  c.patch({
+    conversation: true,
+    listening: true,
+    speaking: true,
+    paused: true,
+    speechText: 'retained answer',
+  });
+  const history = c.speechHistory;
+  const queue = c.queue;
+  await act(async () => {
+    await Promise.all([
+      c.updateSettings({ recognitionLang: 'en-US' }),
+      c.updateSettings({ recognitionLang: 'pt-BR' }),
+    ]);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+  assert.equal(restart.length, 1);
+  assert.equal(restart[0][0], true);
+  assert.equal(c.recognition.lang, 'pt-BR');
+  assert.equal(c.getSnapshot().speaking, true);
+  assert.equal(c.getSnapshot().paused, true);
+  assert.equal(c.speechHistory, history);
+  assert.equal(c.queue, queue);
+  assert.equal(
+    f.calls.some(([name, controller]) => name === 'end' && controller === c),
+    false,
+  );
+});
+test('explicit stop during pending input settings change prevents reacquisition', async (t) => {
+  const f = await fixture(t);
+  await f.render(h(f.Buttons, f.props('a')));
+  const c = f.controllers[0];
+  const restart = [];
+  t.mock.method(c, '_startInput', async () => restart.push(true));
+  c.patch({ conversation: true, listening: true });
+  await act(async () => {
+    const saved = c.updateSettings({ recognitionLang: 'pt-BR' });
+    await c.stopListening();
+    await saved;
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+  assert.deepEqual(restart, []);
 });

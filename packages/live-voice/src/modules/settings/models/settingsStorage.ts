@@ -6,6 +6,7 @@ export const SETTINGS_PATH = '/api/dsh-live-voice/settings';
 export function createSettingsClient(fetchImpl = globalThis.fetch) {
   let settings = normalizeSettings({});
   let queue = Promise.resolve();
+  const pendingPatches: unknown[] = [];
   const listeners = new Set<(settings: ReturnType<typeof normalizeSettings>) => void>();
   async function request(method: string, patch?: unknown) {
     const response = await fetchImpl(SETTINGS_PATH, {
@@ -18,7 +19,8 @@ export function createSettingsClient(fetchImpl = globalThis.fetch) {
     });
     const body = await response.json();
     if (!response.ok || body?.ok !== true) throw new Error('settings-request-failed');
-    settings = normalizeSettings(body.value);
+    if (method === 'PUT') pendingPatches.shift();
+    settings = normalizeSettings(Object.assign({}, body.value, ...pendingPatches));
     for (const listener of listeners) listener(settings);
     return settings;
   }
@@ -35,9 +37,15 @@ export function createSettingsClient(fetchImpl = globalThis.fetch) {
       };
     },
     save(patch: unknown) {
+      pendingPatches.push(patch);
       const operation = queue.then(async () => {
-        await ready;
-        return request('PUT', patch);
+        try {
+          await ready;
+          return await request('PUT', patch);
+        } catch (error) {
+          pendingPatches.shift();
+          throw error;
+        }
       });
       queue = operation.then(
         () => {},

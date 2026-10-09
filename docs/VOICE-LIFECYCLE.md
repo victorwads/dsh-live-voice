@@ -47,7 +47,7 @@ Capture, recognition, user speech activity, message delivery, agent generation, 
 | Stop input | Cancel starts, capture, recognition, partial hypotheses, and delivery timers |
 | End conversation | Stop input and playback, clear queues/timers/transient errors, release ownership |
 | Switch chat with voice mode active | Retire the old composer, cancel its operations, create clean transient state for the new composer |
-| Settings change | Stop affected resources before applying the normalized preference to the next operation |
+| Settings change | Output/UI preferences preserve active playback, queue, and meeting capture; input preferences serialize only microphone/recognition replacement and restore input unless explicitly stopped. Current shared capture uses its start-time recognition settings until explicitly restarted |
 | Unmount/dispose/pagehide | Invalidate pending work and release every owned resource |
 | Late async result | Ignore it unless its session and operation generation are still current |
 

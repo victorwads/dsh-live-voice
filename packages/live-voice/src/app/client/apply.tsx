@@ -138,6 +138,8 @@ export function apply(ctx) {
   const ownership = new VoiceOwnership();
   const recognitionSettingKeys = new Set([
     'recognitionEngine',
+    'recognitionLang',
+    'inputDeviceId',
     'recognitionProcessLocally',
     'recognitionAutoInstall',
     'voiceDetectionPreset',
@@ -183,9 +185,6 @@ export function apply(ctx) {
     if (disposed) return;
     for (const entry of controllers.values()) {
       if (entry.closed) continue;
-      const previous = entry.controller.getSnapshot().settings;
-      if ([...recognitionSettingKeys].some((key) => previous[key] !== settings[key]))
-        entry.controller.replaceRecognition(recognitionFor(settings, entry.controller.meter));
       entry.applySettings(settings);
     }
     for (const c of settingsControllers) {
@@ -417,7 +416,34 @@ export function apply(ctx) {
     }
     const update = controller.updateSettings.bind(controller);
     entry.applySettings = (next) => {
+      const before = controller.getSnapshot();
       update(next);
+      const settings = controller.getSnapshot().settings;
+      if ([...recognitionSettingKeys].some((key) => before.settings[key] !== settings[key])) {
+        if (!entry.restoreInput) entry.inputRestoreRequest = entry.request;
+        entry.restoreInput ||= Boolean(before.listening || before.starting);
+        const revision = (entry.inputSettingsRevision = (entry.inputSettingsRevision || 0) + 1);
+        entry.inputSettingsBarrier = (entry.inputSettingsBarrier || Promise.resolve())
+          .catch(() => {})
+          .then(async () => {
+            if (disposed || entry.closed || revision !== entry.inputSettingsRevision) return;
+            await VoiceCoordinator.prototype.stopListening.call(controller);
+            if (controller.inputReleaseError) throw controller.inputReleaseError;
+            if (disposed || entry.closed || revision !== entry.inputSettingsRevision) return;
+            controller.replaceRecognition(
+              recognitionFor(controller.getSnapshot().settings, controller.meter),
+            );
+            const restart = entry.restoreInput && entry.inputRestoreRequest === entry.request;
+            entry.restoreInput = false;
+            const current = controller.getSnapshot();
+            if (
+              restart &&
+              !(current.settings.mode === 'speaker' && current.speaking && !current.paused)
+            )
+              await controller._startInput(current.conversation);
+          });
+        run(controller, entry.inputSettingsBarrier);
+      }
       publishVoiceContext(entry);
       engineBrowser.lang = controller.getSnapshot().settings.lang;
       engineQwen.lang = controller.getSnapshot().settings.lang;
@@ -679,24 +705,10 @@ export function apply(ctx) {
         if (changesRecognition(next)) c.replaceRecognition(recognitionFor(settings, c.meter));
         const saved = savePreferences(c, next);
         run(c, c.refreshCapabilities());
-        const active = [...controllers.values()];
-        const [savedSettings] = await Promise.all([
-          saved,
-          c.endConversation(),
-          ...active.map((entry) =>
-            Promise.all([entry.controller.endConversation(), entry.meeting.end()]),
-          ),
-        ]);
+        await saved;
         if (revision !== settingsRevision || disposed || c.disposed) return;
-        for (const entry of controllers.values()) {
-          if (entry.closed) continue;
-          if (changesRecognition(next))
-            entry.controller.replaceRecognition(
-              recognitionFor(savedSettings, entry.controller.meter),
-            );
-          entry.applySettings(savedSettings);
-          run(entry.controller, entry.controller.refreshCapabilities());
-        }
+        // The shared preference subscriber reconfigures only affected resources.
+        // A voice/output/UI change must not end playback, meeting capture, or chats.
       };
       const refresh = () => run(c, c.refreshCapabilities());
       document.addEventListener('dsh-live-voice:capabilitieschanged', refresh);

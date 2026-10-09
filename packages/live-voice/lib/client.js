@@ -7642,6 +7642,7 @@ var SETTINGS_PATH = "/api/dsh-live-voice/settings";
 function createSettingsClient(fetchImpl = globalThis.fetch) {
   let settings = normalizeSettings({});
   let queue = Promise.resolve();
+  const pendingPatches = [];
   const listeners = /* @__PURE__ */ new Set();
   async function request(method, patch) {
     const response = await fetchImpl(SETTINGS_PATH, {
@@ -7652,7 +7653,8 @@ function createSettingsClient(fetchImpl = globalThis.fetch) {
     });
     const body = await response.json();
     if (!response.ok || body?.ok !== true) throw new Error("settings-request-failed");
-    settings = normalizeSettings(body.value);
+    if (method === "PUT") pendingPatches.shift();
+    settings = normalizeSettings(Object.assign({}, body.value, ...pendingPatches));
     for (const listener of listeners) listener(settings);
     return settings;
   }
@@ -7669,9 +7671,15 @@ function createSettingsClient(fetchImpl = globalThis.fetch) {
       };
     },
     save(patch) {
+      pendingPatches.push(patch);
       const operation = queue.then(async () => {
-        await ready;
-        return request("PUT", patch);
+        try {
+          await ready;
+          return await request("PUT", patch);
+        } catch (error) {
+          pendingPatches.shift();
+          throw error;
+        }
       });
       queue = operation.then(
         () => {
@@ -8287,6 +8295,8 @@ function apply(ctx) {
   const ownership = new VoiceOwnership();
   const recognitionSettingKeys = /* @__PURE__ */ new Set([
     "recognitionEngine",
+    "recognitionLang",
+    "inputDeviceId",
     "recognitionProcessLocally",
     "recognitionAutoInstall",
     "voiceDetectionPreset",
@@ -8325,9 +8335,6 @@ function apply(ctx) {
     if (disposed) return;
     for (const entry of controllers.values()) {
       if (entry.closed) continue;
-      const previous = entry.controller.getSnapshot().settings;
-      if ([...recognitionSettingKeys].some((key) => previous[key] !== settings[key]))
-        entry.controller.replaceRecognition(recognitionFor(settings, entry.controller.meter));
       entry.applySettings(settings);
     }
     for (const c of settingsControllers) {
@@ -8537,7 +8544,30 @@ function apply(ctx) {
     }
     const update = controller.updateSettings.bind(controller);
     entry.applySettings = (next) => {
+      const before = controller.getSnapshot();
       update(next);
+      const settings2 = controller.getSnapshot().settings;
+      if ([...recognitionSettingKeys].some((key2) => before.settings[key2] !== settings2[key2])) {
+        if (!entry.restoreInput) entry.inputRestoreRequest = entry.request;
+        entry.restoreInput ||= Boolean(before.listening || before.starting);
+        const revision = entry.inputSettingsRevision = (entry.inputSettingsRevision || 0) + 1;
+        entry.inputSettingsBarrier = (entry.inputSettingsBarrier || Promise.resolve()).catch(() => {
+        }).then(async () => {
+          if (disposed || entry.closed || revision !== entry.inputSettingsRevision) return;
+          await VoiceCoordinator.prototype.stopListening.call(controller);
+          if (controller.inputReleaseError) throw controller.inputReleaseError;
+          if (disposed || entry.closed || revision !== entry.inputSettingsRevision) return;
+          controller.replaceRecognition(
+            recognitionFor(controller.getSnapshot().settings, controller.meter)
+          );
+          const restart = entry.restoreInput && entry.inputRestoreRequest === entry.request;
+          entry.restoreInput = false;
+          const current = controller.getSnapshot();
+          if (restart && !(current.settings.mode === "speaker" && current.speaking && !current.paused))
+            await controller._startInput(current.conversation);
+        });
+        run(controller, entry.inputSettingsBarrier);
+      }
       publishVoiceContext(entry);
       engineBrowser.lang = controller.getSnapshot().settings.lang;
       engineQwen.lang = controller.getSnapshot().settings.lang;
@@ -8770,24 +8800,8 @@ function apply(ctx) {
         if (changesRecognition(next)) c.replaceRecognition(recognitionFor(settings2, c.meter));
         const saved = savePreferences(c, next);
         run(c, c.refreshCapabilities());
-        const active = [...controllers.values()];
-        const [savedSettings] = await Promise.all([
-          saved,
-          c.endConversation(),
-          ...active.map(
-            (entry) => Promise.all([entry.controller.endConversation(), entry.meeting.end()])
-          )
-        ]);
+        await saved;
         if (revision !== settingsRevision || disposed || c.disposed) return;
-        for (const entry of controllers.values()) {
-          if (entry.closed) continue;
-          if (changesRecognition(next))
-            entry.controller.replaceRecognition(
-              recognitionFor(savedSettings, entry.controller.meter)
-            );
-          entry.applySettings(savedSettings);
-          run(entry.controller, entry.controller.refreshCapabilities());
-        }
       };
       const refresh = () => run(c, c.refreshCapabilities());
       document.addEventListener("dsh-live-voice:capabilitieschanged", refresh);
