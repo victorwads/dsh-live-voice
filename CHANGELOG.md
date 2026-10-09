@@ -10,6 +10,8 @@ All notable changes to DSH Live Voice are documented in this file. This English 
 
 ### Bug Fixes
 
+- Resume automatically interrupted playback after a full quiet interval, including final-only recognition completion; renewed speech restarts the interval, and explicit pause/cancel invalidates automatic recovery without restarting the audio.
+
 - Coordinate shared meeting speech with microphone activity: gate queued playback, pause for confirmed participant speech in Speakers or Headphones mode, and request own-tab/audio exclusion with a transcript echo guard. Mixed system audio cannot guarantee acoustic echo separation.
 
 - Keep shared meeting audio capture active across chat navigation, route new transcription only to the committed composer, and release capture on explicit stop, browser track end, or plugin disposal.

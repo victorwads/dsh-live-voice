@@ -4657,6 +4657,7 @@ var VoiceCoordinator = class _VoiceCoordinator {
     this.autoSendDraft = null;
     this.holdToTalkRelease = false;
     this.interruptionTimer = null;
+    this.interruptionResumeTimer = null;
     this.interruptionTranscriptConfirmed = false;
     this.interruptionPausedSpeech = false;
     this.assistantSpeechTimer = null;
@@ -4982,17 +4983,15 @@ var VoiceCoordinator = class _VoiceCoordinator {
     if (this.snapshot.settings.mode !== "headphones" && !this.externalSpeechConfirmed && !this.interruptionPausedSpeech)
       return;
     if (active) {
+      this._cancelInterruptionResume();
       if (!(this.interruptionTranscriptConfirmed || this.externalSpeechConfirmed) || this.interruptionTimer !== null || !this.snapshot.speaking || this.snapshot.paused)
         return;
       this.interruptionTimer = setTimeout(() => {
         this.interruptionTimer = null;
         if ((this.interruptionTranscriptConfirmed || this.externalSpeechConfirmed) && this._speechActivity() && this.snapshot.speaking && !this.snapshot.paused) {
           this.interruptionPausedSpeech = true;
-          void this.pauseSpeech().then(() => {
-            if (this.interruptionPausedSpeech && !this._speechActivity() && this.snapshot.paused) {
-              this.interruptionPausedSpeech = false;
-              void this.resumeSpeech();
-            }
+          void this.pauseSpeech(true).then(() => {
+            if (!this._speechActivity()) this._scheduleInterruptionResume();
           });
         }
       }, this.snapshot.settings.assistantSpeechDelaySeconds * 1e3);
@@ -5001,10 +5000,24 @@ var VoiceCoordinator = class _VoiceCoordinator {
     if (this.interruptionTimer !== null) clearTimeout(this.interruptionTimer);
     this.interruptionTimer = null;
     this.interruptionTranscriptConfirmed = false;
-    if (this.interruptionPausedSpeech && this.snapshot.paused) {
+    this._scheduleInterruptionResume();
+  }
+  _cancelInterruptionResume() {
+    if (this.interruptionResumeTimer !== null) clearTimeout(this.interruptionResumeTimer);
+    this.interruptionResumeTimer = null;
+  }
+  _scheduleInterruptionResume() {
+    if (!this.interruptionPausedSpeech || !this.snapshot.paused || this._speechActivity() || this.interruptionResumeTimer !== null)
+      return;
+    const epoch = this.speechEpoch;
+    const control = this.controlEpoch;
+    this.interruptionResumeTimer = setTimeout(() => {
+      this.interruptionResumeTimer = null;
+      if (this.disposed || epoch !== this.speechEpoch || control !== this.controlEpoch || this._speechActivity() || !this.interruptionPausedSpeech)
+        return;
       this.interruptionPausedSpeech = false;
       void this.resumeSpeech();
-    }
+    }, this.snapshot.settings.assistantSpeechDelaySeconds * 1e3);
   }
   onResult({ final = "", interim = "", startedAt }) {
     if (this.disposed || !this.snapshot.listening && !this.snapshot.starting) return;
@@ -5073,6 +5086,7 @@ var VoiceCoordinator = class _VoiceCoordinator {
     if (!interim && this.snapshot.recognizing)
       this.assistantSpeechNotBefore = Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1e3;
     this.patch({ recognizing: !!interim });
+    this._handleSpeechInterruption(this._speechActivity());
     this._drain();
   }
   maybeScheduleAutoSend(draft = this.composer.getDraft()) {
@@ -5238,8 +5252,10 @@ var VoiceCoordinator = class _VoiceCoordinator {
     this.queue = [];
   }
   async stopSpeech(resumeListening = true) {
+    this._cancelInterruptionResume();
     if (this.interruptionTimer !== null) clearTimeout(this.interruptionTimer);
     this.interruptionTimer = null;
+    this.interruptionResumeTimer = null;
     this.interruptionTranscriptConfirmed = false;
     this.interruptionPausedSpeech = false;
     const epoch = ++this.speechEpoch;
@@ -5291,6 +5307,8 @@ var VoiceCoordinator = class _VoiceCoordinator {
     await this._navigateSpeech();
   }
   async _navigateSpeech() {
+    this._cancelInterruptionResume();
+    this.interruptionPausedSpeech = false;
     const engine = this.engines[this.snapshot.speechEngine || this.snapshot.settings.engine];
     const epoch = ++this.speechEpoch;
     ++this.controlEpoch;
@@ -5314,7 +5332,11 @@ var VoiceCoordinator = class _VoiceCoordinator {
   getSpeechProgress() {
     return this.engines[this.snapshot.speechEngine]?.getPlaybackProgress?.() ?? null;
   }
-  async pauseSpeech() {
+  async pauseSpeech(automatic = false) {
+    if (!automatic) {
+      this._cancelInterruptionResume();
+      this.interruptionPausedSpeech = false;
+    }
     if (this.disposed || this.snapshot.paused) return;
     if (!this.snapshot.speaking && this.snapshot.speechRunActive) {
       this._cancelAssistantSpeechTimer();
@@ -5334,6 +5356,8 @@ var VoiceCoordinator = class _VoiceCoordinator {
     }
   }
   async resumeSpeech() {
+    this._cancelInterruptionResume();
+    this.interruptionPausedSpeech = false;
     if (this.disposed || !this.snapshot.paused) return;
     if (!this.snapshot.speaking) {
       this.patch({ paused: false });

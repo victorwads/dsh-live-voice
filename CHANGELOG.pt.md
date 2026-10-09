@@ -10,6 +10,8 @@ Todas as alterações relevantes do DSH Live Voice estão documentadas neste arq
 
 ### Correções de bugs
 
+- Retoma a reprodução interrompida automaticamente após um intervalo completo de silêncio, inclusive ao finalizar reconhecimento sem evento de fim de atividade; nova fala reinicia o intervalo e pausa/cancelamento explícitos impedem retomada automática, sem reiniciar o áudio.
+
 - Coordena a fala da reunião com a atividade do microfone: bloqueia a fila durante fala, pausa para participantes confirmados nos modos Alto-falantes ou Fones e solicita exclusão do próprio áudio/aba, com filtro de transcrição repetida. Áudio misturado do sistema não permite garantir separação de eco.
 
 - Mantém a captura de áudio compartilhado da reunião ao trocar de chat, encaminha novas transcrições apenas ao compositor ativo e libera a captura ao parar explicitamente, encerrar o compartilhamento no navegador ou desativar o plugin.
