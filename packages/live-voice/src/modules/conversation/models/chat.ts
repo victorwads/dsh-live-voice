@@ -15,6 +15,7 @@ export function assistantMessages(snapshot) {
         messageId: data.finalNode?.messageId,
         turn: data.turn,
         step: data.step,
+        time: data.time,
         complete: data.status !== 'running',
         interrupted: data.status === 'interrupted',
         text: (data.blocks || [])

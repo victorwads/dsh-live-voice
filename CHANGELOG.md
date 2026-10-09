@@ -8,6 +8,10 @@ All notable changes to DSH Live Voice are documented in this file. This English 
 
 ## [Next] - Unreleased
 
+### Bug Fixes
+
+- Prevent automatic speech replaying historical messages after switching chats: baseline the first populated snapshot and suppress late historical backfill while preserving new streamed responses.
+
 ### Interface and Accessibility
 
 - Localize the visible Live Voice product name throughout the five non-English interface catalogs and the optional debugger, while preserving package identifiers and the English name. Translate the GitHub star link's accessible label instead of hard-coding English.

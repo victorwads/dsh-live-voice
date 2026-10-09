@@ -114,7 +114,7 @@ async function fixture(t, { pendingStore = true, realSpeech = false, initialSett
   function store(id) {
     if (!stores.has(id)) {
       const listeners = new Set();
-      const snapshot = {
+      let snapshot = {
         nodes: new Map([
           [
             'one',
@@ -134,6 +134,10 @@ async function fixture(t, { pendingStore = true, realSpeech = false, initialSett
       stores.set(id, {
         listeners,
         getSnapshot: () => snapshot,
+        setSnapshot(next) {
+          snapshot = next;
+          for (const listener of listeners) listener();
+        },
         subscribe(fn) {
           listeners.add(fn);
           return () => listeners.delete(fn);
@@ -193,6 +197,7 @@ async function fixture(t, { pendingStore = true, realSpeech = false, initialSett
   });
   return {
     serverSettings: () => serverSettings,
+    chatStore: store,
     render,
     props,
     Buttons,
@@ -1046,4 +1051,72 @@ test('macOS say voice is visible, editable on blur, and clearing restores host d
     false,
     'empty voice omits -v and uses macOS default',
   );
+});
+
+test('switching chats baselines delayed history, preserves new streaming speech and ignores historical backfill', async (t) => {
+  const f = await fixture(t);
+  const observed = [];
+  const original = VoiceCoordinator.prototype.observeMessage;
+  t.mock.method(VoiceCoordinator.prototype, 'observeMessage', function (id, text, options) {
+    observed.push({ controller: this, id, text, ...options });
+    return original.call(this, id, text, options);
+  });
+  const snapshot = (messages) => ({
+    nodes: {
+      values: () =>
+        new Map(
+          messages.map(({ id, status = 'settled', time = 0, text = 'History' }) => [
+            id,
+            {
+              kind: 'assistant-step',
+              visibility: 'visible',
+              data: { turn: Number(id), step: 0, status, time, blocks: [{ kind: 'text', text }] },
+            },
+          ]),
+        ).values(),
+    },
+  });
+  const store = f.chatStore('delayed');
+  store.setSnapshot(snapshot([]));
+  await f.render(h(f.Buttons, f.props('delayed')));
+  await act(async () => store.setSnapshot(snapshot([{ id: '1' }, { id: '2' }])));
+  const history = observed.filter((m) => m.id === '1:0' || m.id === '2:0');
+  assert.equal(history.length, 2);
+  assert.ok(history.every((m) => m.baseline));
+  assert.equal(f.controllers.at(-1).queue.length, 0);
+  const now = Date.now() + 1;
+  await act(async () =>
+    store.setSnapshot(
+      snapshot([{ id: '1' }, { id: '2' }, { id: '3', status: 'running', time: now, text: 'New' }]),
+    ),
+  );
+  assert.equal(observed.at(-1).baseline, false);
+  await act(async () =>
+    store.setSnapshot(
+      snapshot([{ id: '1' }, { id: '2' }, { id: '3', time: now, text: 'New response' }]),
+    ),
+  );
+  assert.equal(observed.at(-1).baseline, false);
+  await act(async () =>
+    store.setSnapshot(
+      snapshot([
+        { id: '0', time: 1 },
+        { id: '1' },
+        { id: '2' },
+        { id: '3', time: now, text: 'New response' },
+      ]),
+    ),
+  );
+  assert.equal(observed.find((m) => m.id === '0:0').baseline, true);
+  const empty = f.chatStore('empty');
+  empty.setSnapshot(snapshot([]));
+  await f.render(h(f.Buttons, f.props('empty')));
+  await act(async () =>
+    empty.setSnapshot(snapshot([{ id: '4', time: Date.now() + 1, text: 'First new reply' }])),
+  );
+  assert.equal(observed.at(-1).baseline, false);
+  await f.render(h(f.Buttons, f.props('other')));
+  observed.length = 0;
+  await f.render(h(f.Buttons, f.props('delayed')));
+  assert.ok(observed.filter((m) => m.controller === f.controllers.at(-1)).every((m) => m.baseline));
 });

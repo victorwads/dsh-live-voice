@@ -7869,6 +7869,7 @@ function assistantMessages(snapshot) {
       messageId: data.finalNode?.messageId,
       turn: data.turn,
       step: data.step,
+      time: data.time,
       complete: data.status !== "running",
       interrupted: data.status === "interrupted",
       text: (data.blocks || []).filter((block) => block.kind === "text").map((block) => block.text || "").join("")
@@ -8394,18 +8395,26 @@ function apply(ctx) {
       return () => entry.chatListeners.delete(listener);
     };
     entry.readChat = entry.chat.getSnapshot.bind(entry.chat);
-    const refresh = (baseline = false) => {
+    const attachedAt = Date.now();
+    const observed = /* @__PURE__ */ new Set();
+    let baselined = false;
+    const refresh = (forceBaseline = false) => {
       if (disposed || entry.closed) return;
       const snapshot = entry.readChat();
+      const baseline = forceBaseline || !baselined;
+      if ([...snapshot?.nodes?.values?.() || []].length) baselined = true;
       const userSeq = latestUserSequence(snapshot);
       if (!baseline && userSeq > entry.userSeq && controller.getSnapshot().settings.interruptSpeechOnUserMessage && (controller.getSnapshot().speaking || controller.getSnapshot().paused))
         run(controller, controller.stopSpeech());
       entry.userSeq = Math.max(entry.userSeq ?? -1, userSeq);
-      for (const message2 of assistantMessages(snapshot))
+      for (const message2 of assistantMessages(snapshot)) {
+        const historical = !observed.has(message2.id) && message2.complete && Number.isFinite(message2.time) && message2.time < attachedAt;
         controller.observeMessage(message2.id, message2.text, {
           complete: message2.complete,
-          baseline: baseline || message2.interrupted
+          baseline: forceBaseline || baseline && (!Number.isFinite(message2.time) || message2.time < attachedAt) || historical || message2.interrupted
         });
+        observed.add(message2.id);
+      }
     };
     refresh(true);
     entry.unsubscribe = entry.chat.subscribe(() => {

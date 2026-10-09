@@ -8,6 +8,10 @@ Todas as alterações relevantes do DSH Live Voice estão documentadas neste arq
 
 ## [Next] - Não lançado
 
+### Correções de bugs
+
+- Evita a leitura automática do histórico ao trocar de chat: usa o primeiro snapshot preenchido como base e ignora histórico carregado posteriormente, preservando novas respostas em streaming.
+
 ### Interface e acessibilidade
 
 - Traduz o nome visível do Live Voice nos cinco catálogos de interface não ingleses e no depurador opcional, preservando os identificadores dos pacotes e o nome em inglês. Traduz o rótulo acessível do link para dar uma estrela no GitHub, em vez de fixá-lo em inglês.

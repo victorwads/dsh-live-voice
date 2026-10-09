@@ -325,9 +325,15 @@ export function apply(ctx) {
       return () => entry.chatListeners.delete(listener);
     };
     entry.readChat = entry.chat.getSnapshot.bind(entry.chat);
-    const refresh = (baseline = false) => {
+    const attachedAt = Date.now();
+    const observed = new Set();
+    let baselined = false;
+    const refresh = (forceBaseline = false) => {
       if (disposed || entry.closed) return;
       const snapshot = entry.readChat();
+      const baseline = forceBaseline || !baselined;
+      // Lazy Chat targets may publish an empty snapshot before loading history.
+      if ([...(snapshot?.nodes?.values?.() || [])].length) baselined = true;
       const userSeq = latestUserSequence(snapshot);
       if (
         !baseline &&
@@ -337,11 +343,22 @@ export function apply(ctx) {
       )
         run(controller, controller.stopSpeech());
       entry.userSeq = Math.max(entry.userSeq ?? -1, userSeq);
-      for (const message of assistantMessages(snapshot))
+      for (const message of assistantMessages(snapshot)) {
+        const historical =
+          !observed.has(message.id) &&
+          message.complete &&
+          Number.isFinite(message.time) &&
+          message.time < attachedAt;
         controller.observeMessage(message.id, message.text, {
           complete: message.complete,
-          baseline: baseline || message.interrupted,
+          baseline:
+            forceBaseline ||
+            (baseline && (!Number.isFinite(message.time) || message.time < attachedAt)) ||
+            historical ||
+            message.interrupted,
         });
+        observed.add(message.id);
+      }
     };
     refresh(true);
     entry.unsubscribe = entry.chat.subscribe(() => {
