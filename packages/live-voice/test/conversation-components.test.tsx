@@ -1,5 +1,6 @@
 // @ts-nocheck
 import test from 'node:test';
+import { iconPaths } from '../src/shared/design-system/icons/icons.js';
 import assert from 'node:assert/strict';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -106,6 +107,8 @@ test('conversation controls preserve capability and busy-state policy', async (t
   );
   const button = root.querySelector('.dlv-mic');
   assert.equal(button.getAttribute('aria-label'), 'Start voice conversation');
+  assert.equal(button.dataset.toggleActive, 'false');
+  assert.equal(button.querySelector('path').getAttribute('d'), iconPaths.micOff);
   await act(async () => button.click());
   assert.deepEqual(controller.calls, ['startConversation']);
 });
@@ -138,6 +141,8 @@ test('conversation controls retain a pressed microphone toggle while busy', asyn
     </LiveVoiceTranslationProvider>,
   );
   assert.equal(root.querySelector('.dlv-mic').getAttribute('aria-pressed'), 'true');
+  assert.equal(root.querySelector('.dlv-mic').dataset.toggleActive, 'true');
+  assert.equal(root.querySelector('.dlv-mic path').getAttribute('d'), iconPaths.mic);
   await act(async () => root.querySelector('.dlv-mic').click());
   assert.deepEqual(busy.calls, ['endConversation']);
 });

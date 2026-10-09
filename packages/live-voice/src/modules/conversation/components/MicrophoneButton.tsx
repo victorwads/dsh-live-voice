@@ -7,5 +7,13 @@ export type MicrophoneButtonProps = {
   onClick(): void;
 };
 export function MicrophoneButton(props: MicrophoneButtonProps) {
-  return <IconButton {...props} className="dlv-mic" icon="mic" />;
+  const active = Boolean(props['aria-pressed']);
+  return (
+    <IconButton
+      {...props}
+      className="dlv-mic dlv-composer-toggle"
+      data-toggle-active={String(active)}
+      icon={active ? 'mic' : 'micOff'}
+    />
+  );
 }

@@ -4,8 +4,10 @@ export const styles = `
 .dlv-icon-button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex-shrink:0;cursor:pointer;background:transparent;color:var(--dsw-alias-label-secondary);padding:0;font:inherit}
 .dlv-icon-button svg{display:block;width:20px;height:20px}
 .dlv-mic{width:30px;height:30px;border:1px solid var(--dsw-alias-border-l1);border-radius:50%}
-.dlv-composer-toggle{width:30px;height:30px;border:1px solid var(--dsw-alias-border-l1);border-radius:50%}.dlv-composer-toggle:hover{border-color:var(--dsw-alias-border-l2)}
-.dlv-composer-toggle[data-toggle-active=false]{opacity:.55;color:var(--dsw-alias-label-tertiary)}.dlv-composer-toggle[data-toggle-active=true]{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary)}
+.dlv-composer-toggles{display:inline-flex;align-items:center;flex-shrink:0;gap:0;padding:2px;border:1px solid var(--dsw-alias-border-l1);border-radius:999px;background:transparent}
+.dlv-composer-toggle{position:relative;width:34px;height:30px;border:0;border-radius:0;transition:background .15s ease,color .15s ease}.dlv-composer-toggles>.dlv-composer-toggle:first-child{border-radius:999px 0 0 999px}.dlv-composer-toggles>.dlv-composer-toggle:last-of-type{border-radius:0 999px 999px 0}.dlv-composer-toggles>.dlv-composer-toggle+.dlv-composer-toggle{border-left:1px solid var(--dsw-alias-border-l1)}
+.dlv-composer-toggle[data-toggle-active=false]{color:var(--dsw-alias-label-secondary)}.dlv-composer-toggle[data-toggle-active=false] svg{opacity:.45}.dlv-composer-toggle[data-toggle-active=true]{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary)}.dlv-composer-toggle[data-toggle-active=true] svg{opacity:1}.dlv-composer-toggle:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}
+@media(prefers-reduced-motion:reduce){.dlv-composer-toggle{transition:none}}
 .dlv-mic:hover{color:var(--dsw-alias-label-primary);border-color:var(--dsw-alias-border-l2)}
 .dlv-speaker{width:28px;height:28px;border:0;border-radius:28px;padding:5px;color:var(--dsw-alias-label-tertiary)}
 .dlv-speaker:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}

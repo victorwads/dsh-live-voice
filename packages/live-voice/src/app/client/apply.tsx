@@ -661,7 +661,7 @@ export function apply(ctx) {
     const entry = useEntry(props.sessionId, 'buttons');
     useComposer(entry, props);
     return entry ? (
-      <>
+      <div className="dlv-composer-toggles">
         <MeetingToggle
           meeting={entry.meeting}
           onToggle={() => {
@@ -671,7 +671,7 @@ export function apply(ctx) {
           }}
         />
         <ConversationControls controller={entry.controller} />
-      </>
+      </div>
     ) : null;
   }
   function Settings() {

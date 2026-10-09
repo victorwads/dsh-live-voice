@@ -1788,6 +1788,7 @@ var import_react3 = __toESM(require("react"), 1);
 // src/shared/design-system/icons/icons.ts
 var iconPaths = {
   meeting: "M8 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6M16 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6M2 20v-3a6 6 0 0 1 12 0v3M16 13a5 5 0 0 1 6 5v2",
+  meetingOff: "M8 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6M16 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6M2 20v-3a6 6 0 0 1 12 0v3M17 16l5 5M22 16l-5 5",
   mic: "M9 5a3 3 0 0 1 6 0v7a3 3 0 0 1-6 0V5M6 10v2a6 6 0 0 0 12 0v-2M12 18v4M8 22h8",
   micOff: "M9 9v3a3 3 0 0 0 5.12 2.12M15 9V5a3 3 0 0 0-5.64-1.42M6 10v2a6 6 0 0 0 9.5 4.88M18 10v2a6 6 0 0 1-.5 2.4M12 18v4M8 22h8M3 3l18 18",
   speaker: "M3 9h4l6-5v16l-6-5H3V9M17 8a6 6 0 0 1 0 8M20 5a10 10 0 0 1 0 14",
@@ -5757,14 +5758,16 @@ function ConversationStatusBar({
 function MeetingToggle({ meeting, onToggle }) {
   const { scoped: copy } = useLanguage((ctx) => ctx.meeting);
   const state = import_react29.default.useSyncExternalStore(meeting.subscribe, meeting.getSnapshot);
+  const active = Boolean(state.shared.listening || state.shared.starting);
   return /* @__PURE__ */ import_react29.default.createElement(
     IconButton,
     {
-      icon: "meeting",
+      icon: active ? "meeting" : "meetingOff",
       label: copy.shared(),
       title: copy[state.shared.listening || state.shared.starting ? "stopShared" : "startShared"](),
-      className: "dlv-mic",
-      "aria-pressed": Boolean(state.shared.listening || state.shared.starting),
+      className: "dlv-composer-toggle",
+      "data-toggle-active": String(active),
+      "aria-pressed": active,
       onClick: onToggle
     }
   );
@@ -5776,7 +5779,15 @@ function MeetingBars({ meeting }) {
   if (!value.listening && !value.starting && !value.error) return null;
   const label = copy.shared();
   const input = meeting.input("shared");
-  return /* @__PURE__ */ import_react29.default.createElement("div", { className: "dlv-meeting-bars" }, /* @__PURE__ */ import_react29.default.createElement(ConversationStatusBar, { controller: input, includeSpeech: false, sourceIcon: "meeting", sourceLabel: label }));
+  return /* @__PURE__ */ import_react29.default.createElement("div", { className: "dlv-meeting-bars" }, /* @__PURE__ */ import_react29.default.createElement(
+    ConversationStatusBar,
+    {
+      controller: input,
+      includeSpeech: false,
+      sourceIcon: "meeting",
+      sourceLabel: label
+    }
+  ));
 }
 
 // src/app/client/apply.tsx
@@ -7979,7 +7990,16 @@ var import_react57 = __toESM(require("react"), 1);
 // src/modules/conversation/components/MicrophoneButton.tsx
 var import_react55 = __toESM(require("react"), 1);
 function MicrophoneButton(props) {
-  return /* @__PURE__ */ import_react55.default.createElement(IconButton, { ...props, className: "dlv-mic", icon: "mic" });
+  const active = Boolean(props["aria-pressed"]);
+  return /* @__PURE__ */ import_react55.default.createElement(
+    IconButton,
+    {
+      ...props,
+      className: "dlv-mic dlv-composer-toggle",
+      "data-toggle-active": String(active),
+      icon: active ? "mic" : "micOff"
+    }
+  );
 }
 
 // src/modules/conversation/components/AutoPlaybackToggle.tsx
@@ -8171,8 +8191,10 @@ var styles = `
 .dlv-icon-button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex-shrink:0;cursor:pointer;background:transparent;color:var(--dsw-alias-label-secondary);padding:0;font:inherit}
 .dlv-icon-button svg{display:block;width:20px;height:20px}
 .dlv-mic{width:30px;height:30px;border:1px solid var(--dsw-alias-border-l1);border-radius:50%}
-.dlv-composer-toggle{width:30px;height:30px;border:1px solid var(--dsw-alias-border-l1);border-radius:50%}.dlv-composer-toggle:hover{border-color:var(--dsw-alias-border-l2)}
-.dlv-composer-toggle[data-toggle-active=false]{opacity:.55;color:var(--dsw-alias-label-tertiary)}.dlv-composer-toggle[data-toggle-active=true]{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary)}
+.dlv-composer-toggles{display:inline-flex;align-items:center;flex-shrink:0;gap:0;padding:2px;border:1px solid var(--dsw-alias-border-l1);border-radius:999px;background:transparent}
+.dlv-composer-toggle{position:relative;width:34px;height:30px;border:0;border-radius:0;transition:background .15s ease,color .15s ease}.dlv-composer-toggles>.dlv-composer-toggle:first-child{border-radius:999px 0 0 999px}.dlv-composer-toggles>.dlv-composer-toggle:last-of-type{border-radius:0 999px 999px 0}.dlv-composer-toggles>.dlv-composer-toggle+.dlv-composer-toggle{border-left:1px solid var(--dsw-alias-border-l1)}
+.dlv-composer-toggle[data-toggle-active=false]{color:var(--dsw-alias-label-secondary)}.dlv-composer-toggle[data-toggle-active=false] svg{opacity:.45}.dlv-composer-toggle[data-toggle-active=true]{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary)}.dlv-composer-toggle[data-toggle-active=true] svg{opacity:1}.dlv-composer-toggle:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}
+@media(prefers-reduced-motion:reduce){.dlv-composer-toggle{transition:none}}
 .dlv-mic:hover{color:var(--dsw-alias-label-primary);border-color:var(--dsw-alias-border-l2)}
 .dlv-speaker{width:28px;height:28px;border:0;border-radius:28px;padding:5px;color:var(--dsw-alias-label-tertiary)}
 .dlv-speaker:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}
@@ -8892,7 +8914,7 @@ function apply(ctx) {
   function Buttons(props) {
     const entry = useEntry(props.sessionId, "buttons");
     useComposer(entry, props);
-    return entry ? /* @__PURE__ */ import_react59.default.createElement(import_react59.default.Fragment, null, /* @__PURE__ */ import_react59.default.createElement(
+    return entry ? /* @__PURE__ */ import_react59.default.createElement("div", { className: "dlv-composer-toggles" }, /* @__PURE__ */ import_react59.default.createElement(
       MeetingToggle,
       {
         meeting: entry.meeting,

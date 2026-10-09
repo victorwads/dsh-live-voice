@@ -4,10 +4,13 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 [Product overview](README.md) · [Visão geral em português](README.pt.md) · [简体中文概览](README.zh-CN.md)
 
-## [0.4.1] - Unreleased
+## [0.4.x] - Next
+
+## [0.4.1] - 2026-10-09
 
 ### Improved
 
+- Make composer voice controls easier to scan: group meeting audio, assistant speech, and microphone toggles into one rounded capsule with subtle dividers. Give each toggle distinct on/off icons and reduced icon opacity when off, while preserving existing start/stop behavior.
 - Mirror microphone and shared-meeting input bars with the same Listening / Ignoring action, independent exact-command and timestamp toggles, and Manual / Queue / Steer delivery controls, countdown, and cancellation. Both use the same input coordinator policy; assistant playback remains a single shared resource.
 - Extend translations to more interface text, including the Live Voice name, macOS voice guidance, and accessibility labels.
 - Add a voice-name option for the macOS Say engine in Settings. Leave it empty to use the macOS default voice.
@@ -32,7 +35,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 - Add regressions for macOS Say voice editing, clearing, and error reporting without silent browser fallback, plus current-engine and voice selection during replay.
 - Include configured and active speech engines and the active host endpoint in read-only diagnostics without logging speech content.
 - Update public documentation and contributor guidance, including Brazilian Portuguese and Simplified Chinese READMEs and clearer meeting, remote-access, and local-first guidance.
-- Consolidate pending changes under 0.4.1 and remove its premature release date; this version remains unreleased.
+- Consolidate changes under 0.4.1 and reserve the Next section for upcoming 0.4.x updates.
 
 ## [0.4.0] - 2026-10-07
 

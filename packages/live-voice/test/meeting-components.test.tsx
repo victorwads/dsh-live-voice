@@ -1,5 +1,6 @@
 // @ts-nocheck
 import test from 'node:test';
+import { iconPaths } from '../src/shared/design-system/icons/icons.js';
 import assert from 'node:assert/strict';
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -28,7 +29,12 @@ test('shared audio toggle starts directly and only renders its own active bar wi
   const listeners = new Set();
   let snapshot = { shared: {}, microphone: { listening: true } };
   let starts = 0;
-  const input = new VoiceCoordinator({ recognition: { stop: async () => {} }, meter: { stop: async () => {} }, engines: {}, composer: { getDraft: () => '', setDraft() {} } });
+  const input = new VoiceCoordinator({
+    recognition: { stop: async () => {} },
+    meter: { stop: async () => {} },
+    engines: {},
+    composer: { getDraft: () => '', setDraft() {} },
+  });
   const meeting = {
     input: () => input,
     jobs: new Map(),
@@ -65,15 +71,23 @@ test('shared audio toggle starts directly and only renders its own active bar wi
     ),
   );
   assert.equal(document.querySelectorAll('[role="group"]').length, 0);
+  const toggle = document.querySelector('button[aria-label="Shared audio"]');
+  assert.equal(toggle.dataset.toggleActive, 'false');
+  assert.equal(toggle.querySelector('path').getAttribute('d'), iconPaths.meetingOff);
   await act(async () => document.querySelector('button[aria-label="Shared audio"]').click());
   assert.equal(starts, 1);
+  assert.equal(toggle.dataset.toggleActive, 'true');
+  assert.equal(toggle.querySelector('path').getAttribute('d'), iconPaths.meeting);
   assert.equal(
     document.querySelector('button[aria-label="Shared audio"]').title,
     'Stop audio sharing',
   );
   assert.equal(document.querySelectorAll('[role="group"]').length, 1);
   assert.equal(document.querySelector('p'), null);
-  assert.equal(document.querySelector('[role="status"]').textContent, 'Listening — waiting for speech');
+  assert.equal(
+    document.querySelector('[role="status"]').textContent,
+    'Listening — waiting for speech',
+  );
   const clock = document.querySelector('[aria-label="Transcript timestamps"]');
   assert.equal(clock.getAttribute('data-toggle-active'), 'false');
   assert.equal(clock.textContent, 'Timestamp');
