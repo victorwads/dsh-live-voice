@@ -2347,10 +2347,12 @@ var MeetingTranscript = class {
 
 // src/modules/conversation/models/meeting.ts
 var MeetingController = class {
-  constructor({ composer, settings, createSource, translate }) {
+  constructor({ composer, settings, createSource, translate, onActivity, onSpeech }) {
     this.settings = settings;
     this.createSource = createSource;
     this.t = translate;
+    this.onActivity = onActivity;
+    this.onSpeech = onSpeech;
     this.transcript = new MeetingTranscript(composer);
     this.jobs = /* @__PURE__ */ new Map();
     this.generations = /* @__PURE__ */ new Map();
@@ -2422,8 +2424,13 @@ var MeetingController = class {
       await engine.start({
         lang: settings.recognitionLang,
         signal: abort.signal,
-        onResult: ({ final, startedAt }) => {
-          if (valid() && final) this.transcript.append(source, final, startedAt);
+        onResult: ({ final, interim, startedAt }) => {
+          if (!valid()) return;
+          const accepted = this.onSpeech?.(source, final || interim) !== false;
+          if (final && accepted) this.transcript.append(source, final, startedAt);
+        },
+        onActivity: (active) => {
+          if (valid()) this.onActivity?.(source, active);
         },
         onProcessingChange: ({ pending }) => {
           if (valid()) this.patch(source, { pending });
@@ -2457,6 +2464,7 @@ var MeetingController = class {
     this.generations.set(source, (this.generations.get(source) || 0) + 1);
     const job = this.jobs.get(source);
     this.jobs.delete(source);
+    this.onActivity?.(source, false);
     job?.abort.abort();
     this.transcript.setActive(source, false);
     this.patch(source, { starting: false, listening: false, pending: 0 });
@@ -2632,7 +2640,13 @@ var MicrophoneMeter = class {
 
 // src/modules/core/sharedAudio.ts
 function requestSharedAudio(globals = globalThis) {
-  return globals.navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+  return globals.navigator.mediaDevices.getDisplayMedia({
+    video: true,
+    audio: true,
+    // Chromium hints exclude this application's own tab; unsupported browsers ignore them.
+    selfBrowserSurface: "exclude",
+    restrictOwnAudio: true
+  });
 }
 var SharedAudioMeter = class extends MicrophoneMeter {
   constructor(globals = globalThis) {
@@ -4897,7 +4911,7 @@ var VoiceCoordinator = class _VoiceCoordinator {
             } else
               this.assistantSpeechNotBefore = Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1e3;
             this.patch({ recognizing: active });
-            this._handleSpeechInterruption(active);
+            this._handleSpeechInterruption(this._speechActivity());
             if (!active) this._drain();
           },
           onError: (error) => {
@@ -4936,17 +4950,46 @@ var VoiceCoordinator = class _VoiceCoordinator {
   _interruptionTranscriptQualifies(text) {
     return hasMinimumWords(text, 1);
   }
-  _handleSpeechInterruption(active) {
-    if (this.snapshot.settings.mode !== "headphones") return;
+  _speechActivity() {
+    return this.snapshot.recognizing || this.externalSpeechActive;
+  }
+  setExternalSpeechActivity(active) {
+    if (this.disposed) return;
+    this.externalSpeechActive = Boolean(active);
+    if (!active) this.externalSpeechConfirmed = false;
     if (active) {
-      if (!this.interruptionTranscriptConfirmed || this.interruptionTimer !== null || !this.snapshot.speaking || this.snapshot.paused)
+      this.assistantSpeechNotBefore = Infinity;
+      this._cancelAssistantSpeechTimer();
+    } else if (!this.snapshot.recognizing) {
+      this.assistantSpeechNotBefore = Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1e3;
+    }
+    this._handleSpeechInterruption(this._speechActivity());
+    if (!active) this._drain();
+  }
+  confirmExternalSpeech(text) {
+    if (this.disposed) return false;
+    const normalized = (value) => String(value || "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+    const heard = normalized(text);
+    const own = normalized(this.snapshot.speechText);
+    if (this.snapshot.speaking && heard && own.includes(heard)) return false;
+    if (this.externalSpeechActive && this._interruptionTranscriptQualifies(text)) {
+      this.externalSpeechConfirmed = true;
+      this._handleSpeechInterruption(true);
+    }
+    return true;
+  }
+  _handleSpeechInterruption(active) {
+    if (this.snapshot.settings.mode !== "headphones" && !this.externalSpeechConfirmed && !this.interruptionPausedSpeech)
+      return;
+    if (active) {
+      if (!(this.interruptionTranscriptConfirmed || this.externalSpeechConfirmed) || this.interruptionTimer !== null || !this.snapshot.speaking || this.snapshot.paused)
         return;
       this.interruptionTimer = setTimeout(() => {
         this.interruptionTimer = null;
-        if (this.interruptionTranscriptConfirmed && this.snapshot.recognizing && this.snapshot.speaking && !this.snapshot.paused) {
+        if ((this.interruptionTranscriptConfirmed || this.externalSpeechConfirmed) && this._speechActivity() && this.snapshot.speaking && !this.snapshot.paused) {
           this.interruptionPausedSpeech = true;
           void this.pauseSpeech().then(() => {
-            if (this.interruptionPausedSpeech && !this.snapshot.recognizing && this.snapshot.paused) {
+            if (this.interruptionPausedSpeech && !this._speechActivity() && this.snapshot.paused) {
               this.interruptionPausedSpeech = false;
               void this.resumeSpeech();
             }
@@ -5434,7 +5477,7 @@ var VoiceCoordinator = class _VoiceCoordinator {
     this.assistantSpeechTimer = null;
   }
   _drain() {
-    if (this.disposed || !this.snapshot.conversation && !this.queue[0]?.manual || !this.snapshot.settings.announceAssistantMessages && !this.queue[0]?.manual || this.snapshot.speaking || this.snapshot.paused || this.snapshot.recognizing || this.snapshot.starting || !this.queue[0]?.manual && (this.snapshot.pendingTranscriptions > 0 || this.snapshot.autoSendAt !== null) || !this.queue.length)
+    if (this.disposed || !this.snapshot.conversation && !this.queue[0]?.manual || !this.snapshot.settings.announceAssistantMessages && !this.queue[0]?.manual || this.snapshot.speaking || this.snapshot.paused || this._speechActivity() || this.snapshot.starting || !this.queue[0]?.manual && (this.snapshot.pendingTranscriptions > 0 || this.snapshot.autoSendAt !== null) || !this.queue.length)
       return;
     const wait = this.assistantSpeechNotBefore - Date.now();
     if (wait > 0) {
@@ -8144,7 +8187,14 @@ function apply(ctx) {
   let disposed = false;
   let voiceModeActive = false;
   let meetingEntry = null;
+  let sharedSpeechActive = false;
   const meeting = new MeetingController({
+    onActivity: (source, active) => {
+      if (source !== "shared") return;
+      sharedSpeechActive = active;
+      meetingEntry?.controller.setExternalSpeechActivity(active);
+    },
+    onSpeech: (source, text) => source !== "shared" || meetingEntry?.controller.confirmExternalSpeech(text) !== false,
     composer: {
       getDraft: () => meetingEntry?.draft || "",
       setDraft: (text) => meetingEntry?.controller.composer.setDraft(text)
@@ -8579,6 +8629,7 @@ function apply(ctx) {
       if (!input || typeof props.inputActions?.setDraft !== "function") return;
       if (meetingEntry !== entry) {
         meetingEntry = entry;
+        entry.controller.setExternalSpeechActivity(sharedSpeechActive);
         const state = entry.controller.getSnapshot();
         meeting.transcript.setActive(
           "microphone",

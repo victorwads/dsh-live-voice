@@ -55,7 +55,15 @@ export function apply(ctx) {
   // composer should inherit the user's explicit choice to remain in voice mode.
   let voiceModeActive = false;
   let meetingEntry = null;
+  let sharedSpeechActive = false;
   const meeting = new MeetingController({
+    onActivity: (source, active) => {
+      if (source !== 'shared') return;
+      sharedSpeechActive = active;
+      meetingEntry?.controller.setExternalSpeechActivity(active);
+    },
+    onSpeech: (source, text) =>
+      source !== 'shared' || meetingEntry?.controller.confirmExternalSpeech(text) !== false,
     composer: {
       getDraft: () => meetingEntry?.draft || '',
       setDraft: (text) => meetingEntry?.controller.composer.setDraft(text),
@@ -539,6 +547,7 @@ export function apply(ctx) {
       if (!input || typeof props.inputActions?.setDraft !== 'function') return;
       if (meetingEntry !== entry) {
         meetingEntry = entry;
+        entry.controller.setExternalSpeechActivity(sharedSpeechActive);
         const state = entry.controller.getSnapshot();
         meeting.transcript.setActive(
           'microphone',

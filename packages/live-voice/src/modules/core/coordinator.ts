@@ -357,7 +357,7 @@ export class VoiceCoordinator {
               this.assistantSpeechNotBefore =
                 Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
             this.patch({ recognizing: active });
-            this._handleSpeechInterruption(active);
+            this._handleSpeechInterruption(this._speechActivity());
             if (!active) this._drain();
           },
           onError: (error) => {
@@ -397,11 +397,50 @@ export class VoiceCoordinator {
     return hasMinimumWords(text, 1);
   }
 
+  _speechActivity() {
+    return this.snapshot.recognizing || this.externalSpeechActive;
+  }
+  setExternalSpeechActivity(active) {
+    if (this.disposed) return;
+    this.externalSpeechActive = Boolean(active);
+    if (!active) this.externalSpeechConfirmed = false;
+    if (active) {
+      this.assistantSpeechNotBefore = Infinity;
+      this._cancelAssistantSpeechTimer();
+    } else if (!this.snapshot.recognizing) {
+      this.assistantSpeechNotBefore =
+        Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
+    }
+    this._handleSpeechInterruption(this._speechActivity());
+    if (!active) this._drain();
+  }
+  confirmExternalSpeech(text) {
+    if (this.disposed) return false;
+    const normalized = (value) =>
+      String(value || '')
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu, ' ')
+        .trim();
+    const heard = normalized(text);
+    const own = normalized(this.snapshot.speechText);
+    // System-audio mixes may still contain TTS despite browser exclusion hints.
+    if (this.snapshot.speaking && heard && own.includes(heard)) return false;
+    if (this.externalSpeechActive && this._interruptionTranscriptQualifies(text)) {
+      this.externalSpeechConfirmed = true;
+      this._handleSpeechInterruption(true);
+    }
+    return true;
+  }
   _handleSpeechInterruption(active) {
-    if (this.snapshot.settings.mode !== 'headphones') return;
+    if (
+      this.snapshot.settings.mode !== 'headphones' &&
+      !this.externalSpeechConfirmed &&
+      !this.interruptionPausedSpeech
+    )
+      return;
     if (active) {
       if (
-        !this.interruptionTranscriptConfirmed ||
+        !(this.interruptionTranscriptConfirmed || this.externalSpeechConfirmed) ||
         this.interruptionTimer !== null ||
         !this.snapshot.speaking ||
         this.snapshot.paused
@@ -410,18 +449,14 @@ export class VoiceCoordinator {
       this.interruptionTimer = setTimeout(() => {
         this.interruptionTimer = null;
         if (
-          this.interruptionTranscriptConfirmed &&
-          this.snapshot.recognizing &&
+          (this.interruptionTranscriptConfirmed || this.externalSpeechConfirmed) &&
+          this._speechActivity() &&
           this.snapshot.speaking &&
           !this.snapshot.paused
         ) {
           this.interruptionPausedSpeech = true;
           void this.pauseSpeech().then(() => {
-            if (
-              this.interruptionPausedSpeech &&
-              !this.snapshot.recognizing &&
-              this.snapshot.paused
-            ) {
+            if (this.interruptionPausedSpeech && !this._speechActivity() && this.snapshot.paused) {
               this.interruptionPausedSpeech = false;
               void this.resumeSpeech();
             }
@@ -1001,7 +1036,7 @@ export class VoiceCoordinator {
       (!this.snapshot.settings.announceAssistantMessages && !this.queue[0]?.manual) ||
       this.snapshot.speaking ||
       this.snapshot.paused ||
-      this.snapshot.recognizing ||
+      this._speechActivity() ||
       this.snapshot.starting ||
       (!this.queue[0]?.manual &&
         (this.snapshot.pendingTranscriptions > 0 || this.snapshot.autoSendAt !== null)) ||

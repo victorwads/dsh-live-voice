@@ -10,6 +10,8 @@ All notable changes to DSH Live Voice are documented in this file. This English 
 
 ### Bug Fixes
 
+- Coordinate shared meeting speech with microphone activity: gate queued playback, pause for confirmed participant speech in Speakers or Headphones mode, and request own-tab/audio exclusion with a transcript echo guard. Mixed system audio cannot guarantee acoustic echo separation.
+
 - Keep shared meeting audio capture active across chat navigation, route new transcription only to the committed composer, and release capture on explicit stop, browser track end, or plugin disposal.
 
 - Prevent automatic speech replaying historical messages after switching chats: baseline the first populated snapshot and suppress late historical backfill while preserving new streamed responses.

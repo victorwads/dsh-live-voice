@@ -8,6 +8,10 @@ This is the natural-language behavioral contract for conversation lifecycle and 
 
 Engine, language, input/output device, Speakers/Headphones mode, delivery mode, delays, filters, and customized voice-command phrases survive conversations and reloads through the host-side `dsh-live-voice.settings` preferences. Browser storage is not read or written; legacy browser values are intentionally not migrated.
 
+### Interruption sources
+
+Shared meeting recognition publishes activity to the committed voice coordinator, separately from microphone activity. Either active source blocks queued speech; both must become silent before an automatically interrupted playback can resume. During playback, microphone interruption is limited to Headphones mode; shared participants can interrupt either output mode after qualifying non-echo recognition. Raw level/activity alone does not confirm an interruption, to avoid a feedback loop from assistant playback. Final-only recognition can confirm too late to interrupt the same short utterance. Browser own-tab/audio exclusion hints and a repeated-transcript guard reduce feedback, but cannot separate arbitrary mixed system audio acoustically.
+
 ### Application continuity
 
 An explicit choice to keep voice conversation mode active may follow the committed composer across a chat route change. Shared meeting screen/audio capture is application-owned and stays active across navigation until an explicit stop, browser track end, page exit, or plugin disposal. Its transcript destination follows the committed composer; without one, no composer is modified. This continuity does not authorize session-owned queues or draft state to leak into the new composer.

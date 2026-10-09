@@ -3,7 +3,13 @@ import { MicrophoneMeter } from './microphone.js';
 
 /** Display permission must be requested synchronously from a user gesture. */
 export function requestSharedAudio(globals = globalThis) {
-  return globals.navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+  return globals.navigator.mediaDevices.getDisplayMedia({
+    video: true,
+    audio: true,
+    // Chromium hints exclude this application's own tab; unsupported browsers ignore them.
+    selfBrowserSurface: 'exclude',
+    restrictOwnAudio: true,
+  });
 }
 
 export class SharedAudioMeter extends MicrophoneMeter {

@@ -3,10 +3,12 @@ import { MeetingTranscript } from './meetingTranscript.js';
 
 /** Independent source lifecycles; no submit or voice-command path is exposed. */
 export class MeetingController {
-  constructor({ composer, settings, createSource, translate }) {
+  constructor({ composer, settings, createSource, translate, onActivity, onSpeech }) {
     this.settings = settings;
     this.createSource = createSource;
     this.t = translate;
+    this.onActivity = onActivity;
+    this.onSpeech = onSpeech;
     this.transcript = new MeetingTranscript(composer);
     this.jobs = new Map();
     this.generations = new Map();
@@ -80,8 +82,13 @@ export class MeetingController {
       await engine.start({
         lang: settings.recognitionLang,
         signal: abort.signal,
-        onResult: ({ final, startedAt }) => {
-          if (valid() && final) this.transcript.append(source, final, startedAt);
+        onResult: ({ final, interim, startedAt }) => {
+          if (!valid()) return;
+          const accepted = this.onSpeech?.(source, final || interim) !== false;
+          if (final && accepted) this.transcript.append(source, final, startedAt);
+        },
+        onActivity: (active) => {
+          if (valid()) this.onActivity?.(source, active);
         },
         onProcessingChange: ({ pending }) => {
           if (valid()) this.patch(source, { pending });
@@ -121,6 +128,7 @@ export class MeetingController {
     this.generations.set(source, (this.generations.get(source) || 0) + 1);
     const job = this.jobs.get(source);
     this.jobs.delete(source);
+    this.onActivity?.(source, false);
     job?.abort.abort();
     this.transcript.setActive(source, false);
     this.patch(source, { starting: false, listening: false, pending: 0 });
