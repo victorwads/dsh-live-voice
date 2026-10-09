@@ -1,66 +1,35 @@
 # Changelog
 
-**English (primary)** | [Português (Brasil)](CHANGELOG.pt.md)
+All notable changes to DSH Live Voice are documented here. This English changelog is the canonical release history. New features, improvements, and fixes are distinguished according to what each release actually changes.
 
-All notable changes to DSH Live Voice are documented in this file. This English changelog is the canonical release history; the Portuguese version is a translation.
+[Product overview](README.md) · [Visão geral em português](README.pt.md) · [简体中文概览](README.zh-CN.md)
 
-[Product overview](README.md) · [Visão geral em português](README.pt.md)
+## [0.4.1] - Unreleased
 
-## [Next] - Unreleased
+### Improved
 
-### Bug Fixes
+- Extend translations to more interface text, including the Live Voice name, macOS voice guidance, and accessibility labels.
+- Add a voice-name option for the macOS Say engine in Settings. Leave it empty to use the macOS default voice.
 
-- Keep microphone capture and useful interruption active in Ignoring, including with voice commands disabled; discard dictation and question answers without losing silence recovery. Clarify microphone/meeting automatic interruptions versus manual playback controls in every UI language.
+### Fixes
 
-- Apply output and UI preferences without ending active conversations, shared meeting capture, or playback. Serialize only changed microphone/recognition resources, coalesce rapid edits, and respect explicit stop during reconfiguration.
+- Changing settings no longer interrupts active voice conversations, shared meeting capture, or playback. Explicit stops remain respected during reconfiguration.
+- Shared meeting capture stays active when switching chats, and new transcription goes to the current chat.
+- Switching chats no longer causes old answers to play automatically, including history loaded later.
+- Automatically interrupted playback resumes from where it paused after a full quiet interval. Speaking again restarts the wait; manual pauses and stops remain respected.
+- Confirmed meeting participant speech pauses or delays assistant playback in speaker and headphone modes. Echo safeguards reduce interference from the assistant's own audio, but mixed system audio cannot guarantee echo separation.
+- Ignoring discards microphone dictation and spoken question answers without disabling capture, voice interruption, or recovery after silence, even with voice commands disabled.
+- Fix an incorrect voice value passed to macOS Say (`-v`) when switching from Browser speech synthesis, causing macOS Say to use the wrong voice.
+- Fix Browser recognition appearing disabled because another recognition engine is unavailable or in an error state. Browser support is still checked before capture.
 
-- Resume automatically interrupted playback after a full quiet interval, including final-only recognition completion; renewed speech restarts the interval, and explicit pause/cancel invalidates automatic recovery without restarting the audio.
+### Developer notes
 
-- Coordinate shared meeting speech with microphone activity: gate queued playback, pause for confirmed participant speech in Speakers or Headphones mode, and request own-tab/audio exclusion with a transcript echo guard. Mixed system audio cannot guarantee acoustic echo separation.
-
-- Keep shared meeting audio capture active across chat navigation, route new transcription only to the committed composer, and release capture on explicit stop, browser track end, or plugin disposal.
-
-- Prevent automatic speech replaying historical messages after switching chats: baseline the first populated snapshot and suppress late historical backfill while preserving new streamed responses.
-
-### Interface and Accessibility
-
-- Localize the visible Live Voice product name throughout the five non-English interface catalogs and the optional debugger, while preserving package identifiers and the English name. Translate the GitHub star link's accessible label instead of hard-coding English.
-
-### Documentation
-
-- Add Brazilian Portuguese README and changelog translations with reciprocal links; retain English as the canonical release history.
-- Refocus root and package READMEs on voice workflows and meeting use cases, clarify audio-sharing requirements and local-first boundaries, and add discovery keywords in English, Brazilian Portuguese, and Simplified Chinese.
-- Update contributor guidance to keep translations aligned and public documentation benefit-led.
-
-### Validation
-
-- Add DOM regressions for Browser recognition selection and local-processing configuration, localized product names and accessible labels, and debugger translations. Rebuild both client bundles from the current sources.
-- Include the macOS Say settings, retained-playback, diagnostics, and synchronized 0.4.1 package-version changes documented in the 0.4.1 section below.
-
-### Bug Fixes
-
-- Keep Browser speech recognition selectable when Qwen/Whisper is unavailable or on-device recognition is unsupported. Do not use the current recognition engine’s capability to disable the Browser option; allow selecting Browser to adjust local-processing settings while retaining availability checks before capture.
-
-## [0.4.1] - 2026-10-07
-
-### Release Changes
-
-Choose and edit your macOS Say voice directly in Settings. When you change the voice or speech engine, replayed answers now use your current choice instead of an older one. Both plugin packages are versioned together at 0.4.1.
-
-### Configuration Changes
-
-- Show the existing voice preference when macOS say is selected. Edit the exact host voice name or clear the field to use the macOS default voice; preserve saved preferences until explicitly edited.
-- Add localized voice guidance in all six interface languages, including the Terminal command for listing host voices. Commit edits on blur, consistently with other text settings.
-
-### Bug Fixes
-
-- Resolve the current output engine when playing retained speech instead of reusing the engine stored on the previous playback item.
-- Dispose and regenerate prepared audio when the engine, voice, language, rate, or output device changes. Prevent stale preparation completions from replacing newer audio.
-
-### Build and Release Checks
-
-- Add Settings regressions for macOS say HTTP routing, explicit voice edits, clearing the voice, and error reporting without silent browser fallback; add retained-playback regressions for output engine and voice changes.
-- Expose configured and active speech engines and the active host endpoint in the read-only diagnostics without logging speech content.
+- Keep both plugin package versions aligned at 0.4.1.
+- Add DOM regressions for recognition selection, local-processing settings, translations, and accessibility labels; rebuild both client bundles.
+- Add regressions for macOS Say voice editing, clearing, and error reporting without silent browser fallback, plus current-engine and voice selection during replay.
+- Include configured and active speech engines and the active host endpoint in read-only diagnostics without logging speech content.
+- Update public documentation and contributor guidance, including Brazilian Portuguese and Simplified Chinese READMEs and clearer meeting, remote-access, and local-first guidance.
+- Consolidate pending changes under 0.4.1 and remove its premature release date; this version remains unreleased.
 
 ## [0.4.0] - 2026-10-07
 

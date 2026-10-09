@@ -3,10 +3,10 @@
 **English (primary)** | [Português (Brasil)](https://github.com/victorwads/dsh-live-voice/blob/main/README.pt.md)
 
 [![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
-[![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.1--alpha.1-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.1)
+[![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.1--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.2)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
-**Tested and working with DeepSeek Harness v0.2.1-alpha.1.** This is the current tested DSH version, recorded in the `dshTestedVersion` field in [the main package manifest](package.json).
+**Tested and working with DeepSeek Harness v0.2.1-alpha.2.** This is the current tested DSH version, recorded in the `dshTestedVersion` field in [the main package manifest](package.json).
 
 **Talk to your AI assistant, listen to its answers, and bring meeting context into the conversation—without constantly switching back to the keyboard.**
 
