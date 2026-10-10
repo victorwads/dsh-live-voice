@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
 import { checkVersions } from './check-versions.mjs';
+import { stableBundlePaths } from './stable-bundle-paths.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 await checkVersions();
 const metadata = JSON.parse(await readFile(join(root, 'packages/live-voice/package.json'), 'utf8'));
@@ -29,6 +30,7 @@ for (const name of names) {
       outfile: 'lib/client.js',
       format: 'cjs',
       platform: 'browser',
+      plugins: [stableBundlePaths],
       target: ['es2022'],
       external: ['react', 'react-dom'],
       jsx: 'transform',
