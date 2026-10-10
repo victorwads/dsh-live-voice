@@ -29,7 +29,8 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.commons.pluginName': 'Voix en direct',
   'dsh-live-voice.commons.queue': 'file d’attente',
   'dsh-live-voice.commons.repository.starLabel': 'Soutenez-nous avec une étoile sur GitHub',
-  'dsh-live-voice.commons.repository.starLink': 'Attribuer une étoile à DSH Voix en direct sur GitHub',
+  'dsh-live-voice.commons.repository.starLink':
+    'Attribuer une étoile à DSH Voix en direct sur GitHub',
   'dsh-live-voice.commons.second': '1 seconde',
   'dsh-live-voice.commons.seconds': '{seconds} secondes',
   'dsh-live-voice.commons.send': 'ENVOYER',
@@ -37,15 +38,39 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.commons.systemDefault': 'Valeur par défaut du système',
   'dsh-live-voice.commons.toggle.offBadge': 'DÉSACTIVÉ',
   'dsh-live-voice.commons.unknownLanguage': 'langue inconnue',
+  'dsh-live-voice.commons.update.busy':
+    'Arrêtez la capture et la lecture vocales avant la mise à jour.',
+  'dsh-live-voice.commons.update.cancel': 'Annuler',
+  'dsh-live-voice.commons.update.confirm':
+    'Installer Voix en direct {version} dans ce profil DSH ? Le téléchargement nécessite le réseau. Redémarrez DSH ensuite si demandé ; rien ne redémarre automatiquement.',
+  'dsh-live-voice.commons.update.current':
+    'Cette version est déjà installée. Redémarrez DSH pour l’utiliser.',
+  'dsh-live-voice.commons.update.done':
+    'Voix en direct {version} installé. Rechargez la page quand vous le souhaitez.',
+  'dsh-live-voice.commons.update.failed':
+    'Échec de mise à jour. La version n’est peut-être pas encore sur npm. Consultez le gestionnaire de plugins DSH.',
+  'dsh-live-voice.commons.update.installing': 'Mise à jour…',
   'dsh-live-voice.commons.update.label': 'Mise à jour disponible',
   'dsh-live-voice.commons.update.link':
     'Mise à jour disponible : {version}. Ouvrir la page de cette version',
+  'dsh-live-voice.commons.update.local':
+    'Installation locale, Git ou personnalisée. Utilisez la méthode d’installation d’origine.',
+  'dsh-live-voice.commons.update.now': 'Mettre à jour',
+  'dsh-live-voice.commons.update.restart':
+    'Voix en direct {version} installé. Redémarrez DSH quand vous le souhaitez, puis rechargez cette page.',
+  'dsh-live-voice.commons.update.scripts':
+    'Les scripts nécessitent une autorisation. Vérifiez-les dans le gestionnaire DSH ; aucun script n’a été autorisé ici.',
+  'dsh-live-voice.commons.update.unavailable':
+    'Mise à jour indisponible pour ce profil ou cette version de DSH. Utilisez le gestionnaire de plugins.',
+  'dsh-live-voice.commons.update.uncertain':
+    'Résultat d’installation inconnu. Consultez le gestionnaire DSH avant de réessayer.',
   'dsh-live-voice.commons.update.version': 'Mise à jour disponible : {version}',
   'dsh-live-voice.commons.version.compatibility': 'Compatible avec DSH v{version}',
   'dsh-live-voice.commons.version.compatibilityLink':
     'Compatible avec DSH v{version}. Ouvrir la page de cette version',
   'dsh-live-voice.commons.version.label': 'DSH Voix en direct v{version}',
-  'dsh-live-voice.commons.version.link': 'DSH Voix en direct v{version}. Ouvrir la liste des versions',
+  'dsh-live-voice.commons.version.link':
+    'DSH Voix en direct v{version}. Ouvrir la liste des versions',
   'dsh-live-voice.commons.version.title': 'Informations de version',
   'dsh-live-voice.meeting.failed': 'Échec de reconnaissance.',
   'dsh-live-voice.meeting.help':

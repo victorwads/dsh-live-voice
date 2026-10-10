@@ -4,7 +4,15 @@ import { REPOSITORY_URL } from '../services/releases.js';
 import { IconButton } from '../../../shared/design-system/index.js';
 import { useReleaseStatus } from '../hooks/index.js';
 import { VersionBadges } from './VersionBadges.js';
-export function SettingsHeader({ onClose }: { onClose?(): void }) {
+import { PluginUpdateAction } from './PluginUpdateAction.js';
+import type { PluginUpdate } from '../services/pluginUpdate.js';
+export function SettingsHeader({
+  onClose,
+  pluginUpdate,
+}: {
+  onClose?(): void;
+  pluginUpdate?: PluginUpdate;
+}) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: settings } = useLanguage((ctx) => ctx.settings);
   const { latestRelease, updateAvailable } = useReleaseStatus();
@@ -15,6 +23,7 @@ export function SettingsHeader({ onClose }: { onClose?(): void }) {
       <span className="dlv-heading-divider" aria-hidden />
       {updateAvailable && latestRelease ? (
         <>
+          {pluginUpdate && <PluginUpdateAction updater={pluginUpdate} tag={latestRelease.tag} />}
           <a
             className="dlv-version-badge dlv-update-badge"
             href={latestRelease.url}

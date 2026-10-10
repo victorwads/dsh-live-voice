@@ -8,6 +8,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ### Improvements
 
+- Update Live Voice more easily with an explicit **Update now** action and exact-version confirmation in Settings. Use the current profile’s DSH plugin manager, preserve local/custom installations and bundle enablement, require voice capture/playback to be idle at confirmation, and report restart requirements or failures. Never install silently, approve package scripts, retry uncertain operations, reload the page, or restart DSH automatically.
 - Detect new GitHub releases sooner by reducing the update-check cache interval from 24 hours to 3 hours. Checks still run when Live Voice Settings opens, not on a background timer; failed attempts use the same interval.
 
 ### Fixes

@@ -37,9 +37,32 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.commons.systemDefault': 'Predeterminado del sistema',
   'dsh-live-voice.commons.toggle.offBadge': 'DESACTIVADO',
   'dsh-live-voice.commons.unknownLanguage': 'idioma desconocido',
+  'dsh-live-voice.commons.update.busy':
+    'Detén la captura y reproducción de voz antes de actualizar.',
+  'dsh-live-voice.commons.update.cancel': 'Cancelar',
+  'dsh-live-voice.commons.update.confirm':
+    '¿Instalar Voz en vivo {version} en este perfil de DSH? La descarga requiere red. Reinicia DSH después si se solicita; nada se reinicia automáticamente.',
+  'dsh-live-voice.commons.update.current':
+    'Esta versión ya está instalada. Reinicia DSH para usarla.',
+  'dsh-live-voice.commons.update.done':
+    'Voz en vivo {version} instalado. Recarga la página cuando quieras.',
+  'dsh-live-voice.commons.update.failed':
+    'La actualización falló. Puede que la versión aún no esté en npm. Revisa el gestor de plugins de DSH.',
+  'dsh-live-voice.commons.update.installing': 'Actualizando…',
   'dsh-live-voice.commons.update.label': 'Actualización disponible',
   'dsh-live-voice.commons.update.link':
     'Actualización disponible: {version}. Abrir la página de esta versión',
+  'dsh-live-voice.commons.update.local':
+    'Instalación local, Git o personalizada. Actualiza con el método de instalación original.',
+  'dsh-live-voice.commons.update.now': 'Actualizar ahora',
+  'dsh-live-voice.commons.update.restart':
+    'Voz en vivo {version} instalado. Reinicia DSH cuando quieras y luego recarga esta página.',
+  'dsh-live-voice.commons.update.scripts':
+    'Los scripts necesitan aprobación. Revísalos en el gestor de plugins de DSH; aquí no se aprobó ninguno.',
+  'dsh-live-voice.commons.update.unavailable':
+    'Actualización no disponible para este perfil o versión de DSH. Usa el gestor de plugins.',
+  'dsh-live-voice.commons.update.uncertain':
+    'Resultado de instalación desconocido. Revisa el gestor de plugins de DSH antes de reintentar.',
   'dsh-live-voice.commons.update.version': 'Actualización disponible: {version}',
   'dsh-live-voice.commons.version.compatibility': 'Compatible con DSH v{version}',
   'dsh-live-voice.commons.version.compatibilityLink':

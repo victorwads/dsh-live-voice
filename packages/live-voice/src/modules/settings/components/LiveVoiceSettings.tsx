@@ -13,7 +13,15 @@ import {
   subscribeDeveloperExtension,
 } from '../../core/developerExtension.js';
 
-export function LiveVoiceSettings({ controller, onClose }: { controller: any; onClose?(): void }) {
+export function LiveVoiceSettings({
+  controller,
+  onClose,
+  pluginUpdate,
+}: {
+  controller: any;
+  onClose?(): void;
+  pluginUpdate?: import('../services/pluginUpdate.js').PluginUpdate;
+}) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
   const state = useLiveVoiceSettings<any>(controller);
@@ -52,7 +60,7 @@ export function LiveVoiceSettings({ controller, onClose }: { controller: any; on
   };
   return (
     <section className="dlv-settings" aria-label={(settingsLanguage as any).title()}>
-      <SettingsHeader onClose={onClose} />
+      <SettingsHeader onClose={onClose} pluginUpdate={pluginUpdate} />
       <SettingsTabs
         label={(settingsLanguage as any).title()}
         tabs={tabs}
