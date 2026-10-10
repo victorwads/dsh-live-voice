@@ -37,6 +37,8 @@ jobs:
         run: pnpm check:versions
       - name: Run automated tests
         run: pnpm test
+      - name: Verify committed release runtime bundles
+        run: npm run check:dist
       - name: Validate release metadata
         id: release
         env:

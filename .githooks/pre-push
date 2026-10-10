@@ -1,4 +1,6 @@
 #!/bin/sh
 set -eu
 
-npm run check:dist
+# Ordinary development pushes do not require committed release bundles.
+# The publication workflow owns npm run check:dist.
+npm run typecheck
