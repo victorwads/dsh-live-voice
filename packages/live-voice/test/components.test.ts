@@ -63,6 +63,8 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     getSnapshot: () => state,
     meter: { level: () => 0 },
     startConversation: () => calls.push('conversation'),
+    stopConversationInput: () => calls.push('end'),
+    takeMicrophone: () => calls.push('conversation'),
     endConversation: () => calls.push('end'),
     stopSpeech: () => calls.push('stop'),
     skipSpeechSegment: () => calls.push('next'),

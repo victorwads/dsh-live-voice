@@ -236,6 +236,96 @@ test('speaker gating reserves playback and preserves incoming chunk order', asyn
   await f.coordinator.dispose();
 });
 
+for (const mode of ['headphones', 'speaker']) {
+  test('mic mode toggles preserve manual playback and its queue in ' + mode, async () => {
+    const f = fixture({ mode });
+    const c = f.coordinator;
+    const playing = c.speak('First sentence.\nSecond sentence.', 'manual');
+    await turn();
+    const epoch = c.speechEpoch;
+    const stops = f.log.filter((item) => item === 'speech:stop').length;
+    await c.startConversation();
+    assert.equal(c.snapshot.conversation, true);
+    assert.equal(c.snapshot.listening, mode === 'headphones');
+    assert.equal(c.snapshot.speaking, true);
+    assert.equal(c.speechEpoch, epoch);
+    assert.equal(c.snapshot.speechSegmentsRemaining, 2);
+    await c.stopConversationInput();
+    assert.equal(c.snapshot.conversation, false);
+    assert.equal(c.snapshot.listening, false);
+    assert.equal(c.snapshot.speaking, true);
+    assert.equal(c.snapshot.activeMessageId, 'manual');
+    assert.equal(c.speechEpoch, epoch);
+    assert.equal(f.log.filter((item) => item === 'speech:stop').length, stops);
+    f.spoken[0].resolve();
+    await turn();
+    assert.equal(f.spoken[1].text, 'Second sentence.');
+    f.spoken[1].resolve();
+    await playing;
+    await turn();
+    assert.equal(c.snapshot.listening, false, 'closing mic prevents completion from reopening capture');
+    assert.equal(c.snapshot.speechRunActive, false);
+    await c.dispose();
+  });
+}
+
+test('speaker mode defers newly enabled input until manual playback finishes', async () => {
+  const f = fixture({ mode: 'speaker' });
+  const playing = f.coordinator.speak('Answer', 'manual');
+  await turn();
+  await f.coordinator.startConversation();
+  assert.equal(f.sessions.length, 0);
+  f.spoken[0].resolve();
+  await playing;
+  assert.equal(f.coordinator.snapshot.listening, true);
+  await f.coordinator.dispose();
+});
+
+test('paused playback survives mic start and stop without resuming or clearing captions', async () => {
+  const f = fixture({ mode: 'speaker' });
+  const playing = f.coordinator.speak('Answer', 'manual');
+  await turn();
+  await f.coordinator.pauseSpeech();
+  await f.coordinator.startConversation();
+  assert.equal(f.coordinator.snapshot.listening, true);
+  await f.coordinator.stopConversationInput();
+  assert.equal(f.coordinator.snapshot.paused, true);
+  assert.equal(f.coordinator.snapshot.speechText, 'Answer');
+  assert.equal(f.log.includes('resume'), false);
+  await f.coordinator.stopSpeech(false);
+  await playing;
+  await f.coordinator.dispose();
+});
+
+test('explicit microphone takeover still cancels playback before capture', async () => {
+  const f = fixture();
+  const playing = f.coordinator.speak('Answer', 'manual');
+  await turn();
+  await f.coordinator.takeMicrophone();
+  await playing;
+  assert.equal(f.coordinator.snapshot.speaking, false);
+  assert.equal(f.coordinator.snapshot.listening, true);
+  assert.equal(f.coordinator.snapshot.speechRunActive, false);
+  await f.coordinator.dispose();
+});
+
+test('accepted automatic segments finish after mic mode is closed', async () => {
+  const f = fixture({ mode: 'headphones' });
+  await f.coordinator.startConversation();
+  f.coordinator.observeMessage('stream', 'First.\nSecond.\n');
+  await turn();
+  await f.coordinator.stopConversationInput();
+  f.coordinator.observeMessage('stream', 'First.\nSecond.\nNot admitted.', { complete: true });
+  f.spoken[0].resolve();
+  await turn();
+  assert.equal(f.spoken[1].text, 'Second.');
+  f.spoken[1].resolve();
+  await turn();
+  assert.equal(f.spoken.length, 2);
+  assert.equal(f.coordinator.snapshot.listening, false);
+  await f.coordinator.dispose();
+});
+
 test('headphones retain capture during playback', async () => {
   const f = fixture({ mode: 'headphones' });
   await f.coordinator.startConversation();

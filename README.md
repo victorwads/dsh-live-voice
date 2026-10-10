@@ -31,7 +31,7 @@ Interface translated into: 🇺🇸 English · 🇧🇷 Portuguese (Brazil) · �
 
 - **Work by voice:** dictate a request, talk through code or documents, and hear the assistant’s response while staying focused on your work.
 - **Bring your AI assistant into the meeting:** in Google Meet or Teams, share your DSH window with audio so the team can follow along and hear the assistant’s answers. Capture the meeting audio, review and send the relevant context, then ask it to help answer a question, compare proposals with the project code, or summarize decisions—right in the discussion. Sharing the assistant’s playback audio requires separate setup in your meeting app and depends on browser and system support; this is not a native Meet or Teams integration.
-- **Stay in control:** edit before sending, choose manual or automatic microphone delivery, and pause, resume, or stop spoken answers. **Ignoring** discards microphone dictation without closing capture or disabling speech interruption. Automatic interruptions recover after stable silence; manual pauses wait for Resume.
+- **Stay in control:** edit before sending, choose manual or automatic microphone delivery, and pause, resume, or stop spoken answers. **Ignoring** discards microphone dictation without closing capture or disabling speech interruption. Opening or closing the microphone does not cancel spoken answers or close the speech bar. In speaker mode, capture waits for playback unless you explicitly take the microphone. Automatic interruptions recover after stable silence; manual pauses wait for Resume.
 - **Choose your speech setup:** use local recognition and speech engines where supported, or configure an HTTP endpoint. Local-first voice does not mean DSH or its AI provider is fully offline.
 
 ---

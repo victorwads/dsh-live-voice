@@ -297,7 +297,7 @@ export function createConversationComponents(
               <Button
                 label={t('dsh-live-voice.commons.conversation.end')}
                 icon="close"
-                onClick={() => invoke('endConversation')}
+                onClick={() => invoke('stopConversationInput')}
               />
             ) : null}
             {<Waveform controller={controller} enabled={Boolean(state.listening)} />}
@@ -403,7 +403,7 @@ export function createConversationComponents(
               <Button
                 label={t('dsh-live-voice.recognition.microphone.takeControl')}
                 icon="mic"
-                onClick={() => invoke('startConversation')}
+                onClick={() => invoke('takeMicrophone')}
               />
             ) : null}
             {capture ? (

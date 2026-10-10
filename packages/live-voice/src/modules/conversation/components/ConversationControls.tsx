@@ -36,7 +36,7 @@ export function ConversationControls({ controller }: ConversationControlsProps) 
           invoke(
             busy
               ? state.conversation
-                ? 'endConversation'
+                ? 'stopConversationInput'
                 : 'cancelDictation'
               : unavailable
                 ? 'explainRecognition'

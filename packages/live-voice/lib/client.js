@@ -2251,7 +2251,7 @@ function SpeechStatusBar({ controller }) {
     /* @__PURE__ */ import_react24.default.createElement("div", { className: "dlv-caption-stack" }, /* @__PURE__ */ import_react24.default.createElement(
       ScrollingSpeechCaption,
       {
-        text: text || speak.status.playing(),
+        text,
         label: speak.captions.approximate(),
         controller,
         segment: index,
@@ -4228,7 +4228,22 @@ var VoiceCoordinator = class _VoiceCoordinator {
     this.scheduleAutoSend(draft, { force: true, stopAfter: true });
   }
   startConversation() {
+    if (this.disposed) return Promise.resolve();
+    this.patch({ error: null });
+    return this._startInput(true);
+  }
+  takeMicrophone() {
     return this.startListening(true);
+  }
+  async stopConversationInput() {
+    this.patch({ conversation: false });
+    await this.stopListening();
+    if (!this._speechActivity()) {
+      this.assistantSpeechNotBefore = Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1e3;
+      this._cancelAssistantSpeechTimer();
+    }
+    this._handleSpeechInterruption(this._speechActivity());
+    this._drain();
   }
   toggleTimestamps() {
     this.patch({ timestamps: !this.snapshot.timestamps });
@@ -4269,6 +4284,10 @@ var VoiceCoordinator = class _VoiceCoordinator {
         if (this.speechStopError) throw this.speechStopError;
         await this._releaseInput();
         if (!valid()) return;
+        if (this.snapshot.settings.mode === "speaker" && this.snapshot.speaking && !this.snapshot.paused) {
+          this.patch({ starting: false });
+          return;
+        }
         const lang = this.snapshot.settings.recognitionLang;
         this.recognition.lang = lang;
         const capability = await cancellable(
@@ -4346,7 +4365,7 @@ var VoiceCoordinator = class _VoiceCoordinator {
           },
           onError: (error) => {
             if (!valid()) return;
-            const ended = this.endConversation();
+            const ended = this.stopConversationInput();
             this.patch({ error: message(error) });
             void ended;
           }
@@ -4365,7 +4384,6 @@ var VoiceCoordinator = class _VoiceCoordinator {
           error = new AggregateError([error, cleanup], message(error) + "; " + message(cleanup));
         }
         if (valid()) {
-          this.queue = [];
           this.patch({
             starting: false,
             listening: false,
@@ -4951,7 +4969,7 @@ var VoiceCoordinator = class _VoiceCoordinator {
     this.assistantSpeechTimer = null;
   }
   _drain() {
-    if (this.disposed || !this.snapshot.conversation && !this.queue[0]?.manual || !this.snapshot.settings.announceAssistantMessages && !this.queue[0]?.manual || this.snapshot.speaking || this.snapshot.paused || this._speechActivity() || this.snapshot.starting || !this.queue[0]?.manual && (this.snapshot.pendingTranscriptions > 0 || this.snapshot.autoSendAt !== null) || !this.queue.length)
+    if (this.disposed || !this.snapshot.settings.announceAssistantMessages && !this.queue[0]?.manual || this.snapshot.speaking || this.snapshot.paused || this._speechActivity() || this.snapshot.starting || !this.queue[0]?.manual && (this.snapshot.pendingTranscriptions > 0 || this.snapshot.autoSendAt !== null) || !this.queue.length)
       return;
     const wait = this.assistantSpeechNotBefore - Date.now();
     if (wait > 0) {
@@ -5684,7 +5702,7 @@ function ConversationStatusBar({
           {
             label: recognition.microphone.takeControl(),
             icon: sourceIcon,
-            onClick: () => invoke("startConversation")
+            onClick: () => invoke("takeMicrophone")
           }
         ) : null, capture ? /* @__PURE__ */ import_react28.default.createElement(
           ToggleButton,
@@ -8051,7 +8069,7 @@ function ConversationControls({ controller }) {
       disabled: !busy && pending,
       "aria-pressed": Boolean(busy),
       onClick: () => invoke(
-        busy ? state.conversation ? "endConversation" : "cancelDictation" : unavailable ? "explainRecognition" : "startConversation"
+        busy ? state.conversation ? "stopConversationInput" : "cancelDictation" : unavailable ? "explainRecognition" : "startConversation"
       )
     }
   ), /* @__PURE__ */ import_react57.default.createElement(
@@ -8757,22 +8775,29 @@ function apply(ctx) {
       entry.applySettings(next);
       return savePreferences(controller, next);
     };
-    for (const method of ["stopListening", "cancelDictation", "endConversation", "stopSpeech"]) {
+    for (const method of [
+      "stopListening",
+      "cancelDictation",
+      "stopConversationInput",
+      "endConversation",
+      "stopSpeech"
+    ]) {
       const original = controller[method].bind(controller);
       controller[method] = (...args) => {
         entry.request++;
-        if (method === "endConversation" && args[0] !== true) voiceModeActive = false;
+        if (method === "endConversation" && args[0] !== true || method === "stopConversationInput")
+          voiceModeActive = false;
         const result = original(...args);
         Promise.resolve(result).finally(() => publishVoiceContext(entry));
         return result;
       };
     }
-    for (const method of ["startDictation", "startHoldToTalk", "startConversation", "speak"]) {
+    for (const method of ["startDictation", "startHoldToTalk", "startConversation", "takeMicrophone", "speak"]) {
       const original = controller[method].bind(controller);
       controller[method] = (...args) => {
         if (disposed || entry.closed || !entry.refs) return Promise.resolve();
         if (method !== "speak" && !entry.composers.size) return Promise.resolve();
-        if (method === "startConversation") {
+        if (method === "startConversation" || method === "takeMicrophone") {
           refresh(true);
           voiceModeActive = true;
         }

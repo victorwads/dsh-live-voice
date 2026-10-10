@@ -133,7 +133,7 @@ test('conversation controls explain unavailable recognition and hide while busy'
 
 test('conversation controls retain a pressed microphone toggle while busy', async (t) => {
   const busy = controllerFixture({ listening: true, conversation: true });
-  busy.endConversation = () => busy.calls.push('endConversation');
+  busy.stopConversationInput = () => busy.calls.push('stopConversationInput');
   const root = await fixture(
     t,
     <LiveVoiceTranslationProvider>
@@ -144,7 +144,7 @@ test('conversation controls retain a pressed microphone toggle while busy', asyn
   assert.equal(root.querySelector('.dlv-mic').dataset.toggleActive, 'true');
   assert.equal(root.querySelector('.dlv-mic path').getAttribute('d'), iconPaths.mic);
   await act(async () => root.querySelector('.dlv-mic').click());
-  assert.deepEqual(busy.calls, ['endConversation']);
+  assert.deepEqual(busy.calls, ['stopConversationInput']);
 });
 
 test('delivery mode button cycles manual, queue, and steer with accessible state', async (t) => {

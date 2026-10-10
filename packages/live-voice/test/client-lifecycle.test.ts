@@ -1232,3 +1232,21 @@ test('explicit stop during pending input settings change prevents reacquisition'
   });
   assert.deepEqual(restart, []);
 });
+
+test('closing microphone mode preserves playback but disables voice continuity on the next chat', async (t) => {
+  const f = await fixture(t);
+  await f.render(h(f.Buttons, { ...f.props('a'), key: 'a' }));
+  const a = f.controllers[0];
+  await a.startConversation();
+  await act(async () => a.patch({ conversation: true, listening: true, speaking: true, speechText: 'Manual answer', activeMessageId: 'manual' }));
+  const epoch = a.speechEpoch;
+  await act(async () => a.stopConversationInput());
+  assert.equal(a.snapshot.conversation, false);
+  assert.equal(a.snapshot.speaking, true);
+  assert.equal(a.snapshot.speechText, 'Manual answer');
+  assert.equal(a.speechEpoch, epoch);
+  assert.equal(f.calls.some(([name, controller]) => name === 'end' && controller === a), false);
+  await f.render(h(f.Buttons, { ...f.props('b'), key: 'b' }));
+  const b = f.controllers.at(-1);
+  assert.equal(f.calls.some(([name, controller]) => name === 'conversation' && controller === b), false);
+});

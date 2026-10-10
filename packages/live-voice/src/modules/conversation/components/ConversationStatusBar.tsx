@@ -81,7 +81,7 @@ export function ConversationStatusBar({
                 <IconButton
                   label={(recognition as any).microphone.takeControl()}
                   icon={sourceIcon}
-                  onClick={() => invoke('startConversation')}
+                  onClick={() => invoke('takeMicrophone')}
                 />
               ) : null}
               {capture ? (

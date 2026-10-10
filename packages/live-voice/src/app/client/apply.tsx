@@ -478,22 +478,25 @@ export function apply(ctx) {
     };
     // Cancel only this entry's queued acquisition. Global cancellation here would
     // invalidate a newer session while its predecessor is being unmounted.
-    for (const method of ['stopListening', 'cancelDictation', 'endConversation', 'stopSpeech']) {
+    for (const method of [
+      'stopListening', 'cancelDictation', 'stopConversationInput', 'endConversation', 'stopSpeech',
+    ]) {
       const original = controller[method].bind(controller);
       controller[method] = (...args) => {
         entry.request++;
-        if (method === 'endConversation' && args[0] !== true) voiceModeActive = false;
+        if ((method === 'endConversation' && args[0] !== true) || method === 'stopConversationInput')
+          voiceModeActive = false;
         const result = original(...args);
         Promise.resolve(result).finally(() => publishVoiceContext(entry));
         return result;
       };
     }
-    for (const method of ['startDictation', 'startHoldToTalk', 'startConversation', 'speak']) {
+    for (const method of ['startDictation', 'startHoldToTalk', 'startConversation', 'takeMicrophone', 'speak']) {
       const original = controller[method].bind(controller);
       controller[method] = (...args) => {
         if (disposed || entry.closed || !entry.refs) return Promise.resolve();
         if (method !== 'speak' && !entry.composers.size) return Promise.resolve();
-        if (method === 'startConversation') {
+        if (method === 'startConversation' || method === 'takeMicrophone') {
           // Re-entering voice mode must not replay visible history or the portion
           // of a response that streamed while voice mode was off. Consume the
           // current chat snapshot before admitting new assistant text.

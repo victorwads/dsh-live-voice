@@ -233,7 +233,22 @@ export class VoiceCoordinator {
     this.scheduleAutoSend(draft, { force: true, stopAfter: true });
   }
   startConversation() {
+    if (this.disposed) return Promise.resolve();
+    this.patch({ error: null });
+    return this._startInput(true);
+  }
+  takeMicrophone() {
     return this.startListening(true);
+  }
+  async stopConversationInput() {
+    this.patch({ conversation: false });
+    await this.stopListening();
+    if (!this._speechActivity()) {
+      this.assistantSpeechNotBefore = Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
+      this._cancelAssistantSpeechTimer();
+    }
+    this._handleSpeechInterruption(this._speechActivity());
+    this._drain();
   }
   toggleTimestamps() {
     this.patch({ timestamps: !this.snapshot.timestamps });
@@ -277,6 +292,11 @@ export class VoiceCoordinator {
         if (this.speechStopError) throw this.speechStopError;
         await this._releaseInput();
         if (!valid()) return;
+        // Enabling input is not a playback takeover. Speaker capture waits for playback.
+        if (this.snapshot.settings.mode === 'speaker' && this.snapshot.speaking && !this.snapshot.paused) {
+          this.patch({ starting: false });
+          return;
+        }
         const lang = this.snapshot.settings.recognitionLang;
         this.recognition.lang = lang;
         const capability = await cancellable(
@@ -366,7 +386,7 @@ export class VoiceCoordinator {
           },
           onError: (error) => {
             if (!valid()) return;
-            const ended = this.endConversation();
+            const ended = this.stopConversationInput();
             this.patch({ error: message(error) });
             void ended;
           },
@@ -385,7 +405,6 @@ export class VoiceCoordinator {
           error = new AggregateError([error, cleanup], message(error) + '; ' + message(cleanup));
         }
         if (valid()) {
-          this.queue = [];
           this.patch({
             starting: false,
             listening: false,
@@ -1098,7 +1117,6 @@ export class VoiceCoordinator {
   _drain() {
     if (
       this.disposed ||
-      (!this.snapshot.conversation && !this.queue[0]?.manual) ||
       (!this.snapshot.settings.announceAssistantMessages && !this.queue[0]?.manual) ||
       this.snapshot.speaking ||
       this.snapshot.paused ||

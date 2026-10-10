@@ -52,7 +52,7 @@ export function SpeechStatusBar({ controller }: { controller: any }) {
         />
         <div className="dlv-caption-stack">
           <ScrollingSpeechCaption
-            text={text || (speak as any).status.playing()}
+            text={text}
             label={(speak as any).captions.approximate()}
             controller={controller}
             segment={index}

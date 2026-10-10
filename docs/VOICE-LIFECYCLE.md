@@ -26,7 +26,7 @@ Permission requests, engine starts, transcription requests, synthesis requests, 
 
 ## Independent states
 
-Capture, recognition, user speech activity, message delivery, agent generation, synthesis, and playback are related but distinct. Mute is not stop. Pause is not cancel. Stopping speech must not silently stop recognition. Ending the conversation must release all voice resources.
+Capture, recognition, user speech activity, message delivery, agent generation, synthesis, and playback are related but distinct. Mute is not stop. Pause is not cancel. Stopping speech must not silently stop recognition. Opening or closing microphone conversation mode must not cancel playback, clear captions/history/accepted speech queues, or change manual pause state. Speaker-mode input enablement stays gated until playback completes; explicit Take microphone retains the teardown-before-capture handoff. Closing input prevents subsequent automatic assistant chunks from being admitted, but accepted segments finish independently. Full End commands and lifecycle disposal release all voice resources.
 
 ## Turn-taking
 
@@ -44,7 +44,7 @@ Capture, recognition, user speech activity, message delivery, agent generation, 
 | Start input | Acquire current ownership; never inherit stale soft mute or transcript state |
 | Ignoring (soft mute) | Discard dictation and pending question answers from that input only; keep capture, activity, and interruption active regardless of voice-command preference. Enabled commands remain available. Microphone and shared input have independent Ignore state |
 | Resume | Clear only the current session's soft mute |
-| Stop input | Cancel starts, capture, recognition, partial hypotheses, and delivery timers |
+| Stop input / close mic mode | Cancel starts, capture, recognition, partial hypotheses, and delivery timers; preserve playback, pause state, captions, history, and accepted speech segments |
 | End conversation | Stop input and playback, clear queues/timers/transient errors, release ownership |
 | Switch chat with voice mode active | Retire the old composer, cancel its operations, create clean transient state for the new composer |
 | Settings change | Output/UI preferences preserve active playback, queue, and meeting capture; input preferences serialize only microphone/recognition replacement and restore input unless explicitly stopped. Current shared capture uses its start-time recognition settings until explicitly restarted |
@@ -55,7 +55,7 @@ Capture, recognition, user speech activity, message delivery, agent generation, 
 
 Microphone and shared-input bars render the same `ConversationStatusBar`, with independent `VoiceCoordinator` input-policy instances. Shared capture remains application-owned; its policy does not create a second microphone or assistant player. Both leading icons toggle Listening / Ignoring; explicit composer source buttons stop capture. Exact commands, per-source timestamps, delivery modes, countdown/cancellation, and pending-transcription status follow the same policy. Preserve an accepted final’s expected-draft delivery intent while either source is busy, rearm after both are idle, and invalidate on manual edit, cancel, Stop, submit, navigation, or disposal. Idle/pending callbacks cannot create intent from another source’s draft.
 
-The speech bar is separate from the recognition pill, with the same 52px pill geometry and shared buttons. It displays the active speech segment on one clipped line and owns playback pause/resume, next, stop and microphone takeover during speaker gating. Stop clears pending speech and closes the speech bar without ending voice conversation; pause preserves it. The recognition pill retains capture and delivery preferences. The automatic-speech toggle remains available in the composer between shared audio and microphone, even when there is no active playback; it is not duplicated in either bar.
+The speech bar is separate from the recognition pill, with the same 52px pill geometry and shared buttons. It leaves the caption line empty until real segment text exists (never a “Speaking” placeholder), retains the audio-preparation progress indicator, and displays the active speech segment on one clipped line and owns playback pause/resume, next, stop and microphone takeover during speaker gating. Stop clears pending speech and closes the speech bar without ending voice conversation; pause preserves it. The recognition pill retains capture and delivery preferences. The automatic-speech toggle remains available in the composer between shared audio and microphone, even when there is no active playback; it is not duplicated in either bar.
 
 Host-audio captions estimate character position from actual media currentTime/duration. Browser synthesis has no reliable duration, so its fallback estimates 14 characters/second adjusted by rate, starts only on the native start event and excludes paused time. Neither mode claims word alignment. Unknown duration keeps the full segment visible; cancelled/completed operations clear caption state. Session navigation retains the existing lifecycle semantics; this UI change does not implement the future global queue.
 

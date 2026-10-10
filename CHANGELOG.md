@@ -4,7 +4,12 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 [Product overview](README.md) · [Visão geral em português](README.pt.md) · [简体中文概览](README.zh-CN.md)
 
-## [0.4.x] - Next
+## [0.4.2] - Unreleased
+
+### Fixes
+
+- Keep the speech bar, current playback, pause state, captions, and accepted segment queue intact when opening or closing microphone conversation mode, including manual per-turn playback. Speaker mode still defers capture to prevent echo; explicit microphone takeover, Stop speech, End commands, navigation, and disposal retain their cancellation behavior.
+- Leave speech captions empty before the first text segment is available instead of showing “Speaking” as a placeholder. Audio preparation keeps its existing progress indicator.
 
 ## [0.4.1] - 2026-10-09
 
