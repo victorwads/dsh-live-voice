@@ -4,21 +4,31 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 [Product overview](README.md) · [Visão geral em português](README.pt.md) · [简体中文概览](README.zh-CN.md)
 
-## [0.4.2] - Unreleased
+## [0.5.x] - Next
 
-### Improvements
+Upcoming changes will be recorded here.
 
-- Update Live Voice more easily with an explicit **Update now** action and exact-version confirmation in Settings. Use the current profile’s DSH plugin manager, preserve local/custom installations and bundle enablement, require voice capture/playback to be idle at confirmation, and report restart requirements or failures. Never install silently, approve package scripts, retry uncertain operations, reload the page, or restart DSH automatically.
-- Detect new GitHub releases sooner by reducing the update-check cache interval from 24 hours to 3 hours. Checks still run when Live Voice Settings opens, not on a background timer; failed attempts use the same interval.
+## [0.5.0] - 2026-10-10
 
 ### Features
 
-- Add experimental opt-in Silero browser voice detection for Whisper/Qwen microphone and shared audio. Keep the existing energy detector and volume meter as the default, including older saved settings. Share a lazy WASM runtime while isolating each audio source’s recurrent state, resampling and segmentation. Ship versioned model/runtime assets with the plugin; no native VAD installation or external CDN is required. Report failures instead of silently falling back.
+- Update Live Voice more easily with an explicit **Update now** action and exact-version confirmation in Settings. Use the current profile’s DSH plugin manager, preserve local/custom installations and bundle enablement, require voice capture/playback to be idle at confirmation, and report restart requirements or failures. Never install silently, approve package scripts, retry uncertain operations, reload the page, or restart DSH automatically.
+- Extend the optional debugger’s expandable state tree with microphone/shared-audio projections and shared VAD status plus model/WebAssembly file sizes. Keep text hidden by default; do not present page-wide heap estimates as VAD RAM.
+- Add experimental Silero browser voice detection for Whisper/Qwen microphone and shared audio, enabled by default where packaged assets are available. Preserve explicit energy selections as an opt-out and keep the volume meter unchanged. Installations without VAD assets use energy detection. Share a lazy WASM runtime while isolating each audio source’s recurrent state, resampling and segmentation. Ship versioned model/runtime assets with the plugin; no native VAD installation or external CDN is required. Report failures instead of silently falling back.
+
+### Improvements
+
+- Detect new GitHub releases sooner by reducing the update-check cache interval from 24 hours to 3 hours. Checks still run when Live Voice Settings opens, not on a background timer; failed attempts use the same interval.
 
 ### Fixes
 
+- Reduce noise-triggered transcription with Silero speech detection instead of relying only on audio energy. Non-speech sounds such as vehicles, fans, and animals are less likely to trigger recognition and clutter the transcript; this is speech gating, not noise cancellation, and does not guarantee rejection of every background sound.
 - Keep the speech bar, current playback, pause state, captions, and accepted segment queue intact when opening or closing microphone conversation mode, including manual per-turn playback. Speaker mode still defers capture to prevent echo; explicit microphone takeover, Stop speech, End commands, navigation, and disposal retain their cancellation behavior.
 - Leave speech captions empty before the first text segment is available instead of showing “Speaking” as a placeholder. Audio preparation keeps its existing progress indicator.
+
+### Developer notes
+
+- Reserve committed generated runtime bundles for explicitly authorized npm release preparation. Ordinary development and pre-push validation checks source/build/tests without requiring committed bundles to match.
 
 ## [0.4.1] - 2026-10-09
 

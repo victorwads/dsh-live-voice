@@ -43,7 +43,7 @@ export const defaultSettings = Object.freeze({
   recognitionEngine: 'browser',
   recognitionProcessLocally: true,
   recognitionAutoInstall: true,
-  voiceDetectionEngine: 'energy',
+  voiceDetectionEngine: 'silero',
   voiceDetectionPreset: 'short',
   voiceDetectionCustomSilenceMs: 1000,
   recognitionMaxUtteranceSeconds: 60,
@@ -121,7 +121,8 @@ export function normalizeSettings(value) {
       typeof source.recognitionAutoInstall === 'boolean'
         ? source.recognitionAutoInstall
         : defaultSettings.recognitionAutoInstall,
-    voiceDetectionEngine: source.voiceDetectionEngine === 'silero' ? 'silero' : 'energy',
+    voiceDetectionEngine: ['energy', 'silero'].includes(source.voiceDetectionEngine)
+      ? source.voiceDetectionEngine : defaultSettings.voiceDetectionEngine,
     voiceDetectionPreset:
       source.voiceDetectionPreset === 'custom' ||
       Object.hasOwn(voiceDetectionPresets, source.voiceDetectionPreset)

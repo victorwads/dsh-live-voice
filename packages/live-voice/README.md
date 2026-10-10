@@ -54,7 +54,7 @@ Detailed guides for deep-diving into engines and configurations:
 - ⚙️ **[Configuration & Conversation Flow Guide](https://github.com/victorwads/dsh-live-voice/blob/main/docs/CONFIGURATION.md)** — Settings overview, speaker vs. headphone modes, sequence diagrams, silence delays, and external engine setup.
 - 🧠 **[Choosing a Speech Recognition Engine](https://github.com/victorwads/dsh-live-voice/blob/main/docs/CHOOSING-AN-ENGINE.md)** — Comparison between Browser STT, Qwen3 ASR, and Whisper, with RAM footprints and OS compatibility.
 - 📖 **[The Story Behind the Project](HISTORY.md)** — Why this project was built and the human story behind coordinating voice.
-- 🆕 **[Release notes](https://github.com/victorwads/dsh-live-voice/blob/main/CHANGELOG.md)** · [Português (Brasil)](https://github.com/victorwads/dsh-live-voice/blob/main/CHANGELOG.pt.md) — What changed in each version.
+- 🆕 **[Release notes](https://github.com/victorwads/dsh-live-voice/blob/main/CHANGELOG.md)** — What changed in each version.
 
 ---
 

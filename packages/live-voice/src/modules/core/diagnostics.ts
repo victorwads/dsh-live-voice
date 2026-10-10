@@ -85,7 +85,7 @@ export function readCoordinatorDiagnostics(
       configuredDetector:
         state.settings?.recognitionEngine === 'browser'
           ? 'native'
-          : (state.settings?.voiceDetectionEngine ?? 'energy'),
+          : (state.settings?.voiceDetectionEngine ?? 'silero'),
       activeDetector:
         state.settings?.recognitionEngine === 'browser' && state.listening ? 'native' : detector,
       threshold: detector === 'energy' ? 0.012 : null,

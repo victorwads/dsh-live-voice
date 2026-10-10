@@ -41,9 +41,9 @@ function setup(t, available = true) {
   };
 }
 
-test('missing or invalid detector settings show energy without opting in to Silero', async (t) => {
+test('missing or invalid detector settings show Silero without overwriting explicit energy', async (t) => {
   const { render, calls } = setup(t);
-  assert.equal(defaultSettings.voiceDetectionEngine, 'energy');
+  assert.equal(defaultSettings.voiceDetectionEngine, 'silero');
   for (const recognitionEngine of ['whisper-http', 'qwen-http']) {
     const legacySettings = { ...defaultSettings, recognitionEngine };
     delete legacySettings.voiceDetectionEngine;
@@ -57,8 +57,7 @@ test('missing or invalid detector settings show energy without opting in to Sile
     ]) {
       const select = await render(settings);
       assert.ok(select);
-      assert.equal(select.value, 'energy');
-      assert.equal(select.querySelector('option[value="silero"]').selected, false);
+      assert.equal(select.value, settings.voiceDetectionEngine === 'energy' ? 'energy' : 'silero');
       assert.deepEqual(calls, []);
     }
   }
@@ -68,7 +67,7 @@ test('only an explicit detector selection sends the Silero settings patch', asyn
   const { render, calls } = setup(t);
   for (const recognitionEngine of ['whisper-http', 'qwen-http']) {
     calls.length = 0;
-    const select = await render({ ...defaultSettings, recognitionEngine });
+    const select = await render({ ...defaultSettings, recognitionEngine, voiceDetectionEngine: 'energy' });
     assert.equal(select.value, 'energy');
     assert.deepEqual(calls, []);
     await act(async () => {

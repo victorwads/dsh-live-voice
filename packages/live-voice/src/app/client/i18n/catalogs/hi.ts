@@ -168,11 +168,11 @@ const hi: LiveVoiceTranslation = {
     '100 से 10,000 ms तक पूर्णांक दर्ज करें। फ़ील्ड छोड़ने पर सहेजा जाता है। छोटे विराम बोलने को खंडों में बाँट सकते हैं; पहचान में अतिरिक्त समय लगता है।',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'कस्टम विराम (मिलीसेकंड)',
   'dsh-live-voice.recognition.silenceDetection.detector.energy':
-    'ऑडियो ऊर्जा — वर्तमान डिफ़ॉल्ट',
+    'ऑडियो ऊर्जा',
   'dsh-live-voice.recognition.silenceDetection.detector.label':
     'आवाज़ का डिटेक्टर',
   'dsh-live-voice.recognition.silenceDetection.detector.silero':
-    'Silero — प्रयोगात्मक (वैकल्पिक)',
+    'Silero — प्रयोगात्मक (डिफ़ॉल्ट)',
   'dsh-live-voice.recognition.silenceDetection.duration':
     'भेजने से पहले का विराम: {milliseconds} मिलीसेकंड',
   'dsh-live-voice.recognition.silenceDetection.help':

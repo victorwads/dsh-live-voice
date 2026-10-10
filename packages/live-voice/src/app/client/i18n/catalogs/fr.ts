@@ -183,11 +183,11 @@ const fr: LiveVoiceTranslation = {
     'Saisissez un entier de 100 à 10 000 ms. Enregistré en quittant le champ. Les pauses courtes peuvent couper la parole ; la reconnaissance ajoute sa propre latence.',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'Pause personnalisée (millisecondes)',
   'dsh-live-voice.recognition.silenceDetection.detector.energy':
-    'Énergie audio — choix actuel par défaut',
+    'Énergie audio',
   'dsh-live-voice.recognition.silenceDetection.detector.label':
     'Détecteur vocal',
   'dsh-live-voice.recognition.silenceDetection.detector.silero':
-    'Silero — expérimental (activation facultative)',
+    'Silero — expérimental (par défaut)',
   'dsh-live-voice.recognition.silenceDetection.duration': 'Pause avant l’envoi : {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.help':
     'Détermine la durée de pause nécessaire avant que la parole capturée soit envoyée pour reconnaissance.',

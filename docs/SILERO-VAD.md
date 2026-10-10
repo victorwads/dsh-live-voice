@@ -1,6 +1,6 @@
 # Experimental Silero VAD
 
-Energy detection remains the default. Only `voiceDetectionEngine: "silero"` opts into the browser model; unknown or missing persisted values normalize to energy. Browser STT is unchanged. Audio metering remains RMS regardless of the selected detector.
+Silero is the default when packaged assets are available. Explicit `voiceDetectionEngine: "energy"` opts out; unknown or missing persisted values normalize to Silero. Installations without assets use energy. Browser STT is unchanged. Audio metering remains RMS regardless of the selected detector.
 
 ## Ownership and processing
 
@@ -20,4 +20,4 @@ The optional debugger uses the same expandable state tree for all modules. Share
 
 ## Validation
 
-Unit/DOM tests cover opt-in normalization, UI selection, independent source state, bounds, resampling and lifecycle failures. These are not proof of physical microphone accuracy, browser permissions, authenticated DSH deployment or mobile performance. Test actual simultaneous microphone/shared capture before release. Additional isolated participant streams can use the same runtime contract, but acquiring Meet tracks is a separate integration; VAD does not identify speakers or unmix audio.
+Unit/DOM tests cover default/opt-out normalization, UI selection, independent source state, bounds, resampling and lifecycle failures. These are not proof of physical microphone accuracy, browser permissions, authenticated DSH deployment or mobile performance. Test actual simultaneous microphone/shared capture before release. Additional isolated participant streams can use the same runtime contract, but acquiring Meet tracks is a separate integration; VAD does not identify speakers or unmix audio.

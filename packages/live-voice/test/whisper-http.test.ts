@@ -81,7 +81,7 @@ test('Whisper browser engine segments speech and sends authenticated complete ut
     },
   };
   const results = [],
-    engine = new WhisperHttpRecognitionEngine({ globals, meter: { context, source } });
+    engine = new WhisperHttpRecognitionEngine({ voiceDetectionEngine: 'energy', globals, meter: { context, source } });
   assert.equal((await engine.capability()).supported, true);
   await engine.start({ lang: 'pt-BR', onResult: (value) => results.push(value) });
   const emit = (value) =>
@@ -130,7 +130,7 @@ test('Whisper voice detection defaults to short pauses and external presets chan
         return { gain: { value: 1 }, connect() {}, disconnect() {} };
       },
     };
-    const engine = new WhisperHttpRecognitionEngine({
+    const engine = new WhisperHttpRecognitionEngine({ voiceDetectionEngine: 'energy',
       voiceDetectionPreset: preset,
       voiceDetectionCustomSilenceMs: customMs,
       globals: {
@@ -186,7 +186,7 @@ test('Whisper browser engine serializes closed utterances and discards queued wo
       },
     },
     requests = [];
-  const engine = new WhisperHttpRecognitionEngine({
+  const engine = new WhisperHttpRecognitionEngine({ voiceDetectionEngine: 'energy',
     globals: {
       crypto,
       fetch: (_url, options) => {

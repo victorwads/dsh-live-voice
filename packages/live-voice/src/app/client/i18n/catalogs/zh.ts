@@ -158,11 +158,11 @@ const zh: LiveVoiceTranslation = {
     '请输入 100 至 10,000 ms 的整数。离开输入框时保存。短停顿可能切分语音；识别还需要额外时间。',
   'dsh-live-voice.recognition.silenceDetection.customLabel': '自定义停顿（毫秒）',
   'dsh-live-voice.recognition.silenceDetection.detector.energy':
-    '音频能量 — 当前默认选项',
+    '音频能量',
   'dsh-live-voice.recognition.silenceDetection.detector.label':
     '语音检测器',
   'dsh-live-voice.recognition.silenceDetection.detector.silero':
-    'Silero — 实验性（需主动启用）',
+    'Silero — 实验性（默认）',
   'dsh-live-voice.recognition.silenceDetection.duration': '发送前停顿：{milliseconds} 毫秒',
   'dsh-live-voice.recognition.silenceDetection.help':
     '设置停顿持续多久后，将采集的语音发送进行识别。',

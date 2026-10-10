@@ -64,7 +64,7 @@ var defaultSettings = Object.freeze({
   recognitionEngine: "browser",
   recognitionProcessLocally: true,
   recognitionAutoInstall: true,
-  voiceDetectionEngine: "energy",
+  voiceDetectionEngine: "silero",
   voiceDetectionPreset: "short",
   voiceDetectionCustomSilenceMs: 1e3,
   recognitionMaxUtteranceSeconds: 60,
@@ -111,7 +111,7 @@ function normalizeSettings(value) {
     recognitionEngine: ["browser", "whisper-http", "qwen-http"].includes(source.recognitionEngine) ? source.recognitionEngine : defaultSettings.recognitionEngine,
     recognitionProcessLocally: typeof source.recognitionProcessLocally === "boolean" ? source.recognitionProcessLocally : defaultSettings.recognitionProcessLocally,
     recognitionAutoInstall: typeof source.recognitionAutoInstall === "boolean" ? source.recognitionAutoInstall : defaultSettings.recognitionAutoInstall,
-    voiceDetectionEngine: source.voiceDetectionEngine === "silero" ? "silero" : "energy",
+    voiceDetectionEngine: ["energy", "silero"].includes(source.voiceDetectionEngine) ? source.voiceDetectionEngine : defaultSettings.voiceDetectionEngine,
     voiceDetectionPreset: source.voiceDetectionPreset === "custom" || Object.hasOwn(voiceDetectionPresets, source.voiceDetectionPreset) ? source.voiceDetectionPreset : defaultSettings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs: normalizeCustomSilenceMs(source.voiceDetectionCustomSilenceMs),
     recognitionMaxUtteranceSeconds: Number.isInteger(source.recognitionMaxUtteranceSeconds) && source.recognitionMaxUtteranceSeconds >= 10 && source.recognitionMaxUtteranceSeconds <= 300 ? source.recognitionMaxUtteranceSeconds : defaultSettings.recognitionMaxUtteranceSeconds,
@@ -977,7 +977,7 @@ var VAD_ASSET_TYPES = {
 };
 var MAX_VAD_ASSET_BYTES = 32 * 1024 * 1024;
 function registerVadAssetRoutes(ctx, options = {}) {
-  const version = options.version ?? (true ? "0.4.2" : "test");
+  const version = options.version ?? (true ? "0.5.0" : "test");
   if (!/^[a-zA-Z0-9][a-zA-Z0-9.+-]{0,127}$/.test(version))
     throw new Error("Invalid VAD asset version");
   const directory = options.directory ?? fileURLToPath(new URL("./vad/", import.meta.url));

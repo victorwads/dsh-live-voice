@@ -168,11 +168,11 @@ const en: LiveVoiceTranslation = {
     'Enter a whole number from 100 to 10,000 ms. Saved when you leave the field. Short pauses may split speech; recognition adds its own latency.',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'Custom pause (milliseconds)',
   'dsh-live-voice.recognition.silenceDetection.detector.energy':
-    'Audio energy — current default',
+    'Audio energy',
   'dsh-live-voice.recognition.silenceDetection.detector.label':
     'Voice detector',
   'dsh-live-voice.recognition.silenceDetection.detector.silero':
-    'Silero — experimental (opt-in)',
+    'Silero — experimental (default)',
   'dsh-live-voice.recognition.silenceDetection.duration': 'Pause before sending: {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.help':
     'Controls how long a pause must last before captured speech is sent for recognition.',

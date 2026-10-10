@@ -39,7 +39,7 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
       <p>{(recognition as any).silenceDetection.help()}</p>
       <SelectField
         label={(recognition as any).silenceDetection.detector.label()}
-        value={settings.voiceDetectionEngine === 'silero' ? 'silero' : 'energy'}
+        value={settings.voiceDetectionEngine === 'energy' ? 'energy' : defaultSettings.voiceDetectionEngine}
         options={[
           { value: 'energy', label: (recognition as any).silenceDetection.detector.energy() },
           {

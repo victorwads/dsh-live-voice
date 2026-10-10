@@ -124,7 +124,7 @@ test('PCM chunks expose actual HTTP adapter VAD, buffered chunks and queued reco
     createGain: () => ({ gain: {}, connect() {}, disconnect() {} }),
   };
   const meter = { context, source: { connect() {}, disconnect() {} }, level: () => 0.2 };
-  const engine = new WhisperHttpRecognitionEngine({
+  const engine = new WhisperHttpRecognitionEngine({ voiceDetectionEngine: 'energy',
     meter,
     globals: { fetch: () => new Promise(() => {}) },
     voiceDetectionPreset: 'short',

@@ -34,10 +34,10 @@ __export(apply_exports, {
   inject: () => inject
 });
 module.exports = __toCommonJS(apply_exports);
-var import_react59 = __toESM(require("react"), 1);
+var import_react60 = __toESM(require("react"), 1);
 
 // src/modules/recognition/vad/assets.ts
-var sileroVadAssetBase = () => "/api/dsh-live-voice/vad/" + encodeURIComponent(true ? "0.4.2" : "test") + "/";
+var sileroVadAssetBase = () => "/api/dsh-live-voice/vad/" + encodeURIComponent(true ? "0.5.0" : "test") + "/";
 async function sileroVadAvailable(fetchImpl = globalThis.fetch) {
   try {
     const response = await fetchImpl(sileroVadAssetBase() + "availability", {
@@ -409,8 +409,21 @@ var en = {
   "dsh-live-voice.commons.systemDefault": "System default",
   "dsh-live-voice.commons.toggle.offBadge": "OFF",
   "dsh-live-voice.commons.unknownLanguage": "unknown language",
+  "dsh-live-voice.commons.update.busy": "Stop voice capture and playback before updating.",
+  "dsh-live-voice.commons.update.cancel": "Cancel",
+  "dsh-live-voice.commons.update.confirm": "Install Live Voice {version} in this DSH profile? Download requires network access. Restart DSH afterward when requested; nothing restarts automatically.",
+  "dsh-live-voice.commons.update.current": "This version is already installed. Restart DSH to use it.",
+  "dsh-live-voice.commons.update.done": "Live Voice {version} installed. Reload the page when ready.",
+  "dsh-live-voice.commons.update.failed": "Update failed. The release may not be published on npm yet. Check the DSH plugin manager.",
+  "dsh-live-voice.commons.update.installing": "Updating\u2026",
   "dsh-live-voice.commons.update.label": "Update available",
   "dsh-live-voice.commons.update.link": "Update available: {version}. Open release",
+  "dsh-live-voice.commons.update.local": "This is a local, Git or custom installation. Update it using its original installation method.",
+  "dsh-live-voice.commons.update.now": "Update now",
+  "dsh-live-voice.commons.update.restart": "Live Voice {version} installed. Restart DSH when ready, then reload this page.",
+  "dsh-live-voice.commons.update.scripts": "Package scripts need approval. Review them in the DSH plugin manager; no scripts were approved here.",
+  "dsh-live-voice.commons.update.unavailable": "Updates are unavailable for this profile or DSH version. Use the DSH plugin manager.",
+  "dsh-live-voice.commons.update.uncertain": "The installation result is unknown. Check the DSH plugin manager before trying again.",
   "dsh-live-voice.commons.update.version": "Update available: {version}",
   "dsh-live-voice.commons.version.compatibility": "Compatible with DSH v{version}",
   "dsh-live-voice.commons.version.compatibilityLink": "Compatible with DSH v{version}. Open release",
@@ -496,9 +509,9 @@ var en = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "Enter a whole number from 100 to 10,000 ms. Saved when you leave the field. Short pauses may split speech; recognition adds its own latency.",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "Custom pause (milliseconds)",
-  "dsh-live-voice.recognition.silenceDetection.detector.energy": "Audio energy \u2014 current default",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "Audio energy",
   "dsh-live-voice.recognition.silenceDetection.detector.label": "Voice detector",
-  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 experimental (opt-in)",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 experimental (default)",
   "dsh-live-voice.recognition.silenceDetection.duration": "Pause before sending: {milliseconds} ms",
   "dsh-live-voice.recognition.silenceDetection.help": "Controls how long a pause must last before captured speech is sent for recognition.",
   "dsh-live-voice.recognition.silenceDetection.label": "Silence detection",
@@ -673,8 +686,21 @@ var es = {
   "dsh-live-voice.commons.systemDefault": "Predeterminado del sistema",
   "dsh-live-voice.commons.toggle.offBadge": "DESACTIVADO",
   "dsh-live-voice.commons.unknownLanguage": "idioma desconocido",
+  "dsh-live-voice.commons.update.busy": "Det\xE9n la captura y reproducci\xF3n de voz antes de actualizar.",
+  "dsh-live-voice.commons.update.cancel": "Cancelar",
+  "dsh-live-voice.commons.update.confirm": "\xBFInstalar Voz en vivo {version} en este perfil de DSH? La descarga requiere red. Reinicia DSH despu\xE9s si se solicita; nada se reinicia autom\xE1ticamente.",
+  "dsh-live-voice.commons.update.current": "Esta versi\xF3n ya est\xE1 instalada. Reinicia DSH para usarla.",
+  "dsh-live-voice.commons.update.done": "Voz en vivo {version} instalado. Recarga la p\xE1gina cuando quieras.",
+  "dsh-live-voice.commons.update.failed": "La actualizaci\xF3n fall\xF3. Puede que la versi\xF3n a\xFAn no est\xE9 en npm. Revisa el gestor de plugins de DSH.",
+  "dsh-live-voice.commons.update.installing": "Actualizando\u2026",
   "dsh-live-voice.commons.update.label": "Actualizaci\xF3n disponible",
   "dsh-live-voice.commons.update.link": "Actualizaci\xF3n disponible: {version}. Abrir la p\xE1gina de esta versi\xF3n",
+  "dsh-live-voice.commons.update.local": "Instalaci\xF3n local, Git o personalizada. Actualiza con el m\xE9todo de instalaci\xF3n original.",
+  "dsh-live-voice.commons.update.now": "Actualizar ahora",
+  "dsh-live-voice.commons.update.restart": "Voz en vivo {version} instalado. Reinicia DSH cuando quieras y luego recarga esta p\xE1gina.",
+  "dsh-live-voice.commons.update.scripts": "Los scripts necesitan aprobaci\xF3n. Rev\xEDsalos en el gestor de plugins de DSH; aqu\xED no se aprob\xF3 ninguno.",
+  "dsh-live-voice.commons.update.unavailable": "Actualizaci\xF3n no disponible para este perfil o versi\xF3n de DSH. Usa el gestor de plugins.",
+  "dsh-live-voice.commons.update.uncertain": "Resultado de instalaci\xF3n desconocido. Revisa el gestor de plugins de DSH antes de reintentar.",
   "dsh-live-voice.commons.update.version": "Actualizaci\xF3n disponible: {version}",
   "dsh-live-voice.commons.version.compatibility": "Compatible con DSH v{version}",
   "dsh-live-voice.commons.version.compatibilityLink": "Compatible con DSH v{version}. Abrir la p\xE1gina de esta versi\xF3n",
@@ -760,9 +786,9 @@ var es = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "Introduce un n\xFAmero entero de 100 a 10.000 ms. Se guarda al salir del campo. Las pausas cortas pueden dividir el habla; el reconocimiento a\xF1ade su propia latencia.",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "Pausa personalizada (milisegundos)",
-  "dsh-live-voice.recognition.silenceDetection.detector.energy": "Energ\xEDa del audio \u2014 opci\xF3n predeterminada actual",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "Energ\xEDa del audio",
   "dsh-live-voice.recognition.silenceDetection.detector.label": "Detector de voz",
-  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 experimental (activaci\xF3n opcional)",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 experimental (predeterminado)",
   "dsh-live-voice.recognition.silenceDetection.duration": "Pausa antes de enviar: {milliseconds} ms",
   "dsh-live-voice.recognition.silenceDetection.help": "Determina cu\xE1nto debe durar una pausa antes de enviar la voz capturada para su reconocimiento.",
   "dsh-live-voice.recognition.silenceDetection.label": "Detecci\xF3n de silencio",
@@ -937,8 +963,21 @@ var fr = {
   "dsh-live-voice.commons.systemDefault": "Valeur par d\xE9faut du syst\xE8me",
   "dsh-live-voice.commons.toggle.offBadge": "D\xC9SACTIV\xC9",
   "dsh-live-voice.commons.unknownLanguage": "langue inconnue",
+  "dsh-live-voice.commons.update.busy": "Arr\xEAtez la capture et la lecture vocales avant la mise \xE0 jour.",
+  "dsh-live-voice.commons.update.cancel": "Annuler",
+  "dsh-live-voice.commons.update.confirm": "Installer Voix en direct {version} dans ce profil DSH ? Le t\xE9l\xE9chargement n\xE9cessite le r\xE9seau. Red\xE9marrez DSH ensuite si demand\xE9 ; rien ne red\xE9marre automatiquement.",
+  "dsh-live-voice.commons.update.current": "Cette version est d\xE9j\xE0 install\xE9e. Red\xE9marrez DSH pour l\u2019utiliser.",
+  "dsh-live-voice.commons.update.done": "Voix en direct {version} install\xE9. Rechargez la page quand vous le souhaitez.",
+  "dsh-live-voice.commons.update.failed": "\xC9chec de mise \xE0 jour. La version n\u2019est peut-\xEAtre pas encore sur npm. Consultez le gestionnaire de plugins DSH.",
+  "dsh-live-voice.commons.update.installing": "Mise \xE0 jour\u2026",
   "dsh-live-voice.commons.update.label": "Mise \xE0 jour disponible",
   "dsh-live-voice.commons.update.link": "Mise \xE0 jour disponible : {version}. Ouvrir la page de cette version",
+  "dsh-live-voice.commons.update.local": "Installation locale, Git ou personnalis\xE9e. Utilisez la m\xE9thode d\u2019installation d\u2019origine.",
+  "dsh-live-voice.commons.update.now": "Mettre \xE0 jour",
+  "dsh-live-voice.commons.update.restart": "Voix en direct {version} install\xE9. Red\xE9marrez DSH quand vous le souhaitez, puis rechargez cette page.",
+  "dsh-live-voice.commons.update.scripts": "Les scripts n\xE9cessitent une autorisation. V\xE9rifiez-les dans le gestionnaire DSH ; aucun script n\u2019a \xE9t\xE9 autoris\xE9 ici.",
+  "dsh-live-voice.commons.update.unavailable": "Mise \xE0 jour indisponible pour ce profil ou cette version de DSH. Utilisez le gestionnaire de plugins.",
+  "dsh-live-voice.commons.update.uncertain": "R\xE9sultat d\u2019installation inconnu. Consultez le gestionnaire DSH avant de r\xE9essayer.",
   "dsh-live-voice.commons.update.version": "Mise \xE0 jour disponible : {version}",
   "dsh-live-voice.commons.version.compatibility": "Compatible avec DSH v{version}",
   "dsh-live-voice.commons.version.compatibilityLink": "Compatible avec DSH v{version}. Ouvrir la page de cette version",
@@ -1024,9 +1063,9 @@ var fr = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "Saisissez un entier de 100 \xE0 10 000 ms. Enregistr\xE9 en quittant le champ. Les pauses courtes peuvent couper la parole ; la reconnaissance ajoute sa propre latence.",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "Pause personnalis\xE9e (millisecondes)",
-  "dsh-live-voice.recognition.silenceDetection.detector.energy": "\xC9nergie audio \u2014 choix actuel par d\xE9faut",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "\xC9nergie audio",
   "dsh-live-voice.recognition.silenceDetection.detector.label": "D\xE9tecteur vocal",
-  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 exp\xE9rimental (activation facultative)",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 exp\xE9rimental (par d\xE9faut)",
   "dsh-live-voice.recognition.silenceDetection.duration": "Pause avant l\u2019envoi : {milliseconds} ms",
   "dsh-live-voice.recognition.silenceDetection.help": "D\xE9termine la dur\xE9e de pause n\xE9cessaire avant que la parole captur\xE9e soit envoy\xE9e pour reconnaissance.",
   "dsh-live-voice.recognition.silenceDetection.label": "D\xE9tection du silence",
@@ -1201,8 +1240,21 @@ var hi = {
   "dsh-live-voice.commons.systemDefault": "\u0938\u093F\u0938\u094D\u091F\u092E \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F",
   "dsh-live-voice.commons.toggle.offBadge": "\u092C\u0902\u0926",
   "dsh-live-voice.commons.unknownLanguage": "\u0905\u091C\u094D\u091E\u093E\u0924 \u092D\u093E\u0937\u093E",
+  "dsh-live-voice.commons.update.busy": "\u0905\u092A\u0921\u0947\u091F \u0938\u0947 \u092A\u0939\u0932\u0947 \u0935\u0949\u0907\u0938 \u0915\u0948\u092A\u094D\u091A\u0930 \u0914\u0930 \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0930\u094B\u0915\u0947\u0902\u0964",
+  "dsh-live-voice.commons.update.cancel": "\u0930\u0926\u094D\u0926 \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.commons.update.confirm": "\u0907\u0938 DSH \u092A\u094D\u0930\u094B\u092B\u093C\u093E\u0907\u0932 \u092E\u0947\u0902 \u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 {version} \u0907\u0902\u0938\u094D\u091F\u0949\u0932 \u0915\u0930\u0947\u0902? \u0921\u093E\u0909\u0928\u0932\u094B\u0921 \u0915\u0947 \u0932\u093F\u090F \u0928\u0947\u091F\u0935\u0930\u094D\u0915 \u091A\u093E\u0939\u093F\u090F\u0964 \u0905\u0928\u0941\u0930\u094B\u0927 \u0939\u094B\u0928\u0947 \u092A\u0930 \u092C\u093E\u0926 \u092E\u0947\u0902 DSH \u092A\u0941\u0928\u0903 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902; \u0915\u0941\u091B \u092D\u0940 \u0905\u092A\u0928\u0947 \u0906\u092A \u092A\u0941\u0928\u0903 \u0936\u0941\u0930\u0942 \u0928\u0939\u0940\u0902 \u0939\u094B\u0917\u093E\u0964",
+  "dsh-live-voice.commons.update.current": "\u092F\u0939 \u0938\u0902\u0938\u094D\u0915\u0930\u0923 \u092A\u0939\u0932\u0947 \u0938\u0947 \u0907\u0902\u0938\u094D\u091F\u0949\u0932 \u0939\u0948\u0964 \u0909\u092A\u092F\u094B\u0917 \u0915\u0947 \u0932\u093F\u090F DSH \u092A\u0941\u0928\u0903 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.commons.update.done": "\u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 {version} \u0907\u0902\u0938\u094D\u091F\u0949\u0932 \u0939\u094B \u0917\u092F\u093E\u0964 \u0924\u0948\u092F\u093E\u0930 \u0939\u094B\u0928\u0947 \u092A\u0930 \u092A\u0947\u091C \u0930\u0940\u0932\u094B\u0921 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.commons.update.failed": "\u0905\u092A\u0921\u0947\u091F \u0935\u093F\u092B\u0932\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0905\u092D\u0940 npm \u092A\u0930 \u0909\u092A\u0932\u092C\u094D\u0927 \u0928\u0939\u0940\u0902 \u0939\u094B \u0938\u0915\u0924\u0940\u0964 DSH \u092A\u094D\u0932\u0917\u0907\u0928 \u092A\u094D\u0930\u092C\u0902\u0927\u0915 \u0926\u0947\u0916\u0947\u0902\u0964",
+  "dsh-live-voice.commons.update.installing": "\u0905\u092A\u0921\u0947\u091F \u0939\u094B \u0930\u0939\u093E \u0939\u0948\u2026",
   "dsh-live-voice.commons.update.label": "\u0905\u092A\u0921\u0947\u091F \u0909\u092A\u0932\u092C\u094D\u0927 \u0939\u0948",
   "dsh-live-voice.commons.update.link": "\u0905\u092A\u0921\u0947\u091F \u0909\u092A\u0932\u092C\u094D\u0927 \u0939\u0948: {version}\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0916\u094B\u0932\u0947\u0902",
+  "dsh-live-voice.commons.update.local": "\u092F\u0939 \u0938\u094D\u0925\u093E\u0928\u0940\u092F, Git \u092F\u093E \u0915\u0938\u094D\u091F\u092E \u0907\u0902\u0938\u094D\u091F\u0949\u0932\u0947\u0936\u0928 \u0939\u0948\u0964 \u092E\u0942\u0932 \u0907\u0902\u0938\u094D\u091F\u0949\u0932\u0947\u0936\u0928 \u0935\u093F\u0927\u093F \u0938\u0947 \u0905\u092A\u0921\u0947\u091F \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.commons.update.now": "\u0905\u092D\u0940 \u0905\u092A\u0921\u0947\u091F \u0915\u0930\u0947\u0902",
+  "dsh-live-voice.commons.update.restart": "\u0932\u093E\u0907\u0935 \u0935\u0949\u0907\u0938 {version} \u0907\u0902\u0938\u094D\u091F\u0949\u0932 \u0939\u094B \u0917\u092F\u093E\u0964 \u0924\u0948\u092F\u093E\u0930 \u0939\u094B\u0928\u0947 \u092A\u0930 DSH \u092A\u0941\u0928\u0903 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902, \u092B\u093F\u0930 \u092F\u0939 \u092A\u0947\u091C \u0930\u0940\u0932\u094B\u0921 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.commons.update.scripts": "\u092A\u0948\u0915\u0947\u091C \u0938\u094D\u0915\u094D\u0930\u093F\u092A\u094D\u091F \u0915\u094B \u0938\u094D\u0935\u0940\u0915\u0943\u0924\u093F \u091A\u093E\u0939\u093F\u090F\u0964 DSH \u092A\u094D\u0932\u0917\u0907\u0928 \u092A\u094D\u0930\u092C\u0902\u0927\u0915 \u092E\u0947\u0902 \u0938\u092E\u0940\u0915\u094D\u0937\u093E \u0915\u0930\u0947\u0902; \u092F\u0939\u093E\u0901 \u0915\u094B\u0908 \u0938\u094D\u0915\u094D\u0930\u093F\u092A\u094D\u091F \u0938\u094D\u0935\u0940\u0915\u0943\u0924 \u0928\u0939\u0940\u0902 \u0939\u0941\u0908\u0964",
+  "dsh-live-voice.commons.update.unavailable": "\u0907\u0938 \u092A\u094D\u0930\u094B\u092B\u093C\u093E\u0907\u0932 \u092F\u093E DSH \u0938\u0902\u0938\u094D\u0915\u0930\u0923 \u092E\u0947\u0902 \u0905\u092A\u0921\u0947\u091F \u0909\u092A\u0932\u092C\u094D\u0927 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964 DSH \u092A\u094D\u0932\u0917\u0907\u0928 \u092A\u094D\u0930\u092C\u0902\u0927\u0915 \u0909\u092A\u092F\u094B\u0917 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.commons.update.uncertain": "\u0907\u0902\u0938\u094D\u091F\u0949\u0932\u0947\u0936\u0928 \u0915\u093E \u092A\u0930\u093F\u0923\u093E\u092E \u0905\u091C\u094D\u091E\u093E\u0924 \u0939\u0948\u0964 \u0926\u094B\u092C\u093E\u0930\u093E \u092A\u094D\u0930\u092F\u093E\u0938 \u0938\u0947 \u092A\u0939\u0932\u0947 DSH \u092A\u094D\u0932\u0917\u0907\u0928 \u092A\u094D\u0930\u092C\u0902\u0927\u0915 \u0926\u0947\u0916\u0947\u0902\u0964",
   "dsh-live-voice.commons.update.version": "\u0905\u092A\u0921\u0947\u091F \u0909\u092A\u0932\u092C\u094D\u0927 \u0939\u0948: {version}",
   "dsh-live-voice.commons.version.compatibility": "DSH v{version} \u0915\u0947 \u0938\u093E\u0925 \u0938\u0902\u0917\u0924",
   "dsh-live-voice.commons.version.compatibilityLink": "DSH v{version} \u0915\u0947 \u0938\u093E\u0925 \u0938\u0902\u0917\u0924\u0964 \u0930\u093F\u0932\u0940\u091C\u093C \u0916\u094B\u0932\u0947\u0902",
@@ -1288,9 +1340,9 @@ var hi = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "100 \u0938\u0947 10,000 ms \u0924\u0915 \u092A\u0942\u0930\u094D\u0923\u093E\u0902\u0915 \u0926\u0930\u094D\u091C \u0915\u0930\u0947\u0902\u0964 \u092B\u093C\u0940\u0932\u094D\u0921 \u091B\u094B\u0921\u093C\u0928\u0947 \u092A\u0930 \u0938\u0939\u0947\u091C\u093E \u091C\u093E\u0924\u093E \u0939\u0948\u0964 \u091B\u094B\u091F\u0947 \u0935\u093F\u0930\u093E\u092E \u092C\u094B\u0932\u0928\u0947 \u0915\u094B \u0916\u0902\u0921\u094B\u0902 \u092E\u0947\u0902 \u092C\u093E\u0901\u091F \u0938\u0915\u0924\u0947 \u0939\u0948\u0902; \u092A\u0939\u091A\u093E\u0928 \u092E\u0947\u0902 \u0905\u0924\u093F\u0930\u093F\u0915\u094D\u0924 \u0938\u092E\u092F \u0932\u0917\u0924\u093E \u0939\u0948\u0964",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "\u0915\u0938\u094D\u091F\u092E \u0935\u093F\u0930\u093E\u092E (\u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921)",
-  "dsh-live-voice.recognition.silenceDetection.detector.energy": "\u0911\u0921\u093F\u092F\u094B \u090A\u0930\u094D\u091C\u093E \u2014 \u0935\u0930\u094D\u0924\u092E\u093E\u0928 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "\u0911\u0921\u093F\u092F\u094B \u090A\u0930\u094D\u091C\u093E",
   "dsh-live-voice.recognition.silenceDetection.detector.label": "\u0906\u0935\u093E\u091C\u093C \u0915\u093E \u0921\u093F\u091F\u0947\u0915\u094D\u091F\u0930",
-  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 \u092A\u094D\u0930\u092F\u094B\u0917\u093E\u0924\u094D\u092E\u0915 (\u0935\u0948\u0915\u0932\u094D\u092A\u093F\u0915)",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 \u092A\u094D\u0930\u092F\u094B\u0917\u093E\u0924\u094D\u092E\u0915 (\u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F)",
   "dsh-live-voice.recognition.silenceDetection.duration": "\u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0915\u093E \u0935\u093F\u0930\u093E\u092E: {milliseconds} \u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921",
   "dsh-live-voice.recognition.silenceDetection.help": "\u0924\u092F \u0915\u0930\u0924\u093E \u0939\u0948 \u0915\u093F \u0930\u093F\u0915\u0949\u0930\u094D\u0921 \u0915\u0940 \u0917\u0908 \u0906\u0935\u093E\u091C\u093C \u0915\u094B \u092A\u0939\u091A\u093E\u0928 \u0915\u0947 \u0932\u093F\u090F \u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0935\u093F\u0930\u093E\u092E \u0915\u093F\u0924\u0928\u0940 \u0926\u0947\u0930 \u0930\u0939\u0928\u093E \u091A\u093E\u0939\u093F\u090F\u0964",
   "dsh-live-voice.recognition.silenceDetection.label": "\u092E\u094C\u0928 \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u093E",
@@ -1465,8 +1517,21 @@ var ptBR = {
   "dsh-live-voice.commons.systemDefault": "Padr\xE3o do sistema",
   "dsh-live-voice.commons.toggle.offBadge": "DESATIVADO",
   "dsh-live-voice.commons.unknownLanguage": "idioma desconhecido",
+  "dsh-live-voice.commons.update.busy": "Pare a captura de voz e a reprodu\xE7\xE3o antes de atualizar.",
+  "dsh-live-voice.commons.update.cancel": "Cancelar",
+  "dsh-live-voice.commons.update.confirm": "Instalar Voz ao Vivo {version} neste perfil do DSH? O download precisa de rede. Reinicie o DSH depois, se solicitado; nada reinicia automaticamente.",
+  "dsh-live-voice.commons.update.current": "Esta vers\xE3o j\xE1 est\xE1 instalada. Reinicie o DSH para utiliz\xE1-la.",
+  "dsh-live-voice.commons.update.done": "Voz ao Vivo {version} instalado. Recarregue a p\xE1gina quando quiser.",
+  "dsh-live-voice.commons.update.failed": "Falha na atualiza\xE7\xE3o. A vers\xE3o pode ainda n\xE3o estar no npm. Verifique o gerenciador de plugins do DSH.",
+  "dsh-live-voice.commons.update.installing": "Atualizando\u2026",
   "dsh-live-voice.commons.update.label": "Atualiza\xE7\xE3o dispon\xEDvel",
   "dsh-live-voice.commons.update.link": "Atualiza\xE7\xE3o dispon\xEDvel: {version}. Abrir lan\xE7amento",
+  "dsh-live-voice.commons.update.local": "Esta \xE9 uma instala\xE7\xE3o local, Git ou personalizada. Atualize pelo m\xE9todo de instala\xE7\xE3o original.",
+  "dsh-live-voice.commons.update.now": "Atualizar agora",
+  "dsh-live-voice.commons.update.restart": "Voz ao Vivo {version} instalado. Reinicie o DSH quando quiser e depois recarregue esta p\xE1gina.",
+  "dsh-live-voice.commons.update.scripts": "Scripts de pacotes precisam de aprova\xE7\xE3o. Revise no gerenciador de plugins do DSH; nenhum script foi aprovado aqui.",
+  "dsh-live-voice.commons.update.unavailable": "Atualiza\xE7\xE3o indispon\xEDvel neste perfil ou vers\xE3o do DSH. Use o gerenciador de plugins do DSH.",
+  "dsh-live-voice.commons.update.uncertain": "O resultado da instala\xE7\xE3o \xE9 desconhecido. Verifique o gerenciador de plugins do DSH antes de tentar novamente.",
   "dsh-live-voice.commons.update.version": "Atualiza\xE7\xE3o dispon\xEDvel: {version}",
   "dsh-live-voice.commons.version.compatibility": "Compat\xEDvel com DSH v{version}",
   "dsh-live-voice.commons.version.compatibilityLink": "Compat\xEDvel com DSH v{version}. Abrir lan\xE7amento",
@@ -1552,9 +1617,9 @@ var ptBR = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "Insira um n\xFAmero inteiro de 100 a 10.000 ms. Salvo ao sair do campo. Pausas curtas podem dividir a fala; o reconhecimento acrescenta sua pr\xF3pria lat\xEAncia.",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "Pausa personalizada (milissegundos)",
-  "dsh-live-voice.recognition.silenceDetection.detector.energy": "Energia do \xE1udio \u2014 padr\xE3o atual",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "Energia do \xE1udio",
   "dsh-live-voice.recognition.silenceDetection.detector.label": "Detector de voz",
-  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 experimental (ativa\xE7\xE3o opcional)",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 experimental (padr\xE3o)",
   "dsh-live-voice.recognition.silenceDetection.duration": "Pausa antes de enviar: {milliseconds} ms",
   "dsh-live-voice.recognition.silenceDetection.help": "Controla a dura\xE7\xE3o m\xEDnima da pausa antes de enviar a fala capturada para reconhecimento.",
   "dsh-live-voice.recognition.silenceDetection.label": "Detec\xE7\xE3o de sil\xEAncio",
@@ -1729,8 +1794,21 @@ var zh = {
   "dsh-live-voice.commons.systemDefault": "\u7CFB\u7EDF\u9ED8\u8BA4",
   "dsh-live-voice.commons.toggle.offBadge": "\u5173\u95ED",
   "dsh-live-voice.commons.unknownLanguage": "\u672A\u77E5\u8BED\u8A00",
+  "dsh-live-voice.commons.update.busy": "\u66F4\u65B0\u524D\u8BF7\u505C\u6B62\u8BED\u97F3\u91C7\u96C6\u548C\u64AD\u653E\u3002",
+  "dsh-live-voice.commons.update.cancel": "\u53D6\u6D88",
+  "dsh-live-voice.commons.update.confirm": "\u5728\u6B64 DSH \u914D\u7F6E\u4E2D\u5B89\u88C5 \u5B9E\u65F6\u8BED\u97F3 {version}\uFF1F\u4E0B\u8F7D\u9700\u8981\u7F51\u7EDC\u3002\u82E5\u63D0\u793A\uFF0C\u8BF7\u4E4B\u540E\u91CD\u542F DSH\uFF1B\u4E0D\u4F1A\u81EA\u52A8\u91CD\u542F\u3002",
+  "dsh-live-voice.commons.update.current": "\u6B64\u7248\u672C\u5DF2\u5B89\u88C5\u3002\u8BF7\u91CD\u542F DSH \u540E\u4F7F\u7528\u3002",
+  "dsh-live-voice.commons.update.done": "\u5B9E\u65F6\u8BED\u97F3 {version} \u5DF2\u5B89\u88C5\u3002\u51C6\u5907\u597D\u540E\u8BF7\u5237\u65B0\u9875\u9762\u3002",
+  "dsh-live-voice.commons.update.failed": "\u66F4\u65B0\u5931\u8D25\u3002\u8BE5\u7248\u672C\u53EF\u80FD\u5C1A\u672A\u53D1\u5E03\u5230 npm\u3002\u8BF7\u67E5\u770B DSH \u63D2\u4EF6\u7BA1\u7406\u5668\u3002",
+  "dsh-live-voice.commons.update.installing": "\u6B63\u5728\u66F4\u65B0\u2026",
   "dsh-live-voice.commons.update.label": "\u6709\u53EF\u7528\u66F4\u65B0",
   "dsh-live-voice.commons.update.link": "\u6709\u53EF\u7528\u66F4\u65B0\uFF1A{version}\u3002\u6253\u5F00\u53D1\u5E03\u9875\u9762",
+  "dsh-live-voice.commons.update.local": "\u8FD9\u662F\u672C\u5730\u3001Git \u6216\u81EA\u5B9A\u4E49\u5B89\u88C5\u3002\u8BF7\u4F7F\u7528\u539F\u5B89\u88C5\u65B9\u5F0F\u66F4\u65B0\u3002",
+  "dsh-live-voice.commons.update.now": "\u7ACB\u5373\u66F4\u65B0",
+  "dsh-live-voice.commons.update.restart": "\u5B9E\u65F6\u8BED\u97F3 {version} \u5DF2\u5B89\u88C5\u3002\u51C6\u5907\u597D\u540E\u8BF7\u91CD\u542F DSH\uFF0C\u7136\u540E\u5237\u65B0\u6B64\u9875\u9762\u3002",
+  "dsh-live-voice.commons.update.scripts": "\u5305\u811A\u672C\u9700\u8981\u6279\u51C6\u3002\u8BF7\u5728 DSH \u63D2\u4EF6\u7BA1\u7406\u5668\u4E2D\u5BA1\u6838\uFF1B\u6B64\u5904\u672A\u6279\u51C6\u4EFB\u4F55\u811A\u672C\u3002",
+  "dsh-live-voice.commons.update.unavailable": "\u6B64\u914D\u7F6E\u6216 DSH \u7248\u672C\u4E0D\u652F\u6301\u66F4\u65B0\u3002\u8BF7\u4F7F\u7528 DSH \u63D2\u4EF6\u7BA1\u7406\u5668\u3002",
+  "dsh-live-voice.commons.update.uncertain": "\u5B89\u88C5\u7ED3\u679C\u672A\u77E5\u3002\u8BF7\u5148\u67E5\u770B DSH \u63D2\u4EF6\u7BA1\u7406\u5668\uFF0C\u518D\u5C1D\u8BD5\u66F4\u65B0\u3002",
   "dsh-live-voice.commons.update.version": "\u6709\u53EF\u7528\u66F4\u65B0\uFF1A{version}",
   "dsh-live-voice.commons.version.compatibility": "\u517C\u5BB9 DSH v{version}",
   "dsh-live-voice.commons.version.compatibilityLink": "\u517C\u5BB9 DSH v{version}\u3002\u6253\u5F00\u53D1\u5E03\u9875\u9762",
@@ -1816,9 +1894,9 @@ var zh = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "\u8BF7\u8F93\u5165 100 \u81F3 10,000 ms \u7684\u6574\u6570\u3002\u79BB\u5F00\u8F93\u5165\u6846\u65F6\u4FDD\u5B58\u3002\u77ED\u505C\u987F\u53EF\u80FD\u5207\u5206\u8BED\u97F3\uFF1B\u8BC6\u522B\u8FD8\u9700\u8981\u989D\u5916\u65F6\u95F4\u3002",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "\u81EA\u5B9A\u4E49\u505C\u987F\uFF08\u6BEB\u79D2\uFF09",
-  "dsh-live-voice.recognition.silenceDetection.detector.energy": "\u97F3\u9891\u80FD\u91CF \u2014 \u5F53\u524D\u9ED8\u8BA4\u9009\u9879",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "\u97F3\u9891\u80FD\u91CF",
   "dsh-live-voice.recognition.silenceDetection.detector.label": "\u8BED\u97F3\u68C0\u6D4B\u5668",
-  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 \u5B9E\u9A8C\u6027\uFF08\u9700\u4E3B\u52A8\u542F\u7528\uFF09",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 \u5B9E\u9A8C\u6027\uFF08\u9ED8\u8BA4\uFF09",
   "dsh-live-voice.recognition.silenceDetection.duration": "\u53D1\u9001\u524D\u505C\u987F\uFF1A{milliseconds} \u6BEB\u79D2",
   "dsh-live-voice.recognition.silenceDetection.help": "\u8BBE\u7F6E\u505C\u987F\u6301\u7EED\u591A\u4E45\u540E\uFF0C\u5C06\u91C7\u96C6\u7684\u8BED\u97F3\u53D1\u9001\u8FDB\u884C\u8BC6\u522B\u3002",
   "dsh-live-voice.recognition.silenceDetection.label": "\u9759\u97F3\u68C0\u6D4B",
@@ -1976,10 +2054,10 @@ var appDictionaries = Object.freeze({
 // src/app/client/i18n/DshLanguageBoundary.tsx
 var import_react2 = __toESM(require("react"), 1);
 
-// ../../node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
+// node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
 var import_react = require("react");
 
-// ../../node_modules/.pnpm/@wads.dev+i18n-ts@0.0.1-alpha.0_typescript@7.0.2/node_modules/@wads.dev/i18n-ts/dist/runtime/language.js
+// node_modules/.pnpm/@wads.dev+i18n-ts@0.0.1-alpha.0_typescript@7.0.2/node_modules/@wads.dev/i18n-ts/dist/runtime/language.js
 function detectLanguage() {
   if (typeof navigator !== "undefined" && typeof navigator.language === "string")
     return navigator.language;
@@ -2008,7 +2086,7 @@ function deepFreeze(value) {
   return value;
 }
 
-// ../../node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
+// node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
 function createTranslationRuntime({ availableLangs: availableLangs2, defaultLang, onLanguageLoaded }) {
   const context = (0, import_react.createContext)({});
   function useTranslation(selector) {
@@ -2792,7 +2870,7 @@ var defaultSettings = Object.freeze({
   recognitionEngine: "browser",
   recognitionProcessLocally: true,
   recognitionAutoInstall: true,
-  voiceDetectionEngine: "energy",
+  voiceDetectionEngine: "silero",
   voiceDetectionPreset: "short",
   voiceDetectionCustomSilenceMs: 1e3,
   recognitionMaxUtteranceSeconds: 60,
@@ -2840,7 +2918,7 @@ function normalizeSettings(value) {
     recognitionEngine: ["browser", "whisper-http", "qwen-http"].includes(source.recognitionEngine) ? source.recognitionEngine : defaultSettings.recognitionEngine,
     recognitionProcessLocally: typeof source.recognitionProcessLocally === "boolean" ? source.recognitionProcessLocally : defaultSettings.recognitionProcessLocally,
     recognitionAutoInstall: typeof source.recognitionAutoInstall === "boolean" ? source.recognitionAutoInstall : defaultSettings.recognitionAutoInstall,
-    voiceDetectionEngine: source.voiceDetectionEngine === "silero" ? "silero" : "energy",
+    voiceDetectionEngine: ["energy", "silero"].includes(source.voiceDetectionEngine) ? source.voiceDetectionEngine : defaultSettings.voiceDetectionEngine,
     voiceDetectionPreset: source.voiceDetectionPreset === "custom" || Object.hasOwn(voiceDetectionPresets, source.voiceDetectionPreset) ? source.voiceDetectionPreset : defaultSettings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs: normalizeCustomSilenceMs(source.voiceDetectionCustomSilenceMs),
     recognitionMaxUtteranceSeconds: Number.isInteger(source.recognitionMaxUtteranceSeconds) && source.recognitionMaxUtteranceSeconds >= 10 && source.recognitionMaxUtteranceSeconds <= 300 ? source.recognitionMaxUtteranceSeconds : defaultSettings.recognitionMaxUtteranceSeconds,
@@ -2899,7 +2977,7 @@ function normalizeSettings(value) {
   };
 }
 
-// ../../node_modules/.pnpm/marked@18.1.0/node_modules/marked/lib/marked.esm.js
+// node_modules/.pnpm/marked@18.1.0/node_modules/marked/lib/marked.esm.js
 function I() {
   return { async: false, breaks: false, extensions: null, gfm: true, hooks: null, pedantic: false, renderer: null, silent: false, tokenizer: null, walkTokens: null };
 }
@@ -7314,10 +7392,10 @@ var QwenHttpSpeakingEngine = class extends HostAudioSpeakingEngine {
 };
 
 // src/modules/settings/components/createLiveVoiceSettings.tsx
-var import_react54 = __toESM(require("react"), 1);
+var import_react55 = __toESM(require("react"), 1);
 
 // src/modules/settings/components/LiveVoiceSettings.tsx
-var import_react53 = __toESM(require("react"), 1);
+var import_react54 = __toESM(require("react"), 1);
 
 // src/modules/settings/hooks/useAudioDevices.ts
 var import_react31 = __toESM(require("react"), 1);
@@ -7356,7 +7434,7 @@ function createDeviceOptions(devices, kind, systemDefault, fallback) {
 var import_react32 = __toESM(require("react"), 1);
 
 // src/modules/settings/services/releases.ts
-var CURRENT_VERSION = "0.4.2";
+var CURRENT_VERSION = "0.5.0";
 var TESTED_DSH_VERSION = "0.2.1-alpha.2";
 var REPOSITORY_URL = "https://github.com/victorwads/dsh-live-voice";
 var RELEASES_URL = `${REPOSITORY_URL}/releases`;
@@ -7992,7 +8070,7 @@ function SilenceDetectionSettings({ settings, updateSettings }) {
       SelectField,
       {
         label: recognition.silenceDetection.detector.label(),
-        value: settings.voiceDetectionEngine === "silero" ? "silero" : "energy",
+        value: settings.voiceDetectionEngine === "energy" ? "energy" : defaultSettings.voiceDetectionEngine,
         options: [
           { value: "energy", label: recognition.silenceDetection.detector.energy() },
           {
@@ -8290,7 +8368,7 @@ function SpeakSettingsSection(props) {
 }
 
 // src/modules/settings/components/SettingsHeader.tsx
-var import_react52 = __toESM(require("react"), 1);
+var import_react53 = __toESM(require("react"), 1);
 
 // src/modules/settings/components/VersionBadges.tsx
 var import_react51 = __toESM(require("react"), 1);
@@ -8323,12 +8401,80 @@ function VersionBadges() {
   ));
 }
 
+// src/modules/settings/components/PluginUpdateAction.tsx
+var import_react52 = __toESM(require("react"), 1);
+function PluginUpdateAction({ updater, tag }) {
+  const { scoped: commons } = useLanguage((ctx) => ctx.commons);
+  const text = commons.update;
+  const state = import_react52.default.useSyncExternalStore(
+    updater.subscribe,
+    updater.getSnapshot,
+    updater.getSnapshot
+  );
+  const [open, setOpen] = import_react52.default.useState(false);
+  const panelId = import_react52.default.useId();
+  const trigger = import_react52.default.useRef(null);
+  const confirmButton = import_react52.default.useRef(null);
+  import_react52.default.useEffect(() => {
+    if (state.phase === "confirm") confirmButton.current?.focus();
+  }, [state.phase]);
+  const busy = state.phase === "checking" || state.phase === "installing";
+  const settled = ["restart", "done", "uncertain"].includes(state.phase);
+  const expanded = open || busy || settled || state.phase === "confirm";
+  return /* @__PURE__ */ import_react52.default.createElement("span", { className: "dlv-plugin-update" }, /* @__PURE__ */ import_react52.default.createElement(
+    "button",
+    {
+      type: "button",
+      className: "dlv-version-badge dlv-update-badge",
+      ref: trigger,
+      "aria-expanded": expanded,
+      "aria-controls": panelId,
+      disabled: busy || settled,
+      onClick: () => {
+        setOpen(true);
+        void updater.prepare(tag);
+      }
+    },
+    /* @__PURE__ */ import_react52.default.createElement("span", { "aria-hidden": "true" }, "\u21BB "),
+    busy ? text.installing() : text.now()
+  ), expanded && /* @__PURE__ */ import_react52.default.createElement("span", { id: panelId, className: "dlv-plugin-update-panel" }, state.phase === "confirm" ? /* @__PURE__ */ import_react52.default.createElement(import_react52.default.Fragment, null, /* @__PURE__ */ import_react52.default.createElement("span", { id: panelId + "-confirmation" }, text.confirm({ version: state.version })), /* @__PURE__ */ import_react52.default.createElement(
+    "button",
+    {
+      ref: confirmButton,
+      "aria-describedby": panelId + "-confirmation",
+      type: "button",
+      onClick: () => void updater.confirm()
+    },
+    text.now()
+  ), /* @__PURE__ */ import_react52.default.createElement(
+    "button",
+    {
+      type: "button",
+      onClick: () => {
+        updater.cancel();
+        setOpen(false);
+        trigger.current?.focus();
+      }
+    },
+    text.cancel()
+  )) : /* @__PURE__ */ import_react52.default.createElement(
+    "span",
+    {
+      role: state.phase === "failed" || state.phase === "uncertain" ? "alert" : "status"
+    },
+    state.phase === "restart" ? text.restart({ version: state.version }) : state.phase === "done" ? text.done({ version: state.version }) : state.problem ? text[state.problem]() : busy ? text.installing() : null
+  ), state.phase === "failed" && /* @__PURE__ */ import_react52.default.createElement("button", { type: "button", onClick: () => setOpen(false) }, text.cancel())));
+}
+
 // src/modules/settings/components/SettingsHeader.tsx
-function SettingsHeader({ onClose }) {
+function SettingsHeader({
+  onClose,
+  pluginUpdate
+}) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: settings } = useLanguage((ctx) => ctx.settings);
   const { latestRelease, updateAvailable } = useReleaseStatus();
-  return /* @__PURE__ */ import_react52.default.createElement("div", { className: "dlv-settings-heading" }, /* @__PURE__ */ import_react52.default.createElement("h3", null, commons.pluginName()), /* @__PURE__ */ import_react52.default.createElement(VersionBadges, null), /* @__PURE__ */ import_react52.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true }), updateAvailable && latestRelease ? /* @__PURE__ */ import_react52.default.createElement(import_react52.default.Fragment, null, /* @__PURE__ */ import_react52.default.createElement(
+  return /* @__PURE__ */ import_react53.default.createElement("div", { className: "dlv-settings-heading" }, /* @__PURE__ */ import_react53.default.createElement("h3", null, commons.pluginName()), /* @__PURE__ */ import_react53.default.createElement(VersionBadges, null), /* @__PURE__ */ import_react53.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true }), updateAvailable && latestRelease ? /* @__PURE__ */ import_react53.default.createElement(import_react53.default.Fragment, null, pluginUpdate && /* @__PURE__ */ import_react53.default.createElement(PluginUpdateAction, { updater: pluginUpdate, tag: latestRelease.tag }), /* @__PURE__ */ import_react53.default.createElement(
     "a",
     {
       className: "dlv-version-badge dlv-update-badge",
@@ -8338,9 +8484,9 @@ function SettingsHeader({ onClose }) {
       "aria-label": commons.update.link({ version: latestRelease.tag }),
       title: commons.update.version({ version: latestRelease.tag })
     },
-    /* @__PURE__ */ import_react52.default.createElement("span", { className: "dlv-update-icon", "aria-hidden": true }, "\u2191"),
+    /* @__PURE__ */ import_react53.default.createElement("span", { className: "dlv-update-icon", "aria-hidden": true }, "\u2191"),
     commons.update.label()
-  ), /* @__PURE__ */ import_react52.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true })) : null, /* @__PURE__ */ import_react52.default.createElement(
+  ), /* @__PURE__ */ import_react53.default.createElement("span", { className: "dlv-heading-divider", "aria-hidden": true })) : null, /* @__PURE__ */ import_react53.default.createElement(
     "a",
     {
       className: "dlv-version-badge dlv-star-badge",
@@ -8352,7 +8498,7 @@ function SettingsHeader({ onClose }) {
     },
     "\u2605 ",
     commons.repository.starLabel()
-  ), onClose ? /* @__PURE__ */ import_react52.default.createElement(IconButton, { icon: "close", label: settings.close(), onClick: onClose }) : null);
+  ), onClose ? /* @__PURE__ */ import_react53.default.createElement(IconButton, { icon: "close", label: settings.close(), onClick: onClose }) : null);
 }
 
 // src/modules/core/developerExtension.ts
@@ -8368,14 +8514,18 @@ function subscribeDeveloperExtension(listener, target = globalThis.window) {
 }
 
 // src/modules/settings/components/LiveVoiceSettings.tsx
-function LiveVoiceSettings({ controller, onClose }) {
+function LiveVoiceSettings({
+  controller,
+  onClose,
+  pluginUpdate
+}) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
   const state = useConversationController(controller);
   const { invoke, error, clearError } = useConversationActions(controller);
-  const [activeTab, setActiveTab] = import_react53.default.useState("conversation");
-  const tabsId = import_react53.default.useId();
-  const developer = import_react53.default.useSyncExternalStore(
+  const [activeTab, setActiveTab] = import_react54.default.useState("conversation");
+  const tabsId = import_react54.default.useId();
+  const developer = import_react54.default.useSyncExternalStore(
     subscribeDeveloperExtension,
     readDeveloperExtension,
     () => null
@@ -8404,7 +8554,7 @@ function LiveVoiceSettings({ controller, onClose }) {
     invoke,
     updateSettings: (next) => invoke("updateSettings", next)
   };
-  return /* @__PURE__ */ import_react53.default.createElement("section", { className: "dlv-settings", "aria-label": settingsLanguage.title() }, /* @__PURE__ */ import_react53.default.createElement(SettingsHeader, { onClose }), /* @__PURE__ */ import_react53.default.createElement(
+  return /* @__PURE__ */ import_react54.default.createElement("section", { className: "dlv-settings", "aria-label": settingsLanguage.title() }, /* @__PURE__ */ import_react54.default.createElement(SettingsHeader, { onClose, pluginUpdate }), /* @__PURE__ */ import_react54.default.createElement(
     SettingsTabs,
     {
       label: settingsLanguage.title(),
@@ -8413,7 +8563,7 @@ function LiveVoiceSettings({ controller, onClose }) {
       idPrefix: tabsId,
       onChange: setActiveTab
     }
-  ), tabs.map((tab) => /* @__PURE__ */ import_react53.default.createElement(
+  ), tabs.map((tab) => /* @__PURE__ */ import_react54.default.createElement(
     "div",
     {
       key: tab.id,
@@ -8423,8 +8573,8 @@ function LiveVoiceSettings({ controller, onClose }) {
       "aria-labelledby": `${tabsId}-tab-${tab.id}`,
       hidden: selectedTab !== tab.id
     },
-    tab.id === "developer" && Developer ? /* @__PURE__ */ import_react53.default.createElement(Developer, null) : tab.id === "speech" ? /* @__PURE__ */ import_react53.default.createElement(SpeakSettingsSection, { ...sectionProps }) : tab.id === "recognition" ? /* @__PURE__ */ import_react53.default.createElement(RecognitionSettingsSection, { ...sectionProps }) : /* @__PURE__ */ import_react53.default.createElement(ConversationSettingsSection, { ...sectionProps })
-  )), /* @__PURE__ */ import_react53.default.createElement(
+    tab.id === "developer" && Developer ? /* @__PURE__ */ import_react54.default.createElement(Developer, null) : tab.id === "speech" ? /* @__PURE__ */ import_react54.default.createElement(SpeakSettingsSection, { ...sectionProps }) : tab.id === "recognition" ? /* @__PURE__ */ import_react54.default.createElement(RecognitionSettingsSection, { ...sectionProps }) : /* @__PURE__ */ import_react54.default.createElement(ConversationSettingsSection, { ...sectionProps })
+  )), /* @__PURE__ */ import_react54.default.createElement(
     ErrorMessage,
     {
       error: error || state.error,
@@ -8440,8 +8590,12 @@ function LiveVoiceSettings({ controller, onClose }) {
 
 // src/modules/settings/components/createLiveVoiceSettings.tsx
 function createLiveVoiceSettings(..._legacyArguments) {
-  return function SettingsPanel({ controller, onClose }) {
-    return /* @__PURE__ */ import_react54.default.createElement(LiveVoiceSettings, { controller, onClose });
+  return function SettingsPanel({
+    controller,
+    onClose,
+    pluginUpdate
+  }) {
+    return /* @__PURE__ */ import_react55.default.createElement(LiveVoiceSettings, { controller, onClose, pluginUpdate });
   };
 }
 
@@ -8501,13 +8655,13 @@ function createSettingsClient(fetchImpl = globalThis.fetch) {
 }
 
 // src/modules/conversation/components/ConversationControls.tsx
-var import_react57 = __toESM(require("react"), 1);
+var import_react58 = __toESM(require("react"), 1);
 
 // src/modules/conversation/components/MicrophoneButton.tsx
-var import_react55 = __toESM(require("react"), 1);
+var import_react56 = __toESM(require("react"), 1);
 function MicrophoneButton(props) {
   const active = Boolean(props["aria-pressed"]);
-  return /* @__PURE__ */ import_react55.default.createElement(
+  return /* @__PURE__ */ import_react56.default.createElement(
     IconButton,
     {
       ...props,
@@ -8519,7 +8673,7 @@ function MicrophoneButton(props) {
 }
 
 // src/modules/conversation/components/AutoPlaybackToggle.tsx
-var import_react56 = __toESM(require("react"), 1);
+var import_react57 = __toESM(require("react"), 1);
 function AutoPlaybackToggle({ state, invoke, error }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
@@ -8531,7 +8685,7 @@ function AutoPlaybackToggle({ state, invoke, error }) {
   }) : speak.autoPlayback.status({
     state: active ? commons.on() : commons.off()
   });
-  return /* @__PURE__ */ import_react56.default.createElement(
+  return /* @__PURE__ */ import_react57.default.createElement(
     IconButton,
     {
       className: "dlv-composer-toggle",
@@ -8560,7 +8714,7 @@ function ConversationControls({ controller }) {
   const unavailable = capability?.supported === false || capture?.supported === false;
   const reason = capture?.supported === false ? capture.reason : capability?.reason;
   const label = busy ? commons.conversation.end() : pending ? recognition.microphone.checking() : unavailable ? reason || recognition.status.unavailable() : commons.conversation.start();
-  return /* @__PURE__ */ import_react57.default.createElement(import_react57.default.Fragment, null, /* @__PURE__ */ import_react57.default.createElement(AutoPlaybackToggle, { state, invoke, error }), /* @__PURE__ */ import_react57.default.createElement(
+  return /* @__PURE__ */ import_react58.default.createElement(import_react58.default.Fragment, null, /* @__PURE__ */ import_react58.default.createElement(AutoPlaybackToggle, { state, invoke, error }), /* @__PURE__ */ import_react58.default.createElement(
     MicrophoneButton,
     {
       label,
@@ -8570,7 +8724,7 @@ function ConversationControls({ controller }) {
         busy ? state.conversation ? "stopConversationInput" : "cancelDictation" : unavailable ? "explainRecognition" : "startConversation"
       )
     }
-  ), /* @__PURE__ */ import_react57.default.createElement(
+  ), /* @__PURE__ */ import_react58.default.createElement(
     ErrorMessage,
     {
       error,
@@ -8582,7 +8736,7 @@ function ConversationControls({ controller }) {
 }
 
 // src/modules/conversation/components/SpeakButton.tsx
-var import_react58 = __toESM(require("react"), 1);
+var import_react59 = __toESM(require("react"), 1);
 function SpeakButton({
   active = false,
   disabled = false,
@@ -8591,7 +8745,7 @@ function SpeakButton({
 }) {
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const resolvedLabel = label ?? (active ? speak.playback.stop() : speak.playback.message());
-  return /* @__PURE__ */ import_react58.default.createElement(
+  return /* @__PURE__ */ import_react59.default.createElement(
     IconButton,
     {
       className: "dlv-speaker",
@@ -8742,7 +8896,8 @@ var styles = `
 .dlv-error{color:var(--dsw-alias-state-error-primary);overflow-wrap:anywhere;font-size:13px;max-width:720px;margin:8px auto}
 .dlv-settings{box-sizing:border-box;padding:18px;width:100%;display:grid;gap:16px;max-width:640px;color:var(--dsw-alias-label-primary)}
 .dlv-settings h3,.dlv-settings p{margin:0}
-.dlv-settings-heading{display:flex;align-items:center;gap:8px;min-width:0}.dlv-settings-heading h3{white-space:nowrap}.dlv-heading-divider{height:1px;min-width:12px;flex:1;background:var(--dsw-alias-border-l1)}.dlv-settings-heading .dlv-star-badge{flex:none}
+.dlv-settings-heading{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
+.dlv-plugin-update{display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.dlv-plugin-update-panel{display:flex;flex-wrap:wrap;align-items:center;gap:8px;width:100%;padding:10px;border:1px solid var(--dsw-alias-border-l1);border-radius:8px;font-size:12px;overflow-wrap:anywhere}.dlv-plugin-update button{cursor:pointer;font:inherit}.dlv-plugin-update button:disabled{opacity:.6;cursor:default}.dlv-plugin-update button:focus-visible{outline:2px solid var(--dsw-alias-label-primary);outline-offset:3px}.dlv-settings-heading h3{white-space:nowrap}.dlv-heading-divider{height:1px;min-width:12px;flex:1;background:var(--dsw-alias-border-l1)}.dlv-settings-heading .dlv-star-badge{flex:none}
 .dlv-version-badges{display:flex;flex:none;gap:5px;align-items:center}.dlv-shields-badge{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;height:20px;gap:4px;padding:3px 5px;border:1px solid var(--dsw-alias-border-l1);border-radius:5px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);font-size:10px;font-weight:650;line-height:12px;text-decoration:none}.dlv-shields-badge img{display:block;width:12px;height:12px;max-width:100%}.dlv-shields-badge:focus-visible{border-radius:4px;outline:2px solid var(--dsw-alias-label-primary);outline-offset:3px}.dlv-version-badge{display:inline-flex;align-items:center;min-height:24px;box-sizing:border-box;padding:3px 8px;border:1px solid var(--dsw-alias-border-l1);border-radius:999px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);font-size:11px;font-weight:650;line-height:16px;text-decoration:none}.dlv-version-badges a.dlv-version-badge:hover{border-color:var(--dsw-alias-border-l2);color:var(--dsw-alias-label-primary)}.dlv-star-badge{padding:4px 10px;color:var(--dsw-alias-label-primary)}.dlv-update-icon{margin-right:4px;font-size:14px;line-height:1}.dlv-star-icon{margin-right:4px;color:#f59e0b;font-size:14px;line-height:1;text-shadow:0 0 8px rgba(245,158,11,.28)}.dlv-version-badges a.dlv-star-badge:hover{border-color:#f59e0b;background:rgba(245,158,11,.08)}.dlv-update-badge{border-color:var(--dsw-alias-state-business-primary);color:var(--dsw-alias-state-business-primary)}
 .dlv-settings-tabs{border-bottom:.5px solid var(--dsw-alias-border-l2);display:flex;align-items:flex-end;gap:22px;overflow-x:auto}.dlv-settings-tab{position:relative;display:inline-flex;align-items:center;gap:6px;flex:none;padding:7px 1px 9px;border:0;background:transparent;color:var(--dsw-alias-label-tertiary);font:inherit;font-size:16px;font-weight:600;line-height:22px;cursor:pointer}.dlv-settings-tab-icon{width:17px;height:17px;flex:none}.dlv-settings-tab:hover,.dlv-settings-tab[data-active=true]{color:var(--dsw-alias-label-primary)}.dlv-settings-tab[data-active=true]:after,.dlv-settings-tab:focus-visible:after{content:"";position:absolute;right:0;bottom:-1px;left:0;height:2px;border-radius:2px 2px 0 0;background:var(--dsw-alias-label-primary)}.dlv-settings-tab:focus-visible{border-radius:2px;outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:2px;color:var(--dsw-alias-label-primary)}.dlv-settings-panel{min-width:0;padding-top:2px}.dlv-settings-panel[hidden]{display:none}.dlv-settings-group{margin:0;border:1px solid var(--dsw-alias-border-l1);border-radius:10px;min-width:0;display:grid;gap:14px;padding:16px}.dlv-settings-group legend{padding:0 6px;font-weight:600;color:var(--dsw-alias-label-primary)}.dlv-settings-card-body{display:grid;gap:18px;padding:8px 0 12px}.dlv-settings-subcard{min-width:0;margin:8px 0 0}.dlv-settings-subcard>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:9px;padding:10px 12px;border-bottom:1px solid var(--dsw-alias-border-l1);border-radius:6px 6px 0 0;background:color-mix(in srgb,var(--dsw-alias-bg-layer-2) 38%,transparent);color:var(--dsw-alias-label-secondary);font-size:14px;font-weight:500;line-height:20px}.dlv-settings-subcard>summary::-webkit-details-marker{display:none}.dlv-settings-subcard>summary:focus-visible{outline:2px solid var(--dsw-alias-label-primary);outline-offset:3px}.dlv-settings-subcard-icon{width:16px;height:16px;flex:none}.dlv-settings-subcard-chevron{width:16px;height:16px;margin-left:auto;flex:none;transition:transform .15s}.dlv-settings-subcard[open]>summary .dlv-settings-subcard-chevron{transform:rotate(180deg)}.dlv-settings-subcard-body{display:grid;gap:16px;padding:18px 0 6px}
 .dlv-settings label{display:grid;gap:6px;font-size:14px}.dlv-settings label.dlv-check{display:flex;align-items:center;gap:8px}.dlv-settings label.dlv-check input{width:auto}
@@ -8752,6 +8907,90 @@ var styles = `
 .dlv-settings-actions{display:flex;flex-wrap:wrap;gap:8px}.dlv-settings-actions button{padding:8px 12px;border:1px solid var(--dsw-alias-border-l2);border-radius:8px;background:var(--dsw-alias-bg-layer-1);color:inherit;cursor:pointer}.dlv-settings-actions button:disabled{opacity:.45;cursor:default}
 @media(max-width:480px){.dlv-settings-heading{gap:6px}.dlv-heading-divider{min-width:4px}.dlv-settings-heading .dlv-star-badge{padding:3px 6px;font-size:10px}.dlv-preset-group{grid-template-columns:1fr}.dlv-pill{flex-wrap:wrap}.dlv-wave{flex-basis:90px}.dlv-status{flex-basis:100px}}
 `;
+
+// src/modules/settings/services/pluginUpdate.ts
+function createPluginUpdate({
+  manager,
+  isBusy = () => false
+}) {
+  let state = { phase: "idle", version: "" };
+  let enabled = true;
+  const listeners = /* @__PURE__ */ new Set();
+  const patch = (next) => {
+    state = next;
+    for (const listener of listeners) listener();
+  };
+  const fail = (problem) => patch({ ...state, phase: "failed", problem });
+  const locked = () => ["checking", "installing", "restart", "done", "uncertain"].includes(state.phase);
+  async function eligible(api) {
+    if (!api || typeof api.listBundles !== "function" || typeof api.installBundle !== "function")
+      return "unavailable";
+    const result = await api.listBundles();
+    if (!result?.ok || !Array.isArray(result.value)) return "unavailable";
+    const bundle = result.value.find((item) => item.name === "dsh-live-voice");
+    if (!bundle?.installed || bundle.readOnlyReason || bundle.availability !== "profile")
+      return "unavailable";
+    if (typeof bundle.source !== "string" || !/^dsh-live-voice@(?:\^|~)?v?\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(bundle.source))
+      return "local";
+    enabled = bundle.enabled;
+    if (compareVersions(bundle.version || CURRENT_VERSION, state.version) >= 0) return "current";
+    return null;
+  }
+  return {
+    getSnapshot: () => state,
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+    async prepare(tag) {
+      if (locked()) return;
+      const version = tag.replace(/^v/, "");
+      if (!/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$/.test(version) || compareVersions(version, CURRENT_VERSION) <= 0)
+        return;
+      patch({ phase: "checking", version });
+      try {
+        if (isBusy()) return fail("busy");
+        const problem = await eligible(manager());
+        if (problem) return fail(problem);
+        patch({ phase: "confirm", version });
+      } catch {
+        fail("unavailable");
+      }
+    },
+    cancel() {
+      if (state.phase === "confirm") patch({ phase: "idle", version: "" });
+    },
+    async confirm() {
+      if (state.phase !== "confirm") return;
+      patch({ ...state, phase: "checking" });
+      try {
+        if (isBusy()) return fail("busy");
+        const api = manager();
+        const problem = await eligible(api);
+        if (problem) return fail(problem);
+        if (isBusy()) return fail("busy");
+        patch({ ...state, phase: "installing" });
+        const result = await api.installBundle("dsh-live-voice@" + state.version, {
+          enabled,
+          saveExact: true
+        });
+        if (!result?.ok) return patch({ ...state, phase: "uncertain", problem: "uncertain" });
+        const value = result.value;
+        if (value.application === "failed" || value.application === "cancelled")
+          return fail(value.pendingBuilds?.length ? "scripts" : "failed");
+        if (value.bundle !== "dsh-live-voice" || value.version !== state.version || !["applied", "restart-required"].includes(value.application))
+          return patch({ ...state, phase: "uncertain", problem: "uncertain" });
+        patch({ ...state, phase: value.application === "restart-required" ? "restart" : "done" });
+      } catch {
+        if (state.phase === "installing")
+          patch({ ...state, phase: "uncertain", problem: "uncertain" });
+        else fail("unavailable");
+      }
+    }
+  };
+}
 
 // src/modules/core/diagnostics.ts
 var DIAGNOSTIC_KEY = /* @__PURE__ */ Symbol.for("dsh-live-voice.diagnostics.v1");
@@ -8818,7 +9057,7 @@ function readCoordinatorDiagnostics(controller, includeContent = false) {
     vad: {
       source: state.settings?.recognitionEngine === "browser" ? "native" : "plugin",
       activity: Boolean(state.recognizing),
-      configuredDetector: state.settings?.recognitionEngine === "browser" ? "native" : state.settings?.voiceDetectionEngine ?? "energy",
+      configuredDetector: state.settings?.recognitionEngine === "browser" ? "native" : state.settings?.voiceDetectionEngine ?? "silero",
       activeDetector: state.settings?.recognitionEngine === "browser" && state.listening ? "native" : detector,
       threshold: detector === "energy" ? 0.012 : null,
       positiveSpeechThreshold: detector === "silero" ? 0.5 : null,
@@ -8934,6 +9173,24 @@ function apply(ctx) {
     createSource: (source, settings) => {
       const meter = source === "shared" ? new SharedAudioMeter() : new MicrophoneMeter();
       return { meter, engine: recognitionFor(settings, meter) };
+    }
+  });
+  let updateManager;
+  if (typeof ctx.inject === "function") ctx.inject(["remote", "remote.pluginManager"], (remoteCtx) => {
+    updateManager = remoteCtx.remote.pluginManager;
+    remoteCtx.effect(() => () => {
+      updateManager = void 0;
+    }, "dsh-live-voice: release update manager");
+  });
+  const pluginUpdate = createPluginUpdate({
+    manager: () => updateManager,
+    isBusy: () => {
+      const m = meeting.getSnapshot();
+      if (disposed || voiceModeActive || retiring.size || m.active || m.shared.starting || m.shared.pending || m.microphone.starting || m.microphone.pending) return true;
+      return [...controllers.values()].some((entry) => {
+        const s = entry.controller.getSnapshot();
+        return s.starting || s.listening || s.recognizing || s.pendingTranscriptions || s.speaking || s.autoSendPending || s.speechBarVisible;
+      });
     }
   });
   const unsubscribeMeetingDelivery = meeting.subscribe(
@@ -9402,8 +9659,8 @@ function apply(ctx) {
     return entry;
   }
   function useEntry(sessionId, kind) {
-    const [entry, setEntry] = import_react59.default.useState(null);
-    import_react59.default.useLayoutEffect(() => {
+    const [entry, setEntry] = import_react60.default.useState(null);
+    import_react60.default.useLayoutEffect(() => {
       if (disposed) return;
       const current = get(sessionId);
       current.refs++;
@@ -9423,8 +9680,8 @@ function apply(ctx) {
   function useComposer(entry, props) {
     const subscribedInput = props.useInput?.((value) => value);
     const input = subscribedInput ?? props.input;
-    const token = import_react59.default.useRef({});
-    import_react59.default.useLayoutEffect(() => {
+    const token = import_react60.default.useRef({});
+    import_react60.default.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed) return;
       return () => {
         entry.composers.delete(token.current);
@@ -9435,7 +9692,7 @@ function apply(ctx) {
         }
       };
     }, [entry]);
-    import_react59.default.useLayoutEffect(() => {
+    import_react60.default.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed) return;
       if (!input || typeof props.inputActions?.setDraft !== "function") return;
       if (meetingEntry !== entry) {
@@ -9471,7 +9728,7 @@ function apply(ctx) {
       if (voiceModeActive && !entry.controller.getSnapshot().conversation)
         run(entry.controller, entry.controller.startConversation());
     }, [entry, input, props.inputActions]);
-    import_react59.default.useLayoutEffect(() => {
+    import_react60.default.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed || !input) return;
       const published = typeof input.draft === "string" ? input.draft : "";
       entry.publishedDraft = published;
@@ -9490,7 +9747,7 @@ function apply(ctx) {
   function Buttons(props) {
     const entry = useEntry(props.sessionId, "buttons");
     useComposer(entry, props);
-    return entry ? /* @__PURE__ */ import_react59.default.createElement("div", { className: "dlv-composer-toggles" }, /* @__PURE__ */ import_react59.default.createElement(
+    return entry ? /* @__PURE__ */ import_react60.default.createElement("div", { className: "dlv-composer-toggles" }, /* @__PURE__ */ import_react60.default.createElement(
       MeetingToggle,
       {
         meeting: entry.meeting,
@@ -9500,11 +9757,11 @@ function apply(ctx) {
           else entry.startMeetingSource("shared");
         }
       }
-    ), /* @__PURE__ */ import_react59.default.createElement(ConversationControls, { controller: entry.controller })) : null;
+    ), /* @__PURE__ */ import_react60.default.createElement(ConversationControls, { controller: entry.controller })) : null;
   }
   function Settings() {
-    const [controller, setController] = import_react59.default.useState(null);
-    import_react59.default.useEffect(() => {
+    const [controller, setController] = import_react60.default.useState(null);
+    import_react60.default.useEffect(() => {
       const settings = preferences.getSnapshot();
       const browser = new BrowserSpeakingEngine({ lang: settings.lang });
       const qwen = new QwenHttpSpeakingEngine({ lang: settings.lang });
@@ -9574,21 +9831,21 @@ function apply(ctx) {
         void c.dispose();
       };
     }, []);
-    return controller ? /* @__PURE__ */ import_react59.default.createElement(SettingsPanel, { controller }) : null;
+    return controller ? /* @__PURE__ */ import_react60.default.createElement(SettingsPanel, { controller, pluginUpdate }) : null;
   }
   registerSettingsSlot(ctx, Settings, () => t("dsh-live-voice.commons.pluginName"));
   function Dock(props) {
     const entry = useEntry(props.sessionId, "dock");
     useComposer(entry, props);
-    return entry ? /* @__PURE__ */ import_react59.default.createElement("div", { className: "dlv-bar-stack" }, /* @__PURE__ */ import_react59.default.createElement(SpeechStatusBar, { controller: entry.controller }), /* @__PURE__ */ import_react59.default.createElement(MeetingBars, { meeting: entry.meeting }), /* @__PURE__ */ import_react59.default.createElement(ConversationStatusBar, { controller: entry.controller, includeSpeech: false })) : null;
+    return entry ? /* @__PURE__ */ import_react60.default.createElement("div", { className: "dlv-bar-stack" }, /* @__PURE__ */ import_react60.default.createElement(SpeechStatusBar, { controller: entry.controller }), /* @__PURE__ */ import_react60.default.createElement(MeetingBars, { meeting: entry.meeting }), /* @__PURE__ */ import_react60.default.createElement(ConversationStatusBar, { controller: entry.controller, includeSpeech: false })) : null;
   }
   function QuestionStatusView({ entry }) {
-    const snapshot = import_react59.default.useSyncExternalStore(
+    const snapshot = import_react60.default.useSyncExternalStore(
       entry.controller.subscribe,
       entry.controller.getSnapshot
     );
-    const [overlayStyle, setOverlayStyle] = import_react59.default.useState();
-    import_react59.default.useLayoutEffect(() => {
+    const [overlayStyle, setOverlayStyle] = import_react60.default.useState();
+    import_react60.default.useLayoutEffect(() => {
       if (!snapshot.answeringQuestion) return;
       const seat = document.querySelector("[data-composer-seat]");
       if (!seat) return;
@@ -9610,7 +9867,7 @@ function apply(ctx) {
     }, [snapshot.answeringQuestion]);
     const target = typeof document === "undefined" ? null : document.body;
     return snapshot.answeringQuestion && target && overlayStyle ? (0, import_react_dom.createPortal)(
-      /* @__PURE__ */ import_react59.default.createElement(
+      /* @__PURE__ */ import_react60.default.createElement(
         ConversationStatusBar,
         {
           controller: entry.controller,
@@ -9624,19 +9881,19 @@ function apply(ctx) {
   }
   function QuestionStatus(props) {
     const entry = useEntry(props.sessionId, "question-status");
-    return entry ? /* @__PURE__ */ import_react59.default.createElement(QuestionStatusView, { entry }) : null;
+    return entry ? /* @__PURE__ */ import_react60.default.createElement(QuestionStatusView, { entry }) : null;
   }
   function ActionView({ entry, messageId }) {
-    const snapshot = import_react59.default.useSyncExternalStore(
+    const snapshot = import_react60.default.useSyncExternalStore(
       entry.controller.subscribe,
       entry.controller.getSnapshot
     );
-    const chat = import_react59.default.useSyncExternalStore(entry.subscribeChat, entry.readChat);
+    const chat = import_react60.default.useSyncExternalStore(entry.subscribeChat, entry.readChat);
     const message2 = addressedTurn(assistantMessages(chat), messageId);
     const capability = snapshot.capabilities[snapshot.settings.engine];
     const active = snapshot.speaking && message2.id === snapshot.activeMessageId;
     const unavailable = capability?.supported !== true;
-    return /* @__PURE__ */ import_react59.default.createElement(
+    return /* @__PURE__ */ import_react60.default.createElement(
       SpeakButton,
       {
         active,
@@ -9651,7 +9908,7 @@ function apply(ctx) {
   }
   function Action(props) {
     const entry = useEntry(props.sessionId, "action");
-    return entry ? /* @__PURE__ */ import_react59.default.createElement(ActionView, { entry, messageId: props.messageId }) : null;
+    return entry ? /* @__PURE__ */ import_react60.default.createElement(ActionView, { entry, messageId: props.messageId }) : null;
   }
   ctx.effect(() => {
     const style = document.createElement("style");
