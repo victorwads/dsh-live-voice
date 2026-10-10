@@ -28,7 +28,8 @@ test('compares release tags including prereleases', () => {
   assert.equal(hasNewerRelease({ tag: 'v0.2.2' }, '0.2.2'), false);
 });
 
-test('checks GitHub at most once in 24 hours and refreshes after expiry', async () => {
+test('checks GitHub at most once in 3 hours and refreshes after expiry', async () => {
+  assert.equal(RELEASE_CHECK_INTERVAL_MS, 3 * 60 * 60 * 1000);
   const storage = memoryStorage();
   const calls = [];
   const fetchImpl = async (url, options) => {
@@ -39,7 +40,9 @@ test('checks GitHub at most once in 24 hours and refreshes after expiry', async 
     });
   };
   const first = await checkLatestRelease({ fetchImpl, storage, now: 1_000 });
-  const cached = await checkLatestRelease({ fetchImpl, storage, now: 2_000 });
+  const cached = await checkLatestRelease({
+    fetchImpl, storage, now: 1_000 + RELEASE_CHECK_INTERVAL_MS - 1,
+  });
   const refreshed = await checkLatestRelease({
     fetchImpl,
     storage,
@@ -57,7 +60,7 @@ test('checks GitHub at most once in 24 hours and refreshes after expiry', async 
   );
 });
 
-test('caches a failed attempt for the day and does not expose unsafe release URLs', async () => {
+test('caches a failed attempt for 3 hours and does not expose unsafe release URLs', async () => {
   const failedStorage = memoryStorage();
   let failures = 0;
   const failingFetch = async () => {
@@ -67,6 +70,10 @@ test('caches a failed attempt for the day and does not expose unsafe release URL
   await checkLatestRelease({ fetchImpl: failingFetch, storage: failedStorage, now: 5_000 });
   await checkLatestRelease({ fetchImpl: failingFetch, storage: failedStorage, now: 6_000 });
   assert.equal(failures, 1);
+  await checkLatestRelease({
+    fetchImpl: failingFetch, storage: failedStorage, now: 5_000 + RELEASE_CHECK_INTERVAL_MS,
+  });
+  assert.equal(failures, 2);
 
   const storage = memoryStorage();
   const result = await checkLatestRelease({

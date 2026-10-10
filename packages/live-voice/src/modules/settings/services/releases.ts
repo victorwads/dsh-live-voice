@@ -9,7 +9,7 @@ export const RELEASES_URL = `${REPOSITORY_URL}/releases`;
 export const LATEST_RELEASE_API_URL =
   'https://api.github.com/repos/victorwads/dsh-live-voice/releases/latest';
 export const RELEASE_CHECK_STORAGE_KEY = 'dsh-live-voice.latest-release-check';
-export const RELEASE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
+export const RELEASE_CHECK_INTERVAL_MS = 3 * 60 * 60 * 1000;
 
 export const LIVE_VOICE_BADGE_URL = 'https://cdn.simpleicons.org/npm/white';
 export const DSH_BADGE_URL = 'https://cdn.simpleicons.org/deepseek/white';

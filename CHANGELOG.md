@@ -6,6 +6,10 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ## [0.4.2] - Unreleased
 
+### Improvements
+
+- Detect new GitHub releases sooner by reducing the update-check cache interval from 24 hours to 3 hours. Checks still run when Live Voice Settings opens, not on a background timer; failed attempts use the same interval.
+
 ### Fixes
 
 - Keep the speech bar, current playback, pause state, captions, and accepted segment queue intact when opening or closing microphone conversation mode, including manual per-turn playback. Speaker mode still defers capture to prevent echo; explicit microphone takeover, Stop speech, End commands, navigation, and disposal retain their cancellation behavior.
