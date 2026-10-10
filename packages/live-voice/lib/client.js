@@ -1686,10 +1686,10 @@ var appDictionaries = Object.freeze({
 // src/app/client/i18n/DshLanguageBoundary.tsx
 var import_react2 = __toESM(require("react"), 1);
 
-// ../../../../../../node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
+// node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
 var import_react = require("react");
 
-// ../../../../../../node_modules/.pnpm/@wads.dev+i18n-ts@0.0.1-alpha.0_typescript@7.0.2/node_modules/@wads.dev/i18n-ts/dist/runtime/language.js
+// node_modules/.pnpm/@wads.dev+i18n-ts@0.0.1-alpha.0_typescript@7.0.2/node_modules/@wads.dev/i18n-ts/dist/runtime/language.js
 function detectLanguage() {
   if (typeof navigator !== "undefined" && typeof navigator.language === "string")
     return navigator.language;
@@ -1718,7 +1718,7 @@ function deepFreeze(value) {
   return value;
 }
 
-// ../../../../../../node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
+// node_modules/.pnpm/@wads.dev+i18n-react@0.0.1-alpha.0_react@19.3.0_typescript@7.0.2/node_modules/@wads.dev/i18n-react/dist/index.js
 function createTranslationRuntime({ availableLangs: availableLangs2, defaultLang, onLanguageLoaded }) {
   const context = (0, import_react.createContext)({});
   function useTranslation(selector) {
@@ -2607,7 +2607,7 @@ function normalizeSettings(value) {
   };
 }
 
-// ../../../../../../node_modules/.pnpm/marked@18.1.0/node_modules/marked/lib/marked.esm.js
+// node_modules/.pnpm/marked@18.1.0/node_modules/marked/lib/marked.esm.js
 function I() {
   return { async: false, breaks: false, extensions: null, gfm: true, hooks: null, pedantic: false, renderer: null, silent: false, tokenizer: null, walkTokens: null };
 }
