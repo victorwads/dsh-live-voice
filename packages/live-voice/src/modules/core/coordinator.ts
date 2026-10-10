@@ -111,6 +111,7 @@ export class VoiceCoordinator {
       lang: this.snapshot.settings.recognitionLang,
       processLocally: this.snapshot.settings.recognitionProcessLocally,
       autoInstallLocalPack: this.snapshot.settings.recognitionAutoInstall,
+      voiceDetectionEngine: this.snapshot.settings.voiceDetectionEngine,
       voiceDetectionPreset: this.snapshot.settings.voiceDetectionPreset,
       voiceDetectionCustomSilenceMs: this.snapshot.settings.voiceDetectionCustomSilenceMs,
     });
@@ -137,6 +138,7 @@ export class VoiceCoordinator {
       lang: settings.recognitionLang,
       processLocally: settings.recognitionProcessLocally,
       autoInstallLocalPack: settings.recognitionAutoInstall,
+      voiceDetectionEngine: settings.voiceDetectionEngine,
       voiceDetectionPreset: settings.voiceDetectionPreset,
       voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
     });
@@ -244,7 +246,8 @@ export class VoiceCoordinator {
     this.patch({ conversation: false });
     await this.stopListening();
     if (!this._speechActivity()) {
-      this.assistantSpeechNotBefore = Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
+      this.assistantSpeechNotBefore =
+        Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
       this._cancelAssistantSpeechTimer();
     }
     this._handleSpeechInterruption(this._speechActivity());
@@ -293,7 +296,11 @@ export class VoiceCoordinator {
         await this._releaseInput();
         if (!valid()) return;
         // Enabling input is not a playback takeover. Speaker capture waits for playback.
-        if (this.snapshot.settings.mode === 'speaker' && this.snapshot.speaking && !this.snapshot.paused) {
+        if (
+          this.snapshot.settings.mode === 'speaker' &&
+          this.snapshot.speaking &&
+          !this.snapshot.paused
+        ) {
           this.patch({ starting: false });
           return;
         }
@@ -382,7 +389,10 @@ export class VoiceCoordinator {
                 Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
             this.patch({ recognizing: active });
             this._handleSpeechInterruption(this._speechActivity());
-            if (!active) { this.refreshDeliveryReadiness(); this._drain(); }
+            if (!active) {
+              this.refreshDeliveryReadiness();
+              this._drain();
+            }
           },
           onError: (error) => {
             if (!valid()) return;
@@ -642,7 +652,11 @@ export class VoiceCoordinator {
     this.scheduleAutoSend(draft);
   }
   refreshDeliveryReadiness() {
-    if (this.composer.canAutoSend?.() === false || this.snapshot.recognizing || this.snapshot.pendingTranscriptions > 0)
+    if (
+      this.composer.canAutoSend?.() === false ||
+      this.snapshot.recognizing ||
+      this.snapshot.pendingTranscriptions > 0
+    )
       this.cancelAutoSend({ preserveIntent: true });
     else this.maybeScheduleAutoSend();
   }
@@ -685,8 +699,13 @@ export class VoiceCoordinator {
           this._drain();
         }
       } else {
-        if (!this.disposed && !this.snapshot.muted && expected === this.composer.getDraft() &&
-            this.snapshot.settings.sendingMode !== 'manual' && this.composer.canAutoSend?.() === false)
+        if (
+          !this.disposed &&
+          !this.snapshot.muted &&
+          expected === this.composer.getDraft() &&
+          this.snapshot.settings.sendingMode !== 'manual' &&
+          this.composer.canAutoSend?.() === false
+        )
           this.autoSendIntent = expected;
         this._drain();
       }

@@ -145,6 +145,12 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     '100 से 10,000 ms तक पूर्णांक दर्ज करें। फ़ील्ड छोड़ने पर सहेजा जाता है। छोटे विराम बोलने को खंडों में बाँट सकते हैं; पहचान में अतिरिक्त समय लगता है।',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'कस्टम विराम (मिलीसेकंड)',
+  'dsh-live-voice.recognition.silenceDetection.detector.energy':
+    'ऑडियो ऊर्जा — वर्तमान डिफ़ॉल्ट',
+  'dsh-live-voice.recognition.silenceDetection.detector.label':
+    'आवाज़ का डिटेक्टर',
+  'dsh-live-voice.recognition.silenceDetection.detector.silero':
+    'Silero — प्रयोगात्मक (वैकल्पिक)',
   'dsh-live-voice.recognition.silenceDetection.duration':
     'भेजने से पहले का विराम: {milliseconds} मिलीसेकंड',
   'dsh-live-voice.recognition.silenceDetection.help':
@@ -152,6 +158,12 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.label': 'मौन का पता लगाना',
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'भेजने से पहले का विराम',
   'dsh-live-voice.recognition.silenceDetection.title': 'मौन का पता लगाने की सेटिंग्स',
+  'dsh-live-voice.recognition.silero.error.failed':
+    'Silero से आवाज़ का पता लगाने में विफलता हुई। सेटिंग्स में ऑडियो ऊर्जा चुनें या कैप्चर फिर से शुरू करने का प्रयास करें।',
+  'dsh-live-voice.recognition.silero.error.overloaded':
+    'Silero से आवाज़ का पता लगाने पर बहुत अधिक भार है। कैप्चर फिर से शुरू करें या सेटिंग्स में ऑडियो ऊर्जा चुनें।',
+  'dsh-live-voice.recognition.silero.error.unavailable':
+    'Silero से आवाज़ का पता लगाना उपलब्ध नहीं है। सेटिंग्स में ऑडियो ऊर्जा चुनें या कैप्चर फिर से शुरू करने का प्रयास करें।',
   'dsh-live-voice.recognition.speakerMode.help':
     'प्लेबैक स्पीकर फ़ीडबैक घटाने के लिए माइक्रोफ़ोन छोड़ देता है। माइक्रोफ़ोन लें से मैन्युअल बाधा डालें; साझा मीटिंग ऑडियो में बिना प्रतिध्वनि की पहचानी गई आवाज़ प्लेबैक रोक सकती है और स्थिर मौन के बाद यह फिर चलता है।',
   'dsh-live-voice.recognition.speakerMode.label': 'स्पीकर — नियंत्रित सुनना',

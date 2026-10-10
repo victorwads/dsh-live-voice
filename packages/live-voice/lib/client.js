@@ -164,11 +164,17 @@ var en = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "Enter a whole number from 100 to 10,000 ms. Saved when you leave the field. Short pauses may split speech; recognition adds its own latency.",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "Custom pause (milliseconds)",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "Audio energy \u2014 current default",
+  "dsh-live-voice.recognition.silenceDetection.detector.label": "Voice detector",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 experimental (opt-in)",
   "dsh-live-voice.recognition.silenceDetection.duration": "Pause before sending: {milliseconds} ms",
   "dsh-live-voice.recognition.silenceDetection.help": "Controls how long a pause must last before captured speech is sent for recognition.",
   "dsh-live-voice.recognition.silenceDetection.label": "Silence detection",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pause before sending",
   "dsh-live-voice.recognition.silenceDetection.title": "Silence detection settings",
+  "dsh-live-voice.recognition.silero.error.failed": "Silero voice detection failed. Select Audio energy in settings or retry capture.",
+  "dsh-live-voice.recognition.silero.error.overloaded": "Silero voice detection is overloaded. Restart capture or select Audio energy in settings.",
+  "dsh-live-voice.recognition.silero.error.unavailable": "Silero voice detection is unavailable. Select Audio energy in settings or retry capture.",
   "dsh-live-voice.recognition.speakerMode.help": "Playback releases the microphone to reduce speaker feedback. Take microphone interrupts manually; recognized non-echo participants in shared meeting audio can pause playback and it resumes after stable silence.",
   "dsh-live-voice.recognition.speakerMode.label": "Speakers \u2014 gated listening",
   "dsh-live-voice.recognition.status.answer": "Recognizing answer\u2026",
@@ -422,11 +428,17 @@ var es = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "Introduce un n\xFAmero entero de 100 a 10.000 ms. Se guarda al salir del campo. Las pausas cortas pueden dividir el habla; el reconocimiento a\xF1ade su propia latencia.",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "Pausa personalizada (milisegundos)",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "Energ\xEDa del audio \u2014 opci\xF3n predeterminada actual",
+  "dsh-live-voice.recognition.silenceDetection.detector.label": "Detector de voz",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 experimental (activaci\xF3n opcional)",
   "dsh-live-voice.recognition.silenceDetection.duration": "Pausa antes de enviar: {milliseconds} ms",
   "dsh-live-voice.recognition.silenceDetection.help": "Determina cu\xE1nto debe durar una pausa antes de enviar la voz capturada para su reconocimiento.",
   "dsh-live-voice.recognition.silenceDetection.label": "Detecci\xF3n de silencio",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pausa antes de enviar",
   "dsh-live-voice.recognition.silenceDetection.title": "Configuraci\xF3n de detecci\xF3n de silencio",
+  "dsh-live-voice.recognition.silero.error.failed": "La detecci\xF3n de voz Silero fall\xF3. Selecciona Energ\xEDa del audio en la configuraci\xF3n o vuelve a intentar la captura.",
+  "dsh-live-voice.recognition.silero.error.overloaded": "La detecci\xF3n de voz Silero est\xE1 sobrecargada. Reinicia la captura o selecciona Energ\xEDa del audio en la configuraci\xF3n.",
+  "dsh-live-voice.recognition.silero.error.unavailable": "La detecci\xF3n de voz Silero no est\xE1 disponible. Selecciona Energ\xEDa del audio en la configuraci\xF3n o vuelve a intentar la captura.",
   "dsh-live-voice.recognition.speakerMode.help": "La reproducci\xF3n libera el micr\xF3fono para reducir el retorno de los altavoces. Tomar micr\xF3fono interrumpe manualmente; participantes reconocidos sin eco en el audio compartido pueden pausar la reproducci\xF3n, que se reanuda tras silencio estable.",
   "dsh-live-voice.recognition.speakerMode.label": "Altavoces \u2014 escucha controlada",
   "dsh-live-voice.recognition.status.answer": "Reconociendo respuesta\u2026",
@@ -680,11 +692,17 @@ var fr = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "Saisissez un entier de 100 \xE0 10 000 ms. Enregistr\xE9 en quittant le champ. Les pauses courtes peuvent couper la parole ; la reconnaissance ajoute sa propre latence.",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "Pause personnalis\xE9e (millisecondes)",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "\xC9nergie audio \u2014 choix actuel par d\xE9faut",
+  "dsh-live-voice.recognition.silenceDetection.detector.label": "D\xE9tecteur vocal",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 exp\xE9rimental (activation facultative)",
   "dsh-live-voice.recognition.silenceDetection.duration": "Pause avant l\u2019envoi : {milliseconds} ms",
   "dsh-live-voice.recognition.silenceDetection.help": "D\xE9termine la dur\xE9e de pause n\xE9cessaire avant que la parole captur\xE9e soit envoy\xE9e pour reconnaissance.",
   "dsh-live-voice.recognition.silenceDetection.label": "D\xE9tection du silence",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pause avant l\u2019envoi",
   "dsh-live-voice.recognition.silenceDetection.title": "Param\xE8tres de d\xE9tection du silence",
+  "dsh-live-voice.recognition.silero.error.failed": "La d\xE9tection vocale Silero a \xE9chou\xE9. S\xE9lectionnez \xC9nergie audio dans les param\xE8tres ou r\xE9essayez la capture.",
+  "dsh-live-voice.recognition.silero.error.overloaded": "La d\xE9tection vocale Silero est surcharg\xE9e. Red\xE9marrez la capture ou s\xE9lectionnez \xC9nergie audio dans les param\xE8tres.",
+  "dsh-live-voice.recognition.silero.error.unavailable": "La d\xE9tection vocale Silero est indisponible. S\xE9lectionnez \xC9nergie audio dans les param\xE8tres ou r\xE9essayez la capture.",
   "dsh-live-voice.recognition.speakerMode.help": "La lecture lib\xE8re le microphone pour r\xE9duire le retour des haut-parleurs. Prendre le microphone interrompt manuellement ; les participants reconnus sans \xE9cho dans le son partag\xE9 peuvent mettre la lecture en pause, puis elle reprend apr\xE8s un silence stable.",
   "dsh-live-voice.recognition.speakerMode.label": "Haut-parleurs \u2014 \xE9coute contr\xF4l\xE9e",
   "dsh-live-voice.recognition.status.answer": "Reconnaissance de la r\xE9ponse\u2026",
@@ -938,11 +956,17 @@ var hi = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "100 \u0938\u0947 10,000 ms \u0924\u0915 \u092A\u0942\u0930\u094D\u0923\u093E\u0902\u0915 \u0926\u0930\u094D\u091C \u0915\u0930\u0947\u0902\u0964 \u092B\u093C\u0940\u0932\u094D\u0921 \u091B\u094B\u0921\u093C\u0928\u0947 \u092A\u0930 \u0938\u0939\u0947\u091C\u093E \u091C\u093E\u0924\u093E \u0939\u0948\u0964 \u091B\u094B\u091F\u0947 \u0935\u093F\u0930\u093E\u092E \u092C\u094B\u0932\u0928\u0947 \u0915\u094B \u0916\u0902\u0921\u094B\u0902 \u092E\u0947\u0902 \u092C\u093E\u0901\u091F \u0938\u0915\u0924\u0947 \u0939\u0948\u0902; \u092A\u0939\u091A\u093E\u0928 \u092E\u0947\u0902 \u0905\u0924\u093F\u0930\u093F\u0915\u094D\u0924 \u0938\u092E\u092F \u0932\u0917\u0924\u093E \u0939\u0948\u0964",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "\u0915\u0938\u094D\u091F\u092E \u0935\u093F\u0930\u093E\u092E (\u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921)",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "\u0911\u0921\u093F\u092F\u094B \u090A\u0930\u094D\u091C\u093E \u2014 \u0935\u0930\u094D\u0924\u092E\u093E\u0928 \u0921\u093F\u092B\u093C\u0949\u0932\u094D\u091F",
+  "dsh-live-voice.recognition.silenceDetection.detector.label": "\u0906\u0935\u093E\u091C\u093C \u0915\u093E \u0921\u093F\u091F\u0947\u0915\u094D\u091F\u0930",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 \u092A\u094D\u0930\u092F\u094B\u0917\u093E\u0924\u094D\u092E\u0915 (\u0935\u0948\u0915\u0932\u094D\u092A\u093F\u0915)",
   "dsh-live-voice.recognition.silenceDetection.duration": "\u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0915\u093E \u0935\u093F\u0930\u093E\u092E: {milliseconds} \u092E\u093F\u0932\u0940\u0938\u0947\u0915\u0902\u0921",
   "dsh-live-voice.recognition.silenceDetection.help": "\u0924\u092F \u0915\u0930\u0924\u093E \u0939\u0948 \u0915\u093F \u0930\u093F\u0915\u0949\u0930\u094D\u0921 \u0915\u0940 \u0917\u0908 \u0906\u0935\u093E\u091C\u093C \u0915\u094B \u092A\u0939\u091A\u093E\u0928 \u0915\u0947 \u0932\u093F\u090F \u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0935\u093F\u0930\u093E\u092E \u0915\u093F\u0924\u0928\u0940 \u0926\u0947\u0930 \u0930\u0939\u0928\u093E \u091A\u093E\u0939\u093F\u090F\u0964",
   "dsh-live-voice.recognition.silenceDetection.label": "\u092E\u094C\u0928 \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u093E",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "\u092D\u0947\u091C\u0928\u0947 \u0938\u0947 \u092A\u0939\u0932\u0947 \u0915\u093E \u0935\u093F\u0930\u093E\u092E",
   "dsh-live-voice.recognition.silenceDetection.title": "\u092E\u094C\u0928 \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u0947 \u0915\u0940 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938",
+  "dsh-live-voice.recognition.silero.error.failed": "Silero \u0938\u0947 \u0906\u0935\u093E\u091C\u093C \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u0947 \u092E\u0947\u0902 \u0935\u093F\u092B\u0932\u0924\u093E \u0939\u0941\u0908\u0964 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092E\u0947\u0902 \u0911\u0921\u093F\u092F\u094B \u090A\u0930\u094D\u091C\u093E \u091A\u0941\u0928\u0947\u0902 \u092F\u093E \u0915\u0948\u092A\u094D\u091A\u0930 \u092B\u093F\u0930 \u0938\u0947 \u0936\u0941\u0930\u0942 \u0915\u0930\u0928\u0947 \u0915\u093E \u092A\u094D\u0930\u092F\u093E\u0938 \u0915\u0930\u0947\u0902\u0964",
+  "dsh-live-voice.recognition.silero.error.overloaded": "Silero \u0938\u0947 \u0906\u0935\u093E\u091C\u093C \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u0947 \u092A\u0930 \u092C\u0939\u0941\u0924 \u0905\u0927\u093F\u0915 \u092D\u093E\u0930 \u0939\u0948\u0964 \u0915\u0948\u092A\u094D\u091A\u0930 \u092B\u093F\u0930 \u0938\u0947 \u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902 \u092F\u093E \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092E\u0947\u0902 \u0911\u0921\u093F\u092F\u094B \u090A\u0930\u094D\u091C\u093E \u091A\u0941\u0928\u0947\u0902\u0964",
+  "dsh-live-voice.recognition.silero.error.unavailable": "Silero \u0938\u0947 \u0906\u0935\u093E\u091C\u093C \u0915\u093E \u092A\u0924\u093E \u0932\u0917\u093E\u0928\u093E \u0909\u092A\u0932\u092C\u094D\u0927 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964 \u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938 \u092E\u0947\u0902 \u0911\u0921\u093F\u092F\u094B \u090A\u0930\u094D\u091C\u093E \u091A\u0941\u0928\u0947\u0902 \u092F\u093E \u0915\u0948\u092A\u094D\u091A\u0930 \u092B\u093F\u0930 \u0938\u0947 \u0936\u0941\u0930\u0942 \u0915\u0930\u0928\u0947 \u0915\u093E \u092A\u094D\u0930\u092F\u093E\u0938 \u0915\u0930\u0947\u0902\u0964",
   "dsh-live-voice.recognition.speakerMode.help": "\u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0938\u094D\u092A\u0940\u0915\u0930 \u092B\u093C\u0940\u0921\u092C\u0948\u0915 \u0918\u091F\u093E\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u091B\u094B\u0921\u093C \u0926\u0947\u0924\u093E \u0939\u0948\u0964 \u092E\u093E\u0907\u0915\u094D\u0930\u094B\u092B\u093C\u094B\u0928 \u0932\u0947\u0902 \u0938\u0947 \u092E\u0948\u0928\u094D\u092F\u0941\u0905\u0932 \u092C\u093E\u0927\u093E \u0921\u093E\u0932\u0947\u0902; \u0938\u093E\u091D\u093E \u092E\u0940\u091F\u093F\u0902\u0917 \u0911\u0921\u093F\u092F\u094B \u092E\u0947\u0902 \u092C\u093F\u0928\u093E \u092A\u094D\u0930\u0924\u093F\u0927\u094D\u0935\u0928\u093F \u0915\u0940 \u092A\u0939\u091A\u093E\u0928\u0940 \u0917\u0908 \u0906\u0935\u093E\u091C\u093C \u092A\u094D\u0932\u0947\u092C\u0948\u0915 \u0930\u094B\u0915 \u0938\u0915\u0924\u0940 \u0939\u0948 \u0914\u0930 \u0938\u094D\u0925\u093F\u0930 \u092E\u094C\u0928 \u0915\u0947 \u092C\u093E\u0926 \u092F\u0939 \u092B\u093F\u0930 \u091A\u0932\u0924\u093E \u0939\u0948\u0964",
   "dsh-live-voice.recognition.speakerMode.label": "\u0938\u094D\u092A\u0940\u0915\u0930 \u2014 \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u093F\u0924 \u0938\u0941\u0928\u0928\u093E",
   "dsh-live-voice.recognition.status.answer": "\u0909\u0924\u094D\u0924\u0930 \u092A\u0939\u091A\u093E\u0928\u093E \u091C\u093E \u0930\u0939\u093E \u0939\u0948\u2026",
@@ -1196,11 +1220,17 @@ var ptBR = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 API HTTP",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "Insira um n\xFAmero inteiro de 100 a 10.000 ms. Salvo ao sair do campo. Pausas curtas podem dividir a fala; o reconhecimento acrescenta sua pr\xF3pria lat\xEAncia.",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "Pausa personalizada (milissegundos)",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "Energia do \xE1udio \u2014 padr\xE3o atual",
+  "dsh-live-voice.recognition.silenceDetection.detector.label": "Detector de voz",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 experimental (ativa\xE7\xE3o opcional)",
   "dsh-live-voice.recognition.silenceDetection.duration": "Pausa antes de enviar: {milliseconds} ms",
   "dsh-live-voice.recognition.silenceDetection.help": "Controla a dura\xE7\xE3o m\xEDnima da pausa antes de enviar a fala capturada para reconhecimento.",
   "dsh-live-voice.recognition.silenceDetection.label": "Detec\xE7\xE3o de sil\xEAncio",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "Pausa antes de enviar",
   "dsh-live-voice.recognition.silenceDetection.title": "Configura\xE7\xF5es de detec\xE7\xE3o de sil\xEAncio",
+  "dsh-live-voice.recognition.silero.error.failed": "A detec\xE7\xE3o de voz Silero falhou. Selecione Energia do \xE1udio nas configura\xE7\xF5es ou tente iniciar a captura novamente.",
+  "dsh-live-voice.recognition.silero.error.overloaded": "A detec\xE7\xE3o de voz Silero est\xE1 sobrecarregada. Reinicie a captura ou selecione Energia do \xE1udio nas configura\xE7\xF5es.",
+  "dsh-live-voice.recognition.silero.error.unavailable": "A detec\xE7\xE3o de voz Silero est\xE1 indispon\xEDvel. Selecione Energia do \xE1udio nas configura\xE7\xF5es ou tente iniciar a captura novamente.",
   "dsh-live-voice.recognition.speakerMode.help": "A reprodu\xE7\xE3o libera o microfone para reduzir o retorno dos alto-falantes. Assumir microfone interrompe manualmente; participantes reconhecidos sem eco no \xE1udio compartilhado podem pausar a reprodu\xE7\xE3o, que retoma ap\xF3s sil\xEAncio est\xE1vel.",
   "dsh-live-voice.recognition.speakerMode.label": "Alto-falantes \u2014 escuta controlada",
   "dsh-live-voice.recognition.status.answer": "Reconhecendo resposta\u2026",
@@ -1454,11 +1484,17 @@ var zh = {
   "dsh-live-voice.recognition.qwen.label": "Qwen3 ASR \u2014 HTTP API",
   "dsh-live-voice.recognition.silenceDetection.customHelp": "\u8BF7\u8F93\u5165 100 \u81F3 10,000 ms \u7684\u6574\u6570\u3002\u79BB\u5F00\u8F93\u5165\u6846\u65F6\u4FDD\u5B58\u3002\u77ED\u505C\u987F\u53EF\u80FD\u5207\u5206\u8BED\u97F3\uFF1B\u8BC6\u522B\u8FD8\u9700\u8981\u989D\u5916\u65F6\u95F4\u3002",
   "dsh-live-voice.recognition.silenceDetection.customLabel": "\u81EA\u5B9A\u4E49\u505C\u987F\uFF08\u6BEB\u79D2\uFF09",
+  "dsh-live-voice.recognition.silenceDetection.detector.energy": "\u97F3\u9891\u80FD\u91CF \u2014 \u5F53\u524D\u9ED8\u8BA4\u9009\u9879",
+  "dsh-live-voice.recognition.silenceDetection.detector.label": "\u8BED\u97F3\u68C0\u6D4B\u5668",
+  "dsh-live-voice.recognition.silenceDetection.detector.silero": "Silero \u2014 \u5B9E\u9A8C\u6027\uFF08\u9700\u4E3B\u52A8\u542F\u7528\uFF09",
   "dsh-live-voice.recognition.silenceDetection.duration": "\u53D1\u9001\u524D\u505C\u987F\uFF1A{milliseconds} \u6BEB\u79D2",
   "dsh-live-voice.recognition.silenceDetection.help": "\u8BBE\u7F6E\u505C\u987F\u6301\u7EED\u591A\u4E45\u540E\uFF0C\u5C06\u91C7\u96C6\u7684\u8BED\u97F3\u53D1\u9001\u8FDB\u884C\u8BC6\u522B\u3002",
   "dsh-live-voice.recognition.silenceDetection.label": "\u9759\u97F3\u68C0\u6D4B",
   "dsh-live-voice.recognition.silenceDetection.pauseLabel": "\u53D1\u9001\u524D\u505C\u987F",
   "dsh-live-voice.recognition.silenceDetection.title": "\u9759\u97F3\u68C0\u6D4B\u8BBE\u7F6E",
+  "dsh-live-voice.recognition.silero.error.failed": "Silero \u8BED\u97F3\u68C0\u6D4B\u5931\u8D25\u3002\u8BF7\u5728\u8BBE\u7F6E\u4E2D\u9009\u62E9\u97F3\u9891\u80FD\u91CF\uFF0C\u6216\u91CD\u8BD5\u91C7\u96C6\u3002",
+  "dsh-live-voice.recognition.silero.error.overloaded": "Silero \u8BED\u97F3\u68C0\u6D4B\u8D1F\u8F7D\u8FC7\u9AD8\u3002\u8BF7\u91CD\u65B0\u542F\u52A8\u91C7\u96C6\uFF0C\u6216\u5728\u8BBE\u7F6E\u4E2D\u9009\u62E9\u97F3\u9891\u80FD\u91CF\u3002",
+  "dsh-live-voice.recognition.silero.error.unavailable": "Silero \u8BED\u97F3\u68C0\u6D4B\u4E0D\u53EF\u7528\u3002\u8BF7\u5728\u8BBE\u7F6E\u4E2D\u9009\u62E9\u97F3\u9891\u80FD\u91CF\uFF0C\u6216\u91CD\u8BD5\u91C7\u96C6\u3002",
   "dsh-live-voice.recognition.speakerMode.help": "\u64AD\u653E\u65F6\u91CA\u653E\u9EA6\u514B\u98CE\u4EE5\u51CF\u5C11\u626C\u58F0\u5668\u53CD\u9988\u3002\u63A5\u7BA1\u9EA6\u514B\u98CE\u53EF\u624B\u52A8\u6253\u65AD\uFF1B\u5171\u4EAB\u4F1A\u8BAE\u97F3\u9891\u4E2D\u8BC6\u522B\u5230\u7684\u975E\u56DE\u58F0\u53C2\u4E0E\u8005\u8BED\u97F3\u4E5F\u53EF\u6682\u505C\u64AD\u653E\uFF0C\u6301\u7EED\u9759\u97F3\u540E\u6062\u590D\u3002",
   "dsh-live-voice.recognition.speakerMode.label": "\u626C\u58F0\u5668 \u2014 \u95E8\u63A7\u8046\u542C",
   "dsh-live-voice.recognition.status.answer": "\u6B63\u5728\u8BC6\u522B\u56DE\u7B54\u2026",
@@ -2402,7 +2438,7 @@ var voiceDetectionPresets = Object.freeze({
     description: "Wait through longer thinking pauses."
   })
 });
-var usesPluginVoiceDetection = (engine) => ["whisper-http", "qwen-http"].includes(engine);
+var usesPluginVoiceDetection = (engine) => typeof engine === "string" && engine !== "" && engine !== "browser";
 var qwenVoices = Object.freeze([
   Object.freeze({ value: "aiden", label: "Aiden \u2014 male, American English" }),
   Object.freeze({ value: "ryan", label: "Ryan \u2014 male, English" }),
@@ -2424,6 +2460,7 @@ var defaultSettings = Object.freeze({
   recognitionEngine: "browser",
   recognitionProcessLocally: true,
   recognitionAutoInstall: true,
+  voiceDetectionEngine: "energy",
   voiceDetectionPreset: "short",
   voiceDetectionCustomSilenceMs: 1e3,
   recognitionMaxUtteranceSeconds: 60,
@@ -2471,6 +2508,7 @@ function normalizeSettings(value) {
     recognitionEngine: ["browser", "whisper-http", "qwen-http"].includes(source.recognitionEngine) ? source.recognitionEngine : defaultSettings.recognitionEngine,
     recognitionProcessLocally: typeof source.recognitionProcessLocally === "boolean" ? source.recognitionProcessLocally : defaultSettings.recognitionProcessLocally,
     recognitionAutoInstall: typeof source.recognitionAutoInstall === "boolean" ? source.recognitionAutoInstall : defaultSettings.recognitionAutoInstall,
+    voiceDetectionEngine: source.voiceDetectionEngine === "silero" ? "silero" : "energy",
     voiceDetectionPreset: source.voiceDetectionPreset === "custom" || Object.hasOwn(voiceDetectionPresets, source.voiceDetectionPreset) ? source.voiceDetectionPreset : defaultSettings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs: normalizeCustomSilenceMs(source.voiceDetectionCustomSilenceMs),
     recognitionMaxUtteranceSeconds: Number.isInteger(source.recognitionMaxUtteranceSeconds) && source.recognitionMaxUtteranceSeconds >= 10 && source.recognitionMaxUtteranceSeconds <= 300 ? source.recognitionMaxUtteranceSeconds : defaultSettings.recognitionMaxUtteranceSeconds,
@@ -4115,6 +4153,7 @@ var VoiceCoordinator = class _VoiceCoordinator {
       lang: this.snapshot.settings.recognitionLang,
       processLocally: this.snapshot.settings.recognitionProcessLocally,
       autoInstallLocalPack: this.snapshot.settings.recognitionAutoInstall,
+      voiceDetectionEngine: this.snapshot.settings.voiceDetectionEngine,
       voiceDetectionPreset: this.snapshot.settings.voiceDetectionPreset,
       voiceDetectionCustomSilenceMs: this.snapshot.settings.voiceDetectionCustomSilenceMs
     });
@@ -4138,6 +4177,7 @@ var VoiceCoordinator = class _VoiceCoordinator {
       lang: settings.recognitionLang,
       processLocally: settings.recognitionProcessLocally,
       autoInstallLocalPack: settings.recognitionAutoInstall,
+      voiceDetectionEngine: settings.voiceDetectionEngine,
       voiceDetectionPreset: settings.voiceDetectionPreset,
       voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs
     });
@@ -5341,7 +5381,7 @@ var MicrophoneMeter = class {
       analyser: null,
       samples: null
     };
-    const cancelled2 = new Promise((resolve) => {
+    const cancelled3 = new Promise((resolve) => {
       job.cancelled = resolve;
     });
     job.cancel = () => {
@@ -5394,7 +5434,7 @@ var MicrophoneMeter = class {
         throw error;
       }
     };
-    return Promise.race([capture(), cancelled2]);
+    return Promise.race([capture(), cancelled3]);
   }
   level() {
     if (!this.analyser || !this.samples) return 0;
@@ -6044,7 +6084,7 @@ var BrowserRecognitionEngine = class {
       resolveFinish: null
     };
     this.session = session;
-    const cancelled2 = new Promise((resolve, reject) => {
+    const cancelled3 = new Promise((resolve, reject) => {
       session.rejectCancelled = reject;
     });
     session.cancel = () => {
@@ -6053,7 +6093,7 @@ var BrowserRecognitionEngine = class {
     signal?.addEventListener("abort", session.cancel, { once: true });
     const capability = await Promise.race([
       this.capability({ lang, processLocally: this.processLocally }),
-      cancelled2
+      cancelled3
     ]);
     if (this.session !== session || signal?.aborted) {
       session.cancel();
@@ -6245,6 +6285,238 @@ var BrowserRecognitionEngine = class {
   }
 };
 
+// src/modules/recognition/vad/assets.ts
+var sileroVadAssetBase = () => "/api/dsh-live-voice/vad/" + encodeURIComponent(true ? "0.4.2" : "test") + "/";
+async function sileroVadAvailable(fetchImpl = globalThis.fetch) {
+  try {
+    const response = await fetchImpl(sileroVadAssetBase() + "availability", {
+      credentials: "same-origin",
+      cache: "no-store"
+    });
+    return response.ok && (await response.json()).available === true;
+  } catch {
+    return false;
+  }
+}
+
+// src/modules/recognition/vad/SileroVadRuntime.ts
+var cancelled = () => Object.assign(new Error("VAD operation cancelled."), { name: "AbortError" });
+var SileroVadPool = class {
+  constructor(createWorker = (url) => new Worker(url), maxPending = 64) {
+    this.createWorker = createWorker;
+    this.maxPending = maxPending;
+  }
+  createWorker;
+  maxPending;
+  worker;
+  sources = /* @__PURE__ */ new Map();
+  sourceId = 0;
+  requestId = 0;
+  send(message2, transfer) {
+    this.worker.postMessage(message2, transfer);
+  }
+  settle(source, error) {
+    for (const pending of source.pending.values()) pending.reject(error);
+    source.pending.clear();
+  }
+  fatal(error) {
+    const worker = this.worker;
+    this.worker = void 0;
+    worker?.terminate();
+    for (const source of this.sources.values()) {
+      source.failure = error;
+      this.settle(source, error);
+      source.options.onError(error);
+    }
+  }
+  receive(message2) {
+    const source = this.sources.get(message2.source);
+    if (!source || source.released || source.failure) return;
+    if (message2.type === "reset" && message2.generation > source.generation) {
+      source.generation = message2.generation;
+      this.settle(source, new Error(message2.message || "VAD queue overloaded."));
+      source.options.onReset?.();
+      source.options.onError(new Error(message2.message || "VAD queue overloaded."));
+      return;
+    }
+    if (message2.generation !== source.generation) return;
+    if (message2.type === "error") {
+      const error = new Error(message2.message || "VAD inference failed.");
+      source.failure = error;
+      this.settle(source, error);
+      source.options.onError(error);
+    } else if (message2.type === "probability") {
+      source.options.onProbability({
+        probability: message2.probability,
+        pcm: message2.pcm,
+        sampleRate: 16e3
+      });
+    } else if (message2.type === "done") {
+      source.pending.get(message2.request)?.resolve();
+      source.pending.delete(message2.request);
+    }
+  }
+  acquire(options) {
+    if (!this.worker) {
+      if (this.sources.size) throw new Error("Failed VAD streams must be released before retry.");
+      const worker = this.createWorker(sileroVadAssetBase() + "vad.worker.js");
+      this.worker = worker;
+      worker.onmessage = (event) => {
+        if (this.worker === worker) this.receive(event.data);
+      };
+      worker.onerror = (event) => {
+        event.preventDefault?.();
+        if (this.worker === worker) this.fatal(new Error(event.message || "VAD worker failed."));
+      };
+      worker.onmessageerror = () => {
+        if (this.worker === worker) this.fatal(new Error("VAD worker message failed."));
+      };
+    }
+    const id2 = ++this.sourceId;
+    const source = { generation: 0, options, pending: /* @__PURE__ */ new Map(), released: false };
+    this.sources.set(id2, source);
+    const reset = () => {
+      if (source.released || source.failure) return;
+      source.generation++;
+      this.settle(source, cancelled());
+      this.send({ type: "reset", source: id2, generation: source.generation });
+      options.onReset?.();
+    };
+    const process = (pcm, sampleRate) => {
+      if (source.released) return Promise.reject(cancelled());
+      if (source.failure) return Promise.reject(source.failure);
+      if (!(pcm instanceof Float32Array) || !Number.isFinite(sampleRate) || sampleRate < 16e3 || sampleRate > 192e3 || pcm.length > sampleRate / 4)
+        return Promise.reject(new Error("Invalid or oversized VAD PCM chunk."));
+      if (source.pending.size >= this.maxPending) {
+        reset();
+        const error = new Error("VAD capture queue overloaded.");
+        options.onError(error);
+        return Promise.reject(error);
+      }
+      const request = ++this.requestId;
+      const copy = pcm.slice();
+      return new Promise((resolve, reject) => {
+        source.pending.set(request, { resolve, reject });
+        try {
+          this.send(
+            {
+              type: "pcm",
+              source: id2,
+              generation: source.generation,
+              request,
+              pcm: copy,
+              sampleRate
+            },
+            [copy.buffer]
+          );
+        } catch (error) {
+          this.fatal(error instanceof Error ? error : new Error("VAD worker send failed."));
+        }
+      });
+    };
+    try {
+      this.send({ type: "open", source: id2, generation: 0 });
+    } catch (error) {
+      this.sources.delete(id2);
+      this.fatal(error instanceof Error ? error : new Error("VAD worker initialization failed."));
+      throw error;
+    }
+    return {
+      get released() {
+        return source.released;
+      },
+      process,
+      ingest: (pcm, rate) => {
+        void process(pcm, rate).catch((error) => {
+          if (!source.released && !source.failure && error.name !== "AbortError" && error.message !== "VAD capture queue overloaded." && error.message !== "VAD inference queue overloaded.")
+            options.onError(error);
+        });
+      },
+      reset,
+      reportError: (error) => {
+        if (source.released || source.failure) return;
+        source.failure = error;
+        this.settle(source, error);
+        options.onError(error);
+      },
+      release: () => {
+        if (source.released) return;
+        source.released = true;
+        this.settle(source, cancelled());
+        this.sources.delete(id2);
+        if (this.worker) {
+          try {
+            this.send({ type: "release", source: id2, generation: source.generation });
+          } finally {
+            if (!this.sources.size) {
+              this.worker.terminate();
+              this.worker = void 0;
+            }
+          }
+        }
+      }
+    };
+  }
+};
+var sharedPool = new SileroVadPool();
+var acquireSileroVadStream = (options) => sharedPool.acquire(options);
+var captureLoads = /* @__PURE__ */ new WeakMap();
+async function attachSileroVadCapture(context, source, stream) {
+  if (!context.audioWorklet || typeof AudioWorkletNode !== "function")
+    throw new Error("AudioWorklet PCM capture is unavailable.");
+  let loading = captureLoads.get(context);
+  if (!loading) {
+    loading = context.audioWorklet.addModule(sileroVadAssetBase() + "vad.capture.js");
+    captureLoads.set(context, loading);
+    void loading.catch(() => {
+      if (captureLoads.get(context) === loading) captureLoads.delete(context);
+    });
+  }
+  await loading;
+  if (stream.released) throw cancelled();
+  const node = new AudioWorkletNode(context, "dsh-silero-vad-capture", {
+    numberOfInputs: 1,
+    numberOfOutputs: 1,
+    outputChannelCount: [1],
+    channelCount: 1,
+    channelCountMode: "explicit"
+  });
+  let released = false;
+  node.port.onmessage = (event) => {
+    if (!released && !stream.released) stream.ingest(event.data.pcm, event.data.sampleRate);
+  };
+  node.onprocessorerror = () => {
+    if (!released) stream.reportError(new Error("VAD AudioWorklet capture failed."));
+  };
+  try {
+    source.connect(node);
+    node.connect(context.destination);
+  } catch (error) {
+    try {
+      source.disconnect(node);
+    } catch {
+    }
+    node.port.close();
+    node.disconnect();
+    throw error;
+  }
+  return {
+    release() {
+      if (released) return;
+      released = true;
+      node.port.onmessage = null;
+      node.onprocessorerror = null;
+      node.port.postMessage({ type: "stop" });
+      node.port.close();
+      try {
+        source.disconnect(node);
+      } finally {
+        node.disconnect();
+      }
+    }
+  };
+}
+
 // src/modules/recognition/engines/whisper/WhisperRecognitionEngine.ts
 var ROUTE = "/api/dsh-live-voice/whisper";
 var id = () => globalThis.crypto.randomUUID();
@@ -6281,12 +6553,22 @@ var WhisperHttpRecognitionEngine = class {
   constructor({
     globals = globalThis,
     meter,
+    voiceDetectionEngine = defaultSettings.voiceDetectionEngine,
+    vadFactory = acquireSileroVadStream,
+    vadCapture = attachSileroVadCapture,
+    vadAvailable = () => sileroVadAvailable(globals.fetch),
+    vadErrorMessage = () => "Silero VAD is unavailable. Select energy detection or retry.",
     voiceDetectionPreset = defaultSettings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs = defaultSettings.voiceDetectionCustomSilenceMs,
     maxUtteranceSeconds = 60
   } = {}) {
     this.g = globals;
     this.meter = meter;
+    this.voiceDetectionEngine = voiceDetectionEngine;
+    this.vadFactory = vadFactory;
+    this.vadCapture = vadCapture;
+    this.vadAvailable = vadAvailable;
+    this.vadErrorMessage = vadErrorMessage;
     this.session = null;
     this.lang = "pt-BR";
     this.voiceDetectionPreset = voiceDetectionPreset;
@@ -6326,20 +6608,33 @@ var WhisperHttpRecognitionEngine = class {
     onProcessingChange
   } = {}) {
     await this.stop();
+    const startGeneration = this.startGeneration = (this.startGeneration || 0) + 1;
     if (signal?.aborted) throw abortError2();
     const context = this.meter?.context, source = this.meter?.source;
-    if (!context || !source || typeof context.createScriptProcessor !== "function")
+    const silero = this.voiceDetectionEngine === "silero" && await this.vadAvailable();
+    if (signal?.aborted || this.startGeneration !== startGeneration) throw abortError2();
+    if (!context || !source || !silero && typeof context.createScriptProcessor !== "function")
       throw new Error("This browser cannot capture PCM audio for Whisper HTTP.");
-    const processor = context.createScriptProcessor(4096, 1, 1), gain = context.createGain?.();
-    if (gain) {
-      gain.gain.value = 0;
-      processor.connect(gain);
-      gain.connect(context.destination);
-    } else processor.connect(context.destination);
+    const sampleRate = silero ? 16e3 : context.sampleRate;
+    const processor = silero ? null : context.createScriptProcessor(4096, 1, 1), gain = silero ? null : context.createGain?.();
+    if (processor) {
+      if (gain) {
+        gain.gain.value = 0;
+        processor.connect(gain);
+        gain.connect(context.destination);
+      } else processor.connect(context.destination);
+    }
     const session = {
       operation: id(),
       processor,
       gain,
+      detector: silero ? "silero" : "energy",
+      sampleRate,
+      vad: null,
+      capture: null,
+      preRoll: [],
+      speechSamples: 0,
+      finished: false,
       chunks: [],
       samples: 0,
       voiced: false,
@@ -6363,12 +6658,13 @@ var WhisperHttpRecognitionEngine = class {
       pending: session.transcriptionQueue.length + (session.activeRequest ? 1 : 0)
     });
     const enqueue = () => {
-      if (!session.voiced || session.samples < context.sampleRate * 0.25) {
+      if (!session.voiced || session.samples < sampleRate * 0.25 || silero && session.speechSamples < sampleRate * 0.25) {
         session.chunks = [];
         session.startedAt = null;
         session.samples = 0;
         session.voiced = false;
         session.silence = 0;
+        session.speechSamples = 0;
         return;
       }
       const samples = new Float32Array(session.samples);
@@ -6383,6 +6679,7 @@ var WhisperHttpRecognitionEngine = class {
       session.samples = 0;
       session.voiced = false;
       session.silence = 0;
+      session.speechSamples = 0;
       session.transcriptionQueue.push({ samples, startedAt });
       notifyProcessing();
       void drain();
@@ -6406,7 +6703,7 @@ var WhisperHttpRecognitionEngine = class {
                 "x-dlv-operation-id": id(),
                 "x-dlv-language": lang
               },
-              body: encodeMonoPcm16Wav(samples, context.sampleRate),
+              body: encodeMonoPcm16Wav(samples, sampleRate),
               signal: request.signal
             });
             const json = await response.json();
@@ -6426,51 +6723,125 @@ var WhisperHttpRecognitionEngine = class {
         notifyProcessing();
       }
     };
-    processor.onaudioprocess = (event) => {
-      if (!valid()) return;
-      const data = new Float32Array(event.inputBuffer.getChannelData(0)), rms = Math.sqrt(data.reduce((sum, x2) => sum + x2 * x2, 0) / data.length);
-      if (rms > 0.012) {
-        if (!session.voiced)
-          session.startedAt = Date.now() - Math.round(data.length / context.sampleRate * 1e3);
-        session.voiced = true;
-        session.silence = 0;
-        onActivity?.(true);
-      } else if (session.voiced) {
-        session.silence += data.length;
-        onActivity?.(false);
-      }
-      session.chunks.push(data);
-      session.samples += data.length;
-      if (session.voiced && session.silence > context.sampleRate * (this.segmentation.silenceMs / 1e3) || session.samples > context.sampleRate * this.maxUtteranceSeconds)
-        enqueue();
-    };
-    source.connect(processor);
+    if (!silero)
+      processor.onaudioprocess = (event) => {
+        if (!valid()) return;
+        const data = new Float32Array(event.inputBuffer.getChannelData(0)), rms = Math.sqrt(data.reduce((sum, x2) => sum + x2 * x2, 0) / data.length);
+        if (rms > 0.012) {
+          if (!session.voiced)
+            session.startedAt = Date.now() - Math.round(data.length / context.sampleRate * 1e3);
+          session.voiced = true;
+          session.silence = 0;
+          onActivity?.(true);
+        } else if (session.voiced) {
+          session.silence += data.length;
+          onActivity?.(false);
+        }
+        session.chunks.push(data);
+        session.samples += data.length;
+        if (session.voiced && session.silence > context.sampleRate * (this.segmentation.silenceMs / 1e3) || session.samples > context.sampleRate * this.maxUtteranceSeconds)
+          enqueue();
+      };
     session.finish = enqueue;
     session.abort = () => this.stop();
     signal?.addEventListener("abort", session.abort, { once: true });
+    if (signal?.aborted || !valid()) {
+      await this.stop();
+      throw abortError2();
+    }
+    if (!silero) {
+      source.connect(processor);
+      return;
+    }
+    const resetSegment = () => {
+      session.chunks = [];
+      session.samples = session.silence = session.speechSamples = 0;
+      session.preRoll = [];
+      session.voiced = false;
+      session.startedAt = null;
+      onActivity?.(false);
+    };
+    const failVad = (error) => {
+      if (!valid() || session.finished) return;
+      void this.stop();
+      onActivity?.(false);
+      onError?.(new Error(this.vadErrorMessage(error)));
+    };
+    try {
+      const vad = this.vadFactory({
+        onReset: () => {
+          if (valid()) resetSegment();
+        },
+        onError: failVad,
+        onProbability: ({ probability, pcm }) => {
+          if (!valid() || session.finished) return;
+          const active = probability >= (session.voiced ? 0.35 : 0.5);
+          if (!session.voiced && !active) {
+            session.preRoll.push(pcm);
+            if (session.preRoll.length > 10) session.preRoll.shift();
+            return;
+          }
+          if (!session.voiced) {
+            session.chunks = session.preRoll;
+            session.preRoll = [];
+            session.samples = session.chunks.reduce((n, frame) => n + frame.length, 0);
+            session.startedAt = Date.now() - Math.round((session.samples + pcm.length) / sampleRate * 1e3);
+            session.voiced = true;
+          }
+          if (active) {
+            session.speechSamples += pcm.length;
+            session.silence = 0;
+          } else session.silence += pcm.length;
+          onActivity?.(active);
+          session.chunks.push(pcm);
+          session.samples += pcm.length;
+          if (session.silence > sampleRate * (this.segmentation.silenceMs / 1e3) || session.samples > sampleRate * this.maxUtteranceSeconds)
+            enqueue();
+        }
+      });
+      session.vad = vad;
+      const capture = await this.vadCapture(context, source, vad);
+      if (!valid()) {
+        capture.release();
+        vad.release();
+        throw abortError2();
+      }
+      session.capture = capture;
+    } catch (error) {
+      if (this.session === session) await this.stop();
+      if (error.name === "AbortError" || signal?.aborted) throw abortError2();
+      throw new Error(this.vadErrorMessage(error));
+    }
   }
   finish() {
     const session = this.session;
     if (!session) return;
-    session.processor.onaudioprocess = null;
+    session.finished = true;
+    session.capture?.release();
+    session.vad?.release();
+    if (session.processor) session.processor.onaudioprocess = null;
     try {
-      this.meter?.source?.disconnect(session.processor);
+      if (session.processor) this.meter?.source?.disconnect(session.processor);
     } catch {
     }
     session.finish?.();
   }
   async stop() {
+    this.startGeneration = (this.startGeneration || 0) + 1;
     const session = this.session;
     if (!session) return;
     this.session = null;
     session.signal?.removeEventListener("abort", session.abort);
-    session.processor.onaudioprocess = null;
+    session.finished = true;
+    session.capture?.release();
+    session.vad?.release();
+    if (session.processor) session.processor.onaudioprocess = null;
     try {
-      this.meter?.source?.disconnect(session.processor);
+      if (session.processor) this.meter?.source?.disconnect(session.processor);
     } catch {
     }
     try {
-      session.processor.disconnect();
+      session.processor?.disconnect();
       session.gain?.disconnect();
     } catch {
     }
@@ -6512,7 +6883,7 @@ var QwenHttpRecognitionEngine = class extends WhisperHttpRecognitionEngine {
 };
 
 // src/modules/speak/engines/audio/HostAudioEngine.ts
-var cancelled = () => Object.assign(new Error("Speech was cancelled."), { name: "AbortError" });
+var cancelled2 = () => Object.assign(new Error("Speech was cancelled."), { name: "AbortError" });
 var HostAudioSpeakingEngine = class {
   constructor({
     endpoint,
@@ -6562,7 +6933,7 @@ var HostAudioSpeakingEngine = class {
   }
   async prepare(text, { voice, lang = this.lang, rate = 1, signal } = {}) {
     if (typeof text !== "string") throw new TypeError("Speech text must be a string.");
-    if (signal?.aborted) throw cancelled();
+    if (signal?.aborted) throw cancelled2();
     const controller = new AbortController();
     const cancel = () => controller.abort();
     signal?.addEventListener("abort", cancel, { once: true });
@@ -6584,7 +6955,7 @@ var HostAudioSpeakingEngine = class {
           body?.error?.message || "Host speech synthesis failed (" + response.status + ")."
         );
       }
-      if (controller.signal.aborted) throw cancelled();
+      if (controller.signal.aborted) throw cancelled2();
       const blob = await response.blob();
       if (blob.type && blob.type !== this.audioFormat)
         throw new Error("Host speech returned an unsupported audio format.");
@@ -6601,7 +6972,7 @@ var HostAudioSpeakingEngine = class {
         }
       };
     } catch (error) {
-      if (controller.signal.aborted && error?.name !== "AbortError") throw cancelled();
+      if (controller.signal.aborted && error?.name !== "AbortError") throw cancelled2();
       throw error;
     } finally {
       signal?.removeEventListener("abort", cancel);
@@ -6612,7 +6983,7 @@ var HostAudioSpeakingEngine = class {
     const playbackRate = this.playbackRate(rate);
     if (!prepared?.audio) throw new TypeError("Prepared speech audio is required.");
     await this.stop();
-    if (signal?.aborted) throw cancelled();
+    if (signal?.aborted) throw cancelled2();
     const operation = { prepared, audio: prepared.audio };
     this.current = operation;
     const audio = operation.audio;
@@ -6643,7 +7014,7 @@ var HostAudioSpeakingEngine = class {
       const aborted = () => {
         audio.pause();
         cleanup();
-        reject(cancelled());
+        reject(cancelled2());
       };
       operation.cancel = aborted;
       audio.addEventListener("playing", started, { once: true });
@@ -6884,7 +7255,7 @@ function createDeviceOptions(devices, kind, systemDefault, fallback) {
 var import_react32 = __toESM(require("react"), 1);
 
 // src/modules/settings/services/releases.ts
-var CURRENT_VERSION = "0.4.1";
+var CURRENT_VERSION = "0.4.2";
 var TESTED_DSH_VERSION = "0.2.1-alpha.2";
 var REPOSITORY_URL = "https://github.com/victorwads/dsh-live-voice";
 var RELEASES_URL = `${REPOSITORY_URL}/releases`;
@@ -7495,6 +7866,16 @@ var import_react46 = __toESM(require("react"), 1);
 var import_react43 = __toESM(require("react"), 1);
 function SilenceDetectionSettings({ settings, updateSettings }) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
+  const [sileroAvailable, setSileroAvailable] = import_react43.default.useState(false);
+  import_react43.default.useEffect(() => {
+    let current = true;
+    void sileroVadAvailable().then((available) => {
+      if (current) setSileroAvailable(available);
+    });
+    return () => {
+      current = false;
+    };
+  }, []);
   const savedCustomMs = normalizeCustomSilenceMs(settings.voiceDetectionCustomSilenceMs);
   if (!usesPluginVoiceDetection(settings.recognitionEngine)) return null;
   const selected = settings.voiceDetectionPreset || defaultSettings.voiceDetectionPreset;
@@ -7506,6 +7887,22 @@ function SilenceDetectionSettings({ settings, updateSettings }) {
       icon: "pause"
     },
     /* @__PURE__ */ import_react43.default.createElement("p", null, recognition.silenceDetection.help()),
+    /* @__PURE__ */ import_react43.default.createElement(
+      SelectField,
+      {
+        label: recognition.silenceDetection.detector.label(),
+        value: settings.voiceDetectionEngine === "silero" ? "silero" : "energy",
+        options: [
+          { value: "energy", label: recognition.silenceDetection.detector.energy() },
+          {
+            value: "silero",
+            label: recognition.silenceDetection.detector.silero(),
+            disabled: !sileroAvailable
+          }
+        ],
+        onChange: (event) => updateSettings({ voiceDetectionEngine: event.target.value })
+      }
+    ),
     /* @__PURE__ */ import_react43.default.createElement(
       NumberField,
       {
@@ -8276,6 +8673,7 @@ function readCoordinatorDiagnostics(controller, includeContent = false) {
   const publicSettings = /* @__PURE__ */ new Set([
     "engine",
     "recognitionEngine",
+    "voiceDetectionEngine",
     "voiceDetectionPreset",
     "sendingMode",
     "dshBusyEnterBehavior",
@@ -8427,8 +8825,13 @@ function apply(ctx) {
       return { meter, engine: recognitionFor(settings, meter) };
     }
   });
-  const unsubscribeMeetingDelivery = meeting.subscribe(() => meetingEntry?.controller.refreshDeliveryReadiness());
-  ctx.effect(() => () => unsubscribeMeetingDelivery(), "dsh-live-voice: remove meeting delivery subscription");
+  const unsubscribeMeetingDelivery = meeting.subscribe(
+    () => meetingEntry?.controller.refreshDeliveryReadiness()
+  );
+  ctx.effect(
+    () => () => unsubscribeMeetingDelivery(),
+    "dsh-live-voice: remove meeting delivery subscription"
+  );
   const diagnosticListeners = /* @__PURE__ */ new Set();
   const notifyDiagnostics = () => {
     for (const listener of diagnosticListeners) {
@@ -8490,6 +8893,7 @@ function apply(ctx) {
     "inputDeviceId",
     "recognitionProcessLocally",
     "recognitionAutoInstall",
+    "voiceDetectionEngine",
     "voiceDetectionPreset",
     "voiceDetectionCustomSilenceMs",
     "recognitionMaxUtteranceSeconds"
@@ -8497,11 +8901,19 @@ function apply(ctx) {
   const changesRecognition = (next) => Object.keys(next).some((key) => recognitionSettingKeys.has(key));
   const recognitionFor = (settings, meter) => settings.recognitionEngine === "qwen-http" ? new QwenHttpRecognitionEngine({
     meter,
+    vadErrorMessage: (error) => t(
+      "dsh-live-voice.recognition.silero.error." + (error?.code === "overloaded" ? "overloaded" : "failed")
+    ),
+    voiceDetectionEngine: settings.voiceDetectionEngine,
     voiceDetectionPreset: settings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
     maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds
   }) : settings.recognitionEngine === "whisper-http" ? new WhisperHttpRecognitionEngine({
     meter,
+    vadErrorMessage: (error) => t(
+      "dsh-live-voice.recognition.silero.error." + (error?.code === "overloaded" ? "overloaded" : "failed")
+    ),
+    voiceDetectionEngine: settings.voiceDetectionEngine,
     voiceDetectionPreset: settings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
     maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds
@@ -8612,7 +9024,10 @@ function apply(ctx) {
         appendFinal: (text, startedAt) => {
           meeting.cancelDelivery();
           if (meetingEntry === entry && (entry.meeting?.getSnapshot().shared.listening || entry.controller.getSnapshot().timestamps)) {
-            meeting.transcript.setSourceTimestamps("microphone", !!entry.controller.getSnapshot().timestamps);
+            meeting.transcript.setSourceTimestamps(
+              "microphone",
+              !!entry.controller.getSnapshot().timestamps
+            );
             entry.meeting.transcript.append("microphone", text, startedAt);
             return entry.draft;
           }
@@ -8792,7 +9207,13 @@ function apply(ctx) {
         return result;
       };
     }
-    for (const method of ["startDictation", "startHoldToTalk", "startConversation", "takeMicrophone", "speak"]) {
+    for (const method of [
+      "startDictation",
+      "startHoldToTalk",
+      "startConversation",
+      "takeMicrophone",
+      "speak"
+    ]) {
       const original = controller[method].bind(controller);
       controller[method] = (...args) => {
         if (disposed || entry.closed || !entry.refs) return Promise.resolve();

@@ -153,6 +153,12 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     'Introduce un número entero de 100 a 10.000 ms. Se guarda al salir del campo. Las pausas cortas pueden dividir el habla; el reconocimiento añade su propia latencia.',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'Pausa personalizada (milisegundos)',
+  'dsh-live-voice.recognition.silenceDetection.detector.energy':
+    'Energía del audio — opción predeterminada actual',
+  'dsh-live-voice.recognition.silenceDetection.detector.label':
+    'Detector de voz',
+  'dsh-live-voice.recognition.silenceDetection.detector.silero':
+    'Silero — experimental (activación opcional)',
   'dsh-live-voice.recognition.silenceDetection.duration':
     'Pausa antes de enviar: {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.help':
@@ -160,6 +166,12 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.label': 'Detección de silencio',
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'Pausa antes de enviar',
   'dsh-live-voice.recognition.silenceDetection.title': 'Configuración de detección de silencio',
+  'dsh-live-voice.recognition.silero.error.failed':
+    'La detección de voz Silero falló. Selecciona Energía del audio en la configuración o vuelve a intentar la captura.',
+  'dsh-live-voice.recognition.silero.error.overloaded':
+    'La detección de voz Silero está sobrecargada. Reinicia la captura o selecciona Energía del audio en la configuración.',
+  'dsh-live-voice.recognition.silero.error.unavailable':
+    'La detección de voz Silero no está disponible. Selecciona Energía del audio en la configuración o vuelve a intentar la captura.',
   'dsh-live-voice.recognition.speakerMode.help':
     'La reproducción libera el micrófono para reducir el retorno de los altavoces. Tomar micrófono interrumpe manualmente; participantes reconocidos sin eco en el audio compartido pueden pausar la reproducción, que se reanuda tras silencio estable.',
   'dsh-live-voice.recognition.speakerMode.label': 'Altavoces — escucha controlada',

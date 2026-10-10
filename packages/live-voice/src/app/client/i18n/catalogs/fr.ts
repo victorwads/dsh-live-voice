@@ -157,12 +157,24 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     'Saisissez un entier de 100 à 10 000 ms. Enregistré en quittant le champ. Les pauses courtes peuvent couper la parole ; la reconnaissance ajoute sa propre latence.',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'Pause personnalisée (millisecondes)',
+  'dsh-live-voice.recognition.silenceDetection.detector.energy':
+    'Énergie audio — choix actuel par défaut',
+  'dsh-live-voice.recognition.silenceDetection.detector.label':
+    'Détecteur vocal',
+  'dsh-live-voice.recognition.silenceDetection.detector.silero':
+    'Silero — expérimental (activation facultative)',
   'dsh-live-voice.recognition.silenceDetection.duration': 'Pause avant l’envoi : {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.help':
     'Détermine la durée de pause nécessaire avant que la parole capturée soit envoyée pour reconnaissance.',
   'dsh-live-voice.recognition.silenceDetection.label': 'Détection du silence',
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'Pause avant l’envoi',
   'dsh-live-voice.recognition.silenceDetection.title': 'Paramètres de détection du silence',
+  'dsh-live-voice.recognition.silero.error.failed':
+    'La détection vocale Silero a échoué. Sélectionnez Énergie audio dans les paramètres ou réessayez la capture.',
+  'dsh-live-voice.recognition.silero.error.overloaded':
+    'La détection vocale Silero est surchargée. Redémarrez la capture ou sélectionnez Énergie audio dans les paramètres.',
+  'dsh-live-voice.recognition.silero.error.unavailable':
+    'La détection vocale Silero est indisponible. Sélectionnez Énergie audio dans les paramètres ou réessayez la capture.',
   'dsh-live-voice.recognition.speakerMode.help':
     'La lecture libère le microphone pour réduire le retour des haut-parleurs. Prendre le microphone interrompt manuellement ; les participants reconnus sans écho dans le son partagé peuvent mettre la lecture en pause, puis elle reprend après un silence stable.',
   'dsh-live-voice.recognition.speakerMode.label': 'Haut-parleurs — écoute contrôlée',

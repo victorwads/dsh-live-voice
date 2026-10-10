@@ -64,6 +64,7 @@ var defaultSettings = Object.freeze({
   recognitionEngine: "browser",
   recognitionProcessLocally: true,
   recognitionAutoInstall: true,
+  voiceDetectionEngine: "energy",
   voiceDetectionPreset: "short",
   voiceDetectionCustomSilenceMs: 1e3,
   recognitionMaxUtteranceSeconds: 60,
@@ -110,6 +111,7 @@ function normalizeSettings(value) {
     recognitionEngine: ["browser", "whisper-http", "qwen-http"].includes(source.recognitionEngine) ? source.recognitionEngine : defaultSettings.recognitionEngine,
     recognitionProcessLocally: typeof source.recognitionProcessLocally === "boolean" ? source.recognitionProcessLocally : defaultSettings.recognitionProcessLocally,
     recognitionAutoInstall: typeof source.recognitionAutoInstall === "boolean" ? source.recognitionAutoInstall : defaultSettings.recognitionAutoInstall,
+    voiceDetectionEngine: source.voiceDetectionEngine === "silero" ? "silero" : "energy",
     voiceDetectionPreset: source.voiceDetectionPreset === "custom" || Object.hasOwn(voiceDetectionPresets, source.voiceDetectionPreset) ? source.voiceDetectionPreset : defaultSettings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs: normalizeCustomSilenceMs(source.voiceDetectionCustomSilenceMs),
     recognitionMaxUtteranceSeconds: Number.isInteger(source.recognitionMaxUtteranceSeconds) && source.recognitionMaxUtteranceSeconds >= 10 && source.recognitionMaxUtteranceSeconds <= 300 ? source.recognitionMaxUtteranceSeconds : defaultSettings.recognitionMaxUtteranceSeconds,
@@ -958,6 +960,112 @@ function registerSettingsRoute(ctx, store) {
 }
 var APP_VOICE_CONTEXT_PATH = API_ROOT + "/voice-context";
 
+// src/app/server/vadAssets.ts
+import { lstat, readFile as readFile4 } from "node:fs/promises";
+import { join as join6 } from "node:path";
+import { fileURLToPath } from "node:url";
+var VAD_ASSET_TYPES = {
+  "vad.worker.js": "text/javascript; charset=utf-8",
+  "vad.capture.js": "text/javascript; charset=utf-8",
+  "silero_vad_v5.onnx": "application/octet-stream",
+  "ort-wasm-simd-threaded.mjs": "text/javascript; charset=utf-8",
+  "ort-wasm-simd-threaded.wasm": "application/wasm",
+  "LICENSE.silero.txt": "text/plain; charset=utf-8",
+  "LICENSE.onnxruntime.txt": "text/plain; charset=utf-8",
+  "LICENSE.vad-web.txt": "text/plain; charset=utf-8",
+  "manifest.json": "application/json; charset=utf-8"
+};
+var MAX_VAD_ASSET_BYTES = 32 * 1024 * 1024;
+function registerVadAssetRoutes(ctx, options = {}) {
+  const version = options.version ?? (true ? "0.4.2" : "test");
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9.+-]{0,127}$/.test(version))
+    throw new Error("Invalid VAD asset version");
+  const directory = options.directory ?? fileURLToPath(new URL("./vad/", import.meta.url));
+  const base = "/api/dsh-live-voice/vad/" + encodeURIComponent(version) + "/";
+  const disposers = [];
+  const availabilityPath = base + "availability";
+  const required = [
+    "vad.worker.js",
+    "vad.capture.js",
+    "silero_vad_v5.onnx",
+    "ort-wasm-simd-threaded.mjs",
+    "ort-wasm-simd-threaded.wasm"
+  ];
+  disposers.push(
+    ctx.connection.fetch.register({
+      path: availabilityPath,
+      methods: ["GET"],
+      requestBody: "buffered",
+      fetch: async (request) => {
+        if (new URL(request.url).pathname !== availabilityPath)
+          return new Response(null, { status: 404 });
+        if (request.method !== "GET") return new Response(null, { status: 405 });
+        let available = false;
+        try {
+          const stats = await Promise.all(required.map((name2) => lstat(join6(directory, name2))));
+          available = stats.every(
+            (stat) => stat.isFile() && stat.size > 0 && stat.size <= MAX_VAD_ASSET_BYTES
+          );
+        } catch {
+        }
+        return Response.json({ available }, { headers: { "cache-control": "no-store" } });
+      }
+    })
+  );
+  try {
+    for (const [filename, mime] of Object.entries(VAD_ASSET_TYPES)) {
+      const path = base + filename;
+      disposers.push(
+        ctx.connection.fetch.register({
+          path,
+          methods: ["GET"],
+          requestBody: "buffered",
+          fetch: async (request) => {
+            if (new URL(request.url).pathname !== path)
+              return new Response("not found", { status: 404 });
+            if (request.method !== "GET")
+              return new Response("method not allowed", {
+                status: 405,
+                headers: { allow: "GET" }
+              });
+            try {
+              const target = join6(directory, filename);
+              const stat = await lstat(target);
+              if (!stat.isFile() || stat.size > MAX_VAD_ASSET_BYTES)
+                throw new Error("Invalid asset");
+              const bytes = await readFile4(target);
+              if (bytes.byteLength > MAX_VAD_ASSET_BYTES) throw new Error("Invalid asset");
+              return new Response(new Uint8Array(bytes), {
+                headers: {
+                  "content-type": mime,
+                  "content-length": String(bytes.byteLength),
+                  "cache-control": "private, max-age=31536000, immutable",
+                  "x-content-type-options": "nosniff",
+                  "cross-origin-resource-policy": "same-origin"
+                }
+              });
+            } catch {
+              return new Response("VAD asset unavailable", {
+                status: 404,
+                headers: { "cache-control": "no-store" }
+              });
+            }
+          }
+        })
+      );
+    }
+  } catch (error) {
+    for (const dispose of disposers) void dispose();
+    throw error;
+  }
+  ctx.effect(
+    () => () => {
+      for (const dispose of disposers) void dispose();
+    },
+    "dsh-live-voice: remove VAD asset routes"
+  );
+}
+
 // src/app/server/apply.ts
 var name = "dsh-live-voice";
 var inject = ["connection", "systemPrompt"];
@@ -1064,6 +1172,7 @@ function apply(ctx, {
   encodeHostSpeech = wavToM4aAac
 } = {}) {
   registerSettingsRoute(ctx, settingsStore);
+  registerVadAssetRoutes(ctx);
   ctx.systemPrompt.variable(
     "live_voice_context",
     (assemblyContext) => voiceContextStore.get(String(assemblyContext.agent?.sessionId || ""))

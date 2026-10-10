@@ -139,12 +139,24 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     '请输入 100 至 10,000 ms 的整数。离开输入框时保存。短停顿可能切分语音；识别还需要额外时间。',
   'dsh-live-voice.recognition.silenceDetection.customLabel': '自定义停顿（毫秒）',
+  'dsh-live-voice.recognition.silenceDetection.detector.energy':
+    '音频能量 — 当前默认选项',
+  'dsh-live-voice.recognition.silenceDetection.detector.label':
+    '语音检测器',
+  'dsh-live-voice.recognition.silenceDetection.detector.silero':
+    'Silero — 实验性（需主动启用）',
   'dsh-live-voice.recognition.silenceDetection.duration': '发送前停顿：{milliseconds} 毫秒',
   'dsh-live-voice.recognition.silenceDetection.help':
     '设置停顿持续多久后，将采集的语音发送进行识别。',
   'dsh-live-voice.recognition.silenceDetection.label': '静音检测',
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': '发送前停顿',
   'dsh-live-voice.recognition.silenceDetection.title': '静音检测设置',
+  'dsh-live-voice.recognition.silero.error.failed':
+    'Silero 语音检测失败。请在设置中选择音频能量，或重试采集。',
+  'dsh-live-voice.recognition.silero.error.overloaded':
+    'Silero 语音检测负载过高。请重新启动采集，或在设置中选择音频能量。',
+  'dsh-live-voice.recognition.silero.error.unavailable':
+    'Silero 语音检测不可用。请在设置中选择音频能量，或重试采集。',
   'dsh-live-voice.recognition.speakerMode.help':
     '播放时释放麦克风以减少扬声器反馈。接管麦克风可手动打断；共享会议音频中识别到的非回声参与者语音也可暂停播放，持续静音后恢复。',
   'dsh-live-voice.recognition.speakerMode.label': '扬声器 — 门控聆听',

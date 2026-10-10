@@ -1,5 +1,7 @@
 // @ts-nocheck
+import { sileroVadAvailable } from '../../vad/assets.js';
 import { defaultSettings, voiceDetectionSilenceMs } from '../../../core/settings.js';
+import { acquireSileroVadStream, attachSileroVadCapture } from '../../vad/SileroVadRuntime.js';
 
 const ROUTE = '/api/dsh-live-voice/whisper';
 const id = () => globalThis.crypto.randomUUID();
@@ -42,12 +44,22 @@ export class WhisperHttpRecognitionEngine {
   constructor({
     globals = globalThis,
     meter,
+    voiceDetectionEngine = defaultSettings.voiceDetectionEngine,
+    vadFactory = acquireSileroVadStream,
+    vadCapture = attachSileroVadCapture,
+    vadAvailable = () => sileroVadAvailable(globals.fetch),
+    vadErrorMessage = () => 'Silero VAD is unavailable. Select energy detection or retry.',
     voiceDetectionPreset = defaultSettings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs = defaultSettings.voiceDetectionCustomSilenceMs,
     maxUtteranceSeconds = 60,
   } = {}) {
     this.g = globals;
     this.meter = meter;
+    this.voiceDetectionEngine = voiceDetectionEngine;
+    this.vadFactory = vadFactory;
+    this.vadCapture = vadCapture;
+    this.vadAvailable = vadAvailable;
+    this.vadErrorMessage = vadErrorMessage;
     this.session = null;
     this.lang = 'pt-BR';
     this.voiceDetectionPreset = voiceDetectionPreset;
@@ -90,22 +102,35 @@ export class WhisperHttpRecognitionEngine {
     onProcessingChange,
   } = {}) {
     await this.stop();
+    const startGeneration = this.startGeneration = (this.startGeneration || 0) + 1;
     if (signal?.aborted) throw abortError();
     const context = this.meter?.context,
       source = this.meter?.source;
-    if (!context || !source || typeof context.createScriptProcessor !== 'function')
+    const silero = this.voiceDetectionEngine === 'silero' && (await this.vadAvailable());
+    if (signal?.aborted || this.startGeneration !== startGeneration) throw abortError();
+    if (!context || !source || (!silero && typeof context.createScriptProcessor !== 'function'))
       throw new Error('This browser cannot capture PCM audio for Whisper HTTP.');
-    const processor = context.createScriptProcessor(4096, 1, 1),
-      gain = context.createGain?.();
-    if (gain) {
-      gain.gain.value = 0;
-      processor.connect(gain);
-      gain.connect(context.destination);
-    } else processor.connect(context.destination);
+    const sampleRate = silero ? 16000 : context.sampleRate;
+    const processor = silero ? null : context.createScriptProcessor(4096, 1, 1),
+      gain = silero ? null : context.createGain?.();
+    if (processor) {
+      if (gain) {
+        gain.gain.value = 0;
+        processor.connect(gain);
+        gain.connect(context.destination);
+      } else processor.connect(context.destination);
+    }
     const session = {
       operation: id(),
       processor,
       gain,
+      detector: silero ? 'silero' : 'energy',
+      sampleRate,
+      vad: null,
+      capture: null,
+      preRoll: [],
+      speechSamples: 0,
+      finished: false,
       chunks: [],
       samples: 0,
       voiced: false,
@@ -130,12 +155,17 @@ export class WhisperHttpRecognitionEngine {
         pending: session.transcriptionQueue.length + (session.activeRequest ? 1 : 0),
       });
     const enqueue = () => {
-      if (!session.voiced || session.samples < context.sampleRate * 0.25) {
+      if (
+        !session.voiced ||
+        session.samples < sampleRate * 0.25 ||
+        (silero && session.speechSamples < sampleRate * 0.25)
+      ) {
         session.chunks = [];
         session.startedAt = null;
         session.samples = 0;
         session.voiced = false;
         session.silence = 0;
+        session.speechSamples = 0;
         return;
       }
       const samples = new Float32Array(session.samples);
@@ -150,6 +180,7 @@ export class WhisperHttpRecognitionEngine {
       session.samples = 0;
       session.voiced = false;
       session.silence = 0;
+      session.speechSamples = 0;
       session.transcriptionQueue.push({ samples, startedAt });
       notifyProcessing();
       void drain();
@@ -173,7 +204,7 @@ export class WhisperHttpRecognitionEngine {
                 'x-dlv-operation-id': id(),
                 'x-dlv-language': lang,
               },
-              body: encodeMonoPcm16Wav(samples, context.sampleRate),
+              body: encodeMonoPcm16Wav(samples, sampleRate),
               signal: request.signal,
             });
             const json = await response.json();
@@ -193,54 +224,133 @@ export class WhisperHttpRecognitionEngine {
         notifyProcessing();
       }
     };
-    processor.onaudioprocess = (event) => {
-      if (!valid()) return;
-      const data = new Float32Array(event.inputBuffer.getChannelData(0)),
-        rms = Math.sqrt(data.reduce((sum, x) => sum + x * x, 0) / data.length);
-      if (rms > 0.012) {
-        if (!session.voiced)
-          session.startedAt = Date.now() - Math.round((data.length / context.sampleRate) * 1000);
-        session.voiced = true;
-        session.silence = 0;
-        onActivity?.(true);
-      } else if (session.voiced) {
-        session.silence += data.length;
-        onActivity?.(false);
-      }
-      session.chunks.push(data);
-      session.samples += data.length;
-      if (
-        (session.voiced &&
-          session.silence > context.sampleRate * (this.segmentation.silenceMs / 1000)) ||
-        session.samples > context.sampleRate * this.maxUtteranceSeconds
-      )
-        enqueue();
-    };
-    source.connect(processor);
+    if (!silero)
+      processor.onaudioprocess = (event) => {
+        if (!valid()) return;
+        const data = new Float32Array(event.inputBuffer.getChannelData(0)),
+          rms = Math.sqrt(data.reduce((sum, x) => sum + x * x, 0) / data.length);
+        if (rms > 0.012) {
+          if (!session.voiced)
+            session.startedAt = Date.now() - Math.round((data.length / context.sampleRate) * 1000);
+          session.voiced = true;
+          session.silence = 0;
+          onActivity?.(true);
+        } else if (session.voiced) {
+          session.silence += data.length;
+          onActivity?.(false);
+        }
+        session.chunks.push(data);
+        session.samples += data.length;
+        if (
+          (session.voiced &&
+            session.silence > context.sampleRate * (this.segmentation.silenceMs / 1000)) ||
+          session.samples > context.sampleRate * this.maxUtteranceSeconds
+        )
+          enqueue();
+      };
     session.finish = enqueue;
     session.abort = () => this.stop();
     signal?.addEventListener('abort', session.abort, { once: true });
+    if (signal?.aborted || !valid()) {
+      await this.stop();
+      throw abortError();
+    }
+    if (!silero) {
+      source.connect(processor);
+      return;
+    }
+    const resetSegment = () => {
+      session.chunks = [];
+      session.samples = session.silence = session.speechSamples = 0;
+      session.preRoll = [];
+      session.voiced = false;
+      session.startedAt = null;
+      onActivity?.(false);
+    };
+    const failVad = (error) => {
+      if (!valid() || session.finished) return;
+      void this.stop();
+      onActivity?.(false);
+      onError?.(new Error(this.vadErrorMessage(error)));
+    };
+    try {
+      const vad = this.vadFactory({
+        onReset: () => {
+          if (valid()) resetSegment();
+        },
+        onError: failVad,
+        onProbability: ({ probability, pcm }) => {
+          if (!valid() || session.finished) return;
+          // Hysteresis and a bounded 320 ms pre-roll are isolated per source.
+          const active = probability >= (session.voiced ? 0.35 : 0.5);
+          if (!session.voiced && !active) {
+            session.preRoll.push(pcm);
+            if (session.preRoll.length > 10) session.preRoll.shift();
+            return;
+          }
+          if (!session.voiced) {
+            session.chunks = session.preRoll;
+            session.preRoll = [];
+            session.samples = session.chunks.reduce((n, frame) => n + frame.length, 0);
+            session.startedAt =
+              Date.now() - Math.round(((session.samples + pcm.length) / sampleRate) * 1000);
+            session.voiced = true;
+          }
+          if (active) {
+            session.speechSamples += pcm.length;
+            session.silence = 0;
+          } else session.silence += pcm.length;
+          onActivity?.(active);
+          session.chunks.push(pcm);
+          session.samples += pcm.length;
+          if (
+            session.silence > sampleRate * (this.segmentation.silenceMs / 1000) ||
+            session.samples > sampleRate * this.maxUtteranceSeconds
+          )
+            enqueue();
+        },
+      });
+      session.vad = vad;
+      const capture = await this.vadCapture(context, source, vad);
+      if (!valid()) {
+        capture.release();
+        vad.release();
+        throw abortError();
+      }
+      session.capture = capture;
+    } catch (error) {
+      if (this.session === session) await this.stop();
+      if (error.name === 'AbortError' || signal?.aborted) throw abortError();
+      throw new Error(this.vadErrorMessage(error));
+    }
   }
   finish() {
     const session = this.session;
     if (!session) return;
-    session.processor.onaudioprocess = null;
+    session.finished = true;
+    session.capture?.release();
+    session.vad?.release();
+    if (session.processor) session.processor.onaudioprocess = null;
     try {
-      this.meter?.source?.disconnect(session.processor);
+      if (session.processor) this.meter?.source?.disconnect(session.processor);
     } catch {}
     session.finish?.();
   }
   async stop() {
+    this.startGeneration = (this.startGeneration || 0) + 1;
     const session = this.session;
     if (!session) return;
     this.session = null;
     session.signal?.removeEventListener('abort', session.abort);
-    session.processor.onaudioprocess = null;
+    session.finished = true;
+    session.capture?.release();
+    session.vad?.release();
+    if (session.processor) session.processor.onaudioprocess = null;
     try {
-      this.meter?.source?.disconnect(session.processor);
+      if (session.processor) this.meter?.source?.disconnect(session.processor);
     } catch {}
     try {
-      session.processor.disconnect();
+      session.processor?.disconnect();
       session.gain?.disconnect();
     } catch {}
     session.transcriptionQueue = [];

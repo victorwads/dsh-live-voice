@@ -145,12 +145,24 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     'Enter a whole number from 100 to 10,000 ms. Saved when you leave the field. Short pauses may split speech; recognition adds its own latency.',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'Custom pause (milliseconds)',
+  'dsh-live-voice.recognition.silenceDetection.detector.energy':
+    'Audio energy — current default',
+  'dsh-live-voice.recognition.silenceDetection.detector.label':
+    'Voice detector',
+  'dsh-live-voice.recognition.silenceDetection.detector.silero':
+    'Silero — experimental (opt-in)',
   'dsh-live-voice.recognition.silenceDetection.duration': 'Pause before sending: {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.help':
     'Controls how long a pause must last before captured speech is sent for recognition.',
   'dsh-live-voice.recognition.silenceDetection.label': 'Silence detection',
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'Pause before sending',
   'dsh-live-voice.recognition.silenceDetection.title': 'Silence detection settings',
+  'dsh-live-voice.recognition.silero.error.failed':
+    'Silero voice detection failed. Select Audio energy in settings or retry capture.',
+  'dsh-live-voice.recognition.silero.error.overloaded':
+    'Silero voice detection is overloaded. Restart capture or select Audio energy in settings.',
+  'dsh-live-voice.recognition.silero.error.unavailable':
+    'Silero voice detection is unavailable. Select Audio energy in settings or retry capture.',
   'dsh-live-voice.recognition.speakerMode.help':
     'Playback releases the microphone to reduce speaker feedback. Take microphone interrupts manually; recognized non-echo participants in shared meeting audio can pause playback and it resumes after stable silence.',
   'dsh-live-voice.recognition.speakerMode.label': 'Speakers — gated listening',

@@ -31,6 +31,7 @@ export function readCoordinatorDiagnostics(
   const publicSettings = new Set([
     'engine',
     'recognitionEngine',
+    'voiceDetectionEngine',
     'voiceDetectionPreset',
     'sendingMode',
     'dshBusyEnterBehavior',

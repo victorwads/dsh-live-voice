@@ -148,6 +148,12 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     'Insira um número inteiro de 100 a 10.000 ms. Salvo ao sair do campo. Pausas curtas podem dividir a fala; o reconhecimento acrescenta sua própria latência.',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'Pausa personalizada (milissegundos)',
+  'dsh-live-voice.recognition.silenceDetection.detector.energy':
+    'Energia do áudio — padrão atual',
+  'dsh-live-voice.recognition.silenceDetection.detector.label':
+    'Detector de voz',
+  'dsh-live-voice.recognition.silenceDetection.detector.silero':
+    'Silero — experimental (ativação opcional)',
   'dsh-live-voice.recognition.silenceDetection.duration':
     'Pausa antes de enviar: {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.help':
@@ -155,6 +161,12 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.label': 'Detecção de silêncio',
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'Pausa antes de enviar',
   'dsh-live-voice.recognition.silenceDetection.title': 'Configurações de detecção de silêncio',
+  'dsh-live-voice.recognition.silero.error.failed':
+    'A detecção de voz Silero falhou. Selecione Energia do áudio nas configurações ou tente iniciar a captura novamente.',
+  'dsh-live-voice.recognition.silero.error.overloaded':
+    'A detecção de voz Silero está sobrecarregada. Reinicie a captura ou selecione Energia do áudio nas configurações.',
+  'dsh-live-voice.recognition.silero.error.unavailable':
+    'A detecção de voz Silero está indisponível. Selecione Energia do áudio nas configurações ou tente iniciar a captura novamente.',
   'dsh-live-voice.recognition.speakerMode.help':
     'A reprodução libera o microfone para reduzir o retorno dos alto-falantes. Assumir microfone interrompe manualmente; participantes reconhecidos sem eco no áudio compartilhado podem pausar a reprodução, que retoma após silêncio estável.',
   'dsh-live-voice.recognition.speakerMode.label': 'Alto-falantes — escuta controlada',

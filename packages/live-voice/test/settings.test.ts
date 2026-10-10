@@ -105,6 +105,7 @@ test('valid local options survive normalization', () => {
     recognitionEngine: 'browser',
     recognitionProcessLocally: false,
     recognitionAutoInstall: false,
+    voiceDetectionEngine: 'energy',
     voiceDetectionPreset: 'short',
     voiceDetectionCustomSilenceMs: 400,
     recognitionMaxUtteranceSeconds: 120,

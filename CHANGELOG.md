@@ -10,6 +10,10 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 - Detect new GitHub releases sooner by reducing the update-check cache interval from 24 hours to 3 hours. Checks still run when Live Voice Settings opens, not on a background timer; failed attempts use the same interval.
 
+### Features
+
+- Add experimental opt-in Silero browser voice detection for Whisper/Qwen microphone and shared audio. Keep the existing energy detector and volume meter as the default, including older saved settings. Share a lazy WASM runtime while isolating each audio source’s recurrent state, resampling and segmentation. Ship versioned model/runtime assets with the plugin; no native VAD installation or external CDN is required. Report failures instead of silently falling back.
+
 ### Fixes
 
 - Keep the speech bar, current playback, pause state, captions, and accepted segment queue intact when opening or closing microphone conversation mode, including manual per-turn playback. Speaker mode still defers capture to prevent echo; explicit microphone takeover, Stop speech, End commands, navigation, and disposal retain their cancellation behavior.

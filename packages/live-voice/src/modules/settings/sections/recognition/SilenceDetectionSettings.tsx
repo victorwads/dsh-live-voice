@@ -1,4 +1,5 @@
 import React from 'react';
+import { sileroVadAvailable } from '../../../recognition/vad/assets.js';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
 import {
   defaultSettings,
@@ -9,9 +10,23 @@ import {
   voiceDetectionSilenceMs,
   normalizeCustomSilenceMs,
 } from '../../../core/settings.js';
-import { NumberField, SettingsSubcard } from '../../../../shared/design-system/index.js';
+import {
+  NumberField,
+  SelectField,
+  SettingsSubcard,
+} from '../../../../shared/design-system/index.js';
 export function SilenceDetectionSettings({ settings, updateSettings }: any) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
+  const [sileroAvailable, setSileroAvailable] = React.useState(false);
+  React.useEffect(() => {
+    let current = true;
+    void sileroVadAvailable().then((available) => {
+      if (current) setSileroAvailable(available);
+    });
+    return () => {
+      current = false;
+    };
+  }, []);
   const savedCustomMs = normalizeCustomSilenceMs(settings.voiceDetectionCustomSilenceMs);
   if (!usesPluginVoiceDetection(settings.recognitionEngine)) return null;
   const selected = settings.voiceDetectionPreset || defaultSettings.voiceDetectionPreset;
@@ -22,6 +37,19 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
       icon="pause"
     >
       <p>{(recognition as any).silenceDetection.help()}</p>
+      <SelectField
+        label={(recognition as any).silenceDetection.detector.label()}
+        value={settings.voiceDetectionEngine === 'silero' ? 'silero' : 'energy'}
+        options={[
+          { value: 'energy', label: (recognition as any).silenceDetection.detector.energy() },
+          {
+            value: 'silero',
+            label: (recognition as any).silenceDetection.detector.silero(),
+            disabled: !sileroAvailable,
+          },
+        ]}
+        onChange={(event) => updateSettings({ voiceDetectionEngine: event.target.value })}
+      />
       <NumberField
         label={(recognition as any).maxUtterance.label()}
         min={10}

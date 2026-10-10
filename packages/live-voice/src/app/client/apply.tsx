@@ -78,8 +78,11 @@ export function apply(ctx) {
         meetingEntry?.controller.composer.submit(mode);
       },
       updatePlaybackSettings: (next) => meetingEntry?.controller.updateSettings(next),
-      handleQuestionResult: (result) => meetingEntry?.controller.composer.handleQuestionResult?.(result),
-      canAutoSend: () => !!meetingEntry && !meetingEntry.controller.getSnapshot().recognizing &&
+      handleQuestionResult: (result) =>
+        meetingEntry?.controller.composer.handleQuestionResult?.(result),
+      canAutoSend: () =>
+        !!meetingEntry &&
+        !meetingEntry.controller.getSnapshot().recognizing &&
         !meetingEntry.controller.getSnapshot().pendingTranscriptions,
     },
     settings: () => preferences.getSnapshot(),
@@ -89,8 +92,13 @@ export function apply(ctx) {
       return { meter, engine: recognitionFor(settings, meter) };
     },
   });
-  const unsubscribeMeetingDelivery = meeting.subscribe(() => meetingEntry?.controller.refreshDeliveryReadiness());
-  ctx.effect(() => () => unsubscribeMeetingDelivery(), 'dsh-live-voice: remove meeting delivery subscription');
+  const unsubscribeMeetingDelivery = meeting.subscribe(() =>
+    meetingEntry?.controller.refreshDeliveryReadiness(),
+  );
+  ctx.effect(
+    () => () => unsubscribeMeetingDelivery(),
+    'dsh-live-voice: remove meeting delivery subscription',
+  );
   const diagnosticListeners = new Set();
   const notifyDiagnostics = () => {
     for (const listener of diagnosticListeners) {
@@ -158,6 +166,7 @@ export function apply(ctx) {
     'inputDeviceId',
     'recognitionProcessLocally',
     'recognitionAutoInstall',
+    'voiceDetectionEngine',
     'voiceDetectionPreset',
     'voiceDetectionCustomSilenceMs',
     'recognitionMaxUtteranceSeconds',
@@ -168,6 +177,12 @@ export function apply(ctx) {
     settings.recognitionEngine === 'qwen-http'
       ? new QwenHttpRecognitionEngine({
           meter,
+          vadErrorMessage: (error) =>
+            t(
+              'dsh-live-voice.recognition.silero.error.' +
+                (error?.code === 'overloaded' ? 'overloaded' : 'failed'),
+            ),
+          voiceDetectionEngine: settings.voiceDetectionEngine,
           voiceDetectionPreset: settings.voiceDetectionPreset,
           voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
           maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds,
@@ -175,6 +190,12 @@ export function apply(ctx) {
       : settings.recognitionEngine === 'whisper-http'
         ? new WhisperHttpRecognitionEngine({
             meter,
+            vadErrorMessage: (error) =>
+              t(
+                'dsh-live-voice.recognition.silero.error.' +
+                  (error?.code === 'overloaded' ? 'overloaded' : 'failed'),
+              ),
+            voiceDetectionEngine: settings.voiceDetectionEngine,
             voiceDetectionPreset: settings.voiceDetectionPreset,
             voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
             maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds,
@@ -284,11 +305,19 @@ export function apply(ctx) {
       meter,
       composer: {
         getDraft: () => entry.draft,
-        canAutoSend: () => !meeting.getSnapshot().shared.pending && !meeting.input().getSnapshot().recognizing,
+        canAutoSend: () =>
+          !meeting.getSnapshot().shared.pending && !meeting.input().getSnapshot().recognizing,
         appendFinal: (text, startedAt) => {
           meeting.cancelDelivery();
-          if (meetingEntry === entry && (entry.meeting?.getSnapshot().shared.listening || entry.controller.getSnapshot().timestamps)) {
-            meeting.transcript.setSourceTimestamps('microphone', !!entry.controller.getSnapshot().timestamps);
+          if (
+            meetingEntry === entry &&
+            (entry.meeting?.getSnapshot().shared.listening ||
+              entry.controller.getSnapshot().timestamps)
+          ) {
+            meeting.transcript.setSourceTimestamps(
+              'microphone',
+              !!entry.controller.getSnapshot().timestamps,
+            );
             entry.meeting.transcript.append('microphone', text, startedAt);
             return entry.draft;
           }
@@ -479,19 +508,32 @@ export function apply(ctx) {
     // Cancel only this entry's queued acquisition. Global cancellation here would
     // invalidate a newer session while its predecessor is being unmounted.
     for (const method of [
-      'stopListening', 'cancelDictation', 'stopConversationInput', 'endConversation', 'stopSpeech',
+      'stopListening',
+      'cancelDictation',
+      'stopConversationInput',
+      'endConversation',
+      'stopSpeech',
     ]) {
       const original = controller[method].bind(controller);
       controller[method] = (...args) => {
         entry.request++;
-        if ((method === 'endConversation' && args[0] !== true) || method === 'stopConversationInput')
+        if (
+          (method === 'endConversation' && args[0] !== true) ||
+          method === 'stopConversationInput'
+        )
           voiceModeActive = false;
         const result = original(...args);
         Promise.resolve(result).finally(() => publishVoiceContext(entry));
         return result;
       };
     }
-    for (const method of ['startDictation', 'startHoldToTalk', 'startConversation', 'takeMicrophone', 'speak']) {
+    for (const method of [
+      'startDictation',
+      'startHoldToTalk',
+      'startConversation',
+      'takeMicrophone',
+      'speak',
+    ]) {
       const original = controller[method].bind(controller);
       controller[method] = (...args) => {
         if (disposed || entry.closed || !entry.refs) return Promise.resolve();

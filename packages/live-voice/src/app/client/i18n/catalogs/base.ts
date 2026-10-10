@@ -124,11 +124,16 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.recognition.qwen.label': string;
   'dsh-live-voice.recognition.silenceDetection.customHelp': string;
   'dsh-live-voice.recognition.silenceDetection.customLabel': string;
+  'dsh-live-voice.recognition.silenceDetection.detector.energy': string;
+  'dsh-live-voice.recognition.silenceDetection.detector.silero': string;
   'dsh-live-voice.recognition.silenceDetection.duration': string;
   'dsh-live-voice.recognition.silenceDetection.help': string;
   'dsh-live-voice.recognition.silenceDetection.label': string;
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': string;
   'dsh-live-voice.recognition.silenceDetection.title': string;
+  'dsh-live-voice.recognition.silero.error.failed': string;
+  'dsh-live-voice.recognition.silero.error.overloaded': string;
+  'dsh-live-voice.recognition.silero.error.unavailable': string;
   'dsh-live-voice.recognition.speakerMode.help': string;
   'dsh-live-voice.recognition.speakerMode.label': string;
   'dsh-live-voice.recognition.status.answer': string;

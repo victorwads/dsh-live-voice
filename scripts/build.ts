@@ -4,6 +4,9 @@ import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
 import { checkVersions } from './check-versions.mjs';
+// Node's strip-types runner requires the source extension.
+// @ts-ignore -- runtime-only build script import
+import { prepareVadAssets } from './vad-assets.ts';
 const root = fileURLToPath(new URL('../', import.meta.url));
 await checkVersions();
 const metadata = JSON.parse(await readFile(join(root, 'packages/live-voice/package.json'), 'utf8'));
@@ -53,6 +56,7 @@ for (const name of names) {
       packages: 'external',
     },
   ];
+  if (!debugging) options.push(await prepareVadAssets(dir, metadata.version));
   if (process.argv.includes('--watch')) {
     for (const option of options) await (await context(option)).watch();
   } else {
