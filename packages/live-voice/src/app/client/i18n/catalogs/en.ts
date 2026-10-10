@@ -37,8 +37,30 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.commons.systemDefault': 'System default',
   'dsh-live-voice.commons.toggle.offBadge': 'OFF',
   'dsh-live-voice.commons.unknownLanguage': 'unknown language',
+  'dsh-live-voice.commons.update.busy': 'Stop voice capture and playback before updating.',
+  'dsh-live-voice.commons.update.cancel': 'Cancel',
+  'dsh-live-voice.commons.update.confirm':
+    'Install Live Voice {version} in this DSH profile? Download requires network access. Restart DSH afterward when requested; nothing restarts automatically.',
+  'dsh-live-voice.commons.update.current':
+    'This version is already installed. Restart DSH to use it.',
+  'dsh-live-voice.commons.update.done':
+    'Live Voice {version} installed. Reload the page when ready.',
+  'dsh-live-voice.commons.update.failed':
+    'Update failed. The release may not be published on npm yet. Check the DSH plugin manager.',
+  'dsh-live-voice.commons.update.installing': 'Updating…',
   'dsh-live-voice.commons.update.label': 'Update available',
   'dsh-live-voice.commons.update.link': 'Update available: {version}. Open release',
+  'dsh-live-voice.commons.update.local':
+    'This is a local, Git or custom installation. Update it using its original installation method.',
+  'dsh-live-voice.commons.update.now': 'Update now',
+  'dsh-live-voice.commons.update.restart':
+    'Live Voice {version} installed. Restart DSH when ready, then reload this page.',
+  'dsh-live-voice.commons.update.scripts':
+    'Package scripts need approval. Review them in the DSH plugin manager; no scripts were approved here.',
+  'dsh-live-voice.commons.update.unavailable':
+    'Updates are unavailable for this profile or DSH version. Use the DSH plugin manager.',
+  'dsh-live-voice.commons.update.uncertain':
+    'The installation result is unknown. Check the DSH plugin manager before trying again.',
   'dsh-live-voice.commons.update.version': 'Update available: {version}',
   'dsh-live-voice.commons.version.compatibility': 'Compatible with DSH v{version}',
   'dsh-live-voice.commons.version.compatibilityLink':

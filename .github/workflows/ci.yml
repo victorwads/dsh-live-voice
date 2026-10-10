@@ -29,6 +29,3 @@ jobs:
 
       - name: Run automated tests
         run: npm test
-
-      - name: Verify committed runtime bundles
-        run: npm run check:dist

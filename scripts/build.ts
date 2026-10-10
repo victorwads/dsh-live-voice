@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
 import { checkVersions } from './check-versions.mjs';
+import { stableBundlePaths } from './stable-bundle-paths.mjs';
 // Node's strip-types runner requires the source extension.
 // @ts-ignore -- runtime-only build script import
 import { prepareVadAssets } from './vad-assets.ts';
@@ -32,6 +33,7 @@ for (const name of names) {
       outfile: 'lib/client.js',
       format: 'cjs',
       platform: 'browser',
+      plugins: [stableBundlePaths],
       target: ['es2022'],
       external: ['react', 'react-dom'],
       jsx: 'transform',

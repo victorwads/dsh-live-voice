@@ -37,8 +37,30 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.commons.systemDefault': 'सिस्टम डिफ़ॉल्ट',
   'dsh-live-voice.commons.toggle.offBadge': 'बंद',
   'dsh-live-voice.commons.unknownLanguage': 'अज्ञात भाषा',
+  'dsh-live-voice.commons.update.busy': 'अपडेट से पहले वॉइस कैप्चर और प्लेबैक रोकें।',
+  'dsh-live-voice.commons.update.cancel': 'रद्द करें',
+  'dsh-live-voice.commons.update.confirm':
+    'इस DSH प्रोफ़ाइल में लाइव वॉइस {version} इंस्टॉल करें? डाउनलोड के लिए नेटवर्क चाहिए। अनुरोध होने पर बाद में DSH पुनः शुरू करें; कुछ भी अपने आप पुनः शुरू नहीं होगा।',
+  'dsh-live-voice.commons.update.current':
+    'यह संस्करण पहले से इंस्टॉल है। उपयोग के लिए DSH पुनः शुरू करें।',
+  'dsh-live-voice.commons.update.done':
+    'लाइव वॉइस {version} इंस्टॉल हो गया। तैयार होने पर पेज रीलोड करें।',
+  'dsh-live-voice.commons.update.failed':
+    'अपडेट विफल। रिलीज़ अभी npm पर उपलब्ध नहीं हो सकती। DSH प्लगइन प्रबंधक देखें।',
+  'dsh-live-voice.commons.update.installing': 'अपडेट हो रहा है…',
   'dsh-live-voice.commons.update.label': 'अपडेट उपलब्ध है',
   'dsh-live-voice.commons.update.link': 'अपडेट उपलब्ध है: {version}। रिलीज़ खोलें',
+  'dsh-live-voice.commons.update.local':
+    'यह स्थानीय, Git या कस्टम इंस्टॉलेशन है। मूल इंस्टॉलेशन विधि से अपडेट करें।',
+  'dsh-live-voice.commons.update.now': 'अभी अपडेट करें',
+  'dsh-live-voice.commons.update.restart':
+    'लाइव वॉइस {version} इंस्टॉल हो गया। तैयार होने पर DSH पुनः शुरू करें, फिर यह पेज रीलोड करें।',
+  'dsh-live-voice.commons.update.scripts':
+    'पैकेज स्क्रिप्ट को स्वीकृति चाहिए। DSH प्लगइन प्रबंधक में समीक्षा करें; यहाँ कोई स्क्रिप्ट स्वीकृत नहीं हुई।',
+  'dsh-live-voice.commons.update.unavailable':
+    'इस प्रोफ़ाइल या DSH संस्करण में अपडेट उपलब्ध नहीं है। DSH प्लगइन प्रबंधक उपयोग करें।',
+  'dsh-live-voice.commons.update.uncertain':
+    'इंस्टॉलेशन का परिणाम अज्ञात है। दोबारा प्रयास से पहले DSH प्लगइन प्रबंधक देखें।',
   'dsh-live-voice.commons.update.version': 'अपडेट उपलब्ध है: {version}',
   'dsh-live-voice.commons.version.compatibility': 'DSH v{version} के साथ संगत',
   'dsh-live-voice.commons.version.compatibilityLink': 'DSH v{version} के साथ संगत। रिलीज़ खोलें',
