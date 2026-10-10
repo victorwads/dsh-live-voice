@@ -17,7 +17,8 @@ export const voiceDetectionPresets = Object.freeze({
     description: 'Wait through longer thinking pauses.',
   }),
 });
-export const usesPluginVoiceDetection = (engine) => ['whisper-http', 'qwen-http'].includes(engine);
+export const usesPluginVoiceDetection = (engine) =>
+  typeof engine === 'string' && engine !== '' && engine !== 'browser';
 export const qwenVoices = Object.freeze([
   Object.freeze({ value: 'aiden', label: 'Aiden — male, American English' }),
   Object.freeze({ value: 'ryan', label: 'Ryan — male, English' }),
@@ -42,6 +43,7 @@ export const defaultSettings = Object.freeze({
   recognitionEngine: 'browser',
   recognitionProcessLocally: true,
   recognitionAutoInstall: true,
+  voiceDetectionEngine: 'energy',
   voiceDetectionPreset: 'short',
   voiceDetectionCustomSilenceMs: 1000,
   recognitionMaxUtteranceSeconds: 60,
@@ -119,6 +121,7 @@ export function normalizeSettings(value) {
       typeof source.recognitionAutoInstall === 'boolean'
         ? source.recognitionAutoInstall
         : defaultSettings.recognitionAutoInstall,
+    voiceDetectionEngine: source.voiceDetectionEngine === 'silero' ? 'silero' : 'energy',
     voiceDetectionPreset:
       source.voiceDetectionPreset === 'custom' ||
       Object.hasOwn(voiceDetectionPresets, source.voiceDetectionPreset)

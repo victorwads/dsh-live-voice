@@ -1,5 +1,6 @@
 {
   "extends": "./packages/live-voice/tsconfig.json",
+  "compilerOptions": { "allowImportingTsExtensions": true },
   "include": [
     "packages/*/src/**/*.ts",
     "packages/*/src/**/*.tsx",

@@ -10,6 +10,7 @@ import {
   inject,
 } from '../src/server.ts';
 import { SayClientEngine } from '../src/modules/speak/engines/say/sayClient.ts';
+import { VAD_ASSET_TYPES } from '../src/app/server/vadAssets.ts';
 
 test('shared API route adapter validates envelopes and disposes every registration', async () => {
   const routes = new Map(),
@@ -63,7 +64,7 @@ test('shared API route adapter validates envelopes and disposes every registrati
       },
     },
   );
-  assert.equal(routes.size, 18);
+  assert.equal(routes.size, 19 + Object.keys(VAD_ASSET_TYPES).length);
   assert.equal(contexts.length, 1);
   assert.equal(contexts[0].text, '{{live_voice_context}}');
   assert.equal(variables.get('live_voice_context')({ agent: { sessionId: 'one' } }), '');
