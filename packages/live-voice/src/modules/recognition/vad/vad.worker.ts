@@ -9,7 +9,7 @@ const runtime = new SileroWorkerRuntime(
   ort as unknown as VadOrt,
   sileroVadAssetBase(),
   (message) => {
-    scope.postMessage(message, message.pcm ? [message.pcm.buffer] : []);
+    scope.postMessage(message, message.type === 'probability' && message.pcm ? [message.pcm.buffer] : []);
   },
 );
 scope.onmessage = (event) => runtime.receive(event.data);

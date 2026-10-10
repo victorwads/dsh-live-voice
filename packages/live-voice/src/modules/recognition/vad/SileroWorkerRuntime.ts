@@ -8,7 +8,25 @@ export interface VadRequest {
   pcm?: Float32Array;
   sampleRate?: number;
 }
-export interface VadResponse {
+export type SileroVadStatus = 'idle' | 'loading' | 'ready' | 'error' | 'released';
+/** Known worker-owned buffers only, NOT ONNX/WASM/model memory or total RAM. */
+export interface SileroWorkerDiagnostics {
+  status: SileroVadStatus;
+  modelLoadMs: number | null;
+  processedFrames: number;
+  inferenceLastMs: number | null;
+  inferenceAverageMs: number | null;
+  queuedFrames: number;
+  accountedBufferBytes: number;
+  activeSources: number;
+  overloadCount: number;
+}
+export interface VadTelemetryResponse {
+  type: 'telemetry';
+  diagnostics: SileroWorkerDiagnostics;
+}
+export type VadResponse = VadFrameResponse | VadTelemetryResponse;
+export interface VadFrameResponse {
   type: 'probability' | 'done' | 'reset' | 'error';
   source: number;
   generation: number;
@@ -53,6 +71,46 @@ export class SileroWorkerRuntime {
   private running = false;
   private disposed = false;
   private lastSource = -1;
+  private status: SileroVadStatus = 'idle';
+  private modelLoadMs: number | null = null;
+  private processedFrames = 0;
+  private inferenceLastMs: number | null = null;
+  private inferenceTotalMs = 0;
+  private overloadCount = 0;
+  private telemetryTimer: ReturnType<typeof setTimeout> | undefined;
+  private lastTelemetryAt = -Infinity;
+  /** Pure, detached, content-free snapshot; does not initialize inference. */
+  readDiagnostics(): SileroWorkerDiagnostics {
+    let queuedFrames = 0;
+    let accountedBufferBytes = 0;
+    for (const source of this.sources.values()) {
+      queuedFrames += source.queue.length;
+      accountedBufferBytes += source.state.byteLength + source.context.byteLength;
+      for (const frame of source.queue) accountedBufferBytes += frame.pcm.byteLength;
+    }
+    return {
+      status: this.status, modelLoadMs: this.modelLoadMs,
+      processedFrames: this.processedFrames, inferenceLastMs: this.inferenceLastMs,
+      inferenceAverageMs: this.processedFrames ? this.inferenceTotalMs / this.processedFrames : null,
+      queuedFrames, accountedBufferBytes, activeSources: this.sources.size,
+      overloadCount: this.overloadCount,
+    };
+  }
+  private telemetry(immediate = false) {
+    if (this.disposed && this.status !== 'released') return;
+    const elapsed = performance.now() - this.lastTelemetryAt;
+    if (immediate || elapsed >= 250) {
+      if (this.telemetryTimer !== undefined) clearTimeout(this.telemetryTimer);
+      this.telemetryTimer = undefined;
+      this.lastTelemetryAt = performance.now();
+      this.emit({ type: 'telemetry', diagnostics: this.readDiagnostics() });
+    } else if (this.telemetryTimer === undefined && !this.disposed) {
+      this.telemetryTimer = setTimeout(() => {
+        this.telemetryTimer = undefined;
+        this.telemetry();
+      }, 250 - elapsed);
+    }
+  }
   constructor(
     private ort: VadOrt,
     private base: string,
@@ -85,10 +143,12 @@ export class SileroWorkerRuntime {
     if (!source || generation < source.generation) return;
     if (message.type === 'release') {
       this.sources.delete(id);
+      this.telemetry();
       return;
     }
     if (message.type === 'reset') {
       this.sources.set(id, this.source(generation));
+      this.telemetry();
       return;
     }
     if (generation !== source.generation) return;
@@ -99,6 +159,7 @@ export class SileroWorkerRuntime {
         throw new Error('VAD PCM request exceeds capture bound.');
       const frames = source.resampler.process(message.pcm, message.sampleRate!);
       if (source.queue.length + frames.length > this.maxFrames) {
+        this.overloadCount++;
         const next = generation + 1;
         this.sources.set(id, this.source(next));
         this.emit({
@@ -107,6 +168,7 @@ export class SileroWorkerRuntime {
           generation: next,
           message: 'VAD inference queue overloaded.',
         });
+        this.telemetry();
         return;
       }
       if (!frames.length)
@@ -114,9 +176,12 @@ export class SileroWorkerRuntime {
       frames.forEach((pcm, i) =>
         source.queue.push({ pcm, request: message.request!, last: i === frames.length - 1 }),
       );
+      this.telemetry();
       void this.drain();
     } catch (error) {
       this.sources.set(id, this.source(generation));
+      this.status = 'error';
+      this.telemetry(true);
       this.emit({
         type: 'error',
         source: id,
@@ -126,7 +191,10 @@ export class SileroWorkerRuntime {
     }
   }
   private load() {
-    if (!this.loading)
+    if (!this.loading) {
+      const started = performance.now();
+      this.status = 'loading';
+      this.telemetry(true);
       this.loading = this.ort.InferenceSession.create(this.base + 'silero_vad_v5.onnx', {
         executionProviders: ['wasm'],
         graphOptimizationLevel: 'all',
@@ -136,12 +204,24 @@ export class SileroWorkerRuntime {
           throw new Error('VAD runtime released during model load.');
         }
         this.session = session;
+        this.modelLoadMs = Math.max(0, performance.now() - started);
+        this.status = 'ready';
+        this.telemetry(true);
         return session;
+      }).catch((error) => {
+        if (!this.disposed) {
+          this.modelLoadMs = Math.max(0, performance.now() - started);
+          this.status = 'error';
+          this.telemetry(true);
+        }
+        throw error;
       });
+    }
     return this.loading;
   }
   private failAll(error: unknown) {
     if (this.disposed) return;
+    this.status = 'error';
     for (const [id, source] of this.sources) {
       source.queue = [];
       this.emit({
@@ -151,6 +231,7 @@ export class SileroWorkerRuntime {
         message: error instanceof Error ? error.message : 'VAD model initialization failed.',
       });
     }
+    this.telemetry(true);
   }
   private next() {
     const ids = [...this.sources.keys()];
@@ -177,6 +258,8 @@ export class SileroWorkerRuntime {
         const input = new Float32Array(576);
         input.set(source.context);
         input.set(frame.pcm, 64);
+        this.telemetry();
+        const started = performance.now();
         try {
           const output = await session.run({
             input: new this.ort.Tensor('float32', input, [1, 576]),
@@ -213,12 +296,19 @@ export class SileroWorkerRuntime {
         } catch (error) {
           if (this.sources.get(id) !== source || this.disposed) continue;
           this.sources.set(id, this.source(source.generation));
+          this.status = 'error';
+          this.telemetry(true);
           this.emit({
             type: 'error',
             source: id,
             generation: source.generation,
             message: error instanceof Error ? error.message : 'VAD inference failed.',
           });
+        } finally {
+          this.processedFrames++;
+          this.inferenceLastMs = Math.max(0, performance.now() - started);
+          this.inferenceTotalMs += this.inferenceLastMs;
+          if (!this.disposed) this.telemetry();
         }
       }
     } catch (error) {
@@ -233,8 +323,11 @@ export class SileroWorkerRuntime {
     }
   }
   async dispose() {
+    if (this.disposed) return;
     this.disposed = true;
     this.sources.clear();
+    this.status = 'released';
+    this.telemetry(true);
     // A loading session releases itself; a running session is owned until its run completes.
     if (this.session && !this.running) {
       const session = this.session;

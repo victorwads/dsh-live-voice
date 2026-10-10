@@ -1,5 +1,8 @@
 // @ts-nocheck
 import React from 'react';
+import { readSileroVadDiagnostics } from '../../modules/recognition/vad/SileroVadRuntime.js';
+import { sileroVadAssetBase } from '../../modules/recognition/vad/assets.js';
+import { createVadAssetDiagnostics } from './vadDiagnostics.js';
 import { SpeechStatusBar } from '../../modules/conversation/components/SpeechStatusBar.js';
 import { MeetingController } from '../../modules/conversation/models/meeting.js';
 import { SharedAudioMeter, requestSharedAudio } from '../../modules/core/sharedAudio.js';
@@ -99,6 +102,7 @@ export function apply(ctx) {
     () => () => unsubscribeMeetingDelivery(),
     'dsh-live-voice: remove meeting delivery subscription',
   );
+  const assetDiagnostics = createVadAssetDiagnostics(sileroVadAssetBase());
   const diagnosticListeners = new Set();
   const notifyDiagnostics = () => {
     for (const listener of diagnosticListeners) {
@@ -114,6 +118,26 @@ export function apply(ctx) {
       version: 1,
       read: ({ includeContent = false } = {}) => ({
         application: { disposed, voiceModeActive, retiring: retiring.size },
+        audioSources: {
+          vad: { status: readSileroVadDiagnostics().status, ...assetDiagnostics() },
+          microphone: meetingEntry
+            ? readCoordinatorDiagnostics(meetingEntry.controller, includeContent)
+            : null,
+          shared: (() => {
+            const input = meeting.inputs.get('shared');
+            const job = meeting.jobs.get('shared');
+            if (!input) return null;
+            return readCoordinatorDiagnostics(
+              {
+                ...input,
+                getSnapshot: input.getSnapshot,
+                recognition: job?.engine ?? input.recognition,
+                meter: job?.meter ?? input.meter,
+              },
+              includeContent,
+            );
+          })(),
+        },
         sessions: Object.fromEntries(
           [...controllers].map(([id, entry]) => [
             id,

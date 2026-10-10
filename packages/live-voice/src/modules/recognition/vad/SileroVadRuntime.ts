@@ -1,5 +1,27 @@
 import { sileroVadAssetBase } from './assets.js';
-import type { VadRequest, VadResponse } from './SileroWorkerRuntime.js';
+import type {
+  VadRequest,
+  VadResponse,
+  SileroWorkerDiagnostics,
+  SileroVadStatus,
+} from './SileroWorkerRuntime.js';
+
+export interface SileroVadDiagnostics extends SileroWorkerDiagnostics {
+  workerActive: boolean;
+  pendingRequests: number;
+  pendingSources: number;
+}
+const emptyDiagnostics = (status: SileroVadStatus): SileroWorkerDiagnostics => ({
+  status,
+  modelLoadMs: null,
+  processedFrames: 0,
+  inferenceLastMs: null,
+  inferenceAverageMs: null,
+  queuedFrames: 0,
+  accountedBufferBytes: 0,
+  activeSources: 0,
+  overloadCount: 0,
+});
 
 export interface SileroVadProbability {
   probability: number;
@@ -44,9 +66,28 @@ export class SileroVadPool {
   private sources = new Map<number, ClientSource>();
   private sourceId = 0;
   private requestId = 0;
+  private diagnostics = emptyDiagnostics('idle');
+  private overloadCount = 0;
+  /** No runtime creation, messages, network, PCM, transcripts, or mutable references. */
+  readDiagnostics(): SileroVadDiagnostics {
+    let pendingRequests = 0;
+    let pendingSources = 0;
+    for (const source of this.sources.values()) {
+      pendingRequests += source.pending.size;
+      if (source.pending.size) pendingSources++;
+    }
+    return {
+      ...this.diagnostics,
+      workerActive: !!this.worker,
+      activeSources: this.sources.size,
+      pendingRequests,
+      pendingSources,
+      overloadCount: this.overloadCount + this.diagnostics.overloadCount,
+    };
+  }
   constructor(
     private createWorker: (url: string) => WorkerPort = (url) =>
-      new Worker(url) as unknown as WorkerPort,
+      new Worker(url, { type: 'module' }) as unknown as WorkerPort,
     private maxPending = 64,
   ) {}
   private send(message: VadRequest, transfer?: Transferable[]) {
@@ -59,6 +100,13 @@ export class SileroVadPool {
   private fatal(error: Error) {
     const worker = this.worker;
     this.worker = undefined;
+    this.diagnostics = {
+      ...this.diagnostics,
+      status: 'error',
+      activeSources: 0,
+      queuedFrames: 0,
+      accountedBufferBytes: 0,
+    };
     worker?.terminate();
     for (const source of this.sources.values()) {
       source.failure = error;
@@ -67,6 +115,10 @@ export class SileroVadPool {
     }
   }
   private receive(message: VadResponse) {
+    if (message.type === 'telemetry') {
+      this.diagnostics = { ...message.diagnostics };
+      return;
+    }
     const source = this.sources.get(message.source);
     if (!source || source.released || source.failure) return;
     if (message.type === 'reset' && message.generation > source.generation) {
@@ -78,6 +130,7 @@ export class SileroVadPool {
     }
     if (message.generation !== source.generation) return;
     if (message.type === 'error') {
+      this.diagnostics = { ...this.diagnostics, status: 'error' };
       const error = new Error(message.message || 'VAD inference failed.');
       source.failure = error;
       this.settle(source, error);
@@ -96,8 +149,12 @@ export class SileroVadPool {
   acquire(options: SileroVadOptions): SileroVadStream {
     if (!this.worker) {
       if (this.sources.size) throw new Error('Failed VAD streams must be released before retry.');
-      const worker = this.createWorker(sileroVadAssetBase() + 'vad.worker.js');
+      const worker = this.createWorker(
+        sileroVadAssetBase() + 'vad.worker.js?revision=telemetry-v1',
+      );
       this.worker = worker;
+      this.diagnostics = emptyDiagnostics('loading');
+      this.overloadCount = 0;
       worker.onmessage = (event) => {
         if (this.worker === worker) this.receive(event.data);
       };
@@ -131,6 +188,7 @@ export class SileroVadPool {
       )
         return Promise.reject(new Error('Invalid or oversized VAD PCM chunk.'));
       if (source.pending.size >= this.maxPending) {
+        this.overloadCount++;
         reset();
         const error = new Error('VAD capture queue overloaded.');
         options.onError(error);
@@ -186,6 +244,7 @@ export class SileroVadPool {
       reportError: (error) => {
         if (source.released || source.failure) return;
         source.failure = error;
+        this.diagnostics = { ...this.diagnostics, status: 'error' };
         this.settle(source, error);
         options.onError(error);
       },
@@ -194,6 +253,15 @@ export class SileroVadPool {
         source.released = true;
         this.settle(source, cancelled());
         this.sources.delete(id);
+        if (!this.sources.size) {
+          this.diagnostics = {
+            ...this.diagnostics,
+            status: 'released',
+            activeSources: 0,
+            queuedFrames: 0,
+            accountedBufferBytes: 0,
+          };
+        }
         if (this.worker) {
           try {
             this.send({ type: 'release', source: id, generation: source.generation });
@@ -201,6 +269,13 @@ export class SileroVadPool {
             if (!this.sources.size) {
               this.worker.terminate();
               this.worker = undefined;
+              this.diagnostics = {
+                ...this.diagnostics,
+                status: 'released',
+                activeSources: 0,
+                queuedFrames: 0,
+                accountedBufferBytes: 0,
+              };
             }
           }
         }
@@ -209,6 +284,8 @@ export class SileroVadPool {
   }
 }
 const sharedPool = new SileroVadPool();
+/** Passive read of the existing pool. Reading never starts a worker or loads assets. */
+export const readSileroVadDiagnostics = (): SileroVadDiagnostics => sharedPool.readDiagnostics();
 /** Energy detection never calls this function, so neither Worker nor ONNX loads in energy mode. */
 export const acquireSileroVadStream = (options: SileroVadOptions) => sharedPool.acquire(options);
 

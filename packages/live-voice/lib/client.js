@@ -36,6 +36,338 @@ __export(apply_exports, {
 module.exports = __toCommonJS(apply_exports);
 var import_react59 = __toESM(require("react"), 1);
 
+// src/modules/recognition/vad/assets.ts
+var sileroVadAssetBase = () => "/api/dsh-live-voice/vad/" + encodeURIComponent(true ? "0.4.2" : "test") + "/";
+async function sileroVadAvailable(fetchImpl = globalThis.fetch) {
+  try {
+    const response = await fetchImpl(sileroVadAssetBase() + "availability", {
+      credentials: "same-origin",
+      cache: "no-store"
+    });
+    return response.ok && (await response.json()).available === true;
+  } catch {
+    return false;
+  }
+}
+
+// src/modules/recognition/vad/SileroVadRuntime.ts
+var emptyDiagnostics = (status) => ({
+  status,
+  modelLoadMs: null,
+  processedFrames: 0,
+  inferenceLastMs: null,
+  inferenceAverageMs: null,
+  queuedFrames: 0,
+  accountedBufferBytes: 0,
+  activeSources: 0,
+  overloadCount: 0
+});
+var cancelled = () => Object.assign(new Error("VAD operation cancelled."), { name: "AbortError" });
+var SileroVadPool = class {
+  constructor(createWorker = (url) => new Worker(url, { type: "module" }), maxPending = 64) {
+    this.createWorker = createWorker;
+    this.maxPending = maxPending;
+  }
+  createWorker;
+  maxPending;
+  worker;
+  sources = /* @__PURE__ */ new Map();
+  sourceId = 0;
+  requestId = 0;
+  diagnostics = emptyDiagnostics("idle");
+  overloadCount = 0;
+  /** No runtime creation, messages, network, PCM, transcripts, or mutable references. */
+  readDiagnostics() {
+    let pendingRequests = 0;
+    let pendingSources = 0;
+    for (const source of this.sources.values()) {
+      pendingRequests += source.pending.size;
+      if (source.pending.size) pendingSources++;
+    }
+    return {
+      ...this.diagnostics,
+      workerActive: !!this.worker,
+      activeSources: this.sources.size,
+      pendingRequests,
+      pendingSources,
+      overloadCount: this.overloadCount + this.diagnostics.overloadCount
+    };
+  }
+  send(message2, transfer) {
+    this.worker.postMessage(message2, transfer);
+  }
+  settle(source, error) {
+    for (const pending of source.pending.values()) pending.reject(error);
+    source.pending.clear();
+  }
+  fatal(error) {
+    const worker = this.worker;
+    this.worker = void 0;
+    this.diagnostics = {
+      ...this.diagnostics,
+      status: "error",
+      activeSources: 0,
+      queuedFrames: 0,
+      accountedBufferBytes: 0
+    };
+    worker?.terminate();
+    for (const source of this.sources.values()) {
+      source.failure = error;
+      this.settle(source, error);
+      source.options.onError(error);
+    }
+  }
+  receive(message2) {
+    if (message2.type === "telemetry") {
+      this.diagnostics = { ...message2.diagnostics };
+      return;
+    }
+    const source = this.sources.get(message2.source);
+    if (!source || source.released || source.failure) return;
+    if (message2.type === "reset" && message2.generation > source.generation) {
+      source.generation = message2.generation;
+      this.settle(source, new Error(message2.message || "VAD queue overloaded."));
+      source.options.onReset?.();
+      source.options.onError(new Error(message2.message || "VAD queue overloaded."));
+      return;
+    }
+    if (message2.generation !== source.generation) return;
+    if (message2.type === "error") {
+      this.diagnostics = { ...this.diagnostics, status: "error" };
+      const error = new Error(message2.message || "VAD inference failed.");
+      source.failure = error;
+      this.settle(source, error);
+      source.options.onError(error);
+    } else if (message2.type === "probability") {
+      source.options.onProbability({
+        probability: message2.probability,
+        pcm: message2.pcm,
+        sampleRate: 16e3
+      });
+    } else if (message2.type === "done") {
+      source.pending.get(message2.request)?.resolve();
+      source.pending.delete(message2.request);
+    }
+  }
+  acquire(options) {
+    if (!this.worker) {
+      if (this.sources.size) throw new Error("Failed VAD streams must be released before retry.");
+      const worker = this.createWorker(
+        sileroVadAssetBase() + "vad.worker.js?revision=telemetry-v1"
+      );
+      this.worker = worker;
+      this.diagnostics = emptyDiagnostics("loading");
+      this.overloadCount = 0;
+      worker.onmessage = (event) => {
+        if (this.worker === worker) this.receive(event.data);
+      };
+      worker.onerror = (event) => {
+        event.preventDefault?.();
+        if (this.worker === worker) this.fatal(new Error(event.message || "VAD worker failed."));
+      };
+      worker.onmessageerror = () => {
+        if (this.worker === worker) this.fatal(new Error("VAD worker message failed."));
+      };
+    }
+    const id2 = ++this.sourceId;
+    const source = { generation: 0, options, pending: /* @__PURE__ */ new Map(), released: false };
+    this.sources.set(id2, source);
+    const reset = () => {
+      if (source.released || source.failure) return;
+      source.generation++;
+      this.settle(source, cancelled());
+      this.send({ type: "reset", source: id2, generation: source.generation });
+      options.onReset?.();
+    };
+    const process = (pcm, sampleRate) => {
+      if (source.released) return Promise.reject(cancelled());
+      if (source.failure) return Promise.reject(source.failure);
+      if (!(pcm instanceof Float32Array) || !Number.isFinite(sampleRate) || sampleRate < 16e3 || sampleRate > 192e3 || pcm.length > sampleRate / 4)
+        return Promise.reject(new Error("Invalid or oversized VAD PCM chunk."));
+      if (source.pending.size >= this.maxPending) {
+        this.overloadCount++;
+        reset();
+        const error = new Error("VAD capture queue overloaded.");
+        options.onError(error);
+        return Promise.reject(error);
+      }
+      const request = ++this.requestId;
+      const copy = pcm.slice();
+      return new Promise((resolve, reject) => {
+        source.pending.set(request, { resolve, reject });
+        try {
+          this.send(
+            {
+              type: "pcm",
+              source: id2,
+              generation: source.generation,
+              request,
+              pcm: copy,
+              sampleRate
+            },
+            [copy.buffer]
+          );
+        } catch (error) {
+          this.fatal(error instanceof Error ? error : new Error("VAD worker send failed."));
+        }
+      });
+    };
+    try {
+      this.send({ type: "open", source: id2, generation: 0 });
+    } catch (error) {
+      this.sources.delete(id2);
+      this.fatal(error instanceof Error ? error : new Error("VAD worker initialization failed."));
+      throw error;
+    }
+    return {
+      get released() {
+        return source.released;
+      },
+      process,
+      ingest: (pcm, rate) => {
+        void process(pcm, rate).catch((error) => {
+          if (!source.released && !source.failure && error.name !== "AbortError" && error.message !== "VAD capture queue overloaded." && error.message !== "VAD inference queue overloaded.")
+            options.onError(error);
+        });
+      },
+      reset,
+      reportError: (error) => {
+        if (source.released || source.failure) return;
+        source.failure = error;
+        this.diagnostics = { ...this.diagnostics, status: "error" };
+        this.settle(source, error);
+        options.onError(error);
+      },
+      release: () => {
+        if (source.released) return;
+        source.released = true;
+        this.settle(source, cancelled());
+        this.sources.delete(id2);
+        if (!this.sources.size) {
+          this.diagnostics = {
+            ...this.diagnostics,
+            status: "released",
+            activeSources: 0,
+            queuedFrames: 0,
+            accountedBufferBytes: 0
+          };
+        }
+        if (this.worker) {
+          try {
+            this.send({ type: "release", source: id2, generation: source.generation });
+          } finally {
+            if (!this.sources.size) {
+              this.worker.terminate();
+              this.worker = void 0;
+              this.diagnostics = {
+                ...this.diagnostics,
+                status: "released",
+                activeSources: 0,
+                queuedFrames: 0,
+                accountedBufferBytes: 0
+              };
+            }
+          }
+        }
+      }
+    };
+  }
+};
+var sharedPool = new SileroVadPool();
+var readSileroVadDiagnostics = () => sharedPool.readDiagnostics();
+var acquireSileroVadStream = (options) => sharedPool.acquire(options);
+var captureLoads = /* @__PURE__ */ new WeakMap();
+async function attachSileroVadCapture(context, source, stream) {
+  if (!context.audioWorklet || typeof AudioWorkletNode !== "function")
+    throw new Error("AudioWorklet PCM capture is unavailable.");
+  let loading = captureLoads.get(context);
+  if (!loading) {
+    loading = context.audioWorklet.addModule(sileroVadAssetBase() + "vad.capture.js");
+    captureLoads.set(context, loading);
+    void loading.catch(() => {
+      if (captureLoads.get(context) === loading) captureLoads.delete(context);
+    });
+  }
+  await loading;
+  if (stream.released) throw cancelled();
+  const node = new AudioWorkletNode(context, "dsh-silero-vad-capture", {
+    numberOfInputs: 1,
+    numberOfOutputs: 1,
+    outputChannelCount: [1],
+    channelCount: 1,
+    channelCountMode: "explicit"
+  });
+  let released = false;
+  node.port.onmessage = (event) => {
+    if (!released && !stream.released) stream.ingest(event.data.pcm, event.data.sampleRate);
+  };
+  node.onprocessorerror = () => {
+    if (!released) stream.reportError(new Error("VAD AudioWorklet capture failed."));
+  };
+  try {
+    source.connect(node);
+    node.connect(context.destination);
+  } catch (error) {
+    try {
+      source.disconnect(node);
+    } catch {
+    }
+    node.port.close();
+    node.disconnect();
+    throw error;
+  }
+  return {
+    release() {
+      if (released) return;
+      released = true;
+      node.port.onmessage = null;
+      node.onprocessorerror = null;
+      node.port.postMessage({ type: "stop" });
+      node.port.close();
+      try {
+        source.disconnect(node);
+      } finally {
+        node.disconnect();
+      }
+    }
+  };
+}
+
+// src/app/client/vadDiagnostics.ts
+function createVadAssetDiagnostics(base, fetchImpl = globalThis.fetch) {
+  let requested = false;
+  let assets = {
+    modelBytes: null,
+    wasmBytes: null
+  };
+  return () => {
+    if (!requested) {
+      requested = true;
+      void fetchImpl(base + "manifest.json", { credentials: "same-origin", cache: "no-store" }).then(async (r) => {
+        if (!r.ok) return;
+        const v = await r.json();
+        const bytes = (name) => {
+          const n = v.files?.[name]?.bytes;
+          return Number.isSafeInteger(n) && n >= 0 ? n : null;
+        };
+        assets = {
+          modelBytes: bytes("silero_vad_v5.onnx"),
+          wasmBytes: bytes("ort-wasm-simd-threaded.wasm")
+        };
+      }).catch(() => {
+      });
+    }
+    return {
+      assets: {
+        modelBytes: assets.modelBytes,
+        wasmBytes: assets.wasmBytes,
+        modelMiB: assets.modelBytes === null ? null : assets.modelBytes / 1048576,
+        wasmMiB: assets.wasmBytes === null ? null : assets.wasmBytes / 1048576
+      }
+    };
+  };
+}
+
 // src/modules/conversation/components/SpeechStatusBar.tsx
 var import_react24 = __toESM(require("react"), 1);
 
@@ -6285,238 +6617,6 @@ var BrowserRecognitionEngine = class {
   }
 };
 
-// src/modules/recognition/vad/assets.ts
-var sileroVadAssetBase = () => "/api/dsh-live-voice/vad/" + encodeURIComponent(true ? "0.4.2" : "test") + "/";
-async function sileroVadAvailable(fetchImpl = globalThis.fetch) {
-  try {
-    const response = await fetchImpl(sileroVadAssetBase() + "availability", {
-      credentials: "same-origin",
-      cache: "no-store"
-    });
-    return response.ok && (await response.json()).available === true;
-  } catch {
-    return false;
-  }
-}
-
-// src/modules/recognition/vad/SileroVadRuntime.ts
-var cancelled = () => Object.assign(new Error("VAD operation cancelled."), { name: "AbortError" });
-var SileroVadPool = class {
-  constructor(createWorker = (url) => new Worker(url), maxPending = 64) {
-    this.createWorker = createWorker;
-    this.maxPending = maxPending;
-  }
-  createWorker;
-  maxPending;
-  worker;
-  sources = /* @__PURE__ */ new Map();
-  sourceId = 0;
-  requestId = 0;
-  send(message2, transfer) {
-    this.worker.postMessage(message2, transfer);
-  }
-  settle(source, error) {
-    for (const pending of source.pending.values()) pending.reject(error);
-    source.pending.clear();
-  }
-  fatal(error) {
-    const worker = this.worker;
-    this.worker = void 0;
-    worker?.terminate();
-    for (const source of this.sources.values()) {
-      source.failure = error;
-      this.settle(source, error);
-      source.options.onError(error);
-    }
-  }
-  receive(message2) {
-    const source = this.sources.get(message2.source);
-    if (!source || source.released || source.failure) return;
-    if (message2.type === "reset" && message2.generation > source.generation) {
-      source.generation = message2.generation;
-      this.settle(source, new Error(message2.message || "VAD queue overloaded."));
-      source.options.onReset?.();
-      source.options.onError(new Error(message2.message || "VAD queue overloaded."));
-      return;
-    }
-    if (message2.generation !== source.generation) return;
-    if (message2.type === "error") {
-      const error = new Error(message2.message || "VAD inference failed.");
-      source.failure = error;
-      this.settle(source, error);
-      source.options.onError(error);
-    } else if (message2.type === "probability") {
-      source.options.onProbability({
-        probability: message2.probability,
-        pcm: message2.pcm,
-        sampleRate: 16e3
-      });
-    } else if (message2.type === "done") {
-      source.pending.get(message2.request)?.resolve();
-      source.pending.delete(message2.request);
-    }
-  }
-  acquire(options) {
-    if (!this.worker) {
-      if (this.sources.size) throw new Error("Failed VAD streams must be released before retry.");
-      const worker = this.createWorker(sileroVadAssetBase() + "vad.worker.js");
-      this.worker = worker;
-      worker.onmessage = (event) => {
-        if (this.worker === worker) this.receive(event.data);
-      };
-      worker.onerror = (event) => {
-        event.preventDefault?.();
-        if (this.worker === worker) this.fatal(new Error(event.message || "VAD worker failed."));
-      };
-      worker.onmessageerror = () => {
-        if (this.worker === worker) this.fatal(new Error("VAD worker message failed."));
-      };
-    }
-    const id2 = ++this.sourceId;
-    const source = { generation: 0, options, pending: /* @__PURE__ */ new Map(), released: false };
-    this.sources.set(id2, source);
-    const reset = () => {
-      if (source.released || source.failure) return;
-      source.generation++;
-      this.settle(source, cancelled());
-      this.send({ type: "reset", source: id2, generation: source.generation });
-      options.onReset?.();
-    };
-    const process = (pcm, sampleRate) => {
-      if (source.released) return Promise.reject(cancelled());
-      if (source.failure) return Promise.reject(source.failure);
-      if (!(pcm instanceof Float32Array) || !Number.isFinite(sampleRate) || sampleRate < 16e3 || sampleRate > 192e3 || pcm.length > sampleRate / 4)
-        return Promise.reject(new Error("Invalid or oversized VAD PCM chunk."));
-      if (source.pending.size >= this.maxPending) {
-        reset();
-        const error = new Error("VAD capture queue overloaded.");
-        options.onError(error);
-        return Promise.reject(error);
-      }
-      const request = ++this.requestId;
-      const copy = pcm.slice();
-      return new Promise((resolve, reject) => {
-        source.pending.set(request, { resolve, reject });
-        try {
-          this.send(
-            {
-              type: "pcm",
-              source: id2,
-              generation: source.generation,
-              request,
-              pcm: copy,
-              sampleRate
-            },
-            [copy.buffer]
-          );
-        } catch (error) {
-          this.fatal(error instanceof Error ? error : new Error("VAD worker send failed."));
-        }
-      });
-    };
-    try {
-      this.send({ type: "open", source: id2, generation: 0 });
-    } catch (error) {
-      this.sources.delete(id2);
-      this.fatal(error instanceof Error ? error : new Error("VAD worker initialization failed."));
-      throw error;
-    }
-    return {
-      get released() {
-        return source.released;
-      },
-      process,
-      ingest: (pcm, rate) => {
-        void process(pcm, rate).catch((error) => {
-          if (!source.released && !source.failure && error.name !== "AbortError" && error.message !== "VAD capture queue overloaded." && error.message !== "VAD inference queue overloaded.")
-            options.onError(error);
-        });
-      },
-      reset,
-      reportError: (error) => {
-        if (source.released || source.failure) return;
-        source.failure = error;
-        this.settle(source, error);
-        options.onError(error);
-      },
-      release: () => {
-        if (source.released) return;
-        source.released = true;
-        this.settle(source, cancelled());
-        this.sources.delete(id2);
-        if (this.worker) {
-          try {
-            this.send({ type: "release", source: id2, generation: source.generation });
-          } finally {
-            if (!this.sources.size) {
-              this.worker.terminate();
-              this.worker = void 0;
-            }
-          }
-        }
-      }
-    };
-  }
-};
-var sharedPool = new SileroVadPool();
-var acquireSileroVadStream = (options) => sharedPool.acquire(options);
-var captureLoads = /* @__PURE__ */ new WeakMap();
-async function attachSileroVadCapture(context, source, stream) {
-  if (!context.audioWorklet || typeof AudioWorkletNode !== "function")
-    throw new Error("AudioWorklet PCM capture is unavailable.");
-  let loading = captureLoads.get(context);
-  if (!loading) {
-    loading = context.audioWorklet.addModule(sileroVadAssetBase() + "vad.capture.js");
-    captureLoads.set(context, loading);
-    void loading.catch(() => {
-      if (captureLoads.get(context) === loading) captureLoads.delete(context);
-    });
-  }
-  await loading;
-  if (stream.released) throw cancelled();
-  const node = new AudioWorkletNode(context, "dsh-silero-vad-capture", {
-    numberOfInputs: 1,
-    numberOfOutputs: 1,
-    outputChannelCount: [1],
-    channelCount: 1,
-    channelCountMode: "explicit"
-  });
-  let released = false;
-  node.port.onmessage = (event) => {
-    if (!released && !stream.released) stream.ingest(event.data.pcm, event.data.sampleRate);
-  };
-  node.onprocessorerror = () => {
-    if (!released) stream.reportError(new Error("VAD AudioWorklet capture failed."));
-  };
-  try {
-    source.connect(node);
-    node.connect(context.destination);
-  } catch (error) {
-    try {
-      source.disconnect(node);
-    } catch {
-    }
-    node.port.close();
-    node.disconnect();
-    throw error;
-  }
-  return {
-    release() {
-      if (released) return;
-      released = true;
-      node.port.onmessage = null;
-      node.onprocessorerror = null;
-      node.port.postMessage({ type: "stop" });
-      node.port.close();
-      try {
-        source.disconnect(node);
-      } finally {
-        node.disconnect();
-      }
-    }
-  };
-}
-
 // src/modules/recognition/engines/whisper/WhisperRecognitionEngine.ts
 var ROUTE = "/api/dsh-live-voice/whisper";
 var id = () => globalThis.crypto.randomUUID();
@@ -6775,6 +6875,7 @@ var WhisperHttpRecognitionEngine = class {
         onError: failVad,
         onProbability: ({ probability, pcm }) => {
           if (!valid() || session.finished) return;
+          session.probability = probability;
           const active = probability >= (session.voiced ? 0.35 : 0.5);
           if (!session.voiced && !active) {
             session.preRoll.push(pcm);
@@ -8669,6 +8770,8 @@ var number = (value) => typeof value === "number" && Number.isFinite(value) ? va
 function readCoordinatorDiagnostics(controller, includeContent = false) {
   const state = controller.getSnapshot();
   const recognition = controller.recognition?.session;
+  const sampleRate = recognition?.sampleRate || controller.meter?.context?.sampleRate;
+  const detector = recognition?.detector || (recognition?.chunks ? "energy" : null);
   const settings = {};
   const publicSettings = /* @__PURE__ */ new Set([
     "engine",
@@ -8715,21 +8818,29 @@ function readCoordinatorDiagnostics(controller, includeContent = false) {
     vad: {
       source: state.settings?.recognitionEngine === "browser" ? "native" : "plugin",
       activity: Boolean(state.recognizing),
-      threshold: recognition?.chunks ? 0.012 : null,
-      silenceMs: recognition?.chunks && controller.meter?.context?.sampleRate ? recognition.silence / controller.meter.context.sampleRate * 1e3 : null
+      configuredDetector: state.settings?.recognitionEngine === "browser" ? "native" : state.settings?.voiceDetectionEngine ?? "energy",
+      activeDetector: state.settings?.recognitionEngine === "browser" && state.listening ? "native" : detector,
+      threshold: detector === "energy" ? 0.012 : null,
+      positiveSpeechThreshold: detector === "silero" ? 0.5 : null,
+      negativeSpeechThreshold: detector === "silero" ? 0.35 : null,
+      probability: number(recognition?.probability),
+      sampleRate: number(sampleRate),
+      silenceMs: recognition?.chunks && sampleRate ? recognition.silence / sampleRate * 1e3 : null
     },
     chunker: {
       available: Boolean(recognition?.chunks),
       bufferedSamples: number(recognition?.samples),
       bufferedChunks: recognition?.chunks?.length ?? null,
-      containsSpeech: recognition?.voiced ?? null
+      containsSpeech: recognition?.voiced ?? null,
+      preRollSamples: recognition?.preRoll?.reduce((n, frame) => n + frame.length, 0) ?? 0,
+      accountedPcmBytes: recognition?.chunks ? ((recognition.samples || 0) + (recognition.preRoll?.reduce((n, frame) => n + frame.length, 0) || 0)) * 4 : null
     },
     recognition: {
       pendingTranscriptions: number(state.pendingTranscriptions),
       activeRequest: Boolean(recognition?.activeRequest),
       queue: (recognition?.transcriptionQueue ?? []).map((chunk) => ({
         samples: (chunk.samples ?? chunk).length,
-        durationMs: controller.meter?.context?.sampleRate ? (chunk.samples ?? chunk).length / controller.meter.context.sampleRate * 1e3 : null
+        durationMs: sampleRate ? (chunk.samples ?? chunk).length / sampleRate * 1e3 : null
       }))
     },
     delivery: {
@@ -8832,6 +8943,7 @@ function apply(ctx) {
     () => () => unsubscribeMeetingDelivery(),
     "dsh-live-voice: remove meeting delivery subscription"
   );
+  const assetDiagnostics = createVadAssetDiagnostics(sileroVadAssetBase());
   const diagnosticListeners = /* @__PURE__ */ new Set();
   const notifyDiagnostics = () => {
     for (const listener of diagnosticListeners) {
@@ -8846,6 +8958,24 @@ function apply(ctx) {
       version: 1,
       read: ({ includeContent = false } = {}) => ({
         application: { disposed, voiceModeActive, retiring: retiring.size },
+        audioSources: {
+          vad: { status: readSileroVadDiagnostics().status, ...assetDiagnostics() },
+          microphone: meetingEntry ? readCoordinatorDiagnostics(meetingEntry.controller, includeContent) : null,
+          shared: (() => {
+            const input = meeting.inputs.get("shared");
+            const job = meeting.jobs.get("shared");
+            if (!input) return null;
+            return readCoordinatorDiagnostics(
+              {
+                ...input,
+                getSnapshot: input.getSnapshot,
+                recognition: job?.engine ?? input.recognition,
+                meter: job?.meter ?? input.meter
+              },
+              includeContent
+            );
+          })()
+        },
         sessions: Object.fromEntries(
           [...controllers].map(([id2, entry]) => [
             id2,

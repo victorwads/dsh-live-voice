@@ -281,6 +281,7 @@ export class WhisperHttpRecognitionEngine {
         onError: failVad,
         onProbability: ({ probability, pcm }) => {
           if (!valid() || session.finished) return;
+          session.probability = probability;
           // Hysteresis and a bounded 320 ms pre-roll are isolated per source.
           const active = probability >= (session.voiced ? 0.35 : 0.5);
           if (!session.voiced && !active) {

@@ -4,6 +4,7 @@ import { SileroWorkerRuntime } from '../src/modules/recognition/vad/SileroWorker
 import {
   SileroVadPool,
   attachSileroVadCapture,
+  readSileroVadDiagnostics,
 } from '../src/modules/recognition/vad/SileroVadRuntime.js';
 import { sileroVadAssetBase } from '../src/modules/recognition/vad/assets.js';
 const tick = () => new Promise((resolve) => setImmediate(resolve));
@@ -180,8 +181,9 @@ test('bounded overload resets source generation and rejects stale queued/in-flig
   pcm(runtime, 1, 1, 1);
   await tick();
   pcm(runtime, 1, 2, 2, 0, 3);
-  assert.equal(output[0].type, 'reset');
-  assert.equal(output[0].generation, 1);
+  const reset = output.find((m) => m.type === 'reset');
+  assert.equal(reset.type, 'reset');
+  assert.equal(reset.generation, 1);
   pcm(runtime, 1, 3, 3, 0);
   pcm(runtime, 1, 4, 4, 1);
   gate.resolve();
@@ -206,7 +208,10 @@ test('dispose during model loading releases late session without output', async 
   await tick();
   assert.equal(fake.releases, 1);
   assert.equal(fake.calls.length, 0);
-  assert.deepEqual(output, []);
+  assert.deepEqual(
+    output.filter((m) => m.type !== 'telemetry'),
+    [],
+  );
 });
 
 test('dispose during run waits until inference finishes to release session', async () => {
@@ -222,7 +227,10 @@ test('dispose during run waits until inference finishes to release session', asy
   gate.resolve();
   await tick();
   assert.equal(fake.releases, 1);
-  assert.deepEqual(output, []);
+  assert.deepEqual(
+    output.filter((m) => m.type !== 'telemetry'),
+    [],
+  );
 });
 
 test('model failure is explicit and never switches detector', async () => {
@@ -234,8 +242,10 @@ test('model failure is explicit and never switches detector', async () => {
   const runtime = new SileroWorkerRuntime(fake.ort, '/', (m) => output.push(m));
   open(runtime, 1);
   await tick();
-  assert.equal(output[0].type, 'error');
-  assert.equal(output[0].message, 'model unavailable');
+  const error = output.find((m) => m.type === 'error');
+  assert.equal(error.type, 'error');
+  assert.equal(error.message, 'model unavailable');
+  assert.equal(runtime.readDiagnostics().status, 'error');
   await runtime.dispose();
 });
 
@@ -255,6 +265,26 @@ class FakeWorker {
     this.onmessage?.({ data: m });
   }
 }
+
+test('production pool creates an ES module worker for ONNX import.meta bindings', (t) => {
+  const seen = [];
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'Worker');
+  globalThis.Worker = class extends FakeWorker {
+    constructor(url, options) {
+      super();
+      seen.push({ url, options });
+    }
+  };
+  t.after(() => {
+    if (previous) Object.defineProperty(globalThis, 'Worker', previous);
+    else delete globalThis.Worker;
+  });
+  const pool = new SileroVadPool();
+  const stream = pool.acquire({ onProbability() {}, onError() {} });
+  assert.equal(seen.length, 1);
+  assert.deepEqual(seen[0].options, { type: 'module' });
+  stream.release();
+});
 
 test('pool is lazy, shares worker, releases independently and suppresses stale results', async () => {
   const workers = [];
@@ -277,7 +307,7 @@ test('pool is lazy, shares worker, releases independently and suppresses stale r
     onError: (e) => errors.push(e),
   });
   assert.equal(workers.length, 1);
-  assert.equal(urls[0], sileroVadAssetBase() + 'vad.worker.js');
+  assert.equal(urls[0], sileroVadAssetBase() + 'vad.worker.js?revision=telemetry-v1');
   const pending = a.process(new Float32Array(512), 16000);
   const request = workers[0].messages.at(-1);
   const rejected = assert.rejects(pending, { name: 'AbortError' });
@@ -419,6 +449,142 @@ test('worklet module load is shared, released load races never attach, and captu
     b.release();
     globalThis.AudioWorkletNode = original;
   }
+});
+
+test('diagnostic reads are passive, detached and JSON-safe before any acquire', () => {
+  let creates = 0;
+  const pool = new SileroVadPool(() => {
+    creates++;
+    return new FakeWorker();
+  });
+  const before = pool.readDiagnostics();
+  assert.equal(before.status, 'idle');
+  assert.equal(before.workerActive, false);
+  assert.equal(before.pendingRequests, 0);
+  assert.equal(before.accountedBufferBytes, 0);
+  before.status = 'error';
+  assert.equal(pool.readDiagnostics().status, 'idle');
+  assert.equal(creates, 0);
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(readSileroVadDiagnostics())),
+    readSileroVadDiagnostics(),
+  );
+  assert.equal(readSileroVadDiagnostics().workerActive, false);
+});
+
+test('worker telemetry reports lifecycle, known buffer accounting and inference without content', async () => {
+  const load = deferred();
+  const run = deferred();
+  const fake = fakeOrt({ load: load.promise, run: () => run.promise });
+  const output = [];
+  const runtime = new SileroWorkerRuntime(fake.ort, '/', (m) => output.push(m));
+  assert.equal(runtime.readDiagnostics().status, 'idle');
+  assert.equal(fake.creates, 0);
+  open(runtime, 1);
+  assert.equal(output[0].type, 'telemetry');
+  assert.equal(output[0].diagnostics.status, 'loading');
+  pcm(runtime, 1, 0.5, 1, 0, 2);
+  assert.equal(runtime.readDiagnostics().queuedFrames, 2);
+  assert.equal(runtime.readDiagnostics().accountedBufferBytes, (256 + 64 + 512 * 2) * 4);
+  load.resolve();
+  await tick();
+  assert.ok(output.some((m) => m.type === 'telemetry' && m.diagnostics.status === 'ready'));
+  assert.equal(runtime.readDiagnostics().queuedFrames, 1);
+  run.resolve();
+  await tick();
+  const diagnostics = runtime.readDiagnostics();
+  assert.equal(diagnostics.processedFrames, 2);
+  assert.equal(diagnostics.queuedFrames, 0);
+  assert.equal(diagnostics.accountedBufferBytes, (256 + 64) * 4);
+  assert.ok(diagnostics.modelLoadMs >= 0);
+  assert.ok(diagnostics.inferenceLastMs >= 0);
+  assert.ok(diagnostics.inferenceAverageMs >= 0);
+  assert.deepEqual(JSON.parse(JSON.stringify(diagnostics)), diagnostics);
+  for (const m of output.filter((m) => m.type === 'telemetry')) {
+    assert.deepEqual(Object.keys(m).sort(), ['diagnostics', 'type']);
+    for (const [key, value] of Object.entries(m.diagnostics)) {
+      assert.ok(
+        key === 'status' ? typeof value === 'string' : value === null || typeof value === 'number',
+      );
+    }
+  }
+  await runtime.dispose();
+  assert.equal(output.at(-1).diagnostics.status, 'released');
+  assert.equal(runtime.readDiagnostics().accountedBufferBytes, 0);
+});
+
+test('worker queue telemetry coalesces bursts to one trailing snapshot and disposal cancels it', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  let now = 0;
+  t.mock.method(performance, 'now', () => now);
+  const gate = deferred();
+  const fake = fakeOrt({ load: gate.promise });
+  const output = [];
+  const runtime = new SileroWorkerRuntime(fake.ort, '/', (m) => output.push(m));
+  open(runtime, 1);
+  for (let i = 1; i <= 8; i++) pcm(runtime, 1, 0, i);
+  assert.equal(output.filter((m) => m.type === 'telemetry').length, 1);
+  now = 249;
+  t.mock.timers.tick(249);
+  assert.equal(output.filter((m) => m.type === 'telemetry').length, 1);
+  now = 250;
+  t.mock.timers.tick(1);
+  assert.equal(output.filter((m) => m.type === 'telemetry').length, 2);
+  assert.equal(output.at(-1).diagnostics.queuedFrames, 8);
+  pcm(runtime, 1, 0, 9);
+  await runtime.dispose();
+  const count = output.length;
+  t.mock.timers.tick(1000);
+  assert.equal(output.length, count);
+  gate.resolve();
+  await tick();
+  assert.equal(fake.releases, 1);
+});
+
+test('pool snapshots track pending requests, overload, fatal status, release and stale worker telemetry', async () => {
+  const workers = [];
+  const pool = new SileroVadPool(() => {
+    const w = new FakeWorker();
+    workers.push(w);
+    return w;
+  }, 1);
+  const a = pool.acquire({ onProbability() {}, onError() {} });
+  const b = pool.acquire({ onProbability() {}, onError() {} });
+  assert.equal(pool.readDiagnostics().activeSources, 2);
+  assert.equal(pool.readDiagnostics().status, 'loading');
+  const pending = a.process(new Float32Array(512), 16000);
+  const rejected = assert.rejects(pending, { name: 'AbortError' });
+  assert.equal(pool.readDiagnostics().pendingRequests, 1);
+  assert.equal(pool.readDiagnostics().pendingSources, 1);
+  await assert.rejects(a.process(new Float32Array(512), 16000), /overloaded/);
+  await rejected;
+  assert.equal(pool.readDiagnostics().overloadCount, 1);
+  workers[0].emit({
+    type: 'telemetry',
+    diagnostics: {
+      ...pool.readDiagnostics(),
+      status: 'ready',
+      processedFrames: 5,
+      overloadCount: 2,
+    },
+  });
+  assert.equal(pool.readDiagnostics().processedFrames, 5);
+  assert.equal(pool.readDiagnostics().overloadCount, 3);
+  workers[0].onerror({ message: 'failed' });
+  assert.equal(pool.readDiagnostics().status, 'error');
+  assert.equal(pool.readDiagnostics().workerActive, false);
+  a.release();
+  b.release();
+  const c = pool.acquire({ onProbability() {}, onError() {} });
+  workers[0].emit({
+    type: 'telemetry',
+    diagnostics: { ...pool.readDiagnostics(), status: 'error' },
+  });
+  assert.equal(pool.readDiagnostics().status, 'loading');
+  c.release();
+  assert.equal(pool.readDiagnostics().status, 'released');
+  assert.equal(pool.readDiagnostics().pendingRequests, 0);
+  assert.equal(pool.readDiagnostics().accountedBufferBytes, 0);
 });
 
 test('worklet module failures propagate explicitly and a later attempt retries', async () => {

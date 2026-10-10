@@ -176,6 +176,103 @@ test('debugger catalogs have complete sorted keys and match DSH locales', () => 
   assert.equal(copyFor('pt-BR').activate, 'Abrir debugger em janela separada');
 });
 
+function runtimeFixture() {
+  return { status: 'ready', workerActive: true, activeSources: 2, modelLoadMs: 120,
+    processedFrames: 40, inferenceLastMs: 2.5, inferenceAverageMs: 3, queuedFrames: 1,
+    accountedBufferBytes: 1048576, totalRamBytes: null,
+    assets: { modelBytes: 2097152, wasmBytes: 3145728, packageBytes: null },
+    pageHeap: { usedBytes: 4194304, totalBytes: 8388608, scope: 'page-js-heap-estimate' } };
+}
+test('root runtime/source events ignore frame metrics and preserve semantic transitions', () => {
+  let state = { vadRuntime: runtimeFixture(), audioSources: { microphone: {
+    capture: { listening: true, level: 0.1 }, vad: { activity: false, probability: 0.2, silenceMs: 1 },
+    chunker: { available: true, bufferedSamples: 1, bufferedChunks: 1 },
+  }, shared: null }, sessions: {} };
+  let notify;
+  const inspector = createInspector({ version: 1, read: () => structuredClone(state),
+    subscribe: (listener) => { notify = listener; return () => {}; } });
+  for (let i = 0; i < 250; i++) {
+    state.vadRuntime.processedFrames++;
+    state.vadRuntime.inferenceLastMs++;
+    state.vadRuntime.queuedFrames++;
+    state.vadRuntime.accountedBufferBytes++;
+    state.vadRuntime.pageHeap.usedBytes++;
+    state.audioSources.microphone.vad.probability = i / 250;
+    state.audioSources.microphone.vad.silenceMs++;
+    state.audioSources.microphone.capture.level = i / 250;
+    state.audioSources.microphone.chunker.bufferedSamples++;
+    notify();
+  }
+  assert.equal(inspector.read().transitions.length, 0);
+  state.vadRuntime.status = 'failed';
+  state.audioSources.microphone.vad.activity = true;
+  notify();
+  assert.deepEqual(inspector.read().transitions.map((e) => e.module), ['vadRuntime', 'audioSources.microphone.vad']);
+  assert.equal(inspector.read().transitions[0].sessionId, null);
+  assert.equal('probability' in inspector.read().transitions[1].after, false);
+  inspector.setPaused(true);
+  state.vadRuntime.workerActive = false;
+  notify();
+  inspector.setPaused(false);
+  assert.equal(inspector.read().transitions.length, 2);
+  state.audioSources.shared = { capture: { listening: true } };
+  notify();
+  assert.equal(inspector.read().transitions.at(-1).module, 'audioSources.shared.capture');
+  state.audioSources.shared = null;
+  notify();
+  assert.equal(inspector.read().transitions.at(-1).after, null);
+  inspector.clear();
+  assert.equal(inspector.read().transitions.length, 0);
+  inspector.dispose();
+});
+test('VAD status and asset sizes use only the expandable audioSources state tree in every locale', async (t) => {
+  await domFixture(t);
+  const root = createRoot(document.getElementById('root'));
+  window[DIAGNOSTIC_KEY] = {
+    version: 1,
+    read: () => ({
+      audioSources: {
+        vad: {
+          status: 'ready',
+          assets: { modelBytes: 2097152, wasmBytes: 3145728, modelMiB: 2, wasmMiB: 3 },
+        },
+        microphone: null,
+        shared: null,
+      },
+      sessions: {},
+    }),
+    subscribe: () => () => {},
+  };
+  for (const copy of Object.values(dictionaries)) {
+    await act(async () => root.render(<DebuggerPanel copy={copy} onClose={() => {}} />));
+    const pane = document.querySelector('.dlvd-state-pane');
+    const scroll = pane.querySelector('.dlvd-scroll');
+    assert.equal(scroll.children.length, 1);
+    const context = scroll.firstElementChild;
+    assert.equal(context.querySelector(':scope > summary > code').textContent, 'context');
+    const branch = (parent, name) => [...parent.querySelectorAll(':scope > details')]
+      .find((node) => node.querySelector(':scope > summary > code').textContent === name);
+    const audioSources = branch(context, 'audioSources');
+    const vad = branch(audioSources, 'vad');
+    const assets = branch(vad, 'assets');
+    assert.ok(vad instanceof window.HTMLDetailsElement);
+    assert.ok(vad.open);
+    await act(async () => { assets.open = false; });
+    assert.equal(assets.open, false);
+    assert.match(vad.textContent, /statusready/);
+    for (const [key, value] of Object.entries({ modelBytes: 2097152, wasmBytes: 3145728, modelMiB: 2, wasmMiB: 3 }))
+      assert.ok(assets.textContent.includes(key + value));
+    await act(async () => { assets.open = true; });
+    assert.equal(assets.open, true);
+    await act(async () => { vad.open = false; });
+    assert.equal(vad.open, false);
+    await act(async () => { vad.open = true; });
+    assert.equal(pane.querySelector('section, dl, .dlvd-vad-summary'), null);
+    assert.doesNotMatch(pane.textContent, /vadRuntime|pageHeap|totalRamBytes|accountedBufferBytes/);
+  }
+  await act(async () => root.unmount());
+});
+
 async function domFixture(t) {
   const dom = new JSDOM('<div id="root"></div>');
   const previous = {
@@ -220,6 +317,7 @@ test('floating panel updates at 100ms, waits for runtime and releases subscripti
   };
   await act(async () => timers.tick(100));
   assert.equal(subscriptions, 1);
+  assert.equal(document.querySelector('.dlvd-vad-summary'), null);
   assert.match(document.body.textContent, /listeningfalse/);
   await act(async () =>
     [...document.querySelectorAll('button')]

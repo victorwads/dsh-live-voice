@@ -27,6 +27,8 @@ export function readCoordinatorDiagnostics(
 ): DiagnosticValue {
   const state = controller.getSnapshot();
   const recognition = controller.recognition?.session;
+  const sampleRate = recognition?.sampleRate || controller.meter?.context?.sampleRate;
+  const detector = recognition?.detector || (recognition?.chunks ? 'energy' : null);
   const settings: Record<string, DiagnosticValue> = {};
   const publicSettings = new Set([
     'engine',
@@ -80,26 +82,40 @@ export function readCoordinatorDiagnostics(
     vad: {
       source: state.settings?.recognitionEngine === 'browser' ? 'native' : 'plugin',
       activity: Boolean(state.recognizing),
-      threshold: recognition?.chunks ? 0.012 : null,
+      configuredDetector:
+        state.settings?.recognitionEngine === 'browser'
+          ? 'native'
+          : (state.settings?.voiceDetectionEngine ?? 'energy'),
+      activeDetector:
+        state.settings?.recognitionEngine === 'browser' && state.listening ? 'native' : detector,
+      threshold: detector === 'energy' ? 0.012 : null,
+      positiveSpeechThreshold: detector === 'silero' ? 0.5 : null,
+      negativeSpeechThreshold: detector === 'silero' ? 0.35 : null,
+      probability: number(recognition?.probability),
+      sampleRate: number(sampleRate),
       silenceMs:
-        recognition?.chunks && controller.meter?.context?.sampleRate
-          ? (recognition.silence / controller.meter.context.sampleRate) * 1000
-          : null,
+        recognition?.chunks && sampleRate ? (recognition.silence / sampleRate) * 1000 : null,
     },
     chunker: {
       available: Boolean(recognition?.chunks),
       bufferedSamples: number(recognition?.samples),
       bufferedChunks: recognition?.chunks?.length ?? null,
       containsSpeech: recognition?.voiced ?? null,
+      preRollSamples:
+        recognition?.preRoll?.reduce((n: number, frame: Float32Array) => n + frame.length, 0) ?? 0,
+      accountedPcmBytes: recognition?.chunks
+        ? ((recognition.samples || 0) +
+            (recognition.preRoll?.reduce((n: number, frame: Float32Array) => n + frame.length, 0) ||
+              0)) *
+          4
+        : null,
     },
     recognition: {
       pendingTranscriptions: number(state.pendingTranscriptions),
       activeRequest: Boolean(recognition?.activeRequest),
       queue: (recognition?.transcriptionQueue ?? []).map((chunk: any) => ({
         samples: (chunk.samples ?? chunk).length,
-        durationMs: controller.meter?.context?.sampleRate
-          ? ((chunk.samples ?? chunk).length / controller.meter.context.sampleRate) * 1000
-          : null,
+        durationMs: sampleRate ? ((chunk.samples ?? chunk).length / sampleRate) * 1000 : null,
       })),
     },
     delivery: {
