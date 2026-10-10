@@ -29,6 +29,7 @@ import {
 import { registerLiveVoiceLocales } from './i18n/index.js';
 import { registerConversationSlots, registerSettingsSlot } from './registerSlots.js';
 import { styles } from '../../styles/index.js';
+import { createPluginUpdate } from '../../modules/settings/services/pluginUpdate.js';
 import { createSettingsClient } from '../../modules/settings/models/settingsStorage.js';
 import {
   publishDiagnosticSource,
@@ -87,6 +88,22 @@ export function apply(ctx) {
     createSource: (source, settings) => {
       const meter = source === 'shared' ? new SharedAudioMeter() : new MicrophoneMeter();
       return { meter, engine: recognitionFor(settings, meter) };
+    },
+  });
+  let updateManager;
+  if (typeof ctx.inject === 'function') ctx.inject(['remote', 'remote.pluginManager'], (remoteCtx) => {
+    updateManager = remoteCtx.remote.pluginManager;
+    remoteCtx.effect(() => () => { updateManager = undefined; }, 'dsh-live-voice: release update manager');
+  });
+  const pluginUpdate = createPluginUpdate({
+    manager: () => updateManager,
+    isBusy: () => {
+      const m = meeting.getSnapshot();
+      if (disposed || voiceModeActive || retiring.size || m.active || m.shared.starting || m.shared.pending || m.microphone.starting || m.microphone.pending) return true;
+      return [...controllers.values()].some((entry) => {
+        const s = entry.controller.getSnapshot();
+        return s.starting || s.listening || s.recognizing || s.pendingTranscriptions || s.speaking || s.autoSendPending || s.speechBarVisible;
+      });
     },
   });
   const unsubscribeMeetingDelivery = meeting.subscribe(() => meetingEntry?.controller.refreshDeliveryReadiness());
@@ -751,7 +768,7 @@ export function apply(ctx) {
         void c.dispose();
       };
     }, []);
-    return controller ? <SettingsPanel controller={controller} /> : null;
+    return controller ? <SettingsPanel controller={controller} pluginUpdate={pluginUpdate} /> : null;
   }
   registerSettingsSlot(ctx, Settings, () => t('dsh-live-voice.commons.pluginName'));
   function Dock(props) {

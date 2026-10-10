@@ -37,8 +37,26 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.commons.systemDefault': '系统默认',
   'dsh-live-voice.commons.toggle.offBadge': '关闭',
   'dsh-live-voice.commons.unknownLanguage': '未知语言',
+  'dsh-live-voice.commons.update.busy': '更新前请停止语音采集和播放。',
+  'dsh-live-voice.commons.update.cancel': '取消',
+  'dsh-live-voice.commons.update.confirm':
+    '在此 DSH 配置中安装 实时语音 {version}？下载需要网络。若提示，请之后重启 DSH；不会自动重启。',
+  'dsh-live-voice.commons.update.current': '此版本已安装。请重启 DSH 后使用。',
+  'dsh-live-voice.commons.update.done': '实时语音 {version} 已安装。准备好后请刷新页面。',
+  'dsh-live-voice.commons.update.failed':
+    '更新失败。该版本可能尚未发布到 npm。请查看 DSH 插件管理器。',
+  'dsh-live-voice.commons.update.installing': '正在更新…',
   'dsh-live-voice.commons.update.label': '有可用更新',
   'dsh-live-voice.commons.update.link': '有可用更新：{version}。打开发布页面',
+  'dsh-live-voice.commons.update.local': '这是本地、Git 或自定义安装。请使用原安装方式更新。',
+  'dsh-live-voice.commons.update.now': '立即更新',
+  'dsh-live-voice.commons.update.restart':
+    '实时语音 {version} 已安装。准备好后请重启 DSH，然后刷新此页面。',
+  'dsh-live-voice.commons.update.scripts':
+    '包脚本需要批准。请在 DSH 插件管理器中审核；此处未批准任何脚本。',
+  'dsh-live-voice.commons.update.unavailable':
+    '此配置或 DSH 版本不支持更新。请使用 DSH 插件管理器。',
+  'dsh-live-voice.commons.update.uncertain': '安装结果未知。请先查看 DSH 插件管理器，再尝试更新。',
   'dsh-live-voice.commons.update.version': '有可用更新：{version}',
   'dsh-live-voice.commons.version.compatibility': '兼容 DSH v{version}',
   'dsh-live-voice.commons.version.compatibilityLink': '兼容 DSH v{version}。打开发布页面',
@@ -189,8 +207,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.settings.engine.refresh': '刷新可用引擎',
   'dsh-live-voice.settings.filters.title': '过滤',
   'dsh-live-voice.settings.general.title': '常规',
-  'dsh-live-voice.settings.persistence.loadError':
-    '无法从服务器加载 实时语音 设置。请刷新后重试。',
+  'dsh-live-voice.settings.persistence.loadError': '无法从服务器加载 实时语音 设置。请刷新后重试。',
   'dsh-live-voice.settings.persistence.saveError': '无法在服务器上保存 实时语音 设置。请重试。',
   'dsh-live-voice.settings.tabs.conversation': '对话',
   'dsh-live-voice.settings.tabs.recognition': '语音识别',
