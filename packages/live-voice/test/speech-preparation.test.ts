@@ -18,11 +18,14 @@ function coordinator(engine, settings = {}) {
 for (const provider of ['say', 'qwen']) {
   test(
     provider + ' HTTP uses the same prefetch pipeline and never requests the next segment again',
+    { timeout: 5000 },
     async (t) => {
       const requests = [],
         audio = [],
         revoked = [];
       let nextUrl = 0;
+      const started = [Promise.withResolvers(), Promise.withResolvers()];
+      let playbackIndex = 0;
       const globals = {
         fetch: async (url, options) => {
           requests.push({ url, ...JSON.parse(options.body) });
@@ -42,6 +45,7 @@ for (const provider of ['say', 'qwen']) {
           async play() {
             this.paused = false;
             this.dispatchEvent(new Event('playing'));
+            started[playbackIndex++]?.resolve();
           }
           pause() {
             this.paused = true;
@@ -55,7 +59,10 @@ for (const provider of ['say', 'qwen']) {
       const c = coordinator(engine);
       t.after(() => c.dispose());
       c.observeMessage('message', 'First. Second. Third. Fourth.\n');
-      await turn();
+      // Response.blob() completion can cross multiple event-loop turns on Node 24.
+      // Await the actual preparation promises and playback event, not scheduler timing.
+      await Promise.all([...c.prefetchItems].map((item) => item.preparing));
+      await started[0].promise;
       assert.equal(audio.filter((value) => !value.paused).length, 1);
       const initialRequests = requests.length;
       assert.equal(initialRequests, 4, 'three future segments prepare while the first plays');
@@ -66,7 +73,7 @@ for (const provider of ['say', 'qwen']) {
       const first = audio.find((value) => !value.paused);
       first.paused = true;
       first.dispatchEvent(new Event('ended'));
-      await turn();
+      await started[1].promise;
       assert.equal(c.snapshot.speechText, 'Second.');
       assert.equal(requests.length, initialRequests, 'next playback reuses prepared audio');
       await c.stopSpeech(false);
