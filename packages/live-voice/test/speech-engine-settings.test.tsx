@@ -47,7 +47,7 @@ function setup(t, Component = SpeechEngineSettings, controller = {}) {
     await act(async () => root.render(element(settings, capabilities)));
     return document.querySelector('select');
   }
-  return { calls, render };
+  return { calls, render, dom };
 }
 
 async function selectEngine(select, engine) {
@@ -56,6 +56,56 @@ async function selectEngine(select, engine) {
     select.dispatchEvent(new window.Event('change', { bubbles: true }));
   });
 }
+
+test('Browser defaults use client language, not UI locale, and never override on discovery', async (t) => {
+  const { calls, render, dom } = setup(t);
+  Object.defineProperty(dom.window.navigator, 'language', { value: 'pt-BR', configurable: true });
+  const voices = [
+    { name: 'A (Natural)', voiceURI: 'en', lang: 'en-US' },
+    { name: 'Z (Natural)', voiceURI: 'pt', lang: 'pt-BR' },
+    { name: 'Manual', voiceURI: 'manual', lang: 'pt-PT' },
+  ];
+  const capabilities = { browser: { voices } };
+  const engine = await render({ ...defaultSettings, engine: 'say' }, capabilities);
+  await selectEngine(engine, 'browser');
+  assert.deepEqual(calls, [{ engine: 'browser', voice: 'pt' }]);
+  const voiceSelect = document.querySelectorAll('select')[1];
+  assert.deepEqual(
+    [...voiceSelect.options].map((v) => v.value),
+    ['', 'pt', 'manual', 'en'],
+  );
+  assert.equal(voiceSelect.options[1].textContent, 'Z (Natural) (default)');
+  assert.equal(voiceSelect.options[2].textContent, 'Manual');
+  assert.equal(voiceSelect.options[3].textContent, 'A (Natural)');
+  assert.deepEqual(
+    [...voiceSelect.querySelectorAll('optgroup')].map((group) => group.label),
+    ['pt', 'en'],
+  );
+  await selectEngine(voiceSelect, 'manual');
+  calls.length = 0;
+  await render(
+    { ...defaultSettings, engine: 'browser', voice: 'manual' },
+    { browser: { voices: [...voices].reverse() } },
+  );
+  assert.deepEqual(calls, []);
+  assert.equal(document.querySelectorAll('select')[1].value, 'manual');
+  assert.equal(document.querySelector('option[value="pt"]').textContent, 'Z (Natural) (default)');
+});
+
+test('late Browser discovery reorders options without retroactive selection', async (t) => {
+  const { calls, render } = setup(t);
+  const settings = { ...defaultSettings, engine: 'say', voice: '' };
+  const engine = await render(settings, { browser: { voices: [] } });
+  await selectEngine(engine, 'browser');
+  assert.deepEqual(calls, [{ engine: 'browser' }]);
+  calls.length = 0;
+  await render(
+    { ...settings, engine: 'browser' },
+    { browser: { voices: [{ name: 'Natural', voiceURI: 'late', lang: 'en' }] } },
+  );
+  assert.deepEqual(calls, []);
+  assert.equal(document.querySelectorAll('select')[1].value, '');
+});
 
 for (const reason of [
   'Qwen speech server is unreachable: connect ECONNREFUSED 127.0.0.1:8080',

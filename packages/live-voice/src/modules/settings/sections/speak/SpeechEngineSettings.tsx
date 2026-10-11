@@ -1,4 +1,10 @@
 import React from 'react';
+import {
+  preferredBrowserVoice,
+  groupBrowserVoices,
+  speechEngineSelectionPatch,
+  type BrowserVoice,
+} from '../../models/browserVoiceSelection.js';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
 import { qwenVoices } from '../../../core/settings.js';
 import { speakingEngineOrder } from '../../../core/engineSelection.js';
@@ -9,11 +15,25 @@ export function SpeechEngineSettings({
   updateSettings,
   hostPlatform,
 }: any) {
+  const locale = typeof window === 'undefined' ? '' : window.navigator.language;
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const engine = settings.engine || 'browser';
-  const browserVoices = capabilities?.browser?.voices || [];
+  const browserVoices: readonly BrowserVoice[] = capabilities?.browser?.voices || [];
   const capability = capabilities?.[engine];
+
+  const defaultBrowserVoice = preferredBrowserVoice(browserVoices, locale);
+  const sortedBrowserOptions = groupBrowserVoices(browserVoices, locale).map((group) => ({
+    label: group.language || (commons as any).unknownLanguage(),
+    options: group.voices.map((voice) => ({
+      value: voice.voiceURI || voice.name,
+      label:
+        (voice.voiceURI || voice.name) === defaultBrowserVoice
+          ? voice.name + ' (' + (speak as any).browser.defaultVoice() + ')'
+          : voice.name,
+    })),
+  }));
+
   return (
     <>
       <SelectField
@@ -27,7 +47,11 @@ export function SpeechEngineSettings({
             'qwen-http': (speak as any).qwen.label(),
           }[value],
         }))}
-        onChange={(event) => updateSettings({ engine: event.target.value })}
+        onChange={(event) => {
+          updateSettings(
+            speechEngineSelectionPatch(engine, event.target.value, browserVoices, locale),
+          );
+        }}
       />
       {engine === 'browser' && (
         <SelectField
@@ -35,10 +59,7 @@ export function SpeechEngineSettings({
           value={settings.voice || ''}
           options={[
             { value: '', label: (commons as any).systemDefault() },
-            ...browserVoices.map((voice: any) => ({
-              value: voice.voiceURI || voice.name,
-              label: voice.name,
-            })),
+            ...sortedBrowserOptions,
           ]}
           onChange={(event) => updateSettings({ voice: event.target.value })}
         />

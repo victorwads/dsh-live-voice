@@ -103,6 +103,9 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.recognition.holdToTalk.help': string;
   'dsh-live-voice.recognition.language.automatic': string;
   'dsh-live-voice.recognition.language.label': string;
+  'dsh-live-voice.recognition.language.options.chinese': string;
+  'dsh-live-voice.recognition.language.options.french': string;
+  'dsh-live-voice.recognition.language.options.spanish': string;
   'dsh-live-voice.recognition.manualSend.help': string;
   'dsh-live-voice.recognition.maxUtterance.help': string;
   'dsh-live-voice.recognition.maxUtterance.label': string;
@@ -215,6 +218,7 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.speak.autoPlayback.remainingOther': string;
   'dsh-live-voice.speak.autoPlayback.status': string;
   'dsh-live-voice.speak.browser.automaticVoice': string;
+  'dsh-live-voice.speak.browser.defaultVoice': string;
   'dsh-live-voice.speak.browser.label': string;
   'dsh-live-voice.speak.browser.name': string;
   'dsh-live-voice.speak.browser.outputHelp': string;

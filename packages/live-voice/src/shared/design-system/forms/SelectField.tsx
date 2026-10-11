@@ -4,7 +4,7 @@ export type SelectOption = { value: string; label: string; disabled?: boolean };
 export type SelectFieldProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'children'> & {
   label: string;
   hint?: string;
-  options: readonly SelectOption[];
+  options: readonly (SelectOption | { label: string; options: readonly SelectOption[] })[];
 };
 export function SelectField({ label, options, hint, ...props }: SelectFieldProps) {
   const generatedId = React.useId();
@@ -20,11 +20,21 @@ export function SelectField({ label, options, hint, ...props }: SelectFieldProps
         )}
       </div>
       <select {...props} id={id}>
-        {options.map((option) => (
-          <option key={option.value} value={option.value} disabled={option.disabled}>
-            {option.label}
-          </option>
-        ))}
+        {options.map((option) =>
+          'options' in option ? (
+            <optgroup key={option.label} label={option.label}>
+              {option.options.map((item) => (
+                <option key={item.value} value={item.value} disabled={item.disabled}>
+                  {item.label}
+                </option>
+              ))}
+            </optgroup>
+          ) : (
+            <option key={option.value} value={option.value} disabled={option.disabled}>
+              {option.label}
+            </option>
+          ),
+        )}
       </select>
     </div>
   );

@@ -122,6 +122,9 @@ const hi: LiveVoiceTranslation = {
     'संदेश बॉक्स खुला होने पर, पेज पर कहीं भी Control दबाए रखकर आवाज़ रिकॉर्ड करें। छोड़ने पर कतार में मौजूद ट्रांसक्रिप्शन पूरा किया जाता है, तय भेजने के विलंब तक प्रतीक्षा होती है, संदेश कतार में जुड़ता है और आवाज़ रिकॉर्ड करना बंद हो जाता है। रद्द करने के लिए Control दबाए रखते हुए Escape दबाएँ।',
   'dsh-live-voice.recognition.language.automatic': 'स्वचालित — भाषा पहचानें',
   'dsh-live-voice.recognition.language.label': 'वाक् पहचान की भाषा',
+  'dsh-live-voice.recognition.language.options.chinese': 'चीनी (मंदारिन)',
+  'dsh-live-voice.recognition.language.options.french': 'फ़्रेंच',
+  'dsh-live-voice.recognition.language.options.spanish': 'स्पेनिश',
   'dsh-live-voice.recognition.manualSend.help':
     'पहचाना गया पाठ संदेश बॉक्स में तब तक रहता है जब तक आप DSH के सामान्य भेजें बटन का उपयोग नहीं करते।',
   'dsh-live-voice.recognition.maxUtterance.help':
@@ -271,6 +274,7 @@ const hi: LiveVoiceTranslation = {
     'सहायक का स्वचालित वाचन: {state} — {count} वाक् खंड शेष हैं',
   'dsh-live-voice.speak.autoPlayback.status': 'सहायक का स्वचालित वाचन: {state}',
   'dsh-live-voice.speak.browser.automaticVoice': 'स्थानीय आवाज़ का स्वचालित चयन',
+  'dsh-live-voice.speak.browser.defaultVoice': 'डिफ़ॉल्ट',
   'dsh-live-voice.speak.browser.label': 'ब्राउज़र वाचन — इस डिवाइस पर ऑडियो',
   'dsh-live-voice.speak.browser.name': 'ब्राउज़र वाचन',
   'dsh-live-voice.speak.browser.outputHelp':

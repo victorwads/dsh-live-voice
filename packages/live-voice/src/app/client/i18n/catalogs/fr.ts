@@ -132,6 +132,9 @@ const fr: LiveVoiceTranslation = {
     'Lorsqu’une zone de rédaction est ouverte, maintenez Ctrl n’importe où sur la page pour capturer votre voix. Relâchez la touche pour traiter la transcription en attente, attendre le délai d’envoi configuré, mettre le message en file d’attente et arrêter la capture vocale. Appuyez sur Échap tout en maintenant Ctrl pour annuler.',
   'dsh-live-voice.recognition.language.automatic': 'Automatique — détecter la langue',
   'dsh-live-voice.recognition.language.label': 'Langue de reconnaissance',
+  'dsh-live-voice.recognition.language.options.chinese': 'Chinois (mandarin)',
+  'dsh-live-voice.recognition.language.options.french': 'Français',
+  'dsh-live-voice.recognition.language.options.spanish': 'Espagnol',
   'dsh-live-voice.recognition.manualSend.help':
     'Le texte reconnu reste dans la zone de rédaction jusqu’à ce que vous utilisiez le bouton d’envoi habituel de DSH.',
   'dsh-live-voice.recognition.maxUtterance.help':
@@ -291,6 +294,7 @@ const fr: LiveVoiceTranslation = {
     'Lecture automatique de l’assistant : {state} — {count} segments vocaux restants',
   'dsh-live-voice.speak.autoPlayback.status': 'Lecture automatique de l’assistant : {state}',
   'dsh-live-voice.speak.browser.automaticVoice': 'Voix locale automatique',
+  'dsh-live-voice.speak.browser.defaultVoice': 'par défaut',
   'dsh-live-voice.speak.browser.label': 'Synthèse vocale du navigateur — son sur cet appareil',
   'dsh-live-voice.speak.browser.name': 'Synthèse vocale du navigateur',
   'dsh-live-voice.speak.browser.outputHelp':

@@ -60,6 +60,9 @@ export function RecognitionEngineSettings({
             : [{ value: 'auto', label: (recognition as any).language.automatic() }]),
           { value: 'pt-BR', label: 'Português (Brasil)' },
           { value: 'en-US', label: 'English (US)' },
+          { value: 'zh-CN', label: (recognition as any).language.options.chinese() },
+          { value: 'es-ES', label: (recognition as any).language.options.spanish() },
+          { value: 'fr-FR', label: (recognition as any).language.options.french() },
         ]}
         onChange={(event) => updateSettings({ recognitionLang: event.target.value })}
       />

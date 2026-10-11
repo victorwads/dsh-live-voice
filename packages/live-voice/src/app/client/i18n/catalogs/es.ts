@@ -128,6 +128,9 @@ const es: LiveVoiceTranslation = {
     'Con un cuadro de mensaje abierto, mantén Control pulsado en cualquier parte de la página para capturar tu voz. Al soltarlo, se procesa la transcripción pendiente, se espera el retraso de envío configurado, se añade el mensaje a la cola y se cierra la captura de voz. Pulsa Escape mientras mantienes Control para cancelar.',
   'dsh-live-voice.recognition.language.automatic': 'Automático — detectar idioma',
   'dsh-live-voice.recognition.language.label': 'Idioma de reconocimiento',
+  'dsh-live-voice.recognition.language.options.chinese': 'Chino (mandarín)',
+  'dsh-live-voice.recognition.language.options.french': 'Francés',
+  'dsh-live-voice.recognition.language.options.spanish': 'Español',
   'dsh-live-voice.recognition.manualSend.help':
     'El texto reconocido permanece en el cuadro de mensaje hasta que utilices el botón de envío habitual de DSH.',
   'dsh-live-voice.recognition.maxUtterance.help':
@@ -285,6 +288,7 @@ const es: LiveVoiceTranslation = {
     'Lectura automática del asistente: {state} — quedan {count} segmentos de voz',
   'dsh-live-voice.speak.autoPlayback.status': 'Lectura automática del asistente: {state}',
   'dsh-live-voice.speak.browser.automaticVoice': 'Voz local automática',
+  'dsh-live-voice.speak.browser.defaultVoice': 'predeterminada',
   'dsh-live-voice.speak.browser.label': 'Síntesis de voz del navegador — audio en este dispositivo',
   'dsh-live-voice.speak.browser.name': 'Síntesis de voz del navegador',
   'dsh-live-voice.speak.browser.outputHelp':

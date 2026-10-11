@@ -126,6 +126,9 @@ const ptBR: LiveVoiceTranslation = {
     'Com o editor aberto, segure Control em qualquer lugar da página para capturar a fala. Solte para concluir as transcrições pendentes, aguardar o atraso configurado, enfileirar a mensagem e encerrar a captura. Pressione Escape enquanto segura para cancelar.',
   'dsh-live-voice.recognition.language.automatic': 'Automático — detectar idioma',
   'dsh-live-voice.recognition.language.label': 'Idioma de reconhecimento',
+  'dsh-live-voice.recognition.language.options.chinese': 'Chinês (mandarim)',
+  'dsh-live-voice.recognition.language.options.french': 'Francês',
+  'dsh-live-voice.recognition.language.options.spanish': 'Espanhol',
   'dsh-live-voice.recognition.manualSend.help':
     'O texto reconhecido permanece no editor até que você use o botão normal de envio do DSH.',
   'dsh-live-voice.recognition.maxUtterance.help':
@@ -278,6 +281,7 @@ const ptBR: LiveVoiceTranslation = {
     'Fala automática do assistente: {state} — restam {count} segmentos de fala',
   'dsh-live-voice.speak.autoPlayback.status': 'Fala automática do assistente: {state}',
   'dsh-live-voice.speak.browser.automaticVoice': 'Voz local automática',
+  'dsh-live-voice.speak.browser.defaultVoice': 'padrão',
   'dsh-live-voice.speak.browser.label': 'Fala do navegador — áudio neste dispositivo',
   'dsh-live-voice.speak.browser.name': 'Fala do navegador',
   'dsh-live-voice.speak.browser.outputHelp':

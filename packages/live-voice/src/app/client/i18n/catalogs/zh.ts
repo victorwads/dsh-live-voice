@@ -115,6 +115,9 @@ const zh: LiveVoiceTranslation = {
     '消息输入框打开时，在页面任意位置按住 Control 键即可采集语音。松开后会处理完队列中的转写，等待设定的发送延迟，将消息加入队列，然后关闭语音采集。按住期间按 Escape 键可取消。',
   'dsh-live-voice.recognition.language.automatic': '自动 — 检测语言',
   'dsh-live-voice.recognition.language.label': '识别语言',
+  'dsh-live-voice.recognition.language.options.chinese': '中文（普通话）',
+  'dsh-live-voice.recognition.language.options.french': '法语',
+  'dsh-live-voice.recognition.language.options.spanish': '西班牙语',
   'dsh-live-voice.recognition.manualSend.help':
     '识别出的文本会保留在消息输入框中，直到你使用 DSH 的常规发送按钮。',
   'dsh-live-voice.recognition.maxUtterance.help':
@@ -255,6 +258,7 @@ const zh: LiveVoiceTranslation = {
     '助手自动朗读：{state} — 剩余 {count} 个语音片段',
   'dsh-live-voice.speak.autoPlayback.status': '助手自动朗读：{state}',
   'dsh-live-voice.speak.browser.automaticVoice': '自动选择本地语音',
+  'dsh-live-voice.speak.browser.defaultVoice': '默认',
   'dsh-live-voice.speak.browser.label': '浏览器语音合成 — 在此设备播放',
   'dsh-live-voice.speak.browser.name': '浏览器语音合成',
   'dsh-live-voice.speak.browser.outputHelp':

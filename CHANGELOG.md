@@ -6,6 +6,11 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ## [0.5.x] - Next
 
+### Improvements
+
+- Improve Browser speech voice selection with language groups, Natural voices first within each group, and a localized default label on the voice preselected when switching to Browser. Preserve manual choices when the voice list refreshes.
+- Add Chinese (Mandarin), Spanish, and French to the recognition language selector without changing existing defaults or saved selections.
+
 ## [0.5.1] - 2026-10-11
 
 ### Features

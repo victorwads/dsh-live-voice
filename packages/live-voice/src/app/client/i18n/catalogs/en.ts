@@ -124,6 +124,9 @@ const en: LiveVoiceTranslation = {
     'While a composer is open, hold Control anywhere on the page to capture speech. Release it to flush queued transcription, wait the configured send delay, queue the message, and close voice capture. Press Escape while holding to cancel.',
   'dsh-live-voice.recognition.language.automatic': 'Automatic — detect language',
   'dsh-live-voice.recognition.language.label': 'Recognition language',
+  'dsh-live-voice.recognition.language.options.chinese': 'Chinese (Mandarin)',
+  'dsh-live-voice.recognition.language.options.french': 'French',
+  'dsh-live-voice.recognition.language.options.spanish': 'Spanish',
   'dsh-live-voice.recognition.manualSend.help':
     'Recognized text stays in the composer until you use the normal DSH Send control.',
   'dsh-live-voice.recognition.maxUtterance.help':
@@ -269,6 +272,7 @@ const en: LiveVoiceTranslation = {
     'Automatic assistant speech: {state} — {count} speech segments remaining',
   'dsh-live-voice.speak.autoPlayback.status': 'Automatic assistant speech: {state}',
   'dsh-live-voice.speak.browser.automaticVoice': 'Automatic local voice',
+  'dsh-live-voice.speak.browser.defaultVoice': 'default',
   'dsh-live-voice.speak.browser.label': 'Browser speech — device audio',
   'dsh-live-voice.speak.browser.name': 'Browser speech',
   'dsh-live-voice.speak.browser.outputHelp':
