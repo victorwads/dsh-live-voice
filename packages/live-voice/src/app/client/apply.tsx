@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { SessionSpeechMemory } from '../../modules/speak/services/sessionSpeechMemory.js';
 import { readSileroVadDiagnostics } from '../../modules/recognition/vad/SileroVadRuntime.js';
 import { sileroVadAssetBase } from '../../modules/recognition/vad/assets.js';
 import { createVadAssetDiagnostics } from './vadDiagnostics.js';
@@ -50,6 +51,8 @@ export function apply(ctx) {
   const t = registerLiveVoiceLocales(ctx);
   const SettingsPanel = createLiveVoiceSettings(t, ctx.locale);
   const controllers = new Map();
+  const speechMemory = new SessionSpeechMemory();
+  let automaticSpeechEnabled;
   const retiring = new Set();
   const preferences = createSettingsClient();
   let preferencesLoaded = false;
@@ -289,10 +292,19 @@ export function apply(ctx) {
   const unsubscribePreferences = preferences.subscribe((settings) => {
     if (disposed) return;
     preferencesLoaded = true;
+    const speechChanged =
+      automaticSpeechEnabled !== undefined &&
+      automaticSpeechEnabled !== settings.announceAssistantMessages;
+    automaticSpeechEnabled = settings.announceAssistantMessages;
+    if (speechChanged) speechMemory.reset();
     meeting.applySettings(settings);
     for (const entry of controllers.values()) {
       if (entry.closed) continue;
       entry.applySettings(settings);
+      if (speechChanged) {
+        entry.speechState = speechMemory.session(entry.key);
+        entry.refreshSpeech(true);
+      } else if (entry.speechAttached) entry.refreshSpeech();
     }
     for (const c of settingsControllers) {
       if (c.disposed) continue;
@@ -309,8 +321,43 @@ export function apply(ctx) {
     () => () => unsubscribePreferences(),
     'dsh-live-voice: remove preferences subscription',
   );
+  function suspendSessionSpeech(entry) {
+    if (!entry.speechAttached) return;
+    if (!entry.controller.speechSuspended || !entry.speechState.checkpoint)
+      entry.speechState.checkpoint = entry.controller.checkpointSpeech();
+    entry.speechAttached = false;
+    ++entry.speechRequest;
+    const stopped = entry.controller.suspendSpeech();
+    entry.speechRelease = Promise.resolve(stopped).then(() => {
+      if (entry.controller.speechStopError) throw entry.controller.speechStopError;
+      if (entry.controller.inputReleaseError) throw entry.controller.inputReleaseError;
+    });
+    entry.speechRelease.catch(() => {});
+  }
+  function activateSessionSpeech(entry) {
+    const request = ++entry.speechRequest;
+    const releases = [
+      ...retiring,
+      ...settingsControllers,
+      ...[...controllers.values()]
+        .filter((other) => other !== entry)
+        .map((other) => ({ endConversation: () => other.speechRelease })),
+    ];
+    return ownership.run(entry.controller, releases, async () => {
+      await preferences.ready;
+      await entry.speechRelease;
+      if (disposed || entry.closed || !entry.speechAttached || request !== entry.speechRequest)
+        return;
+      entry.controller.restoreSpeech(entry.speechState.checkpoint);
+      entry.speechState.checkpoint = null;
+      entry.refreshSpeech(!entry.speechState.attached);
+      entry.speechState.attached = true;
+      entry.controller.activateSpeech();
+    });
+  }
   function retire(entry) {
     if (entry.closed) return;
+    suspendSessionSpeech(entry);
     entry.closed = true;
     if (meetingEntry === entry) {
       meeting.cancelDelivery();
@@ -334,15 +381,27 @@ export function apply(ctx) {
     notifyDiagnostics();
     // Keep teardown in the hardware handoff barrier, not in the session registry.
     const done = run(entry.controller, entry.controller.dispose());
-    const barrier = { endConversation: () => done };
+    const barrier = {
+      endConversation: async () => {
+        await done;
+        if (entry.controller.speechStopError) throw entry.controller.speechStopError;
+        if (entry.controller.inputReleaseError) throw entry.controller.inputReleaseError;
+      },
+    };
     retiring.add(barrier);
-    void done.finally(() => retiring.delete(barrier));
+    void done.finally(() => {
+      if (!entry.controller.speechStopError && !entry.controller.inputReleaseError)
+        retiring.delete(barrier);
+    });
   }
   function get(sessionId) {
     const key = String(sessionId);
     if (controllers.has(key)) return controllers.get(key);
     const entry = {
       key,
+      speechState: speechMemory.session(key),
+      speechAttached: false,
+      speechRequest: 0,
       draft: '',
       pendingDraft: undefined,
       publishedDraft: undefined,
@@ -453,6 +512,8 @@ export function apply(ctx) {
       settings,
     });
     const controller = entry.controller;
+    controller.speechSuspended = true;
+    controller.restoreSpeech(entry.speechState.checkpoint);
     entry.unsubscribeVoiceContext = controller.subscribe(() => {
       publishVoiceContext(entry);
       notifyDiagnostics();
@@ -467,45 +528,44 @@ export function apply(ctx) {
       return () => entry.chatListeners.delete(listener);
     };
     entry.readChat = entry.chat.getSnapshot.bind(entry.chat);
-    const attachedAt = Date.now();
-    const observed = new Set();
-    let baselined = false;
-    const refresh = (forceBaseline = false) => {
+    const refresh = (reset = false) => {
       if (disposed || entry.closed) return;
       const snapshot = entry.readChat();
-      const baseline = forceBaseline || !baselined;
-      // Lazy Chat targets may publish an empty snapshot before loading history.
-      if ([...(snapshot?.nodes?.values?.() || [])].length) baselined = true;
+      const messages = assistantMessages(snapshot);
+      const memory = entry.speechState;
+      if (!preferencesLoaded && memory.attached) return;
+      const initial = !memory.baselined;
       const userSeq = latestUserSequence(snapshot);
       if (
-        !baseline &&
+        !initial &&
+        entry.speechAttached &&
         userSeq > entry.userSeq &&
         controller.getSnapshot().settings.interruptSpeechOnUserMessage &&
         (controller.getSnapshot().speaking || controller.getSnapshot().paused)
       )
         run(controller, controller.stopSpeech());
       entry.userSeq = Math.max(entry.userSeq ?? -1, userSeq);
-      for (const message of assistantMessages(snapshot)) {
-        const historical =
-          !observed.has(message.id) &&
-          message.complete &&
-          Number.isFinite(message.time) &&
-          message.time < attachedAt;
+      // Action-only mounts never consume updates belonging to a detached composer.
+      if (!entry.speechAttached && memory.baselined && !reset) return;
+      for (const message of messages) {
+        const previousText = memory.textById.get(message.id);
+        const rewritten =
+          !reset &&
+          memory.attached &&
+          previousText !== undefined &&
+          !message.text.startsWith(previousText);
+        if (message.interrupted || rewritten) controller.discardSpeechMessage(message.id);
+        memory.textById.set(message.id, message.text);
+        const baseline = speechMemory.baseline(memory, message, initial);
         controller.observeMessage(message.id, message.text, {
           complete: message.complete,
-          baseline:
-            !preferencesLoaded ||
-            meetingEntry !== entry ||
-            forceBaseline ||
-            (baseline && (!Number.isFinite(message.time) || message.time < attachedAt)) ||
-            historical ||
-            message.interrupted,
+          baseline: !preferencesLoaded || reset || baseline || message.interrupted,
         });
-        observed.add(message.id);
       }
+      if (messages.length) memory.baselined = true;
     };
-    entry.baselineChat = () => refresh(true);
-    refresh(true);
+    entry.refreshSpeech = refresh;
+    refresh();
     entry.unsubscribe = entry.chat.subscribe(() => {
       refresh();
       for (const listener of entry.chatListeners) listener();
@@ -589,6 +649,28 @@ export function apply(ctx) {
     ]) {
       const original = controller[method].bind(controller);
       controller[method] = (...args) => {
+        // Internal handoffs release resources, not the parked navigation cursor.
+        if (method === 'endConversation' && args[0] === true && !entry.speechAttached) {
+          controller.patch({ conversation: false });
+          return Promise.all([
+            controller.stopListening(),
+            VoiceCoordinator.prototype.stopSpeech.call(controller, false),
+          ]);
+        }
+        if (!entry.closed && (method === 'stopSpeech' || method === 'endConversation')) {
+          const parked = entry.speechState.checkpoint;
+          if (parked) {
+            parked.suppressed = [
+              ...new Set([
+                ...parked.suppressed,
+                ...parked.unfinished,
+                ...parked.pending.map((item) => item.id),
+              ]),
+            ];
+            parked.pending = [];
+            parked.paused = false;
+          }
+        }
         entry.request++;
         if (
           (method === 'endConversation' && args[0] !== true) ||
@@ -697,6 +779,7 @@ export function apply(ctx) {
       if (!entry || entry.closed || disposed) return;
       return () => {
         entry.composers.delete(token.current);
+        if (!entry.composers.size) suspendSessionSpeech(entry);
         if (meetingEntry === entry && !entry.composers.size) {
           meeting.cancelDelivery();
           meetingEntry = null;
@@ -712,7 +795,7 @@ export function apply(ctx) {
       if (!entry || entry.closed || disposed) return;
       if (!input || typeof props.inputActions?.setDraft !== 'function') return;
       if (meetingEntry !== entry) {
-        entry.baselineChat();
+        if (meetingEntry) suspendSessionSpeech(meetingEntry);
         meeting.cancelDelivery();
         meetingEntry = entry;
         entry.controller.setExternalSpeechActivity(sharedSpeechActive);
@@ -745,8 +828,19 @@ export function apply(ctx) {
           );
         },
       });
-      if (voiceModeActive && !entry.controller.getSnapshot().conversation)
-        run(entry.controller, entry.controller.startConversation());
+      const attachSpeech = !entry.speechAttached;
+      if (attachSpeech) entry.speechAttached = true;
+      const inputReady =
+        voiceModeActive && !entry.controller.getSnapshot().conversation
+          ? entry.controller.startConversation()
+          : Promise.resolve();
+      run(
+        entry.controller,
+        Promise.resolve(inputReady).then(() => {
+          if (attachSpeech && entry.speechAttached && !entry.closed)
+            return activateSessionSpeech(entry);
+        }),
+      );
     }, [entry, input, props.inputActions]);
     React.useLayoutEffect(() => {
       if (!entry || entry.closed || disposed || !input) return;
@@ -965,6 +1059,8 @@ export function apply(ctx) {
   );
   ctx.effect(() => {
     const stop = () => {
+      speechMemory.clear();
+      for (const entry of controllers.values()) entry.speechState.checkpoint = null;
       ownership.cancel();
       void meeting.end();
       for (const entry of controllers.values()) {
@@ -1033,6 +1129,7 @@ export function apply(ctx) {
     return () => {
       disposed = true;
       ownership.close();
+      speechMemory.clear();
       window.speechSynthesis?.removeEventListener?.('voiceschanged', refreshCapabilities);
       navigator.mediaDevices?.removeEventListener?.('devicechange', refreshCapabilities);
       document.removeEventListener('visibilitychange', visibilityChanged);

@@ -19,6 +19,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ### Fixes
 
+- Resume pending automatic speech when returning to a previously visited chat without replaying its history or skipping unread streaming text. Remember progress per session for the page lifetime, restart an interrupted segment from its beginning, and keep explicit cancellation separate from navigation.
 - Make automatic assistant speech work with the microphone off. Keep new streaming segments in order without replaying history or discarding unread partial text when microphone mode starts.
 - Stop current or paused speech and close the speech bar when automatic assistant speech is disabled. Clear pending segments without ending microphone input or resuming the cancelled response when speech is enabled again.
 - Keep playback paused when synthesis finishes after a pause request instead of starting late audio.

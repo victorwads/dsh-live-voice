@@ -807,6 +807,7 @@ export class VoiceCoordinator {
     item.preparationKey = key;
   }
   _prefetchSpeech() {
+    if (this.speechSuspended && !this.queue[0]?.manual) return;
     const engine = this.engines[this.snapshot.settings.engine];
     if (typeof engine?.prepare !== 'function') return;
     const options = {
@@ -886,6 +887,51 @@ export class VoiceCoordinator {
       });
   }
 
+  /** Copy only logical automatic-speech state before lifecycle teardown destroys resources. */
+  checkpointSpeech() {
+    const active =
+      this.snapshot.speaking && this.activeSpeechItem && !this.activeSpeechItem.manual
+        ? [this.activeSpeechItem]
+        : [];
+    return {
+      consumed: [...this.consumed],
+      unfinished: [...this.unfinished],
+      suppressed: [...this.suppressed],
+      pending: [...active, ...this.queue.filter((item) => !item.manual)].map(({ text, id }) => ({
+        text,
+        id,
+      })),
+      paused: this.snapshot.paused && !this.interruptionPausedSpeech,
+    };
+  }
+  restoreSpeech(checkpoint) {
+    if (!checkpoint || this.disposed) return;
+    this.consumed = new Map(checkpoint.consumed);
+    this.unfinished = new Set(checkpoint.unfinished);
+    this.suppressed = new Set(checkpoint.suppressed);
+    this.queue = checkpoint.pending.map(({ text, id }) => ({ text, id }));
+    this.patch({ paused: checkpoint.paused && this.queue.length > 0 });
+    this._syncSpeechSegments();
+  }
+  async suspendSpeech() {
+    this.speechSuspended = true;
+    await Promise.all([
+      VoiceCoordinator.prototype.stopSpeech.call(this, false),
+      this.stopListening(),
+    ]);
+  }
+  discardSpeechMessage(id) {
+    this.suppressed.add(id);
+    this.queue = this.queue.filter((item) => item.id !== id);
+    if (this.snapshot.activeMessageId === id) void this._navigateSpeech();
+    this._syncSpeechSegments();
+  }
+  activateSpeech() {
+    if (this.disposed) return;
+    this.speechSuspended = false;
+    this._prefetchSpeech();
+    this._drain();
+  }
   _suppressPending() {
     for (const id of this.unfinished) this.suppressed.add(id);
     if (this.snapshot.activeMessageId !== null) this.suppressed.add(this.snapshot.activeMessageId);
@@ -1217,6 +1263,7 @@ export class VoiceCoordinator {
   _drain() {
     if (
       this.disposed ||
+      (this.speechSuspended && !this.queue[0]?.manual) ||
       (!this.snapshot.settings.announceAssistantMessages && !this.queue[0]?.manual) ||
       this.snapshot.speaking ||
       this.snapshot.paused ||

@@ -20,7 +20,13 @@ function deferred() {
 }
 async function fixture(
   t,
-  { pendingStore = true, realSpeech = false, initialSettings = {}, settingsReady } = {},
+  {
+    pendingStore = true,
+    realSpeech = false,
+    realLifecycle = false,
+    initialSettings = {},
+    settingsReady,
+  } = {},
 ) {
   const dom = new JSDOM(
     '<!doctype html><html><head></head><body><div id="root"></div></body></html>',
@@ -98,16 +104,18 @@ async function fixture(
   t.mock.method(VoiceCoordinator.prototype, 'stopListening', async function () {
     calls.push(['stop', this]);
   });
-  t.mock.method(VoiceCoordinator.prototype, 'stopSpeech', async function () {});
-  t.mock.method(VoiceCoordinator.prototype, 'endConversation', async function () {
-    calls.push(['end', this]);
-    await holds.get(this)?.promise;
-  });
-  t.mock.method(VoiceCoordinator.prototype, 'dispose', async function () {
-    this.disposed = true;
-    calls.push(['dispose', this]);
-    await holds.get(this)?.promise;
-  });
+  if (!realLifecycle) t.mock.method(VoiceCoordinator.prototype, 'stopSpeech', async function () {});
+  if (!realLifecycle)
+    t.mock.method(VoiceCoordinator.prototype, 'endConversation', async function () {
+      calls.push(['end', this]);
+      await holds.get(this)?.promise;
+    });
+  if (!realLifecycle)
+    t.mock.method(VoiceCoordinator.prototype, 'dispose', async function () {
+      this.disposed = true;
+      calls.push(['dispose', this]);
+      await holds.get(this)?.promise;
+    });
   const stores = new Map();
   const pending = new Map();
   const pendingListeners = new Set();
@@ -534,7 +542,7 @@ test('device and visibility changes refresh live sessions and Settings, then det
 
 test('new user messages continue speech by default and optional interruption ignores history pagination', async (t) => {
   const f = await fixture(t);
-  await f.render(h(f.Action, f.props('a')));
+  await f.render(h(React.Fragment, null, h(f.Action, f.props('a')), h(f.Buttons, f.props('a'))));
   const c = f.controllers[0];
   let stops = 0;
   t.mock.method(c, 'stopSpeech', async () => {
@@ -627,6 +635,204 @@ test('automatic speech follows new chat text with mic off and mic start preserve
   await act(async () => c.updateSettings({ announceAssistantMessages: true }));
   await publish('First.\nPartial completed.\nSkipped.\nNew tail.', 'settled');
   assert.deepEqual(played, ['First.', 'Partial completed.', 'New tail.']);
+});
+
+for (const keepAction of [false, true]) {
+  test(
+    'session return keeps active segment and queued/new text without history replay, action retained=' +
+      keepAction,
+    async (t) => {
+      const played = [];
+      t.mock.method(BrowserSpeakingEngine.prototype, 'prepare', async function (text) {
+        return { text, dispose() {} };
+      });
+      t.mock.method(BrowserSpeakingEngine.prototype, 'playPrepared', function (item, options) {
+        let finish;
+        const promise = new Promise((resolve) => {
+          finish = resolve;
+        });
+        this.finishTest = finish;
+        played.push({ text: item.text, finish });
+        options.onPlaybackStart();
+        return promise;
+      });
+      t.mock.method(BrowserSpeakingEngine.prototype, 'stop', function () {
+        this.finishTest?.();
+        this.finishTest = null;
+      });
+      const f = await fixture(t, {
+        realSpeech: true,
+        realLifecycle: true,
+        initialSettings: { mode: 'headphones', segmentGapMs: 0 },
+      });
+      const view = (key) =>
+        h(
+          React.Fragment,
+          null,
+          ...(keepAction ? [h(f.Action, { ...f.props('a'), key: 'retained-action' })] : []),
+          h(f.Buttons, { ...f.props(key), key }),
+        );
+      const reply = (turn, text, status = 'running', time = Date.now()) => ({
+        kind: 'assistant-step',
+        data: { turn, step: 0, time, status, blocks: [{ kind: 'text', text }] },
+      });
+      await f.render(view('a'));
+      const old = f.controllers.at(-1);
+      if (keepAction) await act(async () => old.startConversation());
+      await act(async () => {
+        f.store('a').getSnapshot().nodes.set('new', reply(2, 'First. Second.\nPartial'));
+        f.store('a').listeners.forEach((fn) => fn());
+      });
+      assert.deepEqual(
+        played.map((p) => p.text),
+        ['First.'],
+      );
+      await f.render(view('b'));
+      assert.equal(old.snapshot.speaking, false);
+      assert.equal(played.length, 1);
+      const store = f.store('a');
+      await act(async () => {
+        store
+          .getSnapshot()
+          .nodes.set('new', reply(2, 'First. Second.\nPartial completed.', 'settled'));
+        store.getSnapshot().nodes.set('newer', reply(3, 'Next answer.', 'settled'));
+        store.getSnapshot().nodes.set('backfill', reply(0, 'Old backfill.', 'settled', 1));
+        store.listeners.forEach((fn) => fn());
+      });
+      assert.equal(played.length, 1, 'background updates never speak');
+      await f.render(view('a'));
+      await act(async () => {
+        await new Promise(setImmediate);
+      });
+      assert.deepEqual(
+        played.map((p) => p.text),
+        ['First.', 'First.'],
+      );
+      for (let index = 1; index <= 4; index++) {
+        await act(async () => {
+          played[index]?.finish();
+          await new Promise(setImmediate);
+        });
+      }
+      assert.deepEqual(
+        played.map((p) => p.text),
+        ['First.', 'First.', 'Second.', 'Partial completed.', 'Next answer.'],
+      );
+      await f.render(view('b'));
+      await f.render(view('a'));
+      assert.equal(played.length, 5, 'completed segments never replay on a later return');
+    },
+  );
+}
+
+test('off/on in another chat drops parked speech and only admits fresh messages on return', async (t) => {
+  const f = await fixture(t);
+  const played = [];
+  t.mock.method(VoiceCoordinator.prototype, 'play', async (text) => played.push(text));
+  const reply = (turn, text, time = Date.now()) => ({
+    kind: 'assistant-step',
+    data: {
+      turn,
+      step: 0,
+      time,
+      status: 'running',
+      blocks: [{ kind: 'text', text }],
+    },
+  });
+  await f.render(h(f.Buttons, { ...f.props('a'), key: 'a' }));
+  await act(async () => {
+    f.store('a').getSnapshot().nodes.set('new', reply(2, 'Spoken.\nPending'));
+    f.store('a').listeners.forEach((fn) => fn());
+  });
+  assert.deepEqual(played, ['Spoken.']);
+  await f.render(h(f.Buttons, { ...f.props('b'), key: 'b' }));
+  const b = f.controllers.at(-1);
+  await act(async () => b.updateSettings({ announceAssistantMessages: false }));
+  await act(async () => b.updateSettings({ announceAssistantMessages: true }));
+  await act(async () => {
+    f.store('a')
+      .getSnapshot()
+      .nodes.set('new', reply(2, 'Spoken.\nPending completed.\n', Date.now() - 100));
+    f.store('a').listeners.forEach((fn) => fn());
+  });
+  await f.render(h(f.Buttons, { ...f.props('a'), key: 'a' }));
+  assert.deepEqual(played, ['Spoken.']);
+  await act(async () => {
+    f.store('a')
+      .getSnapshot()
+      .nodes.set('fresh', reply(3, 'Fresh answer.\n', Date.now() + 1));
+    f.store('a').listeners.forEach((fn) => fn());
+  });
+  assert.deepEqual(played, ['Spoken.', 'Fresh answer.']);
+});
+
+test('a rapid retained-session return interrupted during release preserves its parked queue', async (t) => {
+  let release;
+  const held = new Promise((resolve) => {
+    release = resolve;
+  });
+  const f = await fixture(t);
+  const played = [];
+  t.mock.method(VoiceCoordinator.prototype, 'play', async function (text) {
+    played.push(text);
+  });
+  const view = (session) =>
+    h(
+      React.Fragment,
+      null,
+      h(f.Action, { ...f.props('a'), key: 'retained' }),
+      h(f.Buttons, { ...f.props(session), key: session }),
+    );
+  await f.render(view('a'));
+  const a = f.controllers[0];
+  a.queue = [{ id: 'pending', text: 'Parked answer.' }];
+  t.mock.method(a, 'suspendSpeech', function () {
+    this.speechSuspended = true;
+    this.queue = [];
+    return held;
+  });
+  await f.render(view('b'));
+  await f.render(view('a'));
+  await f.render(view('b'));
+  await act(async () => {
+    release();
+    await new Promise(setImmediate);
+  });
+  assert.equal(played.length, 0);
+  await f.render(view('a'));
+  await act(async () => {
+    await new Promise(setImmediate);
+  });
+  assert.deepEqual(played, ['Parked answer.']);
+});
+
+test('rapid A-B-C navigation permits only the latest committed composer to resume speech', async (t) => {
+  const f = await fixture(t);
+  const played = [];
+  t.mock.method(VoiceCoordinator.prototype, 'play', async function (text) {
+    played.push([this, text]);
+  });
+  await f.render(h(f.Buttons, { ...f.props('a'), key: 'a' }));
+  const a = f.controllers[0];
+  await act(async () => {
+    f.store('a')
+      .getSnapshot()
+      .nodes.set('new', {
+        kind: 'assistant-step',
+        data: {
+          turn: 2,
+          step: 0,
+          time: Date.now() + 1,
+          status: 'running',
+          blocks: [{ kind: 'text', text: 'Partial' }],
+        },
+      });
+    f.store('a').listeners.forEach((fn) => fn());
+  });
+  await f.render(h(f.Buttons, { ...f.props('b'), key: 'b' }));
+  await f.render(h(f.Buttons, { ...f.props('c'), key: 'c' }));
+  assert.equal(played.length, 0);
+  assert.equal(a.speechSuspended, true);
 });
 
 test('automatic speech waits for saved preferences instead of using the provisional default', async (t) => {
@@ -1228,7 +1434,10 @@ test('switching chats baselines delayed history, preserves new streaming speech 
   await f.render(h(f.Buttons, f.props('other')));
   observed.length = 0;
   await f.render(h(f.Buttons, f.props('delayed')));
-  assert.ok(observed.filter((m) => m.controller === f.controllers.at(-1)).every((m) => m.baseline));
+  assert.ok(
+    observed.filter((m) => m.controller === f.controllers.at(-1)).every((m) => !m.baseline),
+    'return uses the saved cursor instead of rebasing every known message',
+  );
 });
 
 test('shared meeting capture survives chat replacement and routes only to the committed composer', async (t) => {
