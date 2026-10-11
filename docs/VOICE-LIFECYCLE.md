@@ -58,6 +58,8 @@ Microphone and shared-input bars render the same `ConversationStatusBar`, with i
 
 The speech bar is separate from the recognition pill, with the same 52px pill geometry and shared buttons. It leaves the caption line empty until real segment text exists (never a “Speaking” placeholder), retains the audio-preparation progress indicator, and displays the active speech segment on one clipped line and owns playback pause/resume, next, stop and microphone takeover during speaker gating. Stop clears pending speech and closes the speech bar without ending voice conversation; pause preserves it. The recognition pill retains capture and delivery preferences. The automatic-speech toggle remains available in the composer between shared audio and microphone, even when there is no active playback; it is not duplicated in either bar.
 
+Say and Qwen share audio prefetch; Browser prepares local utterances but cannot export synthesized audio for caching. The coordinator owns all segment gaps and admission; pause during synthesis holds a launch gate until resume, and Stop aborts it.
+
 Host-audio captions estimate character position from actual media currentTime/duration. Browser synthesis has no reliable duration, so its fallback estimates 14 characters/second adjusted by rate, starts only on the native start event and excludes paused time. Neither mode claims word alignment. Unknown duration keeps the full segment visible; cancelled/completed operations clear caption state. Session navigation retains the existing lifecycle semantics; this UI change does not implement the future global queue.
 
 ## Append-only dictation contract

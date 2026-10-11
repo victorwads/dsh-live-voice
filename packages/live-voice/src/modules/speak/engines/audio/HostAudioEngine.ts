@@ -23,6 +23,9 @@ export class HostAudioSpeakingEngine {
     this.playbackRate = playbackRate || ((rate) => rate);
     this.current = null;
   }
+  getPlaybackCapabilities() {
+    return { pause: true, resume: true };
+  }
   async capability() {
     try {
       const url = this.capabilityEndpoint || this.endpoint.replace(/\/speech$/, '/capabilities');
@@ -101,13 +104,21 @@ export class HostAudioSpeakingEngine {
     if (!prepared?.audio) throw new TypeError('Prepared speech audio is required.');
     await this.stop();
     if (signal?.aborted) throw cancelled();
-    const operation = { prepared, audio: prepared.audio };
+    const operation = { prepared, audio: prepared.audio, paused: false, ready: false };
     this.current = operation;
     const audio = operation.audio;
     if (retainPrepared) audio.currentTime = 0;
     audio.playbackRate = playbackRate;
-    if (outputDeviceId && typeof audio.setSinkId === 'function')
-      await audio.setSinkId(outputDeviceId);
+    try {
+      if (outputDeviceId && typeof audio.setSinkId === 'function')
+        await audio.setSinkId(outputDeviceId);
+      // Stop may run while the browser is awaiting device routing. Never launch stale audio.
+      if (signal?.aborted || this.current !== operation) throw cancelled();
+    } catch (error) {
+      if (this.current === operation) this.current = null;
+      if (!retainPrepared) prepared.dispose();
+      throw error;
+    }
     return new Promise((resolve, reject) => {
       const cleanup = () => {
         audio.removeEventListener('playing', started);
@@ -138,7 +149,8 @@ export class HostAudioSpeakingEngine {
       audio.addEventListener('ended', done, { once: true });
       audio.addEventListener('error', failed, { once: true });
       signal?.addEventListener('abort', aborted, { once: true });
-      Promise.resolve(audio.play()).catch(failed);
+      operation.ready = true;
+      if (!operation.paused) Promise.resolve(audio.play()).catch(failed);
     });
   }
   async speak(text, options = {}) {
@@ -172,13 +184,15 @@ export class HostAudioSpeakingEngine {
     return { positionSeconds: audio.currentTime, durationSeconds: audio.duration };
   }
   pause() {
-    if (!this.current?.audio || this.current.audio.paused) return false;
+    if (!this.current?.audio || this.current.paused) return false;
+    this.current.paused = true;
     this.current.audio.pause();
     return true;
   }
   async resume() {
-    if (!this.current?.audio || !this.current.audio.paused) return false;
-    await this.current.audio.play();
+    if (!this.current?.audio || (!this.current.paused && !this.current.audio.paused)) return false;
+    this.current.paused = false;
+    if (this.current.ready) await this.current.audio.play();
     return true;
   }
 }

@@ -8,6 +8,8 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ### Improvements
 
+- Share prepared-segment playback across Browser, macOS Say, and Qwen. Prepare Browser utterances ahead without resuming an idle synthesizer; preserve the configured segment gap and native Web Speech latency limitations.
+
 - Improve the settings layout with consistent expandable sections, clearer organization, compact help tooltips, and voice-command phrase chips. Keep diagnostics in a fixed footer and align the debugger with the DSH theme.
 - Preserve timestamp and voice-command button preferences in the input bars across chat changes and page reloads, with independent settings for microphone and shared audio.
 
@@ -15,6 +17,8 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 - Make automatic assistant speech work with the microphone off. Keep new streaming segments in order without replaying history or discarding unread partial text when microphone mode starts.
 - Stop current or paused speech and close the speech bar when automatic assistant speech is disabled. Clear pending segments without ending microphone input or resuming the cancelled response when speech is enabled again.
+
+- Keep playback paused when synthesis finishes after a pause request instead of starting late audio.
 
 ## [0.5.0] - 2026-10-10
 

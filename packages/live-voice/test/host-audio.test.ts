@@ -71,6 +71,71 @@ test('host audio maps synthesis and browser playback rates independently', async
   await playing;
 });
 
+test('host audio retains pause while output routing is pending and resumes only explicitly', async () => {
+  let route;
+  const audio = new AudioMock();
+  const engine = new HostAudioSpeakingEngine();
+  let plays = 0;
+  audio.setSinkId = () =>
+    new Promise((resolve) => {
+      route = resolve;
+    });
+  audio.play = () => {
+    plays++;
+    return Promise.resolve();
+  };
+  const playing = engine.playPrepared({ audio, dispose() {} }, { outputDeviceId: 'selected' });
+  await Promise.resolve();
+  assert.equal(engine.pause(), true);
+  route();
+  await Promise.resolve();
+  assert.equal(plays, 0);
+  await engine.resume();
+  assert.equal(plays, 1);
+  audio.dispatchEvent(new Event('ended'));
+  await playing;
+});
+
+for (const action of ['stop', 'abort', 'fail']) {
+  test('host audio cannot launch after ' + action + ' during pending output routing', async () => {
+    let route, fail;
+    const pending = new Promise((resolve, reject) => {
+      route = resolve;
+      fail = reject;
+    });
+    const audio = new AudioMock();
+    let plays = 0,
+      disposals = 0;
+    audio.setSinkId = () => pending;
+    audio.play = () => {
+      plays++;
+      return Promise.resolve();
+    };
+    const engine = new HostAudioSpeakingEngine();
+    const controller = new AbortController();
+    const playing = engine.playPrepared(
+      { audio, dispose: () => disposals++ },
+      {
+        outputDeviceId: 'selected',
+        signal: controller.signal,
+      },
+    );
+    const rejected = assert.rejects(
+      playing,
+      action === 'fail' ? /routing failed/ : { name: 'AbortError' },
+    );
+    await Promise.resolve();
+    if (action === 'abort') controller.abort();
+    if (action === 'stop') await engine.stop();
+    if (action === 'fail') fail(new Error('routing failed'));
+    else route();
+    await rejected;
+    assert.equal(plays, 0);
+    assert.equal(engine.current, null);
+    assert.ok(disposals > 0);
+  });
+}
+
 test('host audio preparation aborts fetch and rejects stale work', async () => {
   const controller = new AbortController();
   const engine = new HostAudioSpeakingEngine({

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { TranscriptDraft } from './transcript.ts';
 import { normalizeSettings } from './settings.ts';
+import { SPEECH_QUEUE_PREFETCH_LIMIT } from '../speak/services/speechQueue.js';
 import {
   filterSpeechOutput,
   hasMinimumWords,
@@ -784,7 +785,7 @@ export class VoiceCoordinator {
       outputDeviceId: this.snapshot.settings.outputDeviceId,
     };
     const key = this._speechPreparationKey();
-    for (const item of this.queue.slice(0, 3)) {
+    for (const item of this.queue.slice(0, SPEECH_QUEUE_PREFETCH_LIMIT)) {
       this._resetStaleSpeechItem(item, key);
       if (item.prepared || item.preparing) continue;
       this.prefetchItems.add(item);
@@ -871,6 +872,8 @@ export class VoiceCoordinator {
     this.interruptionPausedSpeech = false;
     const epoch = ++this.speechEpoch;
     ++this.controlEpoch;
+    this.speechController?.abort();
+    this.speechLaunchPending = false;
     this._cancelSpeechPrefetch();
     this._suppressPending();
     this._releaseSpeechHistory();
@@ -929,6 +932,7 @@ export class VoiceCoordinator {
     const engine = this.engines[this.snapshot.speechEngine || this.snapshot.settings.engine];
     const epoch = ++this.speechEpoch;
     ++this.controlEpoch;
+    this.speechController?.abort();
     this._cancelAssistantSpeechTimer();
     this.assistantSpeechNotBefore = 0;
     this.patch({ speaking: false, paused: false, speechLoading: false });
@@ -960,6 +964,12 @@ export class VoiceCoordinator {
       return;
     }
     if (!this.snapshot.speaking) return;
+    if (this.speechLaunchPending) {
+      // Preparation has no player to pause yet; retain an explicit launch gate.
+      ++this.controlEpoch;
+      this.patch({ paused: true });
+      return;
+    }
     const epoch = this.speechEpoch;
     const control = ++this.controlEpoch;
     try {
@@ -985,6 +995,20 @@ export class VoiceCoordinator {
       this.patch({ paused: false });
       this.assistantSpeechNotBefore = 0;
       this._drain();
+      return;
+    }
+    if (this.speechLaunchPending) {
+      const epoch = this.speechEpoch;
+      const control = ++this.controlEpoch;
+      if (this.snapshot.settings.mode === 'speaker') {
+        await this.stopListening();
+        if (this.inputReleaseError) {
+          this.patch({ error: message(this.inputReleaseError) });
+          return;
+        }
+      }
+      if (epoch === this.speechEpoch && control === this.controlEpoch)
+        this.patch({ paused: false });
       return;
     }
     const epoch = this.speechEpoch;
@@ -1042,6 +1066,9 @@ export class VoiceCoordinator {
     if (!this.speechHistory.includes(item)) this.speechHistory.push(item);
     this.speechCursor = this.speechHistory.indexOf(item);
     const epoch = ++this.speechEpoch;
+    const controller = new AbortController();
+    this.speechController = controller;
+    this.speechLaunchPending = true;
     const engine = this.engines[this.snapshot.settings.engine];
     this._resetStaleSpeechItem(item, this._speechPreparationKey());
     item.engine = engine;
@@ -1082,6 +1109,7 @@ export class VoiceCoordinator {
         voice: this.snapshot.settings.voice || undefined,
         rate: this.snapshot.settings.rate,
         outputDeviceId: this.snapshot.settings.outputDeviceId,
+        signal: controller.signal,
       };
       if (!queued.prepared && typeof engine.prepare === 'function') {
         const prepared = await engine.prepare(text, options);
@@ -1091,6 +1119,10 @@ export class VoiceCoordinator {
         }
         queued.prepared = prepared;
       }
+      while (this.snapshot.paused && epoch === this.speechEpoch && !this.disposed)
+        await this._waitSpeechLaunch(controller.signal);
+      if (epoch !== this.speechEpoch || this.disposed) return;
+      this.speechLaunchPending = false;
       if (queued?.prepared && typeof engine.playPrepared === 'function') {
         const prepared = queued.prepared;
         this.prefetchItems.delete(queued);
@@ -1131,6 +1163,21 @@ export class VoiceCoordinator {
           await this._startInput(true);
       }
     }
+  }
+  _waitSpeechLaunch(signal) {
+    if (!this.snapshot.paused) return Promise.resolve();
+    return new Promise((resolve) => {
+      const done = () => {
+        unsubscribe();
+        signal.removeEventListener('abort', done);
+        resolve();
+      };
+      const unsubscribe = this.subscribe(() => {
+        if (!this.snapshot.paused || signal.aborted) done();
+      });
+      signal.addEventListener('abort', done, { once: true });
+      if (signal.aborted) done();
+    });
   }
   _cancelAssistantSpeechTimer() {
     if (this.assistantSpeechTimer !== null) clearTimeout(this.assistantSpeechTimer);
@@ -1184,11 +1231,7 @@ export class VoiceCoordinator {
       this.patch({ speechText: null, speechEngine: null });
       this._syncSpeechSegments();
     }
-    if (
-      baseline ||
-      !this.snapshot.settings.announceAssistantMessages ||
-      this.suppressed.has(id)
-    ) {
+    if (baseline || !this.snapshot.settings.announceAssistantMessages || this.suppressed.has(id)) {
       this.consumed.set(id, text.length);
       return;
     }

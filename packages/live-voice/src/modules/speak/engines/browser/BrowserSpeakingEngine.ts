@@ -25,6 +25,13 @@ export class BrowserSpeakingEngine {
     }
   }
 
+  getPlaybackCapabilities() {
+    return {
+      pause: typeof this.globals.speechSynthesis?.pause === 'function',
+      resume: typeof this.globals.speechSynthesis?.resume === 'function',
+    };
+  }
+
   capability() {
     const supported =
       typeof this.globals.SpeechSynthesisUtterance === 'function' &&
@@ -39,8 +46,7 @@ export class BrowserSpeakingEngine {
         voiceURI: voice.voiceURI,
         lang: voice.lang,
       })),
-      pause: typeof this.globals.speechSynthesis?.pause === 'function',
-      resume: typeof this.globals.speechSynthesis?.resume === 'function',
+      ...this.getPlaybackCapabilities(),
       ...(supported
         ? {}
         : {
@@ -50,9 +56,12 @@ export class BrowserSpeakingEngine {
     };
   }
 
-  async speak(text, { voice, rate = 1, signal, onPlaybackStart } = {}) {
-    // No await before replacement: concurrent calls cannot enqueue obsolete utterances.
-    this.stop();
+  /** Inaudible preparation only: Web Speech does not expose pre-synthesized audio. */
+  async prepare(text, options = {}) {
+    return this._prepare(text, options);
+  }
+
+  _prepare(text, { voice, lang = this.lang, rate = 1, signal } = {}) {
     if (signal?.aborted) throw abortError();
     if (typeof text !== 'string') throw new TypeError('Speech text must be a string.');
     if (!Number.isFinite(rate) || rate < 0.1 || rate > 10)
@@ -62,7 +71,7 @@ export class BrowserSpeakingEngine {
     const voices = this.voices();
     const chosen =
       voice == null
-        ? (voices.find((v) => v.lang?.toLowerCase() === this.lang.toLowerCase()) ?? voices[0])
+        ? (voices.find((v) => v.lang?.toLowerCase() === lang.toLowerCase()) ?? voices[0])
         : voices.find((v) =>
             typeof voice === 'string' ? v.voiceURI === voice || v.name === voice : v === voice,
           );
@@ -70,11 +79,57 @@ export class BrowserSpeakingEngine {
       throw new Error(
         'The selected voice is not an available local browser voice. Choose a voice from voices().',
       );
-    if (!text.trim()) return;
-    const utterance = new this.globals.SpeechSynthesisUtterance(text);
-    utterance.voice = chosen;
-    utterance.lang = chosen.lang || this.lang;
-    utterance.rate = rate;
+    let disposed = false;
+    const createUtterance = () => {
+      if (disposed) throw abortError();
+      // Voice discovery can change while another segment is playing. Never fall back remotely.
+      const available = this.voices().find((value) => value.voiceURI === chosen.voiceURI);
+      if (!available) throw new Error('The prepared local browser voice is no longer available.');
+      const utterance = new this.globals.SpeechSynthesisUtterance(text);
+      utterance.voice = available;
+      utterance.lang = available.lang || lang;
+      utterance.rate = rate;
+      return utterance;
+    };
+    let utterance = createUtterance();
+    return {
+      text,
+      rate,
+      takeUtterance: () => {
+        if (disposed) throw abortError();
+        if (!this.voices().some((value) => value.voiceURI === chosen.voiceURI))
+          throw new Error('The prepared local browser voice is no longer available.');
+        // A fresh native utterance is required when replaying retained history.
+        const next = utterance || createUtterance();
+        utterance = null;
+        return next;
+      },
+      dispose() {
+        disposed = true;
+        utterance = null;
+      },
+    };
+  }
+
+  async speak(text, options = {}) {
+    // No await before replacement: concurrent calls cannot enqueue obsolete utterances.
+    this.stop();
+    return this.playPrepared(this._prepare(text, options), options);
+  }
+
+  async playPrepared(prepared, { signal, onPlaybackStart, retainPrepared = false } = {}) {
+    this.stop();
+    if (signal?.aborted) {
+      if (!retainPrepared) prepared?.dispose?.();
+      throw abortError();
+    }
+    if (!prepared || typeof prepared.takeUtterance !== 'function')
+      throw new TypeError('Prepared browser speech is required.');
+    if (!prepared.text.trim()) {
+      if (!retainPrepared) prepared.dispose();
+      return;
+    }
+    const utterance = prepared.takeUtterance();
     return new Promise((resolve, reject) => {
       const finish = (error) => {
         if (this.current !== job) return;
@@ -83,6 +138,7 @@ export class BrowserSpeakingEngine {
         utterance.onend = null;
         utterance.onerror = null;
         signal?.removeEventListener('abort', cancel);
+        if (!retainPrepared) prepared.dispose();
         error ? reject(error) : resolve();
       };
       const cancel = () => {
@@ -94,7 +150,10 @@ export class BrowserSpeakingEngine {
         startedAt: null,
         elapsedMs: 0,
         hasStarted: false,
-        estimatedDurationSeconds: Math.max(1, Array.from(text).length / (14 * rate)),
+        estimatedDurationSeconds: Math.max(
+          1,
+          Array.from(prepared.text).length / (14 * prepared.rate),
+        ),
       };
       this.current = job;
       utterance.onstart = () => {
@@ -119,7 +178,7 @@ export class BrowserSpeakingEngine {
       }
       try {
         // cancel() can leave the shared synthesizer paused in some browsers.
-        this.globals.speechSynthesis.resume?.();
+        if (this.globals.speechSynthesis.paused) this.globals.speechSynthesis.resume?.();
         this.globals.speechSynthesis.speak(utterance);
       } catch (error) {
         finish(error);

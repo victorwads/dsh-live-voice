@@ -111,7 +111,8 @@ Configure how assistant messages are read aloud:
 - **Speech Engine:**
   - **Browser speech:** Plays audio through the browser device using local system voices.
   - **macOS `say`:** Host-local synthesis to temporary WAV, converted to compact AAC/M4A for browser playback; temporary files are removed after conversion.
-  - **Qwen3 TTS:** Neural voice synthesis with WAV streaming playback in the browser.
+  - **Qwen3 TTS:** Host-backed neural voice synthesis converted to compact AAC/M4A for browser playback.
+- **Segment preparation and gap:** Say and Qwen share a bounded prefetch window of three future audio segments. Browser uses the same prepared-item lifecycle for local utterances, but Web Speech does not expose pre-synthesized audio or promise gapless playback. The configured segment gap (400 ms by default, zero allowed) still applies; native voice/browser latency may add to it. Pause during preparation prevents late audio from starting.
 - **Output Device:** Route playback to specific speakers or headphones.
 - **Speech Rate:** Adjust reading speed from 0.1x to 3.0x (1.0 is normal).
 - **Code Block Filtering:**
