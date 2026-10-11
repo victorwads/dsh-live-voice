@@ -14,6 +14,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 ### Fixes
 
 - Make automatic assistant speech work with the microphone off. Keep new streaming segments in order without replaying history or discarding unread partial text when microphone mode starts.
+- Stop current or paused speech and close the speech bar when automatic assistant speech is disabled. Clear pending segments without ending microphone input or resuming the cancelled response when speech is enabled again.
 
 ## [0.5.0] - 2026-10-10
 

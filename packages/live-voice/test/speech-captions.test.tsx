@@ -144,37 +144,61 @@ test('separate speech bar advances captions, pauses without hiding, stops and pr
 test('composer microphone toggle leaves real manual playback and speech bar open', async (t) => {
   const dom = new JSDOM('<div id="root"></div>', { pretendToBeVisual: true });
   const previous = { window: globalThis.window, document: globalThis.document };
-  Object.assign(globalThis, { window: dom.window, document: dom.window.document, IS_REACT_ACT_ENVIRONMENT: true });
+  Object.assign(globalThis, {
+    window: dom.window,
+    document: dom.window.document,
+    IS_REACT_ACT_ENVIRONMENT: true,
+  });
   dom.window.HTMLCanvasElement.prototype.getContext = () => null;
   const root = createRoot(document.getElementById('root'));
   let finish;
   let stops = 0;
   const engine = {
     capability: () => ({ supported: true, pause: true, resume: true }),
-    speak: () => new Promise((resolve) => { finish = resolve; }),
-    stop: () => { stops++; finish?.(); },
+    speak: () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+    stop: () => {
+      stops++;
+      finish?.();
+    },
   };
   const c = new VoiceCoordinator({
-    settings: { mode: 'headphones' }, engines: { browser: engine },
+    settings: { mode: 'headphones' },
+    engines: { browser: engine },
     recognition: { capability: () => ({ supported: true }), start() {}, stop() {} },
-    meter: { capability: () => ({ supported: true }), start: () => true, stop() {}, level: () => 0 },
+    meter: {
+      capability: () => ({ supported: true }),
+      start: () => true,
+      stop() {},
+      level: () => 0,
+    },
     composer: { getDraft: () => '', setDraft() {} },
   });
   t.after(async () => {
-    await act(async () => { await c.dispose(); root.unmount(); });
+    await act(async () => {
+      await c.dispose();
+      root.unmount();
+    });
     dom.window.close();
     Object.assign(globalThis, previous);
     delete globalThis.IS_REACT_ACT_ENVIRONMENT;
   });
   await c.refreshCapabilities();
-  await act(async () => root.render(
-    <LiveVoiceTranslationProvider>
-      <ConversationControls controller={c} />
-      <ConversationStatusBar controller={c} />
-    </LiveVoiceTranslationProvider>,
-  ));
+  await act(async () =>
+    root.render(
+      <LiveVoiceTranslationProvider>
+        <ConversationControls controller={c} />
+        <ConversationStatusBar controller={c} />
+      </LiveVoiceTranslationProvider>,
+    ),
+  );
   let playing;
-  await act(async () => { playing = c.speak('Manual answer', 'turn'); await new Promise(setImmediate); });
+  await act(async () => {
+    playing = c.speak('Manual answer', 'turn');
+    await new Promise(setImmediate);
+  });
   const speech = document.querySelector('.dlv-speech-bar');
   assert.ok(speech);
   const initialStops = stops;
@@ -193,32 +217,152 @@ test('composer microphone toggle leaves real manual playback and speech bar open
   assert.equal(c.snapshot.speaking, true);
   assert.equal(document.querySelector('.dlv-speech-bar'), speech);
   assert.equal(stops, initialStops);
-  await act(async () => { finish(); await playing; });
+  await act(async () => {
+    finish();
+    await playing;
+  });
   assert.equal(document.querySelector('.dlv-speech-bar'), null);
 });
+
+for (const playback of ['automatic', 'paused', 'manual']) {
+  test(
+    'composer speech toggle cancels ' + playback + ' playback and hides only the speech bar',
+    async (t) => {
+      const dom = new JSDOM('<div id="root"></div>', { pretendToBeVisual: true });
+      const previous = { window: globalThis.window, document: globalThis.document };
+      Object.assign(globalThis, {
+        window: dom.window,
+        document: dom.window.document,
+        IS_REACT_ACT_ENVIRONMENT: true,
+      });
+      dom.window.HTMLCanvasElement.prototype.getContext = () => null;
+      const root = createRoot(document.getElementById('root'));
+      let finish;
+      let stops = 0;
+      let spoken = 0;
+      const engine = {
+        capability: () => ({ supported: true, pause: true, resume: true }),
+        speak: () => {
+          spoken++;
+          return new Promise((resolve) => {
+            finish = resolve;
+          });
+        },
+        stop: () => {
+          stops++;
+          finish?.();
+        },
+        pause: () => true,
+      };
+      const c = new VoiceCoordinator({
+        settings: { mode: 'headphones', segmentGapMs: 0 },
+        engines: { browser: engine },
+        recognition: { capability: () => ({ supported: true }), start() {}, stop() {} },
+        meter: {
+          capability: () => ({ supported: true }),
+          start: () => true,
+          stop() {},
+          level: () => 0,
+        },
+        composer: { getDraft: () => '', setDraft() {} },
+      });
+      t.after(async () => {
+        await act(async () => {
+          await c.dispose();
+          root.unmount();
+        });
+        dom.window.close();
+        Object.assign(globalThis, previous);
+        delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+      });
+      await c.startConversation();
+      await act(async () =>
+        root.render(
+          <LiveVoiceTranslationProvider>
+            <ConversationControls controller={c} />
+            <ConversationStatusBar controller={c} />
+          </LiveVoiceTranslationProvider>,
+        ),
+      );
+      await act(async () => {
+        if (playback === 'manual') void c.speak('First sentence. Second sentence.', 'manual');
+        else c.observeMessage('stream', 'First sentence. Second sentence.\n');
+        await new Promise(setImmediate);
+        if (playback === 'paused') await c.pauseSpeech();
+      });
+      assert.ok(document.querySelector('.dlv-speech-bar'));
+      assert.ok(c.snapshot.speechSegmentsRemaining > 1);
+      const inputBar = document.querySelector('[aria-label="Voice controls"]');
+      const toggle = document.querySelector('.dlv-composer-toggle');
+      const initialStops = stops;
+      assert.equal(toggle.getAttribute('aria-checked'), 'true');
+      await act(async () => {
+        toggle.click();
+        await new Promise(setImmediate);
+      });
+      assert.equal(stops, initialStops + 1);
+      assert.equal(toggle.getAttribute('aria-checked'), 'false');
+      assert.equal(document.querySelector('.dlv-speech-bar'), null);
+      assert.equal(document.querySelector('[aria-label="Voice controls"]'), inputBar);
+      assert.equal(c.snapshot.listening, true);
+      assert.equal(c.snapshot.conversation, true);
+      assert.equal(c.snapshot.speechSegmentsRemaining, 0);
+      await act(async () => {
+        toggle.click();
+        await new Promise(setImmediate);
+      });
+      assert.equal(toggle.getAttribute('aria-checked'), 'true');
+      assert.equal(document.querySelector('.dlv-speech-bar'), null);
+      assert.equal(spoken, 1, 'enabling again does not resume cancelled playback');
+    },
+  );
+}
 
 test('speech bar leaves captions empty before the first segment instead of claiming Speaking', async (t) => {
   const dom = new JSDOM('<div id="root"></div>', { pretendToBeVisual: true });
   const previous = { window: globalThis.window, document: globalThis.document };
-  Object.assign(globalThis, { window: dom.window, document: dom.window.document, IS_REACT_ACT_ENVIRONMENT: true });
+  Object.assign(globalThis, {
+    window: dom.window,
+    document: dom.window.document,
+    IS_REACT_ACT_ENVIRONMENT: true,
+  });
   const root = createRoot(document.getElementById('root'));
   t.after(async () => {
-    await act(async () => root.unmount()); dom.window.close();
-    Object.assign(globalThis, previous); delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+    await act(async () => root.unmount());
+    dom.window.close();
+    Object.assign(globalThis, previous);
+    delete globalThis.IS_REACT_ACT_ENVIRONMENT;
   });
-  let state = { speechRunActive: true, speechText: null, speaking: false, paused: false, settings: {} };
+  let state = {
+    speechRunActive: true,
+    speechText: null,
+    speaking: false,
+    paused: false,
+    settings: {},
+  };
   const listeners = new Set();
-  const controller = { getSnapshot: () => state, subscribe: (fn) => { listeners.add(fn); return () => listeners.delete(fn); } };
+  const controller = {
+    getSnapshot: () => state,
+    subscribe: (fn) => {
+      listeners.add(fn);
+      return () => listeners.delete(fn);
+    },
+  };
   for (const active of [false, true]) {
     state = { ...state, speaking: active, speechLoading: active };
     await act(async () => {
-      root.render(<LiveVoiceTranslationProvider><SpeechStatusBar controller={controller} /></LiveVoiceTranslationProvider>);
+      root.render(
+        <LiveVoiceTranslationProvider>
+          <SpeechStatusBar controller={controller} />
+        </LiveVoiceTranslationProvider>,
+      );
       for (const listener of listeners) listener();
     });
     assert.ok(document.querySelector('.dlv-speech-bar'));
     assert.equal(document.querySelector('.dlv-caption-line').textContent, '');
     assert.equal(document.querySelector('.dlv-caption').title, '');
-    if (active) assert.equal(document.querySelector('[role="progressbar"]').dataset.loading, 'true');
+    if (active)
+      assert.equal(document.querySelector('[role="progressbar"]').dataset.loading, 'true');
   }
   await act(async () => {
     state = { ...state, speechText: 'First real segment', speechLoading: false };

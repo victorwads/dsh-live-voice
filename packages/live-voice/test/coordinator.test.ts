@@ -263,7 +263,11 @@ for (const mode of ['headphones', 'speaker']) {
     f.spoken[1].resolve();
     await playing;
     await turn();
-    assert.equal(c.snapshot.listening, false, 'closing mic prevents completion from reopening capture');
+    assert.equal(
+      c.snapshot.listening,
+      false,
+      'closing mic prevents completion from reopening capture',
+    );
     assert.equal(c.snapshot.speechRunActive, false);
     await c.dispose();
   });
@@ -575,6 +579,121 @@ test('disabled automatic assistant announcements consume text without queueing s
   await f.coordinator.dispose();
 });
 
+for (const mode of ['headphones', 'speaker']) {
+  for (const paused of [false, true]) {
+    test(
+      'disabling automatic speech cancels playback and its run in ' +
+        mode +
+        (paused ? ' while paused' : ''),
+      async () => {
+        const f = fixture({ mode });
+        const c = f.coordinator;
+        await c.startConversation();
+        c.observeMessage('stream', 'First sentence. Second sentence.\n');
+        await turn();
+        assert.equal(c.snapshot.speaking, true);
+        assert.ok(c.queue.length > 0);
+        if (paused) await c.pauseSpeech();
+
+        c.updateSettings({ announceAssistantMessages: false });
+        assert.equal(c.snapshot.settings.announceAssistantMessages, false);
+        assert.equal(c.snapshot.speaking, false);
+        assert.equal(c.snapshot.paused, false);
+        assert.equal(c.snapshot.speechLoading, false);
+        assert.equal(c.snapshot.speechText, null);
+        assert.equal(c.snapshot.speechEngine, null);
+        assert.equal(c.snapshot.activeMessageId, null);
+        assert.equal(c.snapshot.speechSegmentsRemaining, 0);
+        assert.equal(c.snapshot.speechSegmentsTotal, 0);
+        assert.equal(c.snapshot.speechRunActive, false);
+        assert.deepEqual(c.getSpeechHistory(), []);
+        await c.speechBarrier;
+        await turn();
+        assert.ok(f.log.includes('speech:stop'));
+        assert.equal(c.snapshot.conversation, true);
+        assert.equal(c.snapshot.listening, true);
+
+        c.updateSettings({ announceAssistantMessages: true });
+        c.observeMessage('stream', 'First sentence. Second sentence.\nLate continuation.', {
+          complete: true,
+        });
+        await turn();
+        assert.equal(
+          f.spoken.length,
+          1,
+          'cancelled streaming response cannot restart after re-enabling',
+        );
+        c.observeMessage('new', 'New reply.', { complete: true });
+        await turn();
+        assert.equal(f.spoken.at(-1).text, 'New reply.');
+        await c.dispose();
+      },
+    );
+  }
+}
+
+test('disabling automatic speech invalidates pending synthesis with input closed', async () => {
+  const f = fixture();
+  const pending = deferred();
+  let disposed = 0;
+  f.engine.prepare = () => pending.promise;
+  f.engine.playPrepared = () => assert.fail('obsolete prepared audio must not play');
+  f.coordinator.observeMessage('preparing', 'Preparing reply.', { complete: true });
+  await turn();
+  assert.equal(f.coordinator.snapshot.speechLoading, true);
+  const epoch = f.coordinator.speechEpoch;
+  f.coordinator.updateSettings({ announceAssistantMessages: false });
+  assert.ok(f.coordinator.speechEpoch > epoch);
+  assert.equal(f.coordinator.snapshot.speaking, false);
+  assert.equal(f.coordinator.snapshot.speechLoading, false);
+  await f.coordinator.speechBarrier;
+  pending.resolve({ dispose: () => disposed++ });
+  await turn();
+  assert.ok(disposed > 0);
+  assert.equal(f.coordinator.snapshot.speechRunActive, false);
+  assert.equal(f.coordinator.snapshot.speechText, null);
+  assert.equal(f.coordinator.snapshot.listening, false);
+  assert.equal(f.coordinator.snapshot.conversation, false);
+  await f.coordinator.dispose();
+});
+
+test('disabling automatic speech clears a segment-gap timer and waiting speech run', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
+  const f = fixture({ segmentGapMs: 1000 });
+  f.coordinator.observeMessage('gap', 'First sentence. Second sentence.\n');
+  await turn();
+  f.spoken[0].resolve();
+  await turn();
+  assert.equal(f.coordinator.snapshot.speaking, false);
+  assert.equal(f.coordinator.snapshot.speechRunActive, true);
+  assert.ok(f.coordinator.assistantSpeechTimer);
+  f.coordinator.updateSettings({ announceAssistantMessages: false });
+  assert.equal(f.coordinator.assistantSpeechTimer, null);
+  assert.equal(f.coordinator.assistantSpeechNotBefore, 0);
+  assert.equal(f.coordinator.snapshot.speechRunActive, false);
+  assert.equal(f.coordinator.snapshot.speechSegmentsRemaining, 0);
+  f.coordinator.updateSettings({ announceAssistantMessages: true });
+  t.mock.timers.tick(2000);
+  await turn();
+  assert.equal(f.spoken.length, 1);
+  await f.coordinator.dispose();
+});
+
+test('manual playback remains available with automatic speech disabled and unchanged preferences', async () => {
+  const f = fixture({ announceAssistantMessages: false });
+  const playing = f.coordinator.speak('Manual reply. Another sentence.', 'manual');
+  await turn();
+  const stops = f.log.filter((entry) => entry === 'speech:stop').length;
+  f.coordinator.updateSettings({ announceAssistantMessages: false });
+  assert.equal(f.coordinator.snapshot.speaking, true);
+  assert.equal(f.log.filter((entry) => entry === 'speech:stop').length, stops);
+  f.spoken[0].resolve();
+  await playing;
+  await turn();
+  assert.equal(f.spoken.length, 2);
+  await f.coordinator.dispose();
+});
+
 test('turning off automatic assistant speech discards delayed queued phrases', async () => {
   const f = fixture({ assistantSpeechDelaySeconds: 1 });
   await f.coordinator.startConversation();
@@ -684,18 +803,24 @@ test('clear command removes all composer text and cancels pending automatic deli
   await f.coordinator.dispose();
 });
 
-test('stop-speaking command disables automatic speech and stops playback', async () => {
-  const f = fixture({ mode: 'headphones' });
-  await f.coordinator.startConversation();
-  void f.coordinator.speak('A long spoken response');
-  await turn();
-  f.sessions[0].onResult({ final: 'shut up!' });
-  await turn();
-  assert.equal(f.coordinator.snapshot.settings.announceAssistantMessages, false);
-  assert.equal(f.coordinator.snapshot.speaking, false);
-  assert.equal(f.coordinator.snapshot.listening, true);
-  await f.coordinator.dispose();
-});
+for (const announceAssistantMessages of [true, false]) {
+  test(
+    'stop-speaking command stops playback with automatic speech ' +
+      (announceAssistantMessages ? 'on' : 'off'),
+    async () => {
+      const f = fixture({ mode: 'headphones', announceAssistantMessages });
+      await f.coordinator.startConversation();
+      void f.coordinator.speak('A long spoken response');
+      await turn();
+      f.sessions[0].onResult({ final: 'shut up!' });
+      await turn();
+      assert.equal(f.coordinator.snapshot.settings.announceAssistantMessages, false);
+      assert.equal(f.coordinator.snapshot.speaking, false);
+      assert.equal(f.coordinator.snapshot.listening, true);
+      await f.coordinator.dispose();
+    },
+  );
+}
 
 test('soft mute keeps recognition active, ignores dictation, and accepts resume command', async () => {
   const f = fixture({

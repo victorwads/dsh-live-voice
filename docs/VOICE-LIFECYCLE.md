@@ -45,9 +45,10 @@ Capture, recognition, user speech activity, message delivery, agent generation, 
 | Ignoring (soft mute) | Discard dictation and pending question answers from that input only; keep capture, activity, and interruption active regardless of voice-command preference. Enabled commands remain available. Microphone and shared input have independent Ignore state |
 | Resume | Clear only the current session's soft mute |
 | Stop input / close mic mode | Cancel starts, capture, recognition, partial hypotheses, and delivery timers; preserve playback, pause state, captions, history, and accepted speech segments |
+| Disable automatic assistant speech | Cancel current or paused playback and pending synthesis/segments, clear captions and close the speech bar; preserve input mode and resume speaker-gated input only if it remains enabled. Re-enabling never resumes the cancelled response; manual per-message playback remains available while automatic speech is off |
 | End conversation | Stop input and playback, clear queues/timers/transient errors, release ownership |
 | Switch chat with voice mode active | Retire the old composer, cancel its operations, create clean transient state for the new composer |
-| Settings change | Output/UI preferences preserve active playback, queue, and meeting capture; input preferences serialize only microphone/recognition replacement and restore input unless explicitly stopped. Current shared capture uses its start-time recognition settings until explicitly restarted |
+| Settings change | Except for explicit automatic-speech disable above, output/UI preferences preserve active playback, queue, and meeting capture; input preferences serialize only microphone/recognition replacement and restore input unless explicitly stopped. Current shared capture uses its start-time recognition settings until explicitly restarted |
 | Unmount/dispose/pagehide | Invalidate pending work and release every owned resource |
 | Late async result | Ignore it unless its session and operation generation are still current |
 

@@ -151,11 +151,10 @@ export class VoiceCoordinator {
       error: null,
     });
     if (settings.sendingMode === 'manual') this.cancelAutoSend();
-    if (Object.hasOwn(next, 'announceAssistantMessages') && !settings.announceAssistantMessages) {
-      this._cancelSpeechPrefetch();
-      this.queue = [];
-      this.assistantSpeechNotBefore = 0;
-      this._cancelAssistantSpeechTimer();
+    if (previousSettings.announceAssistantMessages && !settings.announceAssistantMessages) {
+      // Disabling speech is an explicit cancellation, not just an admission preference.
+      // Ignore unchanged persisted values so manual playback remains available while off.
+      void this.stopSpeech();
     }
     if (Object.hasOwn(next, 'assistantSpeechDelaySeconds') && this.assistantSpeechNotBefore > 0) {
       this.assistantSpeechNotBefore = Date.now() + settings.assistantSpeechDelaySeconds * 1000;
@@ -584,8 +583,8 @@ export class VoiceCoordinator {
         else if (command === 'mute') this.muteListening();
         else if (command === 'resume') this.resumeListeningInput();
         else if (command === 'stopSpeaking') {
+          if (!this.snapshot.settings.announceAssistantMessages) void this.stopSpeech();
           this.updateSettings({ announceAssistantMessages: false });
-          void this.stopSpeech();
         } else if (command === 'clear') {
           this.cancelAutoSend();
           this.transcript.reset();
@@ -862,6 +861,8 @@ export class VoiceCoordinator {
     this.queue = [];
   }
   async stopSpeech(resumeListening = true) {
+    this._cancelAssistantSpeechTimer();
+    this.assistantSpeechNotBefore = 0;
     this._cancelInterruptionResume();
     if (this.interruptionTimer !== null) clearTimeout(this.interruptionTimer);
     this.interruptionTimer = null;
