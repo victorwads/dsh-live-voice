@@ -39,7 +39,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/victorwads/dsh-live-voice.git",
+    "url": "git+https://github.com/wads-dev/dsh-live-voice.git",
     "directory": "packages/live-voice-debugger"
   }
 }
