@@ -72,7 +72,7 @@ export function SpeechAdvancedSettings({
             {(speak as any).output.stopTest()}
           </button>
         )}
-        <button type="button" onClick={() => invoke('refreshCapabilities')}>
+        <button type="button" onClick={() => invoke('refreshCapabilities', { localOnly: true })}>
           {(settingsLanguage as any).engine.refresh()}
         </button>
       </div>

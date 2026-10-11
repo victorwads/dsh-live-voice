@@ -135,28 +135,14 @@ export function createConversationComponents(
     const [invoke, error, clearError] = useActions(controller);
     const busy = state.conversation || state.listening || state.starting || state.recognizing;
     if (busy) return null;
-    const recognition = state.capabilities?.recognition;
-    const capture = state.capabilities?.capture;
-    const pending = !recognition || !capture;
-    const unavailable = recognition?.supported === false || capture?.supported === false;
-    const reason = capture?.supported === false ? capture.reason : recognition?.reason;
     return (
       <React.Fragment>
         {
           <Button
             className="dlv-mic"
             icon="mic"
-            label={
-              pending
-                ? 'dsh-live-voice.recognition.microphone.checking'
-                : unavailable
-                  ? reason || 'dsh-live-voice.recognition.status.unavailable'
-                  : 'dsh-live-voice.commons.conversation.start'
-            }
-            disabled={pending}
-            onClick={() =>
-              unavailable ? invoke('explainRecognition') : invoke('startConversation')
-            }
+            label="dsh-live-voice.commons.conversation.start"
+            onClick={() => invoke('startConversation')}
           />
         }
         {<ErrorText error={error} onDismiss={clearError} />}

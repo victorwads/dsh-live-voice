@@ -1,34 +1,32 @@
 import React from 'react';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
 import { qwenVoices } from '../../../core/settings.js';
+import { speakingEngineOrder } from '../../../core/engineSelection.js';
 import { NumberField, SelectField, TextField } from '../../../../shared/design-system/index.js';
-export function SpeechEngineSettings({ settings, capabilities, updateSettings }: any) {
+export function SpeechEngineSettings({
+  settings,
+  capabilities,
+  updateSettings,
+  hostPlatform,
+}: any) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const engine = settings.engine || 'browser';
   const browserVoices = capabilities?.browser?.voices || [];
+  const capability = capabilities?.[engine];
   return (
     <>
       <SelectField
         label={(speak as any).engine.label()}
         value={engine}
-        options={[
-          {
-            value: 'qwen-http',
-            label: (speak as any).qwen.label(),
-            disabled: capabilities?.['qwen-http']?.supported === false,
-          },
-          {
-            value: 'say',
-            label: (speak as any).macos.label(),
-            disabled: capabilities?.say?.supported === false,
-          },
-          {
-            value: 'browser',
-            label: (speak as any).browser.label(),
-            disabled: capabilities?.browser?.supported === false,
-          },
-        ]}
+        options={speakingEngineOrder(hostPlatform).map((value) => ({
+          value,
+          label: {
+            say: (speak as any).macos.label(),
+            browser: (speak as any).browser.label(),
+            'qwen-http': (speak as any).qwen.label(),
+          }[value],
+        }))}
         onChange={(event) => updateSettings({ engine: event.target.value })}
       />
       {engine === 'browser' && (
@@ -82,11 +80,8 @@ export function SpeechEngineSettings({ settings, capabilities, updateSettings }:
           onCommit={(value) => updateSettings({ segmentGapMs: Number(value) })}
         />
       </div>
-      {capabilities?.[engine === 'qwen-http' ? 'qwen' : engine]?.supported === false && (
-        <p role="status">
-          {capabilities?.[engine === 'qwen-http' ? 'qwen' : engine]?.reason ||
-            (commons as any).engine.failure()}
-        </p>
+      {capability?.supported === false && (
+        <p role="status">{capability.reason || (commons as any).engine.failure()}</p>
       )}
     </>
   );

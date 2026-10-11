@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
 import { QwenSettings } from '../../../core/qwen/QwenSettings.js';
+import { recognitionEngineOrder } from '../../../core/engineSelection.js';
 import { WhisperSettings } from '../../../recognition/engines/whisper/WhisperSettings.js';
 import {
   CheckboxField,
@@ -29,24 +30,14 @@ export function RecognitionEngineSettings({
       <SelectField
         label={(recognition as any).engine.label()}
         value={engine}
-        options={[
-          {
-            value: 'browser',
-            label: (recognition as any).browser.label(),
-            // Keep Browser selectable so unavailable local processing can be reconfigured.
-            // capabilities.recognition describes the current engine, not Browser support.
-          },
-          {
-            value: 'qwen-http',
-            label: (recognition as any).qwen.label(),
-            disabled: capabilities['qwen-http-recognition']?.supported === false,
-          },
-          {
-            value: 'whisper-http',
-            label: (recognition as any).whisper.label(),
-            disabled: capabilities['whisper-http']?.supported === false,
-          },
-        ]}
+        options={recognitionEngineOrder.map((value) => ({
+          value,
+          label: {
+            browser: (recognition as any).browser.label(),
+            'qwen-http': (recognition as any).qwen.label(),
+            'whisper-http': (recognition as any).whisper.label(),
+          }[value],
+        }))}
         onChange={(event) => setEngine(event.target.value)}
       />
       <SelectField

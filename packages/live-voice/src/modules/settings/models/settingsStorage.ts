@@ -5,6 +5,7 @@ export const SETTINGS_PATH = '/api/dsh-live-voice/settings';
 /** No browser persistence or migration from legacy browser preferences. */
 export function createSettingsClient(fetchImpl = globalThis.fetch) {
   let settings = normalizeSettings({});
+  let hostPlatform: string | undefined;
   let queue = Promise.resolve();
   const pendingPatches: unknown[] = [];
   const listeners = new Set<(settings: ReturnType<typeof normalizeSettings>) => void>();
@@ -19,6 +20,7 @@ export function createSettingsClient(fetchImpl = globalThis.fetch) {
     });
     const body = await response.json();
     if (!response.ok || body?.ok !== true) throw new Error('settings-request-failed');
+    hostPlatform = typeof body.hostPlatform === 'string' ? body.hostPlatform : undefined;
     if (method === 'PUT') pendingPatches.shift();
     settings = normalizeSettings(Object.assign({}, body.value, ...pendingPatches));
     for (const listener of listeners) listener(settings);
@@ -30,6 +32,7 @@ export function createSettingsClient(fetchImpl = globalThis.fetch) {
   return {
     ready,
     getSnapshot: () => settings,
+    getHostPlatform: () => hostPlatform,
     subscribe(listener: (settings: ReturnType<typeof normalizeSettings>) => void) {
       listeners.add(listener);
       return () => {

@@ -81,7 +81,6 @@ export function QwenSettings({ controller }) {
         if (!abort.signal.aborted) {
           setDraft(value);
           setMessage('dsh-live-voice.speak.qwen.saved');
-          await controller.refreshCapabilities?.();
         }
       } else {
         const value = await qwenSettingsRequest('/test', {

@@ -10,7 +10,7 @@ import { LiveVoiceSettings } from '../src/modules/settings/index.ts';
 import { publishDeveloperExtension } from '../src/modules/core/developerExtension.ts';
 import { RecognitionEngineSettings } from '../src/modules/settings/sections/recognition/RecognitionEngineSettings.tsx';
 
-test('Browser recognition remains selectable when the current engine or local processing is unavailable', async (t) => {
+test('all recognition engines remain selectable regardless of server or local processing availability', async (t) => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'https://dsh.local/' });
   globalThis.window = dom.window;
   globalThis.document = dom.window.document;
@@ -43,8 +43,8 @@ test('Browser recognition remains selectable when the current engine or local pr
     );
     const select = document.querySelector('select');
     assert.equal(select.querySelector('option[value="browser"]').disabled, false);
-    assert.equal(select.querySelector('option[value="qwen-http"]').disabled, true);
-    assert.equal(select.querySelector('option[value="whisper-http"]').disabled, true);
+    assert.equal(select.querySelector('option[value="qwen-http"]').disabled, false);
+    assert.equal(select.querySelector('option[value="whisper-http"]').disabled, false);
     await act(async () => {
       select.value = 'browser';
       select.dispatchEvent(new window.Event('change', { bubbles: true }));

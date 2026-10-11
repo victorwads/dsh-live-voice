@@ -108,6 +108,10 @@ Configure your microphone and speech-to-text (STT) engine:
 
 Configure how assistant messages are read aloud:
 
+Engine selection never depends on provider health: all recognition and speaking options remain selectable so their configuration can be edited before a service is running. Loading/saving configuration uses the authenticated DSH preferences transport, but does not test the engine service. Use the explicit connection test or start recognition/playback for operational validation.
+
+New host preferences default to macOS Say on a macOS DSH host and Browser speech elsewhere; saved choices are preserved. Speaking order is Say / Browser / Qwen on macOS and Browser / Qwen / Say elsewhere. Recognition order is Browser / Qwen / Whisper; Say does not recognize speech. Platform determines presentation/defaults, not engine availability.
+
 - **Speech Engine:**
   - **Browser speech:** Plays audio through the browser device using local system voices.
   - **macOS `say`:** Host-local synthesis to temporary WAV, converted to compact AAC/M4A for browser playback; temporary files are removed after conversion.

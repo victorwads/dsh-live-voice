@@ -1,0 +1,10 @@
+/** Selection policy is independent of engine availability and provider health. */
+export const recognitionEngineOrder = Object.freeze(['browser', 'qwen-http', 'whisper-http']);
+export function speakingEngineOrder(hostPlatform?: string) {
+  return hostPlatform === 'darwin'
+    ? ['say', 'browser', 'qwen-http']
+    : ['browser', 'qwen-http', 'say'];
+}
+export function defaultSpeakingEngine(hostPlatform?: string) {
+  return speakingEngineOrder(hostPlatform)[0];
+}

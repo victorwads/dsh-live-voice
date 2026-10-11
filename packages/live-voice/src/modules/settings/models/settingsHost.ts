@@ -3,17 +3,21 @@ import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { normalizeSettings } from '../../core/settings.js';
+import { defaultSpeakingEngine } from '../../core/engineSelection.js';
 
 /** Host-wide preferences, shared by every authenticated browser. */
 export function createSettingsStore(
   path = join(homedir(), '.dsh', 'dsh-live-voice.settings.json'),
+  { platform = process.platform } = {},
 ) {
+  const normalize = (value: object = {}) =>
+    normalizeSettings({ engine: defaultSpeakingEngine(platform), ...value });
   let queue = Promise.resolve();
   async function load() {
     try {
-      return normalizeSettings(JSON.parse(await readFile(path, 'utf8')));
+      return normalize(JSON.parse(await readFile(path, 'utf8')));
     } catch (error) {
-      if (error.code === 'ENOENT') return normalizeSettings({});
+      if (error.code === 'ENOENT') return normalize();
       throw error;
     }
   }

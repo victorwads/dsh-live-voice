@@ -113,7 +113,7 @@ test('conversation controls preserve capability and busy-state policy', async (t
   assert.deepEqual(controller.calls, ['startConversation']);
 });
 
-test('conversation controls explain unavailable recognition and hide while busy', async (t) => {
+test('conversation controls allow an explicit retry despite a stale unavailable capability', async (t) => {
   const unavailable = controllerFixture({
     capabilities: {
       recognition: { supported: false, reason: 'No engine' },
@@ -126,9 +126,12 @@ test('conversation controls explain unavailable recognition and hide while busy'
       <ConversationControls controller={unavailable} />
     </LiveVoiceTranslationProvider>,
   );
-  assert.equal(root.querySelector('.dlv-mic').getAttribute('aria-label'), 'No engine');
+  assert.equal(
+    root.querySelector('.dlv-mic').getAttribute('aria-label'),
+    'Start voice conversation',
+  );
   await act(async () => root.querySelector('.dlv-mic').click());
-  assert.deepEqual(unavailable.calls, ['explainRecognition']);
+  assert.deepEqual(unavailable.calls, ['startConversation']);
 });
 
 test('conversation controls retain a pressed microphone toggle while busy', async (t) => {

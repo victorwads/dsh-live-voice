@@ -18,7 +18,10 @@ function deferred() {
   });
   return { promise, resolve };
 }
-async function fixture(t, { pendingStore = true, realSpeech = false, initialSettings = {}, settingsReady } = {}) {
+async function fixture(
+  t,
+  { pendingStore = true, realSpeech = false, initialSettings = {}, settingsReady } = {},
+) {
   const dom = new JSDOM(
     '<!doctype html><html><head></head><body><div id="root"></div></body></html>',
     { url: 'http://localhost' },
@@ -60,7 +63,12 @@ async function fixture(t, { pendingStore = true, realSpeech = false, initialSett
   const controllers = [];
   const calls = [];
   const holds = new Map();
-  t.mock.method(VoiceCoordinator.prototype, 'refreshCapabilities', async function () {
+  t.mock.method(VoiceCoordinator.prototype, 'refreshCapabilities', async function (options) {
+    assert.deepEqual(
+      options,
+      { localOnly: true },
+      'implicit app discovery must never check provider health',
+    );
     controllers.push(this);
     this.patch({
       capabilities: {
@@ -487,6 +495,16 @@ test('retiring owner teardown stays in handoff barrier after registry removal', 
   );
 });
 
+test('manual message playback remains usable without a provider health result', async (t) => {
+  const f = await fixture(t);
+  await f.render(h(f.Action, f.props('a')));
+  const c = f.controllers[0];
+  await act(async () => c.patch({ capabilities: {} }));
+  const button = document.querySelector('.dlv-speaker');
+  assert.equal(button.disabled, false);
+  assert.equal(button.getAttribute('aria-label'), 'Speak message');
+});
+
 test('late browser voices refresh live sessions and listener detaches on disposal', async (t) => {
   const f = await fixture(t);
   await f.render(h(f.Action, f.props('a')));
@@ -870,7 +888,11 @@ test('all three bars stay ordered captions, shared audio, microphone with no dup
   assert.equal(bars[2].getAttribute('aria-label'), 'Voice controls');
   assert.equal(bars[2].querySelectorAll('.dlv-mic-state').length, 1);
   assert.equal(bars[2].firstElementChild.classList.contains('dlv-mic-state'), true);
-  assert.equal(bars[2].querySelectorAll('button').length, 4, 'ignore, commands, timestamps and delivery mode');
+  assert.equal(
+    bars[2].querySelectorAll('button').length,
+    4,
+    'ignore, commands, timestamps and delivery mode',
+  );
   assert.equal(bars[1].querySelectorAll('button').length, 4, 'shared input mirrors microphone');
   assert.equal(bars[2].querySelector('[role="switch"]'), null);
   assert.equal(bars[2].querySelector('.dlv-speech-count'), null);
@@ -1320,15 +1342,29 @@ test('closing microphone mode preserves playback but disables voice continuity o
   await f.render(h(f.Buttons, { ...f.props('a'), key: 'a' }));
   const a = f.controllers[0];
   await a.startConversation();
-  await act(async () => a.patch({ conversation: true, listening: true, speaking: true, speechText: 'Manual answer', activeMessageId: 'manual' }));
+  await act(async () =>
+    a.patch({
+      conversation: true,
+      listening: true,
+      speaking: true,
+      speechText: 'Manual answer',
+      activeMessageId: 'manual',
+    }),
+  );
   const epoch = a.speechEpoch;
   await act(async () => a.stopConversationInput());
   assert.equal(a.snapshot.conversation, false);
   assert.equal(a.snapshot.speaking, true);
   assert.equal(a.snapshot.speechText, 'Manual answer');
   assert.equal(a.speechEpoch, epoch);
-  assert.equal(f.calls.some(([name, controller]) => name === 'end' && controller === a), false);
+  assert.equal(
+    f.calls.some(([name, controller]) => name === 'end' && controller === a),
+    false,
+  );
   await f.render(h(f.Buttons, { ...f.props('b'), key: 'b' }));
   const b = f.controllers.at(-1);
-  assert.equal(f.calls.some(([name, controller]) => name === 'conversation' && controller === b), false);
+  assert.equal(
+    f.calls.some(([name, controller]) => name === 'conversation' && controller === b),
+    false,
+  );
 });

@@ -27,7 +27,8 @@ export function registerSettingsRoute(
       }
       try {
         const value = request.method === 'GET' ? await store.load() : await store.save(patch);
-        return Response.json({ ok: true, value }, { headers });
+        // Host platform chooses display order/defaults, never claims engine support.
+        return Response.json({ ok: true, value, hostPlatform: process.platform }, { headers });
       } catch {
         return Response.json(
           { ok: false, error: { code: 'settings-unavailable' } },

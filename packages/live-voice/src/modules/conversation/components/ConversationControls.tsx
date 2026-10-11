@@ -8,29 +8,17 @@ import { AutoPlaybackToggle } from './AutoPlaybackToggle.js';
 export type ConversationControlsProps = { controller: any };
 export function ConversationControls({ controller }: ConversationControlsProps) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
-  const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const state = useConversationController<any>(controller);
   const { invoke, error, clearError } = useConversationActions(controller);
   const busy = state.conversation || state.listening || state.starting || state.recognizing;
 
-  const capability = state.capabilities?.recognition;
-  const capture = state.capabilities?.capture;
-  const pending = !capability || !capture;
-  const unavailable = capability?.supported === false || capture?.supported === false;
-  const reason = capture?.supported === false ? capture.reason : capability?.reason;
-  const label = busy
-    ? (commons as any).conversation.end()
-    : pending
-      ? (recognition as any).microphone.checking()
-      : unavailable
-        ? reason || (recognition as any).status.unavailable()
-        : (commons as any).conversation.start();
+  // Starting is the explicit operational check; stale health must not block a retry.
+  const label = busy ? (commons as any).conversation.end() : (commons as any).conversation.start();
   return (
     <>
       <AutoPlaybackToggle state={state} invoke={invoke} error={error} />
       <MicrophoneButton
         label={label}
-        disabled={!busy && pending}
         aria-pressed={Boolean(busy)}
         onClick={() =>
           invoke(
@@ -38,9 +26,7 @@ export function ConversationControls({ controller }: ConversationControlsProps) 
               ? state.conversation
                 ? 'stopConversationInput'
                 : 'cancelDictation'
-              : unavailable
-                ? 'explainRecognition'
-                : 'startConversation',
+              : 'startConversation',
           )
         }
       />

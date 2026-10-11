@@ -275,8 +275,9 @@ export function apply(ctx) {
       if ([...recognitionSettingKeys].some((key) => previous[key] !== settings[key]))
         c.replaceRecognition(recognitionFor(settings, c.meter));
       c.applySavedSettings(settings);
+      c.patch({ hostPlatform: preferences.getHostPlatform() });
       for (const engine of Object.values(c.engines)) engine.lang = settings.lang;
-      run(c, c.refreshCapabilities());
+      run(c, c.refreshCapabilities({ localOnly: true }));
     }
   });
   ctx.effect(
@@ -545,7 +546,7 @@ export function apply(ctx) {
       publishVoiceContext(entry);
       engineBrowser.lang = controller.getSnapshot().settings.lang;
       engineQwen.lang = controller.getSnapshot().settings.lang;
-      run(controller, controller.refreshCapabilities());
+      run(controller, controller.refreshCapabilities({ localOnly: true }));
     };
     controller.updateSettings = (next) => {
       if (disposed || entry.closed) return;
@@ -635,7 +636,7 @@ export function apply(ctx) {
       if (!entry.closed)
         controller.patch({ error: t('dsh-live-voice.settings.persistence.loadError') });
     });
-    run(controller, controller.refreshCapabilities());
+    run(controller, controller.refreshCapabilities({ localOnly: true }));
     return entry;
   }
   function useEntry(sessionId, kind) {
@@ -821,14 +822,15 @@ export function apply(ctx) {
         const settings = c.getSnapshot().settings;
         if (changesRecognition(next)) c.replaceRecognition(recognitionFor(settings, c.meter));
         const saved = savePreferences(c, next);
-        run(c, c.refreshCapabilities());
+        run(c, c.refreshCapabilities({ localOnly: true }));
         await saved;
         if (revision !== settingsRevision || disposed || c.disposed) return;
         // The shared preference subscriber reconfigures only affected resources.
         // A voice/output/UI change must not end playback, meeting capture, or chats.
       };
-      const refresh = () => run(c, c.refreshCapabilities());
+      const refresh = () => run(c, c.refreshCapabilities({ localOnly: true }));
       document.addEventListener('dsh-live-voice:capabilitieschanged', refresh);
+      c.patch({ hostPlatform: preferences.getHostPlatform() });
       setController(c);
       refresh();
       return () => {
@@ -839,7 +841,9 @@ export function apply(ctx) {
         void c.dispose();
       };
     }, []);
-    return controller ? <SettingsPanel controller={controller} pluginUpdate={pluginUpdate} /> : null;
+    return controller ? (
+      <SettingsPanel controller={controller} pluginUpdate={pluginUpdate} />
+    ) : null;
   }
   registerSettingsSlot(ctx, Settings, () => t('dsh-live-voice.commons.pluginName'));
   function Dock(props) {
@@ -904,16 +908,11 @@ export function apply(ctx) {
     );
     const chat = React.useSyncExternalStore(entry.subscribeChat, entry.readChat);
     const message = addressedTurn(assistantMessages(chat), messageId);
-    const capability = snapshot.capabilities[snapshot.settings.engine];
     const active = snapshot.speaking && message.id === snapshot.activeMessageId;
-    const unavailable = capability?.supported !== true;
     return (
       <ModularSpeakButton
         active={active}
-        disabled={!message.text.trim() || (!active && unavailable)}
-        label={
-          unavailable ? capability?.reason || t('dsh-live-voice.speak.output.checking') : undefined
-        }
+        disabled={!message.text.trim()}
         onClick={() =>
           run(
             entry.controller,
@@ -993,7 +992,7 @@ export function apply(ctx) {
     };
     const refreshCapabilities = () => {
       for (const entry of controllers.values())
-        run(entry.controller, entry.controller.refreshCapabilities());
+        run(entry.controller, entry.controller.refreshCapabilities({ localOnly: true }));
       document.dispatchEvent(new Event('dsh-live-voice:capabilitieschanged'));
     };
     const visibilityChanged = () => {

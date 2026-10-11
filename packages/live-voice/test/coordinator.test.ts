@@ -169,6 +169,23 @@ test('cancellation during default preference persistence prevents capture retry'
   await f.coordinator.dispose();
 });
 
+test('configuration capability discovery never probes providers or installs recognition packs', async () => {
+  const f = fixture();
+  f.engine.voices = () => [{ name: 'Local', voiceURI: 'local', lang: 'pt-BR' }];
+  f.engine.getPlaybackCapabilities = () => ({ pause: true, resume: true });
+  f.engine.capability = () => assert.fail('configuration must not check synthesis health');
+  f.recognition.capability = () => assert.fail('configuration must not check recognition health');
+  f.coordinator.engines.remote = {
+    capability: () => assert.fail('no HTTP health during configuration'),
+  };
+  await f.coordinator.refreshCapabilities({ localOnly: true });
+  assert.equal(f.coordinator.snapshot.capabilities.browser.voices[0].voiceURI, 'local');
+  assert.equal(f.coordinator.snapshot.capabilities.browser.pause, true);
+  assert.equal(f.coordinator.snapshot.capabilities.capture.supported, true);
+  delete f.coordinator.engines.remote;
+  await f.coordinator.dispose();
+});
+
 test('speech capability publishes before pending recognition discovery', async () => {
   const f = fixture();
   const pending = deferred();

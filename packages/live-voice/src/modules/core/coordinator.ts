@@ -163,7 +163,38 @@ export class VoiceCoordinator {
       this._drain();
     }
   }
-  async refreshCapabilities() {
+  async refreshCapabilities({ localOnly = false } = {}) {
+    if (localOnly) {
+      // Configuration discovery is local and must never contact provider health endpoints.
+      const playback = Object.fromEntries(
+        Object.entries(this.engines).map(([id, engine]) => [
+          id,
+          {
+            ...this.snapshot.capabilities[id],
+            ...engine.getPlaybackCapabilities?.(),
+          },
+        ]),
+      );
+      const browser = this.engines.browser?.voices?.();
+      const capture = await this.meter.capability?.();
+      if (this.disposed) return;
+      this.patch({
+        capabilities: {
+          ...this.snapshot.capabilities,
+          ...playback,
+          ...(browser
+            ? {
+                browser: {
+                  ...playback.browser,
+                  voices: browser.map(({ name, voiceURI, lang }) => ({ name, voiceURI, lang })),
+                },
+              }
+            : {}),
+          ...(capture ? { capture } : {}),
+        },
+      });
+      return;
+    }
     const request = (this.capabilityRequest = (this.capabilityRequest || 0) + 1);
     const caps = {};
     const lang = this.snapshot.settings.recognitionLang;

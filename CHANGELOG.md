@@ -8,6 +8,8 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ### Improvements
 
+- Keep every recognition and speaking engine selectable for configuration without automatic provider health checks. Default new speech preferences to macOS Say on macOS hosts and Browser elsewhere; preserve saved choices and show Browser, Qwen, then Whisper recognition.
+
 - Share prepared-segment playback across Browser, macOS Say, and Qwen. Prepare Browser utterances ahead without resuming an idle synthesizer; preserve the configured segment gap and native Web Speech latency limitations.
 
 - Improve the settings layout with consistent expandable sections, clearer organization, compact help tooltips, and voice-command phrase chips. Keep diagnostics in a fixed footer and align the debugger with the DSH theme.

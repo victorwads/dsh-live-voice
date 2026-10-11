@@ -104,7 +104,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     await act(async () => click('Start voice conversation'));
     assert.deepEqual(calls, ['conversation']);
     assert.equal(document.querySelector('[aria-label="Voice controls"]'), null);
-    assert.equal(document.querySelector('option[value=say]').disabled, true);
+    assert.equal(document.querySelector('option[value=say]').disabled, false);
     const versionBadges = document.querySelector('[aria-label="Version information"]');
     assert.ok(versionBadges);
     const badgeImages = [...versionBadges.querySelectorAll('.dlv-shields-badge img')];
@@ -415,7 +415,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     await act(async () => click('Close voice settings'));
     assert.equal(calls.at(-1), 'close');
     await act(async () => root.render(React.createElement(MicrophoneButtons, { controller })));
-    controller.explainRecognition = () => {
+    controller.startConversation = () => {
       throw new Error('Missing local language pack');
     };
     await act(async () => {
@@ -432,7 +432,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       };
       callbacks.forEach((cb) => cb());
     });
-    await act(async () => click('Speech recognition unavailable'));
+    await act(async () => click('Start voice conversation'));
     assert.match(document.querySelector('[role=alert]').textContent, /Missing local language pack/);
     await act(async () => click('Dismiss voice error'));
     assert.equal(document.querySelector('[role=alert]'), null);

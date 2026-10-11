@@ -81,6 +81,7 @@ export function LiveVoiceSettings({
     controller,
     settings: state.settings,
     capabilities: state.capabilities,
+    hostPlatform: state.hostPlatform,
     speaking: state.speaking,
     invoke,
 

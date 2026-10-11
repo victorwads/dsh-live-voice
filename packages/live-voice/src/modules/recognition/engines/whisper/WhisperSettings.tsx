@@ -80,7 +80,6 @@ export function WhisperSettings({ controller }) {
         if (!abort.signal.aborted) {
           setDraft(value);
           setMessage('dsh-live-voice.recognition.whisper.saved');
-          await controller.refreshCapabilities?.();
         }
       } else {
         const value = await whisperSettingsRequest('/test', {
