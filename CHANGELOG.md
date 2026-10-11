@@ -6,6 +6,8 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ## [0.5.x] - Next
 
+## [0.5.1] - 2026-10-11
+
 ### Features
 
 - Recognize shared meeting audio with Browser SpeechRecognition when its external-audio-track API is verified. Preserve local-only/remote-processing preferences and report unsupported browsers without silently capturing microphone audio.
