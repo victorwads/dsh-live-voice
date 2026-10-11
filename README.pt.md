@@ -1,16 +1,20 @@
+[![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
+[![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.1--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.2)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+
 # DSH Live Voice - Você e sua equipe
 
 [English](README.md) | **Português (Brasil)** | [简体中文](README.zh-CN.md)
 
 Esta é a versão em português. O [README em inglês](README.md) é a referência principal do projeto.
 
-[![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
-[![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.1--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.2)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
-
 **Converse com seu assistente de IA, ouça as respostas e leve o contexto das reuniões para a conversa — sem precisar voltar ao teclado a todo momento.**
 
 O DSH Live Voice é um plugin de voz para o DeepSeek Harness (DSH), com prioridade para processamento local, reconhecimento de fala (STT), síntese de voz (TTS) e transcrição de reuniões em tempo real.
+
+![Conversa no DSH Live Voice com legendas da fala do assistente, controles de reprodução e reconhecimento de voz ativo](https://github.com/user-attachments/assets/6c6f8b2c-a7ff-4478-ad97-882617fff8ea)
+
+*Fale com seu assistente, ouça as respostas e controle a conversa sem voltar ao teclado.*
 
 *Feito no Brasil 🇧🇷 e testado diariamente com português brasileiro no macOS.*
 
@@ -33,8 +37,8 @@ Interface traduzida: 🇺🇸 inglês · 🇧🇷 português brasileiro · 🇪�
 ## O que você pode fazer?
 
 - **Trabalhar por voz:** dite um pedido, discuta código ou documentos e ouça a resposta do assistente sem perder o foco no trabalho.
-- **Trazer seu assistente de IA para a reunião:** no Google Meet ou Teams, compartilhe sua janela do DSH com áudio para que a equipe acompanhe e ouça as respostas do assistente. Capture o áudio da reunião, revise e envie o contexto relevante e peça ajuda para responder uma pergunta, comparar propostas com o código do projeto ou resumir decisões — ali, no meio da discussão. Compartilhar o áudio de reprodução do assistente exige configuração separada no aplicativo de reunião e depende do suporte do navegador e do sistema; não é uma integração nativa com Meet ou Teams.
-- **Manter o controle:** edite antes de enviar, escolha envio manual ou automático do microfone e pause, retome ou interrompa as respostas faladas. **Ignorando** descarta o ditado do microfone sem encerrar a captura nem desabilitar interrupções por fala. A fala automática do assistente lê novas respostas mesmo com o microfone desligado. Abrir ou fechar o microfone não cancela respostas faladas nem fecha a barra de fala. Com alto-falantes, a captura aguarda a reprodução, salvo ao assumir explicitamente o microfone. Interrupções automáticas retomam após silêncio estável; pausas manuais aguardam Retomar.
+- **Trazer seu assistente de IA para a reunião:** capture a discussão, revise a transcrição e peça ajuda para comparar propostas ou resumir decisões. Capturar o áudio e compartilhar a voz do assistente exigem configurações separadas; não é uma integração nativa com Meet ou Teams.
+- **Manter o controle:** revise antes de enviar, escolha envio manual ou automático e pause, retome ou pare as respostas faladas. Veja os controles de escuta e interrupção no [guia de conversa](docs/CONFIGURATION.md) (em inglês).
 - **Escolher como usar a voz:** use mecanismos locais quando houver suporte ou configure um serviço HTTP. Priorizar voz local não significa que o DSH ou seu provedor de IA funcionem totalmente offline.
 
 ---

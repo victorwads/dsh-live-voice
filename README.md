@@ -1,21 +1,26 @@
-# DSH Live Voice - You and Your Team / 即時語音 - 您和您的團隊
-
-**English** | [Português (Brasil)](README.pt.md) | [简体中文](README.zh-CN.md)
-
 [![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
 [![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.1--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.2)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
-**Tested and working with DeepSeek Harness v0.2.1-alpha.2.** This is the current tested DSH version, recorded in the `dshTestedVersion` field in [the main package manifest](packages/live-voice/package.json).
+# DSH Live Voice - You and Your Team / 实时语音 - 您和您的团队
+
+**English** | [Português (Brasil)](README.pt.md) | [简体中文](README.zh-CN.md)
 
 **Talk to your AI assistant, listen to its answers, and bring meeting context into the conversation—without constantly switching back to the keyboard.**
 
 DSH Live Voice is a local-first voice plugin for DeepSeek Harness (DSH), with speech-to-text (STT), text-to-speech (TTS), and real-time meeting transcription.
+
+![DSH Live Voice conversation with assistant speech captions, playback controls, and active speech recognition](https://github.com/user-attachments/assets/6c6f8b2c-a7ff-4478-ad97-882617fff8ea)
+
+*Speak to your assistant, listen to its answers, and control the conversation without returning to the keyboard.*
+
 *Built in Brazil 🇧🇷 and tested daily with Brazilian Portuguese on macOS.*
 
 ---
 
 ## ⚡ Quick Start
+
+**Tested with DeepSeek Harness v0.2.1-alpha.2.**
 
 Install with `npx dsh` into your DSH web profile:
 
@@ -30,8 +35,8 @@ Interface translated into: 🇺🇸 English · 🇧🇷 Portuguese (Brazil) · �
 ## What can you do with it?
 
 - **Work by voice:** dictate a request, talk through code or documents, and hear the assistant’s response while staying focused on your work.
-- **Bring your AI assistant into the meeting:** in Google Meet or Teams, share your DSH window with audio so the team can follow along and hear the assistant’s answers. Capture the meeting audio, review and send the relevant context, then ask it to help answer a question, compare proposals with the project code, or summarize decisions—right in the discussion. Sharing the assistant’s playback audio requires separate setup in your meeting app and depends on browser and system support; this is not a native Meet or Teams integration.
-- **Stay in control:** edit before sending, choose manual or automatic microphone delivery, and pause, resume, or stop spoken answers. **Ignoring** discards microphone dictation without closing capture or disabling speech interruption. Automatic assistant speech reads new replies even with the microphone off. Opening or closing the microphone does not cancel spoken answers or close the speech bar. In speaker mode, capture waits for playback unless you explicitly take the microphone. Automatic interruptions recover after stable silence; manual pauses wait for Resume.
+- **Bring your AI assistant into the meeting:** capture the discussion, review the transcript, and ask for help comparing proposals or summarizing decisions. Meeting audio capture and sharing the assistant’s voice require separate setup; this is not a native Meet or Teams integration.
+- **Stay in control:** review before sending, choose manual or automatic delivery, and pause, resume, or stop spoken answers. See the [conversation flow guide](docs/CONFIGURATION.md) for listening and interruption controls.
 - **Choose your speech setup:** use local recognition and speech engines where supported, or configure an HTTP endpoint. Local-first voice does not mean DSH or its AI provider is fully offline.
 
 ---

@@ -1,16 +1,20 @@
+[![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
+[![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.1--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.2)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+
 # DSH Live Voice - You and Your Team / 实时语音 - 您和您的团队
 
 [English](README.md) | [Português (Brasil)](README.pt.md) | **简体中文**
 
 这是简体中文版。[英文 README](README.md) 是本项目的主要参考文档。
 
-[![npm version](https://img.shields.io/npm/v/dsh-live-voice?logo=npm&label=npm&color=brightgreen)](https://www.npmjs.com/package/dsh-live-voice)
-[![Tested DSH](https://img.shields.io/badge/Tested_DSH-v0.2.1--alpha.2-5c5cff?logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.2)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
-
 **用语音与 AI 助手交流，聆听回答，并将会议上下文带入对话，无需频繁切回键盘。**
 
 DSH Live Voice 是 DeepSeek Harness（DSH）的本地优先语音插件，提供语音转文字（STT）、文字转语音（TTS）和实时会议转写。
+
+![DSH Live Voice 对话，展示助手语音字幕、播放控件和正在运行的语音识别](https://github.com/user-attachments/assets/6c6f8b2c-a7ff-4478-ad97-882617fff8ea)
+
+*用语音与助手交流、聆听回答并控制对话，无需切回键盘。*
 
 *在巴西开发 🇧🇷，每天在 macOS 上使用巴西葡萄牙语进行测试。*
 
@@ -33,8 +37,8 @@ npx dsh plugin add --profile web dsh-live-voice
 ## 你可以用它做什么？
 
 - **用语音工作：** 口述请求，讨论代码或文档，并在专注工作时聆听助手的回答。
-- **让 AI 助手参与会议：** 在 Google Meet 或 Teams 中共享 DSH 窗口及其音频，让团队一起查看内容并听到助手的回答。采集会议音频，检查并发送相关上下文，然后请助手帮助回答问题、将方案与项目代码进行比较，或总结已经做出的决定，让它直接为正在进行的讨论提供帮助。共享助手播放的音频需要在会议应用中单独配置，并取决于浏览器和系统支持；这不是 Meet 或 Teams 的原生集成。
-- **掌握控制权：** 发送前编辑文本，选择手动或自动发送麦克风转写内容，并暂停、继续或停止语音回答。**忽略（Ignoring）** 会丢弃麦克风听写内容，但不会结束采集或禁用语音打断。即使麦克风关闭，助手自动朗读也会朗读新回答。开启或关闭麦克风不会取消语音回答或关闭语音栏。使用扬声器时，采集会等待播放结束，除非你明确接管麦克风。自动打断会在持续静音后恢复；手动暂停则需要点击继续。
+- **让 AI 助手参与会议：** 采集讨论音频、检查转写文本，然后请助手帮助比较方案或总结决定。采集会议音频和共享助手语音需要分别配置；这不是 Meet 或 Teams 的原生集成。
+- **掌握控制权：** 发送前检查文本，选择手动或自动发送，并暂停、继续或停止语音回答。监听和打断控件详见[对话流程指南](docs/CONFIGURATION.md)（英文）。
 - **选择语音方案：** 在受支持的环境中使用本地识别和合成引擎，或配置 HTTP 服务。本地优先语音不意味着 DSH 或其 AI 服务提供方完全离线运行。
 
 ---
