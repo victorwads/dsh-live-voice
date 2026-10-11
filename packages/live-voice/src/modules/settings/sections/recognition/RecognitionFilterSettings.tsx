@@ -3,16 +3,16 @@ import { useLanguage } from '../../../../app/client/i18n/index.js';
 import {
   CheckboxField,
   NumberField,
-  SettingsSubcard,
+  SettingsSection,
 } from '../../../../shared/design-system/index.js';
 export function RecognitionFilterSettings({ settings, updateSettings }: any) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
   const enabled = settings.recognitionFilterEnabled !== false;
   return (
-    <SettingsSubcard title={(recognition as any).minimumWords.label()} icon="filter">
+    <SettingsSection title={(recognition as any).minimumWords.label()} icon="filter">
       <CheckboxField
         label={(recognition as any).minimumWords.enabled()}
-        description={(recognition as any).minimumWords.help()}
+        hint={(recognition as any).minimumWords.help()}
         checked={enabled}
         onChange={(event) => updateSettings({ recognitionFilterEnabled: event.target.checked })}
       />
@@ -28,6 +28,6 @@ export function RecognitionFilterSettings({ settings, updateSettings }: any) {
             updateSettings({ recognitionMinimumWords: value });
         }}
       />
-    </SettingsSubcard>
+    </SettingsSection>
   );
 }

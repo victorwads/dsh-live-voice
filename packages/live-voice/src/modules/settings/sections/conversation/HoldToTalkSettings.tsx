@@ -12,7 +12,7 @@ export function HoldToTalkSettings({
   return (
     <CheckboxField
       label={(recognition as any).holdToTalk.enabled()}
-      description={(recognition as any).holdToTalk.help()}
+      hint={(recognition as any).holdToTalk.help()}
       checked={settings.holdToTalkEnabled !== false}
       onChange={(event) => updateSettings({ holdToTalkEnabled: event.target.checked })}
     />

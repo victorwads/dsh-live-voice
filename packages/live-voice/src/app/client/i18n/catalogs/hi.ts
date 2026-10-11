@@ -98,10 +98,13 @@ const hi: LiveVoiceTranslation = {
     'ब्राउज़र का SpeechRecognition यहाँ चुने गए माइक्रोफ़ोन के बजाय ब्राउज़र या सिस्टम के डिफ़ॉल्ट माइक्रोफ़ोन का उपयोग कर सकता है।',
   'dsh-live-voice.recognition.browser.remoteServiceWarning':
     'ब्राउज़र सेवा के ज़रिए वाक् पहचान चालू है। ब्राउज़र माइक्रोफ़ोन का ऑडियो अपनी वाक् पहचान सेवा को भेज सकता है।',
+  'dsh-live-voice.recognition.commands.addPhrase': 'वाक्यांश जोड़ें…',
   'dsh-live-voice.recognition.commands.clear': 'संदेश लिखने का बॉक्स खाली करें',
   'dsh-live-voice.recognition.commands.enabled': 'हूबहू मिलान वाले वॉइस कमांड चालू करें',
+  'dsh-live-voice.recognition.commands.end': 'बातचीत समाप्त करें',
   'dsh-live-voice.recognition.commands.mute': 'संदेश बॉक्स में वॉइस इनपुट बंद करें',
   'dsh-live-voice.recognition.commands.queue': 'कतार में जोड़ें',
+  'dsh-live-voice.recognition.commands.removePhrase': 'वाक्यांश हटाएँ',
   'dsh-live-voice.recognition.commands.resume': 'संदेश बॉक्स में वॉइस इनपुट फिर शुरू करें',
   'dsh-live-voice.recognition.commands.send': 'चल रहे एजेंट को भेजें',
   'dsh-live-voice.recognition.commands.stopSpeech': 'सहायक का वाचन बंद करें',
@@ -167,12 +170,9 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     '100 से 10,000 ms तक पूर्णांक दर्ज करें। फ़ील्ड छोड़ने पर सहेजा जाता है। छोटे विराम बोलने को खंडों में बाँट सकते हैं; पहचान में अतिरिक्त समय लगता है।',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'कस्टम विराम (मिलीसेकंड)',
-  'dsh-live-voice.recognition.silenceDetection.detector.energy':
-    'ऑडियो ऊर्जा',
-  'dsh-live-voice.recognition.silenceDetection.detector.label':
-    'आवाज़ का डिटेक्टर',
-  'dsh-live-voice.recognition.silenceDetection.detector.silero':
-    'Silero — प्रयोगात्मक (डिफ़ॉल्ट)',
+  'dsh-live-voice.recognition.silenceDetection.detector.energy': 'ऑडियो ऊर्जा',
+  'dsh-live-voice.recognition.silenceDetection.detector.label': 'आवाज़ का डिटेक्टर',
+  'dsh-live-voice.recognition.silenceDetection.detector.silero': 'Silero — प्रयोगात्मक (डिफ़ॉल्ट)',
   'dsh-live-voice.recognition.silenceDetection.duration':
     'भेजने से पहले का विराम: {milliseconds} मिलीसेकंड',
   'dsh-live-voice.recognition.silenceDetection.help':
@@ -232,6 +232,13 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.settings.engine.refresh': 'उपलब्ध इंजन रीफ़्रेश करें',
   'dsh-live-voice.settings.filters.title': 'फ़िल्टरिंग',
   'dsh-live-voice.settings.general.title': 'सामान्य',
+  'dsh-live-voice.settings.layout.delivery': 'संदेश भेजना',
+  'dsh-live-voice.settings.layout.diagnostics': 'निदान',
+  'dsh-live-voice.settings.layout.listening': 'सुनना और व्यवधान',
+  'dsh-live-voice.settings.layout.playback': 'प्लेबैक और आउटपुट',
+  'dsh-live-voice.settings.layout.shortcut': 'शॉर्टकट',
+  'dsh-live-voice.settings.layout.transcription': 'ट्रांसक्रिप्शन',
+  'dsh-live-voice.settings.layout.voice': 'आवाज़ और इंजन',
   'dsh-live-voice.settings.persistence.loadError':
     'सर्वर से लाइव वॉइस सेटिंग लोड नहीं हो सकीं। फिर प्रयास करने के लिए पेज रीलोड करें।',
   'dsh-live-voice.settings.persistence.saveError':

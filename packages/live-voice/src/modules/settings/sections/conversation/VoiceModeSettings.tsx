@@ -14,6 +14,11 @@ export function VoiceModeSettings({
     <>
       <SelectField
         label={(recognition as any).mode.label()}
+        hint={
+          mode === 'headphones'
+            ? (recognition as any).headphoneMode.help()
+            : (recognition as any).speakerMode.help()
+        }
         value={mode}
         options={[
           { value: 'speaker', label: (recognition as any).speakerMode.label() },
@@ -21,11 +26,6 @@ export function VoiceModeSettings({
         ]}
         onChange={(event) => updateSettings({ mode: event.target.value })}
       />
-      <p className="dlv-setting-description">
-        {mode === 'headphones'
-          ? (recognition as any).headphoneMode.help()
-          : (recognition as any).speakerMode.help()}
-      </p>
     </>
   );
 }

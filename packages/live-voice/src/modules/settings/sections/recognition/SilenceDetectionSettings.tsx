@@ -13,7 +13,7 @@ import {
 import {
   NumberField,
   SelectField,
-  SettingsSubcard,
+  SettingsSection,
 } from '../../../../shared/design-system/index.js';
 export function SilenceDetectionSettings({ settings, updateSettings }: any) {
   const { scoped: recognition } = useLanguage((ctx) => ctx.recognition);
@@ -31,15 +31,20 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
   if (!usesPluginVoiceDetection(settings.recognitionEngine)) return null;
   const selected = settings.voiceDetectionPreset || defaultSettings.voiceDetectionPreset;
   return (
-    <SettingsSubcard
+    <SettingsSection
       title={(recognition as any).silenceDetection.label()}
       ariaLabel={(recognition as any).silenceDetection.title()}
       icon="pause"
+      defaultOpen={false}
     >
       <p>{(recognition as any).silenceDetection.help()}</p>
       <SelectField
         label={(recognition as any).silenceDetection.detector.label()}
-        value={settings.voiceDetectionEngine === 'energy' ? 'energy' : defaultSettings.voiceDetectionEngine}
+        value={
+          settings.voiceDetectionEngine === 'energy'
+            ? 'energy'
+            : defaultSettings.voiceDetectionEngine
+        }
         options={[
           { value: 'energy', label: (recognition as any).silenceDetection.detector.energy() },
           {
@@ -111,6 +116,6 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
           milliseconds: voiceDetectionSilenceMs(settings),
         })}
       </p>
-    </SettingsSubcard>
+    </SettingsSection>
   );
 }

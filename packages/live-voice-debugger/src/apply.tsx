@@ -1,8 +1,10 @@
 import React from 'react';
+import { Hint, Icon } from '../../live-voice/src/shared/design-system/index.js';
 import { createRoot, type Root } from 'react-dom/client';
 import { DebuggerPanel } from './DebuggerPanel.js';
 import { dictionaries, namespace, type DebuggerCopy } from './locales.js';
 import { styles } from './styles.js';
+import { syncDebuggerTheme } from './theme.js';
 import { publishDeveloperExtension } from '../../live-voice/src/modules/core/developerExtension.js';
 export const inject = ['locale'];
 export function apply(ctx: any) {
@@ -74,6 +76,7 @@ export function apply(ctx: any) {
       doc.title = copy().title;
       doc.body.replaceChildren();
       doc.body.className = 'dlvd-window';
+      syncDebuggerTheme(window, doc);
       const style = doc.createElement('style');
       style.textContent = styles;
       doc.head.appendChild(style);
@@ -85,6 +88,7 @@ export function apply(ctx: any) {
       enabled = true;
       closedTimer = setInterval(() => {
         if (popup?.closed) close();
+        else if (popup) syncDebuggerTheme(window, popup.document);
       }, 250);
       notify();
     } catch {
@@ -95,24 +99,18 @@ export function apply(ctx: any) {
     }
   };
   function Settings() {
-    const active = React.useSyncExternalStore(subscribe, () => enabled);
     const failed = React.useSyncExternalStore(subscribe, () => blocked);
     React.useSyncExternalStore(localeSubscribe, localeSnapshot);
     const labels = copy();
     return (
-      <section>
-        <h2>{labels.title}</h2>
-        <p>{labels.help}</p>
-        <label>
-          <input
-            type="checkbox"
-            checked={active}
-            onChange={(event) => (event.target.checked ? open() : close())}
-          />
-          {labels.activate}
-        </label>
+      <div className="dlv-diagnostics-launcher">
+        <button type="button" className="dlv-diagnostics-button" onClick={open}>
+          <Icon name="bug" />
+          {labels.diagnostics}
+        </button>
+        <Hint label={labels.diagnostics}>{labels.activate}</Hint>
         {failed && <p role="alert">{labels.popupBlocked}</p>}
-      </section>
+      </div>
     );
   }
   ctx.effect(

@@ -102,10 +102,13 @@ const ptBR: LiveVoiceTranslation = {
     'O SpeechRecognition do navegador pode usar o microfone padrão do sistema ou do navegador em vez desta seleção.',
   'dsh-live-voice.recognition.browser.remoteServiceWarning':
     'O reconhecimento pelo serviço do navegador está ativado. O navegador pode enviar o áudio do microfone para o serviço remoto.',
+  'dsh-live-voice.recognition.commands.addPhrase': 'Adicionar frase…',
   'dsh-live-voice.recognition.commands.clear': 'Limpar editor de mensagens',
   'dsh-live-voice.recognition.commands.enabled': 'Ativar comandos de voz exatos',
+  'dsh-live-voice.recognition.commands.end': 'Encerrar conversa',
   'dsh-live-voice.recognition.commands.mute': 'Silenciar entrada do editor de mensagens',
   'dsh-live-voice.recognition.commands.queue': 'Adicionar à fila',
+  'dsh-live-voice.recognition.commands.removePhrase': 'Remover frase',
   'dsh-live-voice.recognition.commands.resume': 'Retomar entrada do editor de mensagens',
   'dsh-live-voice.recognition.commands.send': 'Enviar ao agente em execução',
   'dsh-live-voice.recognition.commands.stopSpeech': 'Parar fala do assistente',
@@ -170,12 +173,9 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     'Insira um número inteiro de 100 a 10.000 ms. Salvo ao sair do campo. Pausas curtas podem dividir a fala; o reconhecimento acrescenta sua própria latência.',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'Pausa personalizada (milissegundos)',
-  'dsh-live-voice.recognition.silenceDetection.detector.energy':
-    'Energia do áudio',
-  'dsh-live-voice.recognition.silenceDetection.detector.label':
-    'Detector de voz',
-  'dsh-live-voice.recognition.silenceDetection.detector.silero':
-    'Silero — experimental (padrão)',
+  'dsh-live-voice.recognition.silenceDetection.detector.energy': 'Energia do áudio',
+  'dsh-live-voice.recognition.silenceDetection.detector.label': 'Detector de voz',
+  'dsh-live-voice.recognition.silenceDetection.detector.silero': 'Silero — experimental (padrão)',
   'dsh-live-voice.recognition.silenceDetection.duration':
     'Pausa antes de enviar: {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.help':
@@ -238,6 +238,13 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.settings.engine.refresh': 'Atualizar mecanismos disponíveis',
   'dsh-live-voice.settings.filters.title': 'Filtragem',
   'dsh-live-voice.settings.general.title': 'Gerais',
+  'dsh-live-voice.settings.layout.delivery': 'Envio de mensagens',
+  'dsh-live-voice.settings.layout.diagnostics': 'Diagnóstico',
+  'dsh-live-voice.settings.layout.listening': 'Escuta e interrupções',
+  'dsh-live-voice.settings.layout.playback': 'Reprodução e saída',
+  'dsh-live-voice.settings.layout.shortcut': 'Atalhos',
+  'dsh-live-voice.settings.layout.transcription': 'Transcrição',
+  'dsh-live-voice.settings.layout.voice': 'Voz e mecanismo',
   'dsh-live-voice.settings.persistence.loadError':
     'Não foi possível carregar as configurações da Voz ao Vivo do servidor. Recarregue para tentar novamente.',
   'dsh-live-voice.settings.persistence.saveError':

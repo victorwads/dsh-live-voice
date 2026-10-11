@@ -5,6 +5,7 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
 import {
+  Hint,
   TextField,
   TextAreaField,
   NumberField,
@@ -14,7 +15,50 @@ import {
   SelectField,
   SettingsSubcard,
   SettingsTabs,
+  SettingsSection,
 } from '../src/shared/design-system/index.ts';
+
+test('hint opens on focus and dismisses with Escape without a native title', async (t) => {
+  const root = await fixture(t, <Hint label="Listening help">Full explanation</Hint>);
+  const trigger = root.querySelector('button');
+  const tip = root.querySelector('[role="tooltip"]');
+  assert.equal(tip.hidden, true);
+  assert.equal(trigger.hasAttribute('title'), false);
+  await act(async () => trigger.dispatchEvent(new window.FocusEvent('focusin', { bubbles: true })));
+  assert.equal(tip.hidden, false);
+  assert.equal(trigger.getAttribute('aria-describedby'), tip.id);
+  await act(async () =>
+    document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })),
+  );
+  assert.equal(tip.hidden, true);
+});
+
+test('primary sections share headings and preserve mounted fields when collapsed', async (t) => {
+  const root = await fixture(
+    t,
+    <>
+      <SettingsSection title="Essential">
+        <input defaultValue="kept" />
+      </SettingsSection>
+      <SettingsSection title="Advanced" defaultOpen={false}>
+        Advanced fields
+      </SettingsSection>
+      <SettingsSection title="Static" collapsible={false}>
+        Static fields
+      </SettingsSection>
+    </>,
+  );
+  const [essential, advanced] = root.querySelectorAll('details');
+  assert.equal(essential.open, true);
+  assert.equal(advanced.open, false);
+  const field = essential.querySelector('input');
+  await act(async () => essential.querySelector('summary').click());
+  assert.equal(essential.open, false);
+  assert.equal(essential.querySelector('input'), field);
+  await act(async () => essential.querySelector('summary').click());
+  assert.equal(essential.open, true);
+  assert.ok(root.querySelector('section > header h4'));
+});
 
 async function fixture(t, element) {
   const dom = new JSDOM('<div id="root"></div>');
@@ -65,7 +109,7 @@ test('design-system fields preserve labels, values, descriptions, and change eve
     </>,
   );
   const select = root.querySelector('select');
-  assert.equal(select.closest('label').textContent, 'EngineBrowserLocal');
+  assert.equal(select.labels[0].textContent, 'Engine');
   await act(async () => {
     select.value = 'local';
     select.dispatchEvent(new window.Event('change', { bubbles: true }));

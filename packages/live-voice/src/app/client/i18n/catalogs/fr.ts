@@ -105,12 +105,15 @@ const fr: LiveVoiceTranslation = {
     'SpeechRecognition peut utiliser le microphone par défaut du navigateur ou du système plutôt que celui sélectionné ici.',
   'dsh-live-voice.recognition.browser.remoteServiceWarning':
     'La reconnaissance via le service du navigateur est activée. Le navigateur peut envoyer le son du microphone à son service de reconnaissance.',
+  'dsh-live-voice.recognition.commands.addPhrase': 'Ajouter une phrase…',
   'dsh-live-voice.recognition.commands.clear': 'Vider la zone de rédaction',
   'dsh-live-voice.recognition.commands.enabled':
     'Activer les commandes vocales par correspondance exacte',
+  'dsh-live-voice.recognition.commands.end': 'Terminer la conversation',
   'dsh-live-voice.recognition.commands.mute':
     'Suspendre la saisie vocale dans la zone de rédaction',
   'dsh-live-voice.recognition.commands.queue': 'Mettre en file d’attente',
+  'dsh-live-voice.recognition.commands.removePhrase': 'Supprimer la phrase',
   'dsh-live-voice.recognition.commands.resume':
     'Reprendre la saisie vocale dans la zone de rédaction',
   'dsh-live-voice.recognition.commands.send': 'Envoyer à l’agent en cours d’exécution',
@@ -182,10 +185,8 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     'Saisissez un entier de 100 à 10 000 ms. Enregistré en quittant le champ. Les pauses courtes peuvent couper la parole ; la reconnaissance ajoute sa propre latence.',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'Pause personnalisée (millisecondes)',
-  'dsh-live-voice.recognition.silenceDetection.detector.energy':
-    'Énergie audio',
-  'dsh-live-voice.recognition.silenceDetection.detector.label':
-    'Détecteur vocal',
+  'dsh-live-voice.recognition.silenceDetection.detector.energy': 'Énergie audio',
+  'dsh-live-voice.recognition.silenceDetection.detector.label': 'Détecteur vocal',
   'dsh-live-voice.recognition.silenceDetection.detector.silero':
     'Silero — expérimental (par défaut)',
   'dsh-live-voice.recognition.silenceDetection.duration': 'Pause avant l’envoi : {milliseconds} ms',
@@ -250,6 +251,13 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.settings.engine.refresh': 'Actualiser les moteurs disponibles',
   'dsh-live-voice.settings.filters.title': 'Filtrage',
   'dsh-live-voice.settings.general.title': 'Général',
+  'dsh-live-voice.settings.layout.delivery': 'Envoi des messages',
+  'dsh-live-voice.settings.layout.diagnostics': 'Diagnostic',
+  'dsh-live-voice.settings.layout.listening': 'Écoute et interruptions',
+  'dsh-live-voice.settings.layout.playback': 'Lecture et sortie',
+  'dsh-live-voice.settings.layout.shortcut': 'Raccourcis',
+  'dsh-live-voice.settings.layout.transcription': 'Transcription vocale',
+  'dsh-live-voice.settings.layout.voice': 'Voix et moteur',
   'dsh-live-voice.settings.persistence.loadError':
     'Impossible de charger les paramètres Voix en direct depuis le serveur. Rechargez pour réessayer.',
   'dsh-live-voice.settings.persistence.saveError':

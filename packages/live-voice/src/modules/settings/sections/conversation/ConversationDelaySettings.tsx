@@ -9,6 +9,7 @@ export function ConversationDelaySettings({ settings, updateSettings }: any) {
     <>
       <SelectField
         label={(speak as any).responseDelay.label()}
+        hint={(speak as any).responseDelay.help()}
         value={String(settings.assistantSpeechDelaySeconds ?? 0)}
         options={DELAYS.map((seconds) => ({
           value: String(seconds),
@@ -23,7 +24,6 @@ export function ConversationDelaySettings({ settings, updateSettings }: any) {
           updateSettings({ assistantSpeechDelaySeconds: Number(event.target.value) })
         }
       />
-      <p className="dlv-setting-description">{(speak as any).responseDelay.help()}</p>
     </>
   );
 }

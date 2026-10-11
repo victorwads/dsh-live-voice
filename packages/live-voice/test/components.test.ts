@@ -226,13 +226,13 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       ).checked,
       false,
     );
-    const command = [...document.querySelectorAll('textarea')].find((field) =>
-      field.closest('label').textContent.includes('Send to running agent'),
+    const command = [...document.querySelectorAll('.dlv-phrase-field input')].find((field) =>
+      field.closest('.dlv-phrase-field').textContent.includes('Send to running agent'),
     );
     const beforeTyping = calls.length;
     for (const raw of ['send ', 'send,', 'send, ', 'send, another command ']) {
       await act(async () => {
-        Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set.call(
+        Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(
           command,
           raw,
         );
@@ -244,8 +244,10 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     await act(async () =>
       command.dispatchEvent(new window.FocusEvent('focusout', { bubbles: true })),
     );
-    assert.deepEqual(calls.at(-1), ['settings', { voiceCommandSend: 'send, another command ' }]);
-    assert.equal(command.value, 'send, another command');
+    assert.equal(calls.at(-1)[0], 'settings');
+    assert.ok(calls.at(-1)[1].voiceCommandSend.endsWith('send, another command'));
+    assert.equal(command.value, '');
+    assert.ok(command.closest('.dlv-phrase-field').textContent.includes('another command'));
     const localRecognition = checks.find((input) =>
       input.parentElement.textContent.includes('Process recognition locally'),
     );
@@ -267,9 +269,9 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       state = { ...state, settings: { ...state.settings, recognitionEngine: 'whisper-http' } };
       callbacks.forEach((cb) => cb());
     });
-    const language = [...document.querySelectorAll('label')]
-      .find((label) => label.textContent.includes('Recognition language'))
-      .querySelector('select');
+    const language = [...document.querySelectorAll('select')].find((field) =>
+      field.labels[0]?.textContent.includes('Recognition language'),
+    );
     assert.equal(
       language.querySelector('option[value=auto]').textContent,
       'Automatic — detect language',
@@ -489,7 +491,7 @@ test('Qwen speech output exposes and persists the selected preset voice', async 
       candidate.textContent.startsWith('Qwen voice'),
     );
     assert.ok(label);
-    const select = label.querySelector('select');
+    const select = document.getElementById(label.htmlFor);
     assert.equal(select.value, 'aiden');
     assert.equal(select.querySelectorAll('option').length, 9);
     await act(async () => {

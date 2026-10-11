@@ -28,6 +28,7 @@ export function DeliverySettings({
       <SelectField
         label={(scoped as any).delivery.dshEnterQuestion()}
         aria-describedby={busyEnterHelpId}
+        hint={(scoped as any).delivery.dshEnterHelp()}
         value={settings.dshBusyEnterBehavior || 'queue'}
         options={[
           { value: 'steer', label: (scoped as any).delivery.dshEnterSteer() },
@@ -35,9 +36,6 @@ export function DeliverySettings({
         ]}
         onChange={(event) => updateSettings({ dshBusyEnterBehavior: event.target.value })}
       />
-      <p id={busyEnterHelpId} className="dlv-setting-description">
-        {(scoped as any).delivery.dshEnterHelp()}
-      </p>
       {mode !== 'manual' ? (
         <SelectField
           label={(scoped as any).autoSend.delay()}
@@ -53,9 +51,7 @@ export function DeliverySettings({
           }))}
           onChange={(event) => updateSettings({ autoSendDelaySeconds: Number(event.target.value) })}
         />
-      ) : (
-        <p className="dlv-setting-description">{(scoped as any).delivery.manualLabel()}</p>
-      )}
+      ) : null}
     </>
   );
 }

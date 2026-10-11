@@ -3,14 +3,18 @@ import { useLanguage } from '../../../../app/client/i18n/index.js';
 import {
   CheckboxField,
   NumberField,
-  SettingsSubcard,
+  SettingsSection,
   TextField,
 } from '../../../../shared/design-system/index.js';
 export function OutputFilterSettings({ settings, updateSettings }: any) {
   const { scoped: speak } = useLanguage((ctx) => ctx.speak);
   const enabled = settings.outputCodeFilterEnabled !== false;
   return (
-    <SettingsSubcard title={(speak as any).filters.code.enabled()} icon="filter">
+    <SettingsSection
+      title={(speak as any).filters.code.enabled()}
+      icon="filter"
+      defaultOpen={false}
+    >
       <CheckboxField
         label={(speak as any).filters.code.enabled()}
         checked={enabled}
@@ -34,6 +38,6 @@ export function OutputFilterSettings({ settings, updateSettings }: any) {
         disabled={!enabled}
         onCommit={(value) => updateSettings({ outputCodeNotice: value })}
       />
-    </SettingsSubcard>
+    </SettingsSection>
   );
 }

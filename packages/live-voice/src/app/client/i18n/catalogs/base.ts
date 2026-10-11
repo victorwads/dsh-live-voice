@@ -83,10 +83,13 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.recognition.browser.localProcessing': string;
   'dsh-live-voice.recognition.browser.microphoneHelp': string;
   'dsh-live-voice.recognition.browser.remoteServiceWarning': string;
+  'dsh-live-voice.recognition.commands.addPhrase': string;
   'dsh-live-voice.recognition.commands.clear': string;
   'dsh-live-voice.recognition.commands.enabled': string;
+  'dsh-live-voice.recognition.commands.end': string;
   'dsh-live-voice.recognition.commands.mute': string;
   'dsh-live-voice.recognition.commands.queue': string;
+  'dsh-live-voice.recognition.commands.removePhrase': string;
   'dsh-live-voice.recognition.commands.resume': string;
   'dsh-live-voice.recognition.commands.send': string;
   'dsh-live-voice.recognition.commands.stopSpeech': string;
@@ -183,6 +186,13 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.settings.engine.refresh': string;
   'dsh-live-voice.settings.filters.title': string;
   'dsh-live-voice.settings.general.title': string;
+  'dsh-live-voice.settings.layout.delivery': string;
+  'dsh-live-voice.settings.layout.diagnostics': string;
+  'dsh-live-voice.settings.layout.listening': string;
+  'dsh-live-voice.settings.layout.playback': string;
+  'dsh-live-voice.settings.layout.shortcut': string;
+  'dsh-live-voice.settings.layout.transcription': string;
+  'dsh-live-voice.settings.layout.voice': string;
   'dsh-live-voice.settings.persistence.loadError': string;
   'dsh-live-voice.settings.persistence.saveError': string;
   'dsh-live-voice.settings.tabs.conversation': string;

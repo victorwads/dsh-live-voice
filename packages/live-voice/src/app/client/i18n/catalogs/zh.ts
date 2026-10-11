@@ -91,10 +91,13 @@ const zh: LiveVoiceTranslation = {
     '浏览器 SpeechRecognition 可能使用浏览器或系统默认麦克风，而非此处选择的设备。',
   'dsh-live-voice.recognition.browser.remoteServiceWarning':
     '已启用浏览器服务语音识别。浏览器可能会将麦克风音频发送至其语音识别服务。',
+  'dsh-live-voice.recognition.commands.addPhrase': '添加短语…',
   'dsh-live-voice.recognition.commands.clear': '清空消息输入框',
   'dsh-live-voice.recognition.commands.enabled': '启用精确匹配的语音命令',
+  'dsh-live-voice.recognition.commands.end': '结束对话',
   'dsh-live-voice.recognition.commands.mute': '停止向消息输入框输入语音',
   'dsh-live-voice.recognition.commands.queue': '加入队列',
+  'dsh-live-voice.recognition.commands.removePhrase': '删除短语',
   'dsh-live-voice.recognition.commands.resume': '恢复向消息输入框输入语音',
   'dsh-live-voice.recognition.commands.send': '发送给运行中的智能体',
   'dsh-live-voice.recognition.commands.stopSpeech': '停止助手朗读',
@@ -157,12 +160,9 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     '请输入 100 至 10,000 ms 的整数。离开输入框时保存。短停顿可能切分语音；识别还需要额外时间。',
   'dsh-live-voice.recognition.silenceDetection.customLabel': '自定义停顿（毫秒）',
-  'dsh-live-voice.recognition.silenceDetection.detector.energy':
-    '音频能量',
-  'dsh-live-voice.recognition.silenceDetection.detector.label':
-    '语音检测器',
-  'dsh-live-voice.recognition.silenceDetection.detector.silero':
-    'Silero — 实验性（默认）',
+  'dsh-live-voice.recognition.silenceDetection.detector.energy': '音频能量',
+  'dsh-live-voice.recognition.silenceDetection.detector.label': '语音检测器',
+  'dsh-live-voice.recognition.silenceDetection.detector.silero': 'Silero — 实验性（默认）',
   'dsh-live-voice.recognition.silenceDetection.duration': '发送前停顿：{milliseconds} 毫秒',
   'dsh-live-voice.recognition.silenceDetection.help':
     '设置停顿持续多久后，将采集的语音发送进行识别。',
@@ -219,6 +219,13 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.settings.engine.refresh': '刷新可用引擎',
   'dsh-live-voice.settings.filters.title': '过滤',
   'dsh-live-voice.settings.general.title': '常规',
+  'dsh-live-voice.settings.layout.delivery': '消息发送',
+  'dsh-live-voice.settings.layout.diagnostics': '诊断',
+  'dsh-live-voice.settings.layout.listening': '聆听与打断',
+  'dsh-live-voice.settings.layout.playback': '播放与输出',
+  'dsh-live-voice.settings.layout.shortcut': '快捷键',
+  'dsh-live-voice.settings.layout.transcription': '语音转写',
+  'dsh-live-voice.settings.layout.voice': '声音与引擎',
   'dsh-live-voice.settings.persistence.loadError': '无法从服务器加载 实时语音 设置。请刷新后重试。',
   'dsh-live-voice.settings.persistence.saveError': '无法在服务器上保存 实时语音 设置。请重试。',
   'dsh-live-voice.settings.tabs.conversation': '对话',

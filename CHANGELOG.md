@@ -6,7 +6,9 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ## [0.5.x] - Next
 
-Upcoming changes will be recorded here.
+### Improvements
+
+- Improve the settings layout with consistent expandable sections, clearer organization, compact help tooltips, and voice-command phrase chips. Keep diagnostics in a fixed footer and align the debugger with the DSH theme.
 
 ## [0.5.0] - 2026-10-10
 

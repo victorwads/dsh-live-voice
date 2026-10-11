@@ -103,10 +103,13 @@ const es: LiveVoiceTranslation = {
     'SpeechRecognition puede utilizar el micrófono predeterminado del navegador o del sistema en lugar del seleccionado aquí.',
   'dsh-live-voice.recognition.browser.remoteServiceWarning':
     'El reconocimiento mediante el servicio del navegador está activado. El navegador puede enviar el audio del micrófono a su servicio de reconocimiento.',
+  'dsh-live-voice.recognition.commands.addPhrase': 'Añadir frase…',
   'dsh-live-voice.recognition.commands.clear': 'Vaciar el cuadro de mensaje',
   'dsh-live-voice.recognition.commands.enabled': 'Activar comandos de voz con coincidencia exacta',
+  'dsh-live-voice.recognition.commands.end': 'Finalizar conversación',
   'dsh-live-voice.recognition.commands.mute': 'Suspender la entrada de voz en el cuadro de mensaje',
   'dsh-live-voice.recognition.commands.queue': 'Añadir a la cola',
+  'dsh-live-voice.recognition.commands.removePhrase': 'Eliminar frase',
   'dsh-live-voice.recognition.commands.resume':
     'Reanudar la entrada de voz en el cuadro de mensaje',
   'dsh-live-voice.recognition.commands.send': 'Enviar al agente en ejecución',
@@ -176,10 +179,8 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     'Introduce un número entero de 100 a 10.000 ms. Se guarda al salir del campo. Las pausas cortas pueden dividir el habla; el reconocimiento añade su propia latencia.',
   'dsh-live-voice.recognition.silenceDetection.customLabel': 'Pausa personalizada (milisegundos)',
-  'dsh-live-voice.recognition.silenceDetection.detector.energy':
-    'Energía del audio',
-  'dsh-live-voice.recognition.silenceDetection.detector.label':
-    'Detector de voz',
+  'dsh-live-voice.recognition.silenceDetection.detector.energy': 'Energía del audio',
+  'dsh-live-voice.recognition.silenceDetection.detector.label': 'Detector de voz',
   'dsh-live-voice.recognition.silenceDetection.detector.silero':
     'Silero — experimental (predeterminado)',
   'dsh-live-voice.recognition.silenceDetection.duration':
@@ -244,6 +245,13 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.settings.engine.refresh': 'Actualizar los motores disponibles',
   'dsh-live-voice.settings.filters.title': 'Filtrado',
   'dsh-live-voice.settings.general.title': 'General',
+  'dsh-live-voice.settings.layout.delivery': 'Envío de mensajes',
+  'dsh-live-voice.settings.layout.diagnostics': 'Diagnóstico',
+  'dsh-live-voice.settings.layout.listening': 'Escucha e interrupciones',
+  'dsh-live-voice.settings.layout.playback': 'Reproducción y salida',
+  'dsh-live-voice.settings.layout.shortcut': 'Atajos',
+  'dsh-live-voice.settings.layout.transcription': 'Transcripción',
+  'dsh-live-voice.settings.layout.voice': 'Voz y motor',
   'dsh-live-voice.settings.persistence.loadError':
     'No se pudieron cargar los ajustes de Voz en vivo del servidor. Recarga para volver a intentarlo.',
   'dsh-live-voice.settings.persistence.saveError':

@@ -5,6 +5,7 @@ export type DebuggerCopy = {
   close: string;
   content: string;
   developer: string;
+  diagnostics: string;
   empty: string;
   error: string;
   eventsClear: string;
@@ -29,6 +30,7 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     close: 'Close debugger',
     content: 'Inspect text content (sensitive)',
     developer: 'Developer',
+    diagnostics: 'Diagnostics',
     empty: 'No transitions recorded yet.',
     error: 'Diagnostic source failed.',
     eventsClear: 'Clear events',
@@ -53,6 +55,7 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     close: 'Fechar debugger',
     content: 'Inspecionar conteúdo de texto (sensível)',
     developer: 'Desenvolvedor',
+    diagnostics: 'Diagnóstico',
     empty: 'Nenhuma transição registrada ainda.',
     error: 'A fonte de diagnóstico falhou.',
     eventsClear: 'Limpar eventos',
@@ -77,6 +80,7 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     close: 'Cerrar depurador',
     content: 'Inspeccionar contenido de texto (sensible)',
     developer: 'Desarrollador',
+    diagnostics: 'Diagnóstico',
     empty: 'Todavía no hay transiciones registradas.',
     error: 'La fuente de diagnóstico falló.',
     eventsClear: 'Borrar eventos',
@@ -101,6 +105,7 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     close: 'Fermer le débogueur',
     content: 'Inspecter le texte (sensible)',
     developer: 'Développeur',
+    diagnostics: 'Diagnostic',
     empty: 'Aucune transition enregistrée.',
     error: 'La source de diagnostic a échoué.',
     eventsClear: 'Effacer les événements',
@@ -125,6 +130,7 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     close: 'डीबगर बंद करें',
     content: 'टेक्स्ट सामग्री देखें (संवेदनशील)',
     developer: 'डेवलपर',
+    diagnostics: 'निदान',
     empty: 'अभी कोई ट्रांज़िशन दर्ज नहीं है।',
     error: 'डायग्नोस्टिक स्रोत विफल हुआ।',
     eventsClear: 'इवेंट साफ़ करें',
@@ -149,6 +155,7 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     close: '关闭调试器',
     content: '查看文本内容（敏感）',
     developer: '开发者',
+    diagnostics: '诊断',
     empty: '尚未记录状态转换。',
     error: '诊断数据源失败。',
     eventsClear: '清除事件',

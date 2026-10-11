@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
-import { SettingsCard, SettingsSubcard } from '../../../../shared/design-system/index.js';
+import { SettingsCard, SettingsSection } from '../../../../shared/design-system/index.js';
 import { OutputFilterSettings } from './OutputFilterSettings.js';
 import { SpeechEngineSettings } from './SpeechEngineSettings.js';
 import { SpeechAdvancedSettings } from './SpeechAdvancedSettings.js';
@@ -9,10 +9,12 @@ export function SpeakSettingsSection(props: any) {
   return (
     <SettingsCard>
       <div className="dlv-settings-card-body">
-        <SettingsSubcard title={(settingsLanguage as any).general.title()} icon="speaker">
+        <SettingsSection title={(settingsLanguage as any).layout.voice()} icon="speaker">
           <SpeechEngineSettings {...props} />
+        </SettingsSection>
+        <SettingsSection title={(settingsLanguage as any).layout.playback()} icon="play">
           <SpeechAdvancedSettings {...props} />
-        </SettingsSubcard>
+        </SettingsSection>
         <OutputFilterSettings {...props} />
       </div>
     </SettingsCard>

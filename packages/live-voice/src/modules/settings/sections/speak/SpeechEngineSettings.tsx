@@ -64,22 +64,24 @@ export function SpeechEngineSettings({ settings, capabilities, updateSettings }:
           onChange={(event) => updateSettings({ voice: event.target.value })}
         />
       )}
-      <NumberField
-        label={(speak as any).rate.label()}
-        min={0.1}
-        max={3}
-        step={0.1}
-        value={settings.rate ?? 1}
-        onCommit={(value) => updateSettings({ rate: Number(value) })}
-      />
-      <NumberField
-        label={(speak as any).segmentGap.label()}
-        min={0}
-        max={2000}
-        step={50}
-        value={settings.segmentGapMs ?? 400}
-        onCommit={(value) => updateSettings({ segmentGapMs: Number(value) })}
-      />
+      <div className="dlv-field-pair">
+        <NumberField
+          label={(speak as any).rate.label() + ' (×)'}
+          min={0.1}
+          max={3}
+          step={0.1}
+          value={settings.rate ?? 1}
+          onCommit={(value) => updateSettings({ rate: Number(value) })}
+        />
+        <NumberField
+          label={(speak as any).segmentGap.label() + ' (ms)'}
+          min={0}
+          max={2000}
+          step={50}
+          value={settings.segmentGapMs ?? 400}
+          onCommit={(value) => updateSettings({ segmentGapMs: Number(value) })}
+        />
+      </div>
       {capabilities?.[engine === 'qwen-http' ? 'qwen' : engine]?.supported === false && (
         <p role="status">
           {capabilities?.[engine === 'qwen-http' ? 'qwen' : engine]?.reason ||

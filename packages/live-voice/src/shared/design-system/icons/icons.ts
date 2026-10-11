@@ -1,4 +1,9 @@
 export const iconPaths = {
+  conversation: 'M4 3h16v13H8l-4 4V3M8 7h8M8 11h5',
+  keyboard: 'M3 6h18v12H3V6M7 10h.01M11 10h.01M15 10h.01M18 10h.01M7 14h10',
+  headphones: 'M3 14v-3a9 9 0 0 1 18 0v3M3 12h4v8H3v-8M17 12h4v8h-4v-8',
+  commands: 'M3 6l2 2 3-4M11 6h10M3 14l2 2 3-4M11 14h10M11 20h10',
+  bug: 'M8 8h8v9a4 4 0 0 1-8 0V8M9 8V6a3 3 0 0 1 6 0v2M3 9l5 2M16 11l5-2M3 16h5M16 16h5M5 22l3-3M16 19l3 3',
   meeting:
     'M8 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6M16 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6M2 20v-3a6 6 0 0 1 12 0v3M16 13a5 5 0 0 1 6 5v2',
   meetingOff:

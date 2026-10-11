@@ -124,7 +124,8 @@ test('PCM chunks expose actual HTTP adapter VAD, buffered chunks and queued reco
     createGain: () => ({ gain: {}, connect() {}, disconnect() {} }),
   };
   const meter = { context, source: { connect() {}, disconnect() {} }, level: () => 0.2 };
-  const engine = new WhisperHttpRecognitionEngine({ voiceDetectionEngine: 'energy',
+  const engine = new WhisperHttpRecognitionEngine({
+    voiceDetectionEngine: 'energy',
     meter,
     globals: { fetch: () => new Promise(() => {}) },
     voiceDetectionPreset: 'short',
@@ -177,20 +178,43 @@ test('debugger catalogs have complete sorted keys and match DSH locales', () => 
 });
 
 function runtimeFixture() {
-  return { status: 'ready', workerActive: true, activeSources: 2, modelLoadMs: 120,
-    processedFrames: 40, inferenceLastMs: 2.5, inferenceAverageMs: 3, queuedFrames: 1,
-    accountedBufferBytes: 1048576, totalRamBytes: null,
+  return {
+    status: 'ready',
+    workerActive: true,
+    activeSources: 2,
+    modelLoadMs: 120,
+    processedFrames: 40,
+    inferenceLastMs: 2.5,
+    inferenceAverageMs: 3,
+    queuedFrames: 1,
+    accountedBufferBytes: 1048576,
+    totalRamBytes: null,
     assets: { modelBytes: 2097152, wasmBytes: 3145728, packageBytes: null },
-    pageHeap: { usedBytes: 4194304, totalBytes: 8388608, scope: 'page-js-heap-estimate' } };
+    pageHeap: { usedBytes: 4194304, totalBytes: 8388608, scope: 'page-js-heap-estimate' },
+  };
 }
 test('root runtime/source events ignore frame metrics and preserve semantic transitions', () => {
-  let state = { vadRuntime: runtimeFixture(), audioSources: { microphone: {
-    capture: { listening: true, level: 0.1 }, vad: { activity: false, probability: 0.2, silenceMs: 1 },
-    chunker: { available: true, bufferedSamples: 1, bufferedChunks: 1 },
-  }, shared: null }, sessions: {} };
+  let state = {
+    vadRuntime: runtimeFixture(),
+    audioSources: {
+      microphone: {
+        capture: { listening: true, level: 0.1 },
+        vad: { activity: false, probability: 0.2, silenceMs: 1 },
+        chunker: { available: true, bufferedSamples: 1, bufferedChunks: 1 },
+      },
+      shared: null,
+    },
+    sessions: {},
+  };
   let notify;
-  const inspector = createInspector({ version: 1, read: () => structuredClone(state),
-    subscribe: (listener) => { notify = listener; return () => {}; } });
+  const inspector = createInspector({
+    version: 1,
+    read: () => structuredClone(state),
+    subscribe: (listener) => {
+      notify = listener;
+      return () => {};
+    },
+  });
   for (let i = 0; i < 250; i++) {
     state.vadRuntime.processedFrames++;
     state.vadRuntime.inferenceLastMs++;
@@ -207,7 +231,10 @@ test('root runtime/source events ignore frame metrics and preserve semantic tran
   state.vadRuntime.status = 'failed';
   state.audioSources.microphone.vad.activity = true;
   notify();
-  assert.deepEqual(inspector.read().transitions.map((e) => e.module), ['vadRuntime', 'audioSources.microphone.vad']);
+  assert.deepEqual(
+    inspector.read().transitions.map((e) => e.module),
+    ['vadRuntime', 'audioSources.microphone.vad'],
+  );
   assert.equal(inspector.read().transitions[0].sessionId, null);
   assert.equal('probability' in inspector.read().transitions[1].after, false);
   inspector.setPaused(true);
@@ -250,23 +277,38 @@ test('VAD status and asset sizes use only the expandable audioSources state tree
     assert.equal(scroll.children.length, 1);
     const context = scroll.firstElementChild;
     assert.equal(context.querySelector(':scope > summary > code').textContent, 'context');
-    const branch = (parent, name) => [...parent.querySelectorAll(':scope > details')]
-      .find((node) => node.querySelector(':scope > summary > code').textContent === name);
+    const branch = (parent, name) =>
+      [...parent.querySelectorAll(':scope > details')].find(
+        (node) => node.querySelector(':scope > summary > code').textContent === name,
+      );
     const audioSources = branch(context, 'audioSources');
     const vad = branch(audioSources, 'vad');
     const assets = branch(vad, 'assets');
     assert.ok(vad instanceof window.HTMLDetailsElement);
     assert.ok(vad.open);
-    await act(async () => { assets.open = false; });
+    await act(async () => {
+      assets.open = false;
+    });
     assert.equal(assets.open, false);
     assert.match(vad.textContent, /statusready/);
-    for (const [key, value] of Object.entries({ modelBytes: 2097152, wasmBytes: 3145728, modelMiB: 2, wasmMiB: 3 }))
+    for (const [key, value] of Object.entries({
+      modelBytes: 2097152,
+      wasmBytes: 3145728,
+      modelMiB: 2,
+      wasmMiB: 3,
+    }))
       assert.ok(assets.textContent.includes(key + value));
-    await act(async () => { assets.open = true; });
+    await act(async () => {
+      assets.open = true;
+    });
     assert.equal(assets.open, true);
-    await act(async () => { vad.open = false; });
+    await act(async () => {
+      vad.open = false;
+    });
     assert.equal(vad.open, false);
-    await act(async () => { vad.open = true; });
+    await act(async () => {
+      vad.open = true;
+    });
     assert.equal(pane.querySelector('section, dl, .dlvd-vad-summary'), null);
     assert.doesNotMatch(pane.textContent, /vadRuntime|pageHeap|totalRamBytes|accountedBufferBytes/);
   }
@@ -406,12 +448,12 @@ test('optional plugin opens a separate window and keeps it after Settings unmoun
   const Settings = readDeveloperExtension().component;
   await act(async () => root.render(<Settings />));
   window.open = () => null;
-  await act(async () => document.querySelector('input').click());
+  await act(async () => document.querySelector('.dlv-diagnostics-button').click());
   assert.match(document.querySelector('[role="alert"]').textContent, /blocked/);
-  assert.equal(document.querySelector('input').checked, false);
+  assert.equal(document.querySelector('input'), null);
   assert.equal(document.querySelector('.dlvd-panel'), null);
   window.open = () => child.window;
-  await act(async () => document.querySelector('input').click());
+  await act(async () => document.querySelector('.dlv-diagnostics-button').click());
   assert.equal(document.querySelector('.dlvd-panel'), null);
   assert.ok(child.window.document.querySelector('.dlvd-panel'));
   await act(async () => root.unmount());

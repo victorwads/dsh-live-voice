@@ -124,19 +124,14 @@ test('modular settings composes speech, recognition, and conversation tabs', asy
   assert.equal(document.querySelectorAll('[role="tabpanel"]')[2].hidden, false);
   const panels = [...document.querySelectorAll('[role="tabpanel"]')];
   for (const panel of panels) {
-    const general = [...panel.querySelectorAll('details')].find((details) =>
-      details.querySelector(':scope > summary')?.textContent?.includes('General'),
-    );
-    assert.ok(general, 'each tab groups its primary fields under General');
-    assert.equal(general.open, false, 'sections start collapsed');
-    assert.ok(general.querySelector('summary svg'), 'section headings show an icon');
+    const section = panel.querySelector('.dlv-settings-section');
+    assert.ok(section, 'primary settings are visible without opening a disclosure');
+    assert.ok(section.querySelector('h4 svg'), 'section headings show a semantic icon');
+    assert.equal(section.tagName, 'DETAILS');
+    assert.equal(section.open, true, 'essential sections start expanded');
   }
   const conversation = panels[2];
-  const general = [...conversation.querySelectorAll('details')].find((details) =>
-    details.querySelector(':scope > summary')?.textContent?.includes('General'),
-  );
-  await act(async () => general.querySelector('summary').click());
-  assert.equal(general.open, true);
+  const general = conversation.querySelector('.dlv-settings-section');
   const delivery = general.querySelector('select');
   assert.ok(delivery);
   await act(async () => {
@@ -147,7 +142,7 @@ test('modular settings composes speech, recognition, and conversation tabs', asy
   const policyLabel = [...general.querySelectorAll('label')].find((label) =>
     label.textContent.includes('In your DSH, what does Enter do when the agent is busy?'),
   );
-  const policy = policyLabel.querySelector('select');
+  const policy = document.getElementById(policyLabel.htmlFor);
   assert.equal(policy.value, 'queue');
   assert.deepEqual(
     [...policy.options].map((option) => option.value),
@@ -169,13 +164,12 @@ test('modular settings composes speech, recognition, and conversation tabs', asy
       component: () => <p>Developer controls</p>,
     });
   });
-  assert.equal(document.querySelectorAll('[role="tab"]').length, 4);
-  const developerTab = [...document.querySelectorAll('[role="tab"]')].find(
-    (tab) => tab.textContent === 'Developer',
-  );
-  await act(async () => developerTab.click());
-  assert.equal(document.querySelectorAll('[role="tabpanel"]')[3].hidden, false);
+  assert.equal(document.querySelectorAll('[role="tab"]').length, 3);
+  const footer = document.querySelector('.dlv-settings-footer');
+  assert.ok(footer.textContent.includes('Developer controls'));
+  assert.equal(footer.closest('.dlv-settings-scroll'), null);
   await act(async () => removeDeveloper());
+  assert.equal(document.querySelector('.dlv-settings-footer'), null);
   assert.equal(document.querySelectorAll('[role="tab"]').length, 3);
   assert.equal(document.querySelectorAll('[role="tabpanel"]')[2].hidden, false);
 });
