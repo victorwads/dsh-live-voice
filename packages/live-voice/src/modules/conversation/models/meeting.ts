@@ -4,12 +4,13 @@ import { VoiceCoordinator } from '../../core/coordinator.ts';
 
 /** Application-owned capture; each source uses the same independent input policy. */
 export class MeetingController {
-  constructor({ composer, settings, createSource, translate, onActivity, onSpeech, stopSpeech }) {
+  constructor({ composer, settings, createSource, translate, onActivity, onSpeech, stopSpeech, savePreferences }) {
     this.composer = composer;
     this.stopSpeech = stopSpeech;
     this.inputs = new Map();
     this.inputOverrides = new Map();
     this.settings = settings;
+    this.savePreferences = savePreferences;
     this.createSource = createSource;
     this.t = translate;
     this.onActivity = onActivity;
@@ -51,7 +52,11 @@ export class MeetingController {
     // it never acquires the microphone or queues a second assistant playback.
     const input = new VoiceCoordinator({
       recognition: { stop: async () => {} }, engines: {},
-      meter: { stop: async () => {} }, settings: { ...this.settings(), microphoneEnabled: true },
+      meter: { stop: async () => {} }, settings: {
+        ...this.settings(), microphoneEnabled: true,
+        timestampsEnabled: source === 'shared' ? this.settings().sharedTimestampsEnabled : this.settings().timestampsEnabled,
+        ...(source === 'shared' ? { voiceCommandsEnabled: this.settings().sharedVoiceCommandsEnabled ?? this.settings().voiceCommandsEnabled } : {}),
+      },
       composer: {
         getDraft: () => this.composer.getDraft(),
         setDraft: (text) => this.composer.setDraft(text),
@@ -72,6 +77,14 @@ export class MeetingController {
     input.updateSettings = (next) => {
       this.inputOverrides.set(source, { ...this.inputOverrides.get(source), ...next });
       update(next);
+      const patch = {};
+      if (source === 'shared' && Object.hasOwn(next, 'voiceCommandsEnabled'))
+        patch.sharedVoiceCommandsEnabled = next.voiceCommandsEnabled;
+      if (Object.hasOwn(next, 'timestampsEnabled')) {
+        this.transcript.setSourceTimestamps(source, next.timestampsEnabled);
+        patch[source === 'shared' ? 'sharedTimestampsEnabled' : 'timestampsEnabled'] = next.timestampsEnabled;
+      }
+      if (Object.keys(patch).length) return this.savePreferences?.(input, patch);
     };
     input.clearError = () => this.patch(source, { error: null });
     input.endConversation = () => this.stop(source);
@@ -82,20 +95,22 @@ export class MeetingController {
         this.composer.updatePlaybackSettings?.({ announceAssistantMessages: next.announceAssistantMessages });
       return updatePolicy(next);
     };
-    input.toggleTimestamps = () => {
-      const timestamps = !input.getSnapshot().timestamps;
-      this.transcript.setSourceTimestamps(source, timestamps);
-      input.patch({ timestamps });
-    };
+    this.transcript.setSourceTimestamps(source, input.getSnapshot().timestamps);
     this.inputs.set(source, input);
     return input;
   }
   applySettings(settings) {
-    for (const [source, input] of this.inputs)
+    for (const [source, input] of this.inputs) {
+      const timestamps = source === 'shared' ? settings.sharedTimestampsEnabled : settings.timestampsEnabled;
+      this.transcript.setSourceTimestamps(source, Boolean(timestamps));
       VoiceCoordinator.prototype.updateSettings.call(input, {
         ...settings, ...this.inputOverrides.get(source),
+        ...(source === 'shared' && typeof settings.sharedVoiceCommandsEnabled === 'boolean'
+          ? { voiceCommandsEnabled: settings.sharedVoiceCommandsEnabled } : {}),
+        timestampsEnabled: timestamps ?? input.getSnapshot().timestamps,
         microphoneEnabled: !input.getSnapshot().muted,
       });
+    }
   }
   composerChanged(draft) {
     for (const input of this.inputs.values()) input.composerChanged(draft);

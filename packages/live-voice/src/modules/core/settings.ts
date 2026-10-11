@@ -66,6 +66,9 @@ export const defaultSettings = Object.freeze({
   recognitionFilterEnabled: true,
   recognitionMinimumWords: 2,
   voiceCommandsEnabled: true,
+  sharedVoiceCommandsEnabled: true,
+  timestampsEnabled: false,
+  sharedTimestampsEnabled: false,
   voiceCommandSend: 'send, send message',
   voiceCommandQueue: 'queue, queue message',
   voiceCommandEnd: 'end, end conversation',
@@ -222,6 +225,14 @@ export function normalizeSettings(value) {
       typeof source.voiceCommandsEnabled === 'boolean'
         ? source.voiceCommandsEnabled
         : defaultSettings.voiceCommandsEnabled,
+    timestampsEnabled: typeof source.timestampsEnabled === 'boolean' ? source.timestampsEnabled : false,
+    sharedTimestampsEnabled: typeof source.sharedTimestampsEnabled === 'boolean' ? source.sharedTimestampsEnabled : false,
+    sharedVoiceCommandsEnabled:
+      typeof source.sharedVoiceCommandsEnabled === 'boolean'
+        ? source.sharedVoiceCommandsEnabled
+        : typeof source.voiceCommandsEnabled === 'boolean'
+          ? source.voiceCommandsEnabled
+          : defaultSettings.sharedVoiceCommandsEnabled,
     voiceCommandSend: normalizeCommandPhrases(
       source.voiceCommandSend,
       defaultSettings.voiceCommandSend,

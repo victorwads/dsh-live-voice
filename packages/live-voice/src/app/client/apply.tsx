@@ -90,6 +90,7 @@ export function apply(ctx) {
         !meetingEntry.controller.getSnapshot().pendingTranscriptions,
     },
     settings: () => preferences.getSnapshot(),
+    savePreferences: (controller, next) => savePreferences(controller, next),
     translate: (key) => t('dsh-live-voice.meeting.' + key),
     createSource: (source, settings) => {
       const meter = source === 'shared' ? new SharedAudioMeter() : new MicrophoneMeter();

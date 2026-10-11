@@ -72,6 +72,7 @@ export class VoiceCoordinator {
       speechRunActive: false,
       capabilities: {},
       settings: normalizeSettings(settings),
+      timestamps: normalizeSettings(settings).timestampsEnabled,
     };
     this.autoSendTimer = null;
     this.autoSendDraft = null;
@@ -144,6 +145,7 @@ export class VoiceCoordinator {
     });
     this.patch({
       settings,
+      timestamps: settings.timestampsEnabled,
       muted: settings.microphoneEnabled === false,
       recognizing: this.snapshot.recognizing,
       error: null,
@@ -254,7 +256,7 @@ export class VoiceCoordinator {
     this._drain();
   }
   toggleTimestamps() {
-    this.patch({ timestamps: !this.snapshot.timestamps });
+    return this.updateSettings({ timestampsEnabled: !this.snapshot.timestamps });
   }
   muteListening() {
     this.cancelAutoSend();

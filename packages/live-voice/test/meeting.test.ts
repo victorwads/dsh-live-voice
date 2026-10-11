@@ -2,6 +2,56 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MeetingController } from '../src/modules/conversation/models/meeting.js';
+import { normalizeSettings } from '../src/modules/core/settings.js';
+
+test('timestamps persist independently across recreated controllers', async () => {
+  let saved = normalizeSettings({});
+  const create = () => new MeetingController({
+    composer: { getDraft: () => '', setDraft() {} }, settings: () => saved,
+    savePreferences: async (_input, patch) => { saved = normalizeSettings({ ...saved, ...patch }); },
+  });
+  const first = create();
+  await first.input().toggleTimestamps();
+  first.applySettings(saved);
+  assert.equal(first.input().getSnapshot().timestamps, true);
+  assert.equal(first.input('microphone').getSnapshot().timestamps, false);
+  await first.dispose();
+  const next = create();
+  assert.equal(next.input().getSnapshot().timestamps, true);
+  await next.input('microphone').toggleTimestamps();
+  await next.input().toggleTimestamps();
+  await next.dispose();
+  const reloaded = create();
+  assert.equal(reloaded.input().getSnapshot().timestamps, false);
+  assert.equal(reloaded.input('microphone').getSnapshot().timestamps, true);
+  await reloaded.dispose();
+});
+
+test('shared command preference survives controller recreation independently of microphone commands', async () => {
+  let saved = normalizeSettings({ voiceCommandsEnabled: true });
+  const create = () => new MeetingController({
+    composer: { getDraft: () => '', setDraft() {} },
+    settings: () => saved,
+    savePreferences: async (_input, patch) => { saved = normalizeSettings({ ...saved, ...patch }); },
+  });
+  const first = create();
+  await first.input().updateSettings({ voiceCommandsEnabled: false });
+  assert.equal(saved.sharedVoiceCommandsEnabled, false);
+  assert.equal(saved.voiceCommandsEnabled, true);
+  first.applySettings(saved);
+  assert.equal(first.input().getSnapshot().settings.voiceCommandsEnabled, false);
+  await first.dispose();
+  const reloaded = create();
+  assert.equal(reloaded.input().getSnapshot().settings.voiceCommandsEnabled, false);
+  await reloaded.input().updateSettings({ voiceCommandsEnabled: true });
+  await reloaded.dispose();
+  const enabled = create();
+  assert.equal(enabled.input().getSnapshot().settings.voiceCommandsEnabled, true);
+  enabled.applySettings(normalizeSettings({ ...saved, voiceCommandsEnabled: false }));
+  assert.equal(enabled.input().getSnapshot().settings.voiceCommandsEnabled, true);
+  await enabled.dispose();
+  assert.equal(normalizeSettings({ voiceCommandsEnabled: false }).sharedVoiceCommandsEnabled, false);
+});
 test('meeting sources recognize independently and reject stale results without submission', async () => {
   let draft = '';
   const sources = {};
@@ -157,7 +207,7 @@ test('timestamps use identical source-local controls, including single-source di
   f.sources.microphone.callbacks.onResult({ final: 'timestamped words', startedAt: new Date(2026, 9, 9, 12, 34, 56).getTime() });
   assert.equal(f.draft(), '[2026/10/09 12:34:56] timestamped words');
   await f.meeting.start('shared');
-  assert.equal(f.meeting.input().getSnapshot().timestamps, undefined);
+  assert.equal(f.meeting.input().getSnapshot().timestamps, false);
   f.sources.shared.callbacks.onResult({ final: 'no timestamp' });
   assert.match(f.draft(), /\n\nThem: no timestamp$/);
   f.meeting.input().toggleTimestamps();
