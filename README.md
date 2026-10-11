@@ -22,7 +22,7 @@ DSH Live Voice is a local-first voice plugin for DeepSeek Harness (DSH), with sp
 
 **Tested with DeepSeek Harness v0.2.1-alpha.2.**
 
-Install with `npx dsh` into your DSH web profile:
+Install the prebuilt package from npm with `npx dsh` into your DSH web profile (no source build required):
 
 ```sh
 npx dsh plugin add --profile web dsh-live-voice
@@ -91,10 +91,10 @@ Detailed guides for deep-diving into engines and configurations:
 
 This pnpm monorepo contains two independently installable plugins:
 
-- `packages/live-voice`: the main voice plugin, with its own source, tests, manifest and runtime bundles.
+- `packages/live-voice`: the main voice plugin, with its own source, tests and manifest.
 - `packages/live-voice-debugger`: the optional debugger, with its own `src`, tests and manifest.
 
-Run `pnpm install --frozen-lockfile`, then `pnpm build` or `pnpm test` from the root. Build individual plugins with `pnpm --filter dsh-live-voice build` or `pnpm --filter dsh-live-voice-debugger build`. Root documentation covers both packages. The root English `CHANGELOG.md` is the canonical release history. Package READMEs link to that history. Existing DSH local links must be updated to the new package directories.
+Run `pnpm install --frozen-lockfile`, then `pnpm build` or `pnpm test` from the root. Build individual plugins with `pnpm --filter dsh-live-voice build` or `pnpm --filter dsh-live-voice-debugger build`. Root documentation covers both packages. The root English `CHANGELOG.md` is the canonical release history. Package READMEs link to that history. Generated `packages/*/lib/` directories are ignored and never committed, including for releases. Users install prebuilt packages from npm, not directly from Git. Contributors must build before linking a local package directory to DSH; see [development guidance](DEVELOPMENT.md).
 
 ## 🤝 Acknowledgments & Community
 

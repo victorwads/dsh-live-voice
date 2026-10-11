@@ -23,6 +23,10 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 - Stop current or paused speech and close the speech bar when automatic assistant speech is disabled. Clear pending segments without ending microphone input or resuming the cancelled response when speech is enabled again.
 - Keep playback paused when synthesis finishes after a pause request instead of starting late audio.
 
+### Developer notes
+
+- Distribute compiled plugins through npm only; generated `packages/*/lib/` directories are no longer tracked in Git, even for releases. Build source checkouts before local linking. Release validation checks npm package contents instead of committed bundles.
+
 ## [0.5.0] - 2026-10-10
 
 ### Features

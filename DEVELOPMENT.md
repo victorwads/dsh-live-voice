@@ -36,15 +36,24 @@ Enable the repository's versioned Git hooks once per checkout:
 npm run setup:hooks
 ```
 
-The pre-push hook runs `npm run check:dist`. It rebuilds `lib/client.js` and `lib/server.js`, requires both files to be tracked, and blocks the push when the committed runtime bundles do not match the current source. The same guard runs in GitHub Actions on every push and pull request, so drift is still reported when a local hook is missing or bypassed. Configure the CI job as a required branch check if direct pushes must be rejected rather than reported after they arrive.
+The pre-push hook runs `npm run typecheck`; regular CI runs `npm test`, which typechecks, builds, and tests both plugins. Generated `packages/*/lib/` directories are ignored and must never be committed, even for a release. The publication workflow runs `npm run check:dist` to rebuild both plugins and verify that their npm package contents include the runtime entries and the main plugin’s VAD assets. Each package’s `prepack` hook also builds it before packing or publishing. Users install the prebuilt npm packages; a Git checkout is source-only and must be built before local linking.
 
-## Current local installation
+## Installation and local development links
 
-Install through the official CLI only:
+For normal use, install the prebuilt package from npm through the official CLI:
 
 ```sh
-dsh plugin add --profile web link:/Users/bizup/GitRepos/dsh-live-voice
+npx dsh plugin add --profile web dsh-live-voice
 ```
+
+For local development only, build the checkout before linking the main package. Run from the repository root:
+
+```sh
+pnpm build
+npx dsh plugin add --profile web "link:$(pwd)/packages/live-voice"
+```
+
+The optional debugger can be installed from npm with `npx dsh plugin add --profile web dsh-live-voice-debugger`, or linked after building with `npx dsh plugin add --profile web "link:$(pwd)/packages/live-voice-debugger"`.
 
 The CLI registers the bundle, which loads this package’s own patch. Do not add a second `insert` for `dsh-live-voice` in the profile YAML: it causes a duplicate loader entry and prevents startup. The earlier manual activation workaround has been withdrawn. The plugin uses public `connection.fetch.register` routes below `/api/dsh-live-voice`, preserving the existing DSH authentication carrier. Only `connection` injection is needed. Adding `webServer` did not fix the custom-channel context error in the installed SDK; the custom channel was removed. Linked server source changes apply on the next normal DSH startup; a browser refresh alone does not reload server code.
 

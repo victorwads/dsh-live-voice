@@ -1,38 +1,42 @@
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { assertPackageContents } from './package-contents.mjs';
 
-const runtimeEntries = ['packages/live-voice/lib/client.js', 'packages/live-voice/lib/server.js'];
+const root = fileURLToPath(new URL('../', import.meta.url));
 
-const run = (command, args, options = {}) => {
+function run(command, args, cwd = root, capture = false) {
   const result = spawnSync(command, args, {
-    cwd: process.cwd(),
+    cwd,
     encoding: 'utf8',
-    stdio: options.capture ? 'pipe' : 'inherit',
+    stdio: capture ? 'pipe' : 'inherit',
   });
-
   if (result.error) throw result.error;
-  return result;
-};
-
-const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-const build = run(npm, ['run', 'build']);
-if (build.status !== 0) process.exit(build.status ?? 1);
-
-const tracked = run('git', ['ls-files', '--error-unmatch', ...runtimeEntries], { capture: true });
-if (tracked.status !== 0) {
-  console.error(
-    `\nThe dsh.pub runtime entries must be committed:\n${runtimeEntries
-      .map((entry) => `  - ${entry}`)
-      .join('\n')}\n`,
-  );
-  process.exit(1);
+  if (result.status !== 0)
+    throw new Error(result.stderr || command + ' failed with exit code ' + result.status);
+  return result.stdout;
 }
 
-const diff = run('git', ['diff', '--exit-code', '--', ...runtimeEntries]);
-if (diff.status !== 0) {
-  console.error(
-    '\nGenerated runtime entries are stale. Review and stage the rebuilt lib files before pushing.\n',
-  );
-  process.exit(1);
+function checkDist() {
+  const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+  run(npm, ['run', 'build']);
+  for (const name of ['live-voice', 'live-voice-debugger']) {
+    const directory = resolve(root, 'packages', name);
+    const metadata = JSON.parse(readFileSync(resolve(directory, 'package.json'), 'utf8'));
+    const vadManifest =
+      name === 'live-voice'
+        ? JSON.parse(readFileSync(resolve(directory, 'lib/vad/manifest.json'), 'utf8'))
+        : undefined;
+    // The build above prepares both packages; inspect packing without rebuilding or publishing.
+    const [packed] = JSON.parse(
+      run(npm, ['pack', '--dry-run', '--json', '--ignore-scripts'], directory, true),
+    );
+    assertPackageContents(metadata, packed.files, vadManifest);
+    console.log(
+      metadata.name + ': compiled runtime entries and assets are included in the npm package.',
+    );
+  }
 }
 
-console.log('Committed dsh.pub runtime entries match the current source.');
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) checkDist();

@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
 
-# Ordinary development pushes do not require committed release bundles.
+# Generated runtime bundles are ignored; ordinary pushes validate source only.
 # The publication workflow owns npm run check:dist.
 npm run typecheck

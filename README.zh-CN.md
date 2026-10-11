@@ -18,13 +18,13 @@ DSH Live Voice 是 DeepSeek Harness（DSH）的本地优先语音插件，提供
 
 *在巴西开发 🇧🇷，每天在 macOS 上使用巴西葡萄牙语进行测试。*
 
-**已在 DeepSeek Harness v0.2.1-alpha.2 上测试并确认可用。** 已测试的 DSH 版本记录在[主插件的包清单](packages/live-voice/package.json)的 `dshTestedVersion` 字段中。
-
 ---
 
 ## ⚡ 快速开始
 
-安装到 DSH 的 web 配置中：
+**已在 DeepSeek Harness v0.2.1-alpha.2 上测试。**
+
+从 npm 安装已构建的包到 DSH 的 web 配置中（无需编译源码）：
 
 ```sh
 npx dsh plugin add --profile web dsh-live-voice
@@ -93,10 +93,10 @@ npx dsh plugin add --profile web dsh-live-voice
 
 这个 pnpm monorepo 包含两个可独立安装的插件：
 
-- `packages/live-voice`：主语音插件，拥有自己的源码、测试、包清单和运行时构建产物。
+- `packages/live-voice`：主语音插件，拥有自己的源码、测试和包清单。
 - `packages/live-voice-debugger`：可选调试器，拥有自己的源码、测试和包清单。
 
-在根目录运行 `pnpm install --frozen-lockfile`，然后运行 `pnpm build` 或 `pnpm test`。可通过 `pnpm --filter dsh-live-voice build` 或 `pnpm --filter dsh-live-voice-debugger build` 单独构建插件。根目录文档涵盖两个包。根目录的英文 `CHANGELOG.md` 是主要版本历史，包内 README 会链接到该历史。已有的 DSH 本地链接需要更新为新的包目录。
+在根目录运行 `pnpm install --frozen-lockfile`，然后运行 `pnpm build` 或 `pnpm test`。可通过 `pnpm --filter dsh-live-voice build` 或 `pnpm --filter dsh-live-voice-debugger build` 单独构建插件。根目录文档涵盖两个包。根目录的英文 `CHANGELOG.md` 是主要版本历史，包内 README 会链接到该历史。生成的 `packages/*/lib/` 目录会被忽略，任何版本发布都不应将其提交到 Git。用户应从 npm 安装已构建的包，而不是直接从 Git 安装。贡献者必须先构建，再将本地包目录链接到 DSH；请参阅[开发指南](DEVELOPMENT.md)（英文）。
 
 ## 🤝 致谢与社区
 

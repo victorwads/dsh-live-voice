@@ -18,13 +18,13 @@ O DSH Live Voice é um plugin de voz para o DeepSeek Harness (DSH), com priorida
 
 *Feito no Brasil 🇧🇷 e testado diariamente com português brasileiro no macOS.*
 
-**Testado e funcionando com o DeepSeek Harness v0.2.1-alpha.2.** A versão testada está registrada no campo `dshTestedVersion` do [manifesto do plugin principal](packages/live-voice/package.json).
-
 ---
 
 ## ⚡ Comece aqui
 
-Instale no perfil web do DSH:
+**Testado com o DeepSeek Harness v0.2.1-alpha.2.**
+
+Instale o pacote já compilado do npm no perfil web do DSH (sem precisar compilar o código):
 
 ```sh
 npx dsh plugin add --profile web dsh-live-voice
@@ -93,10 +93,10 @@ Os guias técnicos abaixo estão em inglês:
 
 Este monorepo pnpm contém dois plugins instaláveis de forma independente:
 
-- `packages/live-voice`: plugin principal, com código, testes, manifesto e bundles próprios.
+- `packages/live-voice`: plugin principal, com código, testes e manifesto próprios.
 - `packages/live-voice-debugger`: debugger opcional, com código, testes e manifesto próprios.
 
-Execute `pnpm install --frozen-lockfile`, depois `pnpm build` ou `pnpm test` na raiz. Para compilar apenas um plugin, use `pnpm --filter dsh-live-voice build` ou `pnpm --filter dsh-live-voice-debugger build`. A documentação da raiz cobre ambos. O changelog em inglês da raiz é o histórico principal. Os READMEs dos pacotes apontam para esse histórico. Links locais existentes do DSH precisam apontar para os novos diretórios dos pacotes.
+Execute `pnpm install --frozen-lockfile`, depois `pnpm build` ou `pnpm test` na raiz. Para compilar apenas um plugin, use `pnpm --filter dsh-live-voice build` ou `pnpm --filter dsh-live-voice-debugger build`. A documentação da raiz cobre ambos. O changelog em inglês da raiz é o histórico principal. Os READMEs dos pacotes apontam para esse histórico. Os diretórios gerados `packages/*/lib/` são ignorados e nunca entram no Git, nem nas releases. Para usar o plugin, instale os pacotes já compilados do npm, não diretamente do Git. Contribuidores precisam compilar antes de vincular um diretório local de pacote ao DSH; veja o [guia de desenvolvimento](DEVELOPMENT.md) (em inglês).
 
 ## 🤝 Agradecimentos e comunidade
 
