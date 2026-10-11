@@ -244,7 +244,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.speak.autoPlayback.enable': '开启助手自动朗读',
   'dsh-live-voice.speak.autoPlayback.enabled': '自动朗读新的助手消息',
   'dsh-live-voice.speak.autoPlayback.help':
-    '语音对话期间，助手的语句会自动朗读。你说话时会等待，不会播放。',
+    '即使麦克风关闭，助手的新消息也会自动朗读。你说话时会等待，不会播放。',
   'dsh-live-voice.speak.autoPlayback.label': '助手自动朗读',
   'dsh-live-voice.speak.autoPlayback.remainingOne':
     '助手自动朗读：{state} — 剩余 {count} 个语音片段',

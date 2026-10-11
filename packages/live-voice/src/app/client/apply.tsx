@@ -52,6 +52,7 @@ export function apply(ctx) {
   const controllers = new Map();
   const retiring = new Set();
   const preferences = createSettingsClient();
+  let preferencesLoaded = false;
   const settingsControllers = new Set();
   let disposed = false;
   // Voice conversation mode belongs to the plugin, not to a mounted composer.
@@ -262,6 +263,7 @@ export function apply(ctx) {
   }
   const unsubscribePreferences = preferences.subscribe((settings) => {
     if (disposed) return;
+    preferencesLoaded = true;
     meeting.applySettings(settings);
     for (const entry of controllers.values()) {
       if (entry.closed) continue;
@@ -466,6 +468,8 @@ export function apply(ctx) {
         controller.observeMessage(message.id, message.text, {
           complete: message.complete,
           baseline:
+            !preferencesLoaded ||
+            meetingEntry !== entry ||
             forceBaseline ||
             (baseline && (!Number.isFinite(message.time) || message.time < attachedAt)) ||
             historical ||
@@ -474,6 +478,7 @@ export function apply(ctx) {
         observed.add(message.id);
       }
     };
+    entry.baselineChat = () => refresh(true);
     refresh(true);
     entry.unsubscribe = entry.chat.subscribe(() => {
       refresh();
@@ -581,10 +586,8 @@ export function apply(ctx) {
         if (disposed || entry.closed || !entry.refs) return Promise.resolve();
         if (method !== 'speak' && !entry.composers.size) return Promise.resolve();
         if (method === 'startConversation' || method === 'takeMicrophone') {
-          // Re-entering voice mode must not replay visible history or the portion
-          // of a response that streamed while voice mode was off. Consume the
-          // current chat snapshot before admitting new assistant text.
-          refresh(true);
+          // Input mode never resets speech offsets: a partial response may already
+          // be waiting for its stable boundary while the microphone is closed.
           voiceModeActive = true;
         }
         const request = ++entry.request;
@@ -683,6 +686,7 @@ export function apply(ctx) {
       if (!entry || entry.closed || disposed) return;
       if (!input || typeof props.inputActions?.setDraft !== 'function') return;
       if (meetingEntry !== entry) {
+        entry.baselineChat();
         meeting.cancelDelivery();
         meetingEntry = entry;
         entry.controller.setExternalSpeechActivity(sharedSpeechActive);

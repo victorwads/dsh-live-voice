@@ -260,7 +260,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.speak.autoPlayback.enable': 'सहायक की स्वचालित आवाज़ चालू करें',
   'dsh-live-voice.speak.autoPlayback.enabled': 'सहायक के नए संदेश अपने आप पढ़कर सुनाएँ',
   'dsh-live-voice.speak.autoPlayback.help':
-    'वॉइस बातचीत के दौरान सहायक के वाक्यांश अपने आप पढ़कर सुनाए जाते हैं। जब आप बोल रहे हों, तो प्लेबैक प्रतीक्षा करता है।',
+    'सहायक के नए संदेश अपने आप पढ़कर सुनाए जाते हैं, भले ही माइक्रोफ़ोन बंद हो। जब आप बोल रहे हों, तो प्लेबैक प्रतीक्षा करता है।',
   'dsh-live-voice.speak.autoPlayback.label': 'सहायक का स्वचालित वाचन',
   'dsh-live-voice.speak.autoPlayback.remainingOne':
     'सहायक का स्वचालित वाचन: {state} — {count} वाक् खंड शेष है',

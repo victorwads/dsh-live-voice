@@ -18,7 +18,7 @@ function deferred() {
   });
   return { promise, resolve };
 }
-async function fixture(t, { pendingStore = true, realSpeech = false, initialSettings = {} } = {}) {
+async function fixture(t, { pendingStore = true, realSpeech = false, initialSettings = {}, settingsReady } = {}) {
   const dom = new JSDOM(
     '<!doctype html><html><head></head><body><div id="root"></div></body></html>',
     { url: 'http://localhost' },
@@ -50,6 +50,7 @@ async function fixture(t, { pendingStore = true, realSpeech = false, initialSett
   let serverSettings = initialSettings;
   t.mock.method(globalThis, 'fetch', async (url, options = {}) => {
     if (url === '/api/dsh-live-voice/settings') {
+      await settingsReady;
       if (options.method === 'PUT')
         serverSettings = { ...serverSettings, ...JSON.parse(options.body) };
       return Response.json({ ok: true, value: serverSettings });
@@ -566,31 +567,112 @@ test('voice conversation mode follows the composer across chat switches until ex
   );
 });
 
-test('restarting voice conversation baselines visible assistant history before new speech arrives', async (t) => {
+test('automatic speech follows new chat text with mic off and mic start preserves partial offsets', async (t) => {
   const f = await fixture(t);
-  const observed = [];
-  t.mock.method(VoiceCoordinator.prototype, 'observeMessage', function (...args) {
-    observed.push(args);
+  await f.render(h(f.Buttons, f.props('a')));
+  const c = f.controllers[0];
+  const played = [];
+  t.mock.method(c, 'play', async (text) => played.push(text));
+  const store = f.store('a');
+  const publish = async (text, status = 'running') =>
+    act(async () => {
+      store.setSnapshot({
+        nodes: new Map([
+          ...store.getSnapshot().nodes,
+          [
+            'new',
+            {
+              kind: 'assistant-step',
+              visibility: 'visible',
+              data: {
+                turn: 2,
+                step: 0,
+                time: Date.now() + 1,
+                status,
+                blocks: [{ kind: 'text', text }],
+              },
+            },
+          ],
+        ]),
+      });
+    });
+  assert.equal(c.snapshot.conversation, false);
+  await publish('First.\nPartial');
+  assert.deepEqual(played, ['First.']);
+  await act(async () => c.startConversation());
+  await publish('First.\nPartial completed.', 'settled');
+  await publish('First.\nPartial completed.', 'settled');
+  assert.deepEqual(played, ['First.', 'Partial completed.']);
+
+  await act(async () => c.updateSettings({ announceAssistantMessages: false }));
+  await publish('First.\nPartial completed.\nSkipped.');
+  await act(async () => c.updateSettings({ announceAssistantMessages: true }));
+  await publish('First.\nPartial completed.\nSkipped.\nNew tail.', 'settled');
+  assert.deepEqual(played, ['First.', 'Partial completed.', 'New tail.']);
+});
+
+test('automatic speech waits for saved preferences instead of using the provisional default', async (t) => {
+  const loaded = deferred();
+  const f = await fixture(t, {
+    settingsReady: loaded.promise,
+    initialSettings: { announceAssistantMessages: false },
   });
   await f.render(h(f.Buttons, f.props('a')));
   const c = f.controllers[0];
-  observed.length = 0;
-
-  await c.endConversation();
+  const played = [];
+  t.mock.method(c, 'play', async (text) => played.push(text));
   const store = f.store('a');
+  const publish = async (text) =>
+    act(async () =>
+      store.setSnapshot({
+        nodes: new Map([
+          [
+            'reply',
+            {
+              kind: 'assistant-step',
+              visibility: 'visible',
+              data: {
+                turn: 2,
+                step: 0,
+                status: 'settled',
+                time: Date.now() + 1,
+                blocks: [{ kind: 'text', text }],
+              },
+            },
+          ],
+        ]),
+      }),
+    );
+  await publish('Before preferences.');
+  assert.deepEqual(played, []);
+  await act(async () => loaded.resolve());
+  assert.equal(c.snapshot.settings.announceAssistantMessages, false);
+  await publish('Before preferences.\nDisabled.');
+  assert.deepEqual(played, []);
+  await act(async () => c.updateSettings({ announceAssistantMessages: true }));
+  await publish('Before preferences.\nDisabled.\nEnabled.');
+  assert.deepEqual(played, ['Enabled.']);
+});
+
+test('message actions without a committed composer cannot admit automatic speech', async (t) => {
+  const f = await fixture(t);
+  await f.render(h(f.Action, f.props('a')));
+  const c = f.controllers[0];
+  const played = [];
+  t.mock.method(c, 'play', async (text) => played.push(text));
+  const store = f.store('a');
+  const node = store.getSnapshot().nodes.get('one');
   await act(async () => {
-    store.getSnapshot().nodes.get('one').data.blocks[0].text = 'Text streamed while voice was off.';
+    node.data.blocks[0].text = 'Background update.';
     store.listeners.forEach((fn) => fn());
   });
-  observed.length = 0;
-  await c.startConversation();
-
-  assert.deepEqual(
-    observed.map(([, , options]) => options),
-    [{ complete: true, baseline: true }],
-    'restarting voice consumes visible history instead of queuing it for playback',
-  );
-  f.close();
+  await f.render(h(React.Fragment, null, h(f.Action, f.props('a')), h(f.Buttons, f.props('a'))));
+  assert.deepEqual(played, []);
+  await act(async () => {
+    node.data.blocks[0].text += '\nVisible reply.';
+    store.listeners.forEach((fn) => fn());
+  });
+  assert.deepEqual(played, ['Visible reply.']);
 });
 
 test('pagehide and plugin disposal invalidate pending starts and stale controllers', async (t) => {

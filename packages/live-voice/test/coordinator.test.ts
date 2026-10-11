@@ -309,19 +309,52 @@ test('explicit microphone takeover still cancels playback before capture', async
   await f.coordinator.dispose();
 });
 
-test('accepted automatic segments finish after mic mode is closed', async () => {
+test('automatic speech streams once with microphone mode off and never starts capture', async () => {
+  const f = fixture();
+  const c = f.coordinator;
+  c.observeMessage('history', 'Loaded history.', { complete: true, baseline: true });
+  c.observeMessage('stream', 'First');
+  await turn();
+  assert.equal(f.spoken.length, 0, 'wait for a stable paragraph or completion');
+  c.observeMessage('stream', 'First.\nSecond');
+  await turn();
+  assert.deepEqual(
+    f.spoken.map((item) => item.text),
+    ['First.'],
+  );
+  c.observeMessage('stream', 'First.\nSecond.', { complete: true });
+  c.observeMessage('stream', 'First.\nSecond.', { complete: true });
+  f.spoken[0].resolve();
+  await turn();
+  assert.deepEqual(
+    f.spoken.map((item) => item.text),
+    ['First.', 'Second.'],
+  );
+  f.spoken[1].resolve();
+  await turn();
+  assert.equal(c.snapshot.conversation, false);
+  assert.equal(c.snapshot.listening, false);
+  assert.equal(f.sessions.length, 0);
+  assert.ok(!f.log.includes('meter:start'));
+  await c.dispose();
+});
+
+test('automatic speech continues accepting segments after mic mode is closed', async () => {
   const f = fixture({ mode: 'headphones' });
   await f.coordinator.startConversation();
   f.coordinator.observeMessage('stream', 'First.\nSecond.\n');
   await turn();
   await f.coordinator.stopConversationInput();
-  f.coordinator.observeMessage('stream', 'First.\nSecond.\nNot admitted.', { complete: true });
+  f.coordinator.observeMessage('stream', 'First.\nSecond.\nThird.', { complete: true });
   f.spoken[0].resolve();
   await turn();
   assert.equal(f.spoken[1].text, 'Second.');
   f.spoken[1].resolve();
   await turn();
-  assert.equal(f.spoken.length, 2);
+  assert.equal(f.spoken[2].text, 'Third.');
+  f.spoken[2].resolve();
+  await turn();
+  assert.equal(f.spoken.length, 3);
   assert.equal(f.coordinator.snapshot.listening, false);
   await f.coordinator.dispose();
 });

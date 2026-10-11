@@ -1185,7 +1185,6 @@ export class VoiceCoordinator {
     }
     if (
       baseline ||
-      !this.snapshot.conversation ||
       !this.snapshot.settings.announceAssistantMessages ||
       this.suppressed.has(id)
     ) {

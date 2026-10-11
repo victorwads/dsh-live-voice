@@ -274,7 +274,7 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.speak.autoPlayback.enabled':
     'Leer automáticamente los nuevos mensajes del asistente en voz alta',
   'dsh-live-voice.speak.autoPlayback.help':
-    'Durante una conversación por voz, las frases del asistente se leen automáticamente. La reproducción espera mientras hablas.',
+    'Los nuevos mensajes del asistente se leen automáticamente, incluso con el micrófono apagado. La reproducción espera mientras hablas.',
   'dsh-live-voice.speak.autoPlayback.label': 'Lectura automática del asistente',
   'dsh-live-voice.speak.autoPlayback.remainingOne':
     'Lectura automática del asistente: {state} — queda {count} segmento de voz',

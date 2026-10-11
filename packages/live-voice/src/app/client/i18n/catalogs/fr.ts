@@ -280,7 +280,7 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.speak.autoPlayback.enabled':
     'Lire automatiquement les nouveaux messages de l’assistant',
   'dsh-live-voice.speak.autoPlayback.help':
-    'Pendant une conversation vocale, les phrases de l’assistant sont lues automatiquement. La lecture attend pendant que vous parlez.',
+    'Les nouveaux messages de l’assistant sont lus automatiquement, même avec le microphone désactivé. La lecture attend pendant que vous parlez.',
   'dsh-live-voice.speak.autoPlayback.label': 'Lecture automatique de l’assistant',
   'dsh-live-voice.speak.autoPlayback.remainingOne':
     'Lecture automatique de l’assistant : {state} — {count} segment vocal restant',

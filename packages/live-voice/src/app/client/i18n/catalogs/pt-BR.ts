@@ -267,7 +267,7 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.speak.autoPlayback.enabled':
     'Falar automaticamente novas mensagens do assistente',
   'dsh-live-voice.speak.autoPlayback.help':
-    'Durante uma conversa por voz, as frases do assistente são anunciadas automaticamente. A reprodução aguarda enquanto você fala.',
+    'Novas mensagens do assistente são faladas automaticamente, mesmo com o microfone desligado. A reprodução aguarda enquanto você fala.',
   'dsh-live-voice.speak.autoPlayback.label': 'Fala automática do assistente',
   'dsh-live-voice.speak.autoPlayback.remainingOne':
     'Fala automática do assistente: {state} — resta {count} segmento de fala',

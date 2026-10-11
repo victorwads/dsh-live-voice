@@ -11,6 +11,10 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 - Improve the settings layout with consistent expandable sections, clearer organization, compact help tooltips, and voice-command phrase chips. Keep diagnostics in a fixed footer and align the debugger with the DSH theme.
 - Preserve timestamp and voice-command button preferences in the input bars across chat changes and page reloads, with independent settings for microphone and shared audio.
 
+### Fixes
+
+- Make automatic assistant speech work with the microphone off. Keep new streaming segments in order without replaying history or discarding unread partial text when microphone mode starts.
+
 ## [0.5.0] - 2026-10-10
 
 ### Features

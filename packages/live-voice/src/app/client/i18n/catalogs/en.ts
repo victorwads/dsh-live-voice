@@ -258,7 +258,7 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.speak.autoPlayback.enable': 'Enable automatic assistant speech',
   'dsh-live-voice.speak.autoPlayback.enabled': 'Automatically speak new assistant messages',
   'dsh-live-voice.speak.autoPlayback.help':
-    'During a voice conversation, assistant phrases are announced automatically. Playback waits while you are speaking.',
+    'New assistant messages are spoken automatically, even with the microphone off. Playback waits while you are speaking.',
   'dsh-live-voice.speak.autoPlayback.label': 'Automatic assistant speech',
   'dsh-live-voice.speak.autoPlayback.remainingOne':
     'Automatic assistant speech: {state} — {count} speech segment remaining',
