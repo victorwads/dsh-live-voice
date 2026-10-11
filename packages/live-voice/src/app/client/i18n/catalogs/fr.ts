@@ -72,10 +72,13 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.commons.version.link':
     'DSH Voix en direct v{version}. Ouvrir la liste des versions',
   'dsh-live-voice.commons.version.title': 'Informations de version',
+  'dsh-live-voice.meeting.browserLocalUnavailable':
+    'La reconnaissance locale du navigateur est indisponible pour cette langue. Installez son pack linguistique ou désactivez explicitement le traitement uniquement local dans les paramètres pour autoriser le service du navigateur.',
+  'dsh-live-voice.meeting.browserSharedUnsupported':
+    'Ce navigateur ne peut pas reconnaître l’audio partagé en toute sécurité. Choisissez Qwen ou Whisper HTTP pour l’audio partagé.',
   'dsh-live-voice.meeting.failed': 'Échec de reconnaissance.',
   'dsh-live-voice.meeting.help':
     'Sources indépendantes ; envoyez les transcriptions manuellement depuis l’éditeur.',
-  'dsh-live-voice.meeting.httpRequired': 'Utilisez Qwen ou Whisper HTTP en mode réunion.',
   'dsh-live-voice.meeting.inactive': 'Inactif',
   'dsh-live-voice.meeting.listening': 'Écoute',
   'dsh-live-voice.meeting.microphone': 'Microphone',

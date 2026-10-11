@@ -62,7 +62,7 @@ Keep an editable transcript of a meeting as it happens, then ask the DSH assista
 
 ### From discussion to an answer
 
-1. Select **Qwen HTTP** or **Whisper HTTP** recognition in Live Voice Settings.
+1. Select **Browser** recognition when your browser supports shared audio tracks, or use **Qwen HTTP** / **Whisper HTTP**. Browser shared audio is checked at start and never silently falls back to your microphone; local-only processing and language-pack requirements still apply.
 2. Click the shared-audio icon beside the composer microphone and enable audio in the browser sharing dialog. Capture your microphone too when you want to include your own contributions.
 3. Review the transcript in the composer, add a question, and send the relevant context to DSH. For example: *“What decisions have we made so far?”*, *“Help us answer this point”*, or *“Compare this proposal with the project code.”* Answers depend on the transcript you send and the code, spreadsheet, or documents you make available to the agent.
 4. Read or listen to the answer while the meeting continues. For other participants to hear it, your meeting app must separately be configured to share the assistant’s playback audio.

@@ -67,9 +67,12 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.commons.version.label': 'DSH लाइव वॉइस v{version}',
   'dsh-live-voice.commons.version.link': 'DSH लाइव वॉइस v{version}। रिलीज़ सूची खोलें',
   'dsh-live-voice.commons.version.title': 'संस्करण जानकारी',
+  'dsh-live-voice.meeting.browserLocalUnavailable':
+    'इस भाषा के लिए ब्राउज़र की स्थानीय पहचान उपलब्ध नहीं है। भाषा पैक इंस्टॉल करें या ब्राउज़र सेवा की अनुमति देने के लिए सेटिंग्स में केवल स्थानीय प्रोसेसिंग स्पष्ट रूप से बंद करें।',
+  'dsh-live-voice.meeting.browserSharedUnsupported':
+    'यह ब्राउज़र साझा ऑडियो को सुरक्षित रूप से नहीं पहचान सकता। साझा ऑडियो के लिए Qwen या Whisper HTTP चुनें।',
   'dsh-live-voice.meeting.failed': 'पहचान विफल हुई।',
   'dsh-live-voice.meeting.help': 'स्वतंत्र स्रोत; संपादक से लिप्यंतरण स्वयं भेजें।',
-  'dsh-live-voice.meeting.httpRequired': 'बैठक मोड के लिए Qwen या Whisper HTTP उपयोग करें।',
   'dsh-live-voice.meeting.inactive': 'निष्क्रिय',
   'dsh-live-voice.meeting.listening': 'सुन रहा है',
   'dsh-live-voice.meeting.microphone': 'माइक्रोफ़ोन',

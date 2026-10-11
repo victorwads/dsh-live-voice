@@ -63,9 +63,12 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.commons.version.label': 'DSH 实时语音 v{version}',
   'dsh-live-voice.commons.version.link': 'DSH 实时语音 v{version}。打开版本发布列表',
   'dsh-live-voice.commons.version.title': '版本信息',
+  'dsh-live-voice.meeting.browserLocalUnavailable':
+    '此语言的浏览器本地识别不可用。请安装语言包，或在设置中明确关闭仅本地处理，以允许浏览器服务识别。',
+  'dsh-live-voice.meeting.browserSharedUnsupported':
+    '此浏览器无法安全地识别共享音频。请为共享音频选择 Qwen 或 Whisper HTTP。',
   'dsh-live-voice.meeting.failed': '语音识别失败。',
   'dsh-live-voice.meeting.help': '独立来源；请从编辑器手动发送转写内容。',
-  'dsh-live-voice.meeting.httpRequired': '会议模式需要 Qwen 或 Whisper HTTP。',
   'dsh-live-voice.meeting.inactive': '未启用',
   'dsh-live-voice.meeting.listening': '正在聆听',
   'dsh-live-voice.meeting.microphone': '麦克风',

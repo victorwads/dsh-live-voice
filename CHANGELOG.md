@@ -6,12 +6,14 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ## [0.5.x] - Next
 
+### Features
+
+- Recognize shared meeting audio with Browser SpeechRecognition when its external-audio-track API is verified. Preserve local-only/remote-processing preferences and report unsupported browsers without silently capturing microphone audio.
+
 ### Improvements
 
 - Keep every recognition and speaking engine selectable for configuration without automatic provider health checks. Default new speech preferences to macOS Say on macOS hosts and Browser elsewhere; preserve saved choices and show Browser, Qwen, then Whisper recognition.
-
 - Share prepared-segment playback across Browser, macOS Say, and Qwen. Prepare Browser utterances ahead without resuming an idle synthesizer; preserve the configured segment gap and native Web Speech latency limitations.
-
 - Improve the settings layout with consistent expandable sections, clearer organization, compact help tooltips, and voice-command phrase chips. Keep diagnostics in a fixed footer and align the debugger with the DSH theme.
 - Preserve timestamp and voice-command button preferences in the input bars across chat changes and page reloads, with independent settings for microphone and shared audio.
 
@@ -19,7 +21,6 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 - Make automatic assistant speech work with the microphone off. Keep new streaming segments in order without replaying history or discarding unread partial text when microphone mode starts.
 - Stop current or paused speech and close the speech bar when automatic assistant speech is disabled. Clear pending segments without ending microphone input or resuming the cancelled response when speech is enabled again.
-
 - Keep playback paused when synthesis finishes after a pause request instead of starting late audio.
 
 ## [0.5.0] - 2026-10-10

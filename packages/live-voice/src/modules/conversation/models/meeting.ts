@@ -4,7 +4,16 @@ import { VoiceCoordinator } from '../../core/coordinator.ts';
 
 /** Application-owned capture; each source uses the same independent input policy. */
 export class MeetingController {
-  constructor({ composer, settings, createSource, translate, onActivity, onSpeech, stopSpeech, savePreferences }) {
+  constructor({
+    composer,
+    settings,
+    createSource,
+    translate,
+    onActivity,
+    onSpeech,
+    stopSpeech,
+    savePreferences,
+  }) {
     this.composer = composer;
     this.stopSpeech = stopSpeech;
     this.inputs = new Map();
@@ -33,7 +42,9 @@ export class MeetingController {
   };
   patch(source, next) {
     if (source) {
-      const input = this.inputs.get(source) || (next.listening || next.starting || next.error ? this.input(source) : null);
+      const input =
+        this.inputs.get(source) ||
+        (next.listening || next.starting || next.error ? this.input(source) : null);
       const policy = {};
       for (const key of ['starting', 'listening', 'error'])
         if (Object.hasOwn(next, key)) policy[key] = next[key];
@@ -51,11 +62,22 @@ export class MeetingController {
     // Capture remains application-owned. This coordinator owns only source policy;
     // it never acquires the microphone or queues a second assistant playback.
     const input = new VoiceCoordinator({
-      recognition: { stop: async () => {} }, engines: {},
-      meter: { stop: async () => {} }, settings: {
-        ...this.settings(), microphoneEnabled: true,
-        timestampsEnabled: source === 'shared' ? this.settings().sharedTimestampsEnabled : this.settings().timestampsEnabled,
-        ...(source === 'shared' ? { voiceCommandsEnabled: this.settings().sharedVoiceCommandsEnabled ?? this.settings().voiceCommandsEnabled } : {}),
+      recognition: { stop: async () => {} },
+      engines: {},
+      meter: { stop: async () => {} },
+      settings: {
+        ...this.settings(),
+        microphoneEnabled: true,
+        timestampsEnabled:
+          source === 'shared'
+            ? this.settings().sharedTimestampsEnabled
+            : this.settings().timestampsEnabled,
+        ...(source === 'shared'
+          ? {
+              voiceCommandsEnabled:
+                this.settings().sharedVoiceCommandsEnabled ?? this.settings().voiceCommandsEnabled,
+            }
+          : {}),
       },
       composer: {
         getDraft: () => this.composer.getDraft(),
@@ -82,7 +104,8 @@ export class MeetingController {
         patch.sharedVoiceCommandsEnabled = next.voiceCommandsEnabled;
       if (Object.hasOwn(next, 'timestampsEnabled')) {
         this.transcript.setSourceTimestamps(source, next.timestampsEnabled);
-        patch[source === 'shared' ? 'sharedTimestampsEnabled' : 'timestampsEnabled'] = next.timestampsEnabled;
+        patch[source === 'shared' ? 'sharedTimestampsEnabled' : 'timestampsEnabled'] =
+          next.timestampsEnabled;
       }
       if (Object.keys(patch).length) return this.savePreferences?.(input, patch);
     };
@@ -92,7 +115,9 @@ export class MeetingController {
     const updatePolicy = input.updateSettings;
     input.updateSettings = (next) => {
       if (Object.hasOwn(next, 'announceAssistantMessages'))
-        this.composer.updatePlaybackSettings?.({ announceAssistantMessages: next.announceAssistantMessages });
+        this.composer.updatePlaybackSettings?.({
+          announceAssistantMessages: next.announceAssistantMessages,
+        });
       return updatePolicy(next);
     };
     this.transcript.setSourceTimestamps(source, input.getSnapshot().timestamps);
@@ -101,12 +126,15 @@ export class MeetingController {
   }
   applySettings(settings) {
     for (const [source, input] of this.inputs) {
-      const timestamps = source === 'shared' ? settings.sharedTimestampsEnabled : settings.timestampsEnabled;
+      const timestamps =
+        source === 'shared' ? settings.sharedTimestampsEnabled : settings.timestampsEnabled;
       this.transcript.setSourceTimestamps(source, Boolean(timestamps));
       VoiceCoordinator.prototype.updateSettings.call(input, {
-        ...settings, ...this.inputOverrides.get(source),
+        ...settings,
+        ...this.inputOverrides.get(source),
         ...(source === 'shared' && typeof settings.sharedVoiceCommandsEnabled === 'boolean'
-          ? { voiceCommandsEnabled: settings.sharedVoiceCommandsEnabled } : {}),
+          ? { voiceCommandsEnabled: settings.sharedVoiceCommandsEnabled }
+          : {}),
         timestampsEnabled: timestamps ?? input.getSnapshot().timestamps,
         microphoneEnabled: !input.getSnapshot().muted,
       });
@@ -151,7 +179,6 @@ export class MeetingController {
     this.patch(source, { starting: true, error: null });
     try {
       const settings = this.settings();
-      if (settings.recognitionEngine === 'browser') throw new Error(this.t('httpRequired'));
       const { meter, engine } = this.createSource(source, settings);
       const input = this.input(source);
       input.meter = meter;
@@ -161,9 +188,15 @@ export class MeetingController {
       Object.assign(job, { meter, engine });
       if (source === 'shared') meter.provide(request);
       meter.deviceId = settings.inputDeviceId;
-      const capability = await engine.capability();
+      const capability = await engine.capability({
+        lang: settings.recognitionLang,
+        signal: abort.signal,
+      });
       if (!valid()) return;
-      if (!capability.supported) throw new Error(capability.reason || this.t('unavailable'));
+      if (!capability.supported)
+        throw Object.assign(new Error(capability.reason || this.t('unavailable')), {
+          code: capability.code,
+        });
       if (!(await meter.start({ signal: abort.signal }))) {
         if (valid()) await this.stop(source);
         return;
@@ -222,9 +255,11 @@ export class MeetingController {
           error:
             source === 'shared' && error.message === 'No shared audio track was returned.'
               ? this.t('noAudio')
-              : error.message === this.t('httpRequired')
-                ? error.message
-                : this.t('failed'),
+              : error.code === 'external-audio-unsupported'
+                ? this.t('browserSharedUnsupported')
+                : error.code === 'browser-local-unavailable'
+                  ? this.t('browserLocalUnavailable')
+                  : this.t('failed'),
         });
         await this.stop(source);
       }
@@ -245,7 +280,13 @@ export class MeetingController {
     this.jobs.delete(source);
     const input = this.inputs.get(source);
     input?.cancelAutoSend();
-    input?.patch({ conversation: false, starting: false, listening: false, recognizing: false, pendingTranscriptions: 0 });
+    input?.patch({
+      conversation: false,
+      starting: false,
+      listening: false,
+      recognizing: false,
+      pendingTranscriptions: 0,
+    });
     this.onActivity?.(source, false);
     job?.abort.abort();
     this.transcript.setActive(source, false);

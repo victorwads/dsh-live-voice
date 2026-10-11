@@ -60,6 +60,8 @@ The speech bar is separate from the recognition pill, with the same 52px pill ge
 
 All engine options remain configurable independently of runtime health. Configuration-time discovery is local; provider health checks run only on explicit test/use. Say and Qwen share audio prefetch; Browser prepares local utterances but cannot export synthesized audio for caching. The coordinator owns all segment gaps and admission; pause during synthesis holds a launch gate until resume, and Stop aborts it.
 
+Browser shared recognition borrows the captured live audio track only after a protected overload probe; unsupported APIs never silently recognize the microphone instead. Capture owns track cleanup; reset/restart retain the same shared track.
+
 Host-audio captions estimate character position from actual media currentTime/duration. Browser synthesis has no reliable duration, so its fallback estimates 14 characters/second adjusted by rate, starts only on the native start event and excludes paused time. Neither mode claims word alignment. Unknown duration keeps the full segment visible; cancelled/completed operations clear caption state. Session navigation retains the existing lifecycle semantics; this UI change does not implement the future global queue.
 
 ## Append-only dictation contract

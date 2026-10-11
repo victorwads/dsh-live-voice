@@ -58,9 +58,10 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.commons.version.label': string;
   'dsh-live-voice.commons.version.link': string;
   'dsh-live-voice.commons.version.title': string;
+  'dsh-live-voice.meeting.browserLocalUnavailable': string;
+  'dsh-live-voice.meeting.browserSharedUnsupported': string;
   'dsh-live-voice.meeting.failed': string;
   'dsh-live-voice.meeting.help': string;
-  'dsh-live-voice.meeting.httpRequired': string;
   'dsh-live-voice.meeting.inactive': string;
   'dsh-live-voice.meeting.listening': string;
   'dsh-live-voice.meeting.microphone': string;

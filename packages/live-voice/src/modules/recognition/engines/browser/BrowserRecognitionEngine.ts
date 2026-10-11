@@ -1,4 +1,13 @@
 // @ts-nocheck
+import { detectExternalAudioSupport } from './externalAudioSupport.js';
+
+const externalAudioReason =
+  'This browser cannot safely recognize shared audio. Choose Qwen or Whisper HTTP for shared audio.';
+const invalidAudioTrack = () =>
+  Object.assign(new Error('Shared recognition requires a live audio track.'), {
+    name: 'InvalidStateError',
+    code: 'invalid-audio-track',
+  });
 const abortError = () =>
   Object.assign(new Error('Speech recognition was cancelled.'), { name: 'AbortError' });
 const localReason =
@@ -14,7 +23,8 @@ const notify = (callback, value) => {
 /** Web Speech recognition with explicit user-selected local-only or browser-service processing.
  * When local-only plus auto-install is selected, the browser's native language-pack install API is used.
  * All browser globals (including optional setTimeout/clearTimeout) are injectable.
- * capability({lang}?) asynchronously returns {supported, local:true, reason?} without starting capture.
+ * capability({lang,signal}?) reports processing support and, for shared input, externalAudio support.
+ * Shared input borrows the live meter track for the entire session; stop never owns/stops it.
  * start({lang,signal,onResult,onActivity,onError}?) resolves when native start() is accepted,
  * not when permission is granted. Native asynchronous errors go to onError(Error).
  * onResult({interim,final}) contains the current interim string and NEW final text only.
@@ -27,6 +37,8 @@ const notify = (callback, value) => {
 export class BrowserRecognitionEngine {
   constructor({
     globals = globalThis,
+    meter,
+    inputSource = 'microphone',
     lang = 'pt-BR',
     processLocally = true,
     autoInstallLocalPack = true,
@@ -42,6 +54,8 @@ export class BrowserRecognitionEngine {
       throw new RangeError('restartDelayMs must be nonnegative.');
     Object.assign(this, {
       globals,
+      meter,
+      inputSource,
       lang,
       processLocally,
       autoInstallLocalPack,
@@ -66,7 +80,30 @@ export class BrowserRecognitionEngine {
     }
   }
 
-  async capability({ lang = this.lang, processLocally = this.processLocally } = {}) {
+  async capability({ lang = this.lang, processLocally = this.processLocally, signal } = {}) {
+    if (this.inputSource !== 'shared') return this._processingCapability({ lang, processLocally });
+    const Recognition = this.Recognition;
+    const externalAudio =
+      (Recognition && this.externalAudioRecognition === Recognition) ||
+      (await detectExternalAudioSupport(this.globals, { signal }));
+    if (!externalAudio)
+      return {
+        supported: false,
+        local: processLocally,
+        externalAudio: false,
+        code: 'external-audio-unsupported',
+        reason: externalAudioReason,
+      };
+    this.externalAudioRecognition = Recognition;
+    const capability = await this._processingCapability({ lang, processLocally });
+    return {
+      ...capability,
+      externalAudio: true,
+      ...(!capability.supported && processLocally ? { code: 'browser-local-unavailable' } : {}),
+    };
+  }
+
+  async _processingCapability({ lang, processLocally }) {
     try {
       const Recognition = this.Recognition;
       if (typeof Recognition !== 'function') throw new Error();
@@ -134,6 +171,8 @@ export class BrowserRecognitionEngine {
     const session = {
       lang,
       signal,
+      probeAbort: new AbortController(),
+      audioTrack: null,
       onResult,
       onActivity,
       onError,
@@ -154,7 +193,11 @@ export class BrowserRecognitionEngine {
     };
     signal?.addEventListener('abort', session.cancel, { once: true });
     const capability = await Promise.race([
-      this.capability({ lang, processLocally: this.processLocally }),
+      this.capability({
+        lang,
+        processLocally: this.processLocally,
+        signal: session.probeAbort.signal,
+      }),
       cancelled,
     ]);
     if (this.session !== session || signal?.aborted) {
@@ -163,9 +206,11 @@ export class BrowserRecognitionEngine {
     }
     if (!capability.supported) {
       this.stop();
-      throw new Error(capability.reason);
+      throw Object.assign(new Error(capability.reason), { code: capability.code });
     }
     try {
+      if (this.inputSource === 'shared')
+        session.audioTrack = this.meter?.stream?.getAudioTracks?.()[0];
       this._begin(session);
       if (this.session !== session) throw abortError();
     } catch (error) {
@@ -194,6 +239,11 @@ export class BrowserRecognitionEngine {
 
   _begin(session) {
     if (this.session !== session) return;
+    if (
+      this.inputSource === 'shared' &&
+      (session.audioTrack?.kind !== 'audio' || session.audioTrack.readyState !== 'live')
+    )
+      throw invalidAudioTrack();
     const recognition = new this.Recognition();
     if (this.processLocally) {
       if (!('processLocally' in recognition)) throw new Error(localReason);
@@ -286,7 +336,8 @@ export class BrowserRecognitionEngine {
         Math.min(30_000, this.restartDelayMs * 2 ** Math.min(session.restarts - 1, 20)),
       );
     };
-    recognition.start();
+    if (this.inputSource === 'shared') recognition.start(session.audioTrack);
+    else recognition.start();
   }
 
   finish() {
@@ -344,6 +395,7 @@ export class BrowserRecognitionEngine {
     if (!session) return;
     this.session = null;
     session.rejectCancelled(abortError());
+    session.probeAbort.abort();
     session.signal?.removeEventListener('abort', session.cancel);
     if (session.timer !== null)
       (this.globals.clearTimeout ?? globalThis.clearTimeout)(session.timer);

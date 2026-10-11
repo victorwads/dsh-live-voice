@@ -95,22 +95,46 @@ export function apply(ctx) {
     translate: (key) => t('dsh-live-voice.meeting.' + key),
     createSource: (source, settings) => {
       const meter = source === 'shared' ? new SharedAudioMeter() : new MicrophoneMeter();
-      return { meter, engine: recognitionFor(settings, meter) };
+      return { meter, engine: recognitionFor(settings, meter, source) };
     },
   });
   let updateManager;
-  if (typeof ctx.inject === 'function') ctx.inject(['remote', 'remote.pluginManager'], (remoteCtx) => {
-    updateManager = remoteCtx.remote.pluginManager;
-    remoteCtx.effect(() => () => { updateManager = undefined; }, 'dsh-live-voice: release update manager');
-  });
+  if (typeof ctx.inject === 'function')
+    ctx.inject(['remote', 'remote.pluginManager'], (remoteCtx) => {
+      updateManager = remoteCtx.remote.pluginManager;
+      remoteCtx.effect(
+        () => () => {
+          updateManager = undefined;
+        },
+        'dsh-live-voice: release update manager',
+      );
+    });
   const pluginUpdate = createPluginUpdate({
     manager: () => updateManager,
     isBusy: () => {
       const m = meeting.getSnapshot();
-      if (disposed || voiceModeActive || retiring.size || m.active || m.shared.starting || m.shared.pending || m.microphone.starting || m.microphone.pending) return true;
+      if (
+        disposed ||
+        voiceModeActive ||
+        retiring.size ||
+        m.active ||
+        m.shared.starting ||
+        m.shared.pending ||
+        m.microphone.starting ||
+        m.microphone.pending
+      )
+        return true;
       return [...controllers.values()].some((entry) => {
         const s = entry.controller.getSnapshot();
-        return s.starting || s.listening || s.recognizing || s.pendingTranscriptions || s.speaking || s.autoSendPending || s.speechBarVisible;
+        return (
+          s.starting ||
+          s.listening ||
+          s.recognizing ||
+          s.pendingTranscriptions ||
+          s.speaking ||
+          s.autoSendPending ||
+          s.speechBarVisible
+        );
       });
     },
   });
@@ -216,7 +240,7 @@ export function apply(ctx) {
   ]);
   const changesRecognition = (next) =>
     Object.keys(next).some((key) => recognitionSettingKeys.has(key));
-  const recognitionFor = (settings, meter) =>
+  const recognitionFor = (settings, meter, inputSource = 'microphone') =>
     settings.recognitionEngine === 'qwen-http'
       ? new QwenHttpRecognitionEngine({
           meter,
@@ -244,6 +268,7 @@ export function apply(ctx) {
             maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds,
           })
         : new BrowserRecognitionEngine({
+            ...(inputSource === 'shared' ? { meter, inputSource } : {}),
             processLocally: settings.recognitionProcessLocally,
             autoInstallLocalPack: settings.recognitionAutoInstall,
           });

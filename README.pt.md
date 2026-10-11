@@ -64,7 +64,7 @@ Mantenha uma transcrição editável enquanto a reunião acontece e faça pergun
 
 ### Da conversa à resposta
 
-1. Selecione **Qwen HTTP** ou **Whisper HTTP** como reconhecimento de fala nas configurações do Live Voice.
+1. Selecione o reconhecimento **Browser** quando o navegador suportar faixas de áudio compartilhado, ou use **Qwen HTTP** / **Whisper HTTP**. O suporte do Browser é verificado ao iniciar e nunca troca silenciosamente para o microfone; processamento local e pacotes de idioma continuam sujeitos aos requisitos do navegador.
 2. Clique no ícone de áudio compartilhado ao lado do microfone do campo de mensagem e habilite o áudio na janela de compartilhamento do navegador. Ative também seu microfone para incluir suas próprias falas.
 3. Revise a transcrição, acrescente uma pergunta e envie o contexto relevante ao DSH. Por exemplo: *“Quais decisões tomamos até agora?”*, *“Ajude a responder este ponto”* ou *“Compare esta proposta com o código do projeto.”* A resposta depende da transcrição enviada e do código, planilha ou documentos disponibilizados ao agente.
 4. Leia ou ouça a resposta enquanto a reunião continua. Para os outros participantes ouvirem, configure separadamente o aplicativo de reunião para compartilhar o áudio de reprodução do assistente.
