@@ -61,7 +61,7 @@ export class BrowserSpeakingEngine {
     return this._prepare(text, options);
   }
 
-  _prepare(text, { voice, lang = this.lang, rate = 1, signal } = {}) {
+  _prepare(text, { voice, lang = this.lang, rate = 1, volume = 1, signal } = {}) {
     if (signal?.aborted) throw abortError();
     if (typeof text !== 'string') throw new TypeError('Speech text must be a string.');
     if (!Number.isFinite(rate) || rate < 0.1 || rate > 10)
@@ -89,6 +89,7 @@ export class BrowserSpeakingEngine {
       utterance.voice = available;
       utterance.lang = available.lang || lang;
       utterance.rate = rate;
+      utterance.volume = volume;
       return utterance;
     };
     let utterance = createUtterance();
@@ -117,7 +118,7 @@ export class BrowserSpeakingEngine {
     return this.playPrepared(this._prepare(text, options), options);
   }
 
-  async playPrepared(prepared, { signal, onPlaybackStart, retainPrepared = false } = {}) {
+  async playPrepared(prepared, { signal, volume, onPlaybackStart, retainPrepared = false } = {}) {
     this.stop();
     if (signal?.aborted) {
       if (!retainPrepared) prepared?.dispose?.();
@@ -130,6 +131,8 @@ export class BrowserSpeakingEngine {
       return;
     }
     const utterance = prepared.takeUtterance();
+    // Apply current preferences at launch, including retained/prefetched segments.
+    if (volume !== undefined) utterance.volume = volume;
     return new Promise((resolve, reject) => {
       const finish = (error) => {
         if (this.current !== job) return;

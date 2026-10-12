@@ -291,6 +291,8 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.speak.segmentGap.label': string;
   'dsh-live-voice.speak.status.paused': string;
   'dsh-live-voice.speak.status.playing': string;
+  'dsh-live-voice.speak.volume.help': string;
+  'dsh-live-voice.speak.volume.label': string;
 }
 
 // Exclude Translation's open index signature from valid plugin identifiers.

@@ -42,6 +42,29 @@ test('host M4A engine prepares standardized audio and browser owns playback', as
   assert.deepEqual(revoked, ['blob:test']);
 });
 
+test('host speech applies latest playback volume without altering synthesis or pause state', async () => {
+  const audio = new AudioMock();
+  const engine = new HostAudioSpeakingEngine();
+  for (const volume of [0, 0.4, 1]) {
+    const playing = engine.playPrepared({ audio, dispose() {} }, { volume, retainPrepared: true });
+    await Promise.resolve();
+    assert.equal(audio.volume, volume);
+    assert.equal(engine.pause(), true);
+    engine.setVolume(0.2);
+    assert.equal(audio.volume, 0.2);
+    assert.equal(audio.paused, true);
+    await engine.resume();
+    assert.equal(audio.volume, 0.2);
+    audio.dispatchEvent(new Event('ended'));
+    await playing;
+  }
+  const playing = engine.playPrepared({ audio, dispose() {} });
+  await Promise.resolve();
+  assert.equal(audio.volume, 1);
+  audio.dispatchEvent(new Event('ended'));
+  await playing;
+});
+
 test('host audio maps synthesis and browser playback rates independently', async () => {
   const requests = [],
     audio = new AudioMock();

@@ -80,6 +80,90 @@ test('browser preparation is inaudible, validates local voice and supports indep
   await assert.rejects(f.engine.prepare('Never.', { voice: 'remote' }), /available local/);
 });
 
+test('Browser volume reaches native speech, prefetched playback and history replay', async () => {
+  const f = fixture();
+  const prepared = await f.engine.prepare('Reply.', { volume: 0.25 });
+  assert.equal(f.utterances[0].volume, 0.25);
+  for (const volume of [0, 0.6, 1]) {
+    const playing = f.engine.playPrepared(prepared, { volume, retainPrepared: true });
+    assert.equal(f.spoken.at(-1).volume, volume);
+    f.spoken.at(-1).onend();
+    await playing;
+  }
+  prepared.dispose();
+  const playing = f.engine.speak('Default.');
+  assert.equal(f.spoken.at(-1).volume, 1);
+  f.spoken.at(-1).onend();
+  await playing;
+});
+
+test('coordinator uses saved volume without interrupting speech or microphone', async () => {
+  const f = fixture();
+  let inputStops = 0;
+  const c = new VoiceCoordinator({
+    engines: { browser: f.engine },
+    settings: { mode: 'headphones', volume: 0.3, segmentGapMs: 0 },
+    recognition: {
+      stop() {
+        inputStops++;
+      },
+    },
+    meter: {
+      stop() {
+        inputStops++;
+      },
+    },
+    composer: { getDraft: () => '', setDraft() {} },
+  });
+  const playing = c.speak('First.');
+  await turn();
+  assert.equal(f.spoken[0].volume, 0.3);
+  c.updateSettings({ volume: 0 });
+  assert.equal(f.synth.cancels, 0);
+  assert.equal(inputStops, 0);
+  f.spoken[0].onend();
+  await playing;
+  const next = c.speak('Next.');
+  await turn();
+  assert.equal(f.spoken[1].volume, 0);
+  f.spoken[1].onend();
+  await next;
+  await c.dispose();
+});
+
+test('volume changed during pending synthesis is refreshed at launch without resynthesis', async () => {
+  let completePreparation;
+  const volumes = [];
+  let preparations = 0;
+  const engine = {
+    prepare() {
+      preparations++;
+      return new Promise((resolve) => {
+        completePreparation = resolve;
+      });
+    },
+    async playPrepared(_prepared, options) {
+      volumes.push(options.volume);
+    },
+    stop() {},
+  };
+  const c = new VoiceCoordinator({
+    engines: { browser: engine },
+    settings: { mode: 'headphones', volume: 0.8 },
+    recognition: { stop() {} },
+    meter: { stop() {} },
+    composer: { getDraft: () => '', setDraft() {} },
+  });
+  const playing = c.speak('Pending.');
+  await turn();
+  c.updateSettings({ volume: 0 });
+  completePreparation({ dispose() {} });
+  await playing;
+  assert.deepEqual(volumes, [0]);
+  assert.equal(preparations, 1);
+  await c.dispose();
+});
+
 test('browser cannot play a prepared voice that became unavailable', async () => {
   const f = fixture();
   const prepared = await f.engine.prepare('Reply.', { voice: 'local' });

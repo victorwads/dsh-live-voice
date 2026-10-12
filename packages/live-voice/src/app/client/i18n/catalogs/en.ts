@@ -356,6 +356,9 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.speak.segmentGap.label': 'Pause between speech segments',
   'dsh-live-voice.speak.status.paused': 'Speech paused',
   'dsh-live-voice.speak.status.playing': 'Speaking',
+  'dsh-live-voice.speak.volume.help':
+    'Speech playback only: 0% is silent; 100% is full volume (default). Microphone input is unchanged. Browser speech changes apply from the next segment.',
+  'dsh-live-voice.speak.volume.label': 'Speech volume',
 };
 
 export default Object.freeze(en);

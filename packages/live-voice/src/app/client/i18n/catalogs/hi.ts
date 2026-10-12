@@ -360,6 +360,9 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.speak.segmentGap.label': 'बोले गए हिस्सों के बीच विराम',
   'dsh-live-voice.speak.status.paused': 'वाचन ठहरा हुआ है',
   'dsh-live-voice.speak.status.playing': 'पढ़कर सुनाया जा रहा है',
+  'dsh-live-voice.speak.volume.help':
+    'केवल वाणी प्लेबैक: 0% मौन है; 100% पूर्ण आवाज़ है (डिफ़ॉल्ट)। माइक्रोफ़ोन नहीं बदलता। Browser में बदलाव अगले खंड से लागू होते हैं।',
+  'dsh-live-voice.speak.volume.label': 'वाणी की आवाज़ का स्तर',
 };
 
 export default Object.freeze(hi);

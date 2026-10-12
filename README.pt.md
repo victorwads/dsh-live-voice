@@ -52,6 +52,7 @@ Interface traduzida: 🇺🇸 inglês · 🇧🇷 português brasileiro · 🇪�
 - 🎧 **Comportamento adequado à saída de áudio:** escuta controlada ao usar alto-falantes e interrupção com microfone aberto ao usar fones.
 - 🗣️ **Comandos falados:** controle envio, silêncio, limpeza e interrupção da leitura com suas frases configuradas.
 - ⭐ **Barra de fala dedicada:** acompanhe legendas aproximadas com rolagem e destaque, navegue entre trechos e pause, retome ou pare a leitura. O contador mostra o trecho atual e o total. As legendas mostram o texto enviado à síntese, sem prometer sincronização palavra por palavra.
+- 🔊 **Volume da fala:** salve um volume de reprodução de silencioso ao máximo nas configurações de fala para Browser, Say e Qwen, sem alterar o microfone.
 - 🧹 **Leitura adaptada ao Markdown:** remove formatação, anuncia links sem ler URLs inteiras, encurta caminhos e referências de linha, lê listas de tarefas e tabelas e substitui blocos longos de código por um aviso traduzido. Preserva avisos personalizados.
 - ⚡ **Ritmo ajustável:** envio automático após 600 ms, 800 ms ou 1–6 segundos (4 segundos por padrão); resposta do assistente sem atraso adicional por padrão, ou com atraso de 1–4 segundos. Reconhecimento e síntese ainda contribuem para a latência.
 - 🛠️ **Live Voice Debugger opcional:** instale `dsh-live-voice-debugger` separadamente para inspecionar estado e filas na aba Developer das configurações. O plugin principal funciona sem ele.

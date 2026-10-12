@@ -63,6 +63,7 @@ test('all normalized preferences survive a host restart and another browser', as
     sharedSourceName: 'Team',
     inputDeviceId: 'mic',
     outputDeviceId: 'speaker',
+    volume: 0.37,
   });
   await first.save(expected);
   assert.deepEqual(await createSettingsStore(f.path).load(), expected);

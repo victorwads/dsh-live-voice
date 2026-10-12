@@ -43,12 +43,13 @@ test('meeting source names have labelled fields and persist only on blur', async
   assert.equal(document.querySelector('details').open, false);
   for (const [index, name] of [' Alice ', ''].entries()) {
     await act(async () => {
-      inputs[index].focus();
       inputs[index].value = name;
       inputs[index].dispatchEvent(new window.Event('input', { bubbles: true }));
     });
     assert.equal(calls.length, index);
-    await act(async () => inputs[index].blur());
+    await act(async () =>
+      inputs[index].dispatchEvent(new window.FocusEvent('focusout', { bubbles: true })),
+    );
     assert.deepEqual(calls[index], {
       [index === 0 ? 'microphoneSourceName' : 'sharedSourceName']: name,
     });

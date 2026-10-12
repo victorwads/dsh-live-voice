@@ -57,6 +57,27 @@ async function selectEngine(select, engine) {
   });
 }
 
+test('speech engine volume slider changes output preference only for every engine', async (t) => {
+  const { calls, render } = setup(t);
+  for (const engine of ['browser', 'say', 'qwen-http']) {
+    await render({ ...defaultSettings, engine }, {});
+    const slider = document.querySelector('input[type="range"]');
+    assert.equal(slider.getAttribute('aria-label'), 'Speech volume');
+    assert.equal(slider.min, '0');
+    assert.equal(slider.max, '1');
+    assert.equal(slider.step, '0.01');
+    assert.equal(slider.value, '1');
+    for (const volume of [0, 0.42, 1]) {
+      await act(async () => {
+        slider.value = String(volume);
+        slider.dispatchEvent(new window.Event('input', { bubbles: true }));
+      });
+      assert.deepEqual(calls.at(-1), { volume });
+      assert.match(slider.closest('label').textContent, new RegExp(Math.round(volume * 100) + '%'));
+    }
+  }
+});
+
 test('Browser defaults use client language, not UI locale, and never override on discovery', async (t) => {
   const { calls, render, dom } = setup(t);
   Object.defineProperty(dom.window.navigator, 'language', { value: 'pt-BR', configurable: true });

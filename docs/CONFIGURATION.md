@@ -118,6 +118,7 @@ New host preferences default to macOS Say on a macOS DSH host and Browser speech
   - **Qwen3 TTS:** Host-backed neural voice synthesis converted to compact AAC/M4A for browser playback.
 - **Segment preparation and gap:** Say and Qwen share a bounded prefetch window of three future audio segments. Browser uses the same prepared-item lifecycle for local utterances, but Web Speech does not expose pre-synthesized audio or promise gapless playback. The configured segment gap (400 ms by default, zero allowed) still applies; native voice/browser latency may add to it. Pause during preparation prevents late audio from starting.
 - **Output Device:** Route playback to specific speakers or headphones.
+- **Speech Volume:** The slider in **Speech → Engine** saves playback volume from 0% (silent) to 100% (default). It affects Browser speech and browser playback of Say/Qwen audio, not microphone sensitivity or system volume. Say synthesizes an inaudible file on the host; volume is applied when that audio plays in your browser. Host-audio volume changes apply to active or paused playback; Browser speech changes apply from the next segment because native utterances cannot reliably change volume mid-speech. Prepared and replayed segments use the current volume without resynthesizing audio.
 - **Speech Rate:** Adjust reading speed from 0.1x to 3.0x (1.0 is normal).
 - **Code Block Filtering:**
   - Automatically filter out lengthy Markdown code blocks so the assistant doesn't recite syntax line by line.

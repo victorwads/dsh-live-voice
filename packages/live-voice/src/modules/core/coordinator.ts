@@ -135,6 +135,9 @@ export class VoiceCoordinator {
       (key) => Object.hasOwn(next, key) && settings[key] !== previousSettings[key],
     );
     if (speechPreparationChanged) this._cancelSpeechPrefetch();
+    if (settings.volume !== previousSettings.volume) {
+      this.engines[this.snapshot.speechEngine || settings.engine]?.setVolume?.(settings.volume);
+    }
     this.meter.deviceId = settings.inputDeviceId;
     Object.assign(this.recognition, {
       lang: settings.recognitionLang,
@@ -813,6 +816,7 @@ export class VoiceCoordinator {
     const options = {
       voice: this.snapshot.settings.voice || undefined,
       rate: this.snapshot.settings.rate,
+      volume: this.snapshot.settings.volume,
       lang: this.snapshot.settings.lang,
       outputDeviceId: this.snapshot.settings.outputDeviceId,
     };
@@ -1185,6 +1189,7 @@ export class VoiceCoordinator {
         },
         voice: this.snapshot.settings.voice || undefined,
         rate: this.snapshot.settings.rate,
+        volume: this.snapshot.settings.volume,
         outputDeviceId: this.snapshot.settings.outputDeviceId,
         signal: controller.signal,
       };
@@ -1200,6 +1205,7 @@ export class VoiceCoordinator {
         await this._waitSpeechLaunch(controller.signal);
       if (epoch !== this.speechEpoch || this.disposed) return;
       this.speechLaunchPending = false;
+      options.volume = this.snapshot.settings.volume;
       if (queued?.prepared && typeof engine.playPrepared === 'function') {
         const prepared = queued.prepared;
         this.prefetchItems.delete(queued);

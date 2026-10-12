@@ -83,6 +83,19 @@ export function SpeechEngineSettings({
           onChange={(event) => updateSettings({ voice: event.target.value })}
         />
       )}
+      <label>
+        {(speak as any).volume.label()} ({Math.round((settings.volume ?? 1) * 100)}%)
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step={0.01}
+          value={settings.volume ?? 1}
+          aria-label={(speak as any).volume.label()}
+          onInput={(event) => updateSettings({ volume: Number(event.currentTarget.value) })}
+        />
+      </label>
+      <p className="dlv-setting-description">{(speak as any).volume.help()}</p>
       <div className="dlv-field-pair">
         <NumberField
           label={(speak as any).rate.label() + ' (×)'}

@@ -339,6 +339,9 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.speak.segmentGap.label': '语音片段之间的停顿',
   'dsh-live-voice.speak.status.paused': '语音已暂停',
   'dsh-live-voice.speak.status.playing': '正在朗读',
+  'dsh-live-voice.speak.volume.help':
+    '仅调整语音播放：0% 为静音，100% 为最大音量（默认）。不改变麦克风输入。Browser 的更改从下一语音片段生效。',
+  'dsh-live-voice.speak.volume.label': '语音音量',
 };
 
 export default Object.freeze(zh);

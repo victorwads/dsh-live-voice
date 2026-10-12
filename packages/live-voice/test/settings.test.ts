@@ -6,6 +6,19 @@ import {
   defaultSettings,
   voiceDetectionSilenceMs,
 } from '../src/modules/core/settings.ts';
+test('speech volume defaults safely and survives normalized persistence', () => {
+  assert.equal(defaultSettings.volume, 1);
+  for (const volume of [0, 0.37, 1]) {
+    assert.equal(
+      normalizeSettings(JSON.parse(JSON.stringify(normalizeSettings({ volume })))).volume,
+      volume,
+    );
+  }
+  for (const volume of [undefined, null, NaN, Infinity, -0.1, 1.1, '0.5', true]) {
+    assert.equal(normalizeSettings({ volume }).volume, 1);
+  }
+});
+
 test('reported DSH busy-Enter behavior survives normalization and defaults to legacy queue', () => {
   assert.equal(normalizeSettings({}).dshBusyEnterBehavior, 'queue');
   for (const behavior of ['steer', 'queue']) {
@@ -144,6 +157,7 @@ test('valid local options survive normalization', () => {
     outputCodeMaxLines: 9,
     outputCodeNotice: 'See the code above',
     rate: 1.4,
+    volume: 0.6,
     segmentGapMs: 350,
   };
   assert.deepEqual(normalizeSettings(options), options);

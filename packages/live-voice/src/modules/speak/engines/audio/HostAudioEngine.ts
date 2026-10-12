@@ -99,7 +99,7 @@ export class HostAudioSpeakingEngine {
     }
   }
   async playPrepared(prepared, options = {}) {
-    const { signal, outputDeviceId = '', rate = 1, retainPrepared = false } = options;
+    const { signal, outputDeviceId = '', rate = 1, volume = 1, retainPrepared = false } = options;
     const playbackRate = this.playbackRate(rate);
     if (!prepared?.audio) throw new TypeError('Prepared speech audio is required.');
     await this.stop();
@@ -109,6 +109,7 @@ export class HostAudioSpeakingEngine {
     const audio = operation.audio;
     if (retainPrepared) audio.currentTime = 0;
     audio.playbackRate = playbackRate;
+    audio.volume = volume;
     try {
       if (outputDeviceId && typeof audio.setSinkId === 'function')
         await audio.setSinkId(outputDeviceId);
@@ -161,6 +162,9 @@ export class HostAudioSpeakingEngine {
       prepared.dispose();
       throw error;
     }
+  }
+  setVolume(volume) {
+    if (this.current?.audio) this.current.audio.volume = volume;
   }
   async stop() {
     const operation = this.current;

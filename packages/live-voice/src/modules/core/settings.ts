@@ -82,6 +82,7 @@ export const defaultSettings = Object.freeze({
   outputCodeMaxLines: 5,
   outputCodeNotice: resolveCodeNotice(undefined, 'pt-BR'),
   rate: 1,
+  volume: 1,
   segmentGapMs: 400,
 });
 /** Source names are single-line labels, not transcript markup. Empty/invalid values restore defaults. */
@@ -300,6 +301,10 @@ export function normalizeSettings(value) {
         ? resolveCodeNotice(source.outputCodeNotice, source.lang || defaultSettings.lang)
         : resolveCodeNotice(defaultSettings.outputCodeNotice, source.lang || defaultSettings.lang),
     rate: Number.isFinite(source.rate) && source.rate >= 0.1 && source.rate <= 3 ? source.rate : 1,
+    volume:
+      Number.isFinite(source.volume) && source.volume >= 0 && source.volume <= 1
+        ? source.volume
+        : 1,
     segmentGapMs:
       Number.isFinite(source.segmentGapMs) &&
       source.segmentGapMs >= 0 &&

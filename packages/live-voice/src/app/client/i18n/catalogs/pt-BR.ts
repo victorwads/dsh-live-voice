@@ -369,6 +369,9 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.speak.segmentGap.label': 'Pausa entre trechos de fala',
   'dsh-live-voice.speak.status.paused': 'Fala pausada',
   'dsh-live-voice.speak.status.playing': 'Falando',
+  'dsh-live-voice.speak.volume.help':
+    'Somente reprodução da fala: 0% é silencioso; 100% é o volume máximo (padrão). O microfone não é alterado. No Browser, mudanças valem a partir do próximo trecho.',
+  'dsh-live-voice.speak.volume.label': 'Volume da fala',
 };
 
 export default Object.freeze(ptBR);

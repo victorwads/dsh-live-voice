@@ -8,6 +8,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ### Features
 
+- Set a saved speech playback volume from silent to full volume in the Speech engine settings, independently of microphone input, for Browser speech, macOS Say, and Qwen.
 - Customize microphone and shared-audio source names in Live Voice Settings for new meeting transcript blocks. Keep Me / Them as defaults and preserve existing transcript text.
 
 ### Improvements
