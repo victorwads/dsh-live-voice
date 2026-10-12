@@ -6,6 +6,8 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ## [0.5.x] - Next
 
+## [0.5.2] - 2026-10-12
+
 ### Features
 
 - Set a saved speech playback volume from silent to full volume in the Speech engine settings, independently of microphone input, for Browser speech, macOS Say, and Qwen.
