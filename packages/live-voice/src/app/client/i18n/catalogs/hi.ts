@@ -249,6 +249,11 @@ const hi: LiveVoiceTranslation = {
     'सर्वर से लाइव वॉइस सेटिंग लोड नहीं हो सकीं। फिर प्रयास करने के लिए पेज रीलोड करें।',
   'dsh-live-voice.settings.persistence.saveError':
     'सर्वर पर लाइव वॉइस सेटिंग सेव नहीं हो सकीं। फिर प्रयास करें।',
+  'dsh-live-voice.settings.sourceNames.help':
+    'जब दोनों स्रोत रिकॉर्ड करते हैं, ये नाम नए ट्रांसक्रिप्ट ब्लॉक को चिह्नित करते हैं, अलग-अलग प्रतिभागियों को नहीं। फ़ील्ड छोड़ने पर सहेजे जाते हैं; खाली रखने पर Me / Them वापस आते हैं। अधिकतम 80 अक्षर। मौजूदा पाठ नहीं बदलता।',
+  'dsh-live-voice.settings.sourceNames.microphone': 'माइक्रोफ़ोन स्रोत का नाम',
+  'dsh-live-voice.settings.sourceNames.shared': 'साझा ऑडियो स्रोत का नाम',
+  'dsh-live-voice.settings.sourceNames.title': 'बैठक स्रोतों के नाम',
   'dsh-live-voice.settings.tabs.conversation': 'बातचीत',
   'dsh-live-voice.settings.tabs.recognition': 'वाक् पहचान',
   'dsh-live-voice.settings.tabs.speak': 'वाचन',

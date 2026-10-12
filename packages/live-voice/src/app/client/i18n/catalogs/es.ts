@@ -262,6 +262,11 @@ const es: LiveVoiceTranslation = {
     'No se pudieron cargar los ajustes de Voz en vivo del servidor. Recarga para volver a intentarlo.',
   'dsh-live-voice.settings.persistence.saveError':
     'No se pudieron guardar los ajustes de Voz en vivo en el servidor. Inténtalo de nuevo.',
+  'dsh-live-voice.settings.sourceNames.help':
+    'Cuando ambas fuentes capturan, estos nombres etiquetan nuevos bloques de transcripción, no participantes individuales. Se guardan al salir del campo; vacío restaura Me / Them. Máximo 80 caracteres. El texto existente no cambia.',
+  'dsh-live-voice.settings.sourceNames.microphone': 'Nombre de la fuente del micrófono',
+  'dsh-live-voice.settings.sourceNames.shared': 'Nombre de la fuente del audio compartido',
+  'dsh-live-voice.settings.sourceNames.title': 'Nombres de fuentes de la reunión',
   'dsh-live-voice.settings.tabs.conversation': 'Conversación',
   'dsh-live-voice.settings.tabs.recognition': 'Reconocimiento de voz',
   'dsh-live-voice.settings.tabs.speak': 'Síntesis de voz',

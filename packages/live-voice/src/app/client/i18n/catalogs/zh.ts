@@ -234,6 +234,11 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.settings.layout.voice': '声音与引擎',
   'dsh-live-voice.settings.persistence.loadError': '无法从服务器加载 实时语音 设置。请刷新后重试。',
   'dsh-live-voice.settings.persistence.saveError': '无法在服务器上保存 实时语音 设置。请重试。',
+  'dsh-live-voice.settings.sourceNames.help':
+    '同时采集两个音源时，这些名称标记新的转录段落，而非各个参会者。离开输入框时保存；留空恢复 Me / Them。最多 80 个字符。现有文本不会改变。',
+  'dsh-live-voice.settings.sourceNames.microphone': '麦克风音源名称',
+  'dsh-live-voice.settings.sourceNames.shared': '共享音频音源名称',
+  'dsh-live-voice.settings.sourceNames.title': '会议音源名称',
   'dsh-live-voice.settings.tabs.conversation': '对话',
   'dsh-live-voice.settings.tabs.recognition': '语音识别',
   'dsh-live-voice.settings.tabs.speak': '语音合成',

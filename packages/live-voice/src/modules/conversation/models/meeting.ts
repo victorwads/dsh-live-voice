@@ -24,7 +24,7 @@ export class MeetingController {
     this.t = translate;
     this.onActivity = onActivity;
     this.onSpeech = onSpeech;
-    this.transcript = new MeetingTranscript(composer);
+    this.transcript = new MeetingTranscript(composer, settings);
     this.jobs = new Map();
     this.generations = new Map();
     this.listeners = new Set();

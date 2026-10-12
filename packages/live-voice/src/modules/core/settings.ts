@@ -69,6 +69,8 @@ export const defaultSettings = Object.freeze({
   sharedVoiceCommandsEnabled: true,
   timestampsEnabled: false,
   sharedTimestampsEnabled: false,
+  microphoneSourceName: 'Me',
+  sharedSourceName: 'Them',
   voiceCommandSend: 'send, send message',
   voiceCommandQueue: 'queue, queue message',
   voiceCommandEnd: 'end, end conversation',
@@ -82,6 +84,14 @@ export const defaultSettings = Object.freeze({
   rate: 1,
   segmentGapMs: 400,
 });
+/** Source names are single-line labels, not transcript markup. Empty/invalid values restore defaults. */
+export const normalizeSourceName = (value, fallback) => {
+  if (typeof value !== 'string' || /[\u0000-\u001f\u007f-\u009f\u2028\u2029]/u.test(value))
+    return fallback;
+  const name = value.trim();
+  return name && name.length <= 80 ? name : fallback;
+};
+
 const normalizeCommandPhrases = (value, fallback) =>
   typeof value === 'string' && value.length <= 1000 && !value.includes('\0')
     ? value
@@ -125,7 +135,8 @@ export function normalizeSettings(value) {
         ? source.recognitionAutoInstall
         : defaultSettings.recognitionAutoInstall,
     voiceDetectionEngine: ['energy', 'silero'].includes(source.voiceDetectionEngine)
-      ? source.voiceDetectionEngine : defaultSettings.voiceDetectionEngine,
+      ? source.voiceDetectionEngine
+      : defaultSettings.voiceDetectionEngine,
     voiceDetectionPreset:
       source.voiceDetectionPreset === 'custom' ||
       Object.hasOwn(voiceDetectionPresets, source.voiceDetectionPreset)
@@ -225,8 +236,18 @@ export function normalizeSettings(value) {
       typeof source.voiceCommandsEnabled === 'boolean'
         ? source.voiceCommandsEnabled
         : defaultSettings.voiceCommandsEnabled,
-    timestampsEnabled: typeof source.timestampsEnabled === 'boolean' ? source.timestampsEnabled : false,
-    sharedTimestampsEnabled: typeof source.sharedTimestampsEnabled === 'boolean' ? source.sharedTimestampsEnabled : false,
+    microphoneSourceName: normalizeSourceName(
+      source.microphoneSourceName,
+      defaultSettings.microphoneSourceName,
+    ),
+    sharedSourceName: normalizeSourceName(
+      source.sharedSourceName,
+      defaultSettings.sharedSourceName,
+    ),
+    timestampsEnabled:
+      typeof source.timestampsEnabled === 'boolean' ? source.timestampsEnabled : false,
+    sharedTimestampsEnabled:
+      typeof source.sharedTimestampsEnabled === 'boolean' ? source.sharedTimestampsEnabled : false,
     sharedVoiceCommandsEnabled:
       typeof source.sharedVoiceCommandsEnabled === 'boolean'
         ? source.sharedVoiceCommandsEnabled

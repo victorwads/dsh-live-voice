@@ -72,7 +72,7 @@ Mantenha uma transcrição editável enquanto a reunião acontece e faça pergun
 ### Você controla o que é capturado e enviado
 
 - O áudio compartilhado e o microfone têm controles separados e podem ser desligados independentemente. Comandos de voz e respostas faladas continuam disponíveis.
-- Com as duas fontes ativas, mudanças de fonte introduzem `Me:` ou `Them:`; trechos consecutivos seguem em novas linhas. Essas marcações distinguem **fontes de áudio, não cada participante da reunião**.
+- Com as duas fontes ativas, mudanças de fonte introduzem `Me:` ou `Them:`; trechos consecutivos seguem em novas linhas. Personalize os nomes do microfone e do áudio compartilhado em **Configurações do Live Voice → Reconhecimento de voz → Modo reunião** (padrões: `Me` / `Them`). Os nomes são salvos ao sair do campo; vazio restaura o padrão, com máximo de 80 caracteres em uma linha. As mudanças valem para novos blocos, sem reescrever o texto existente. Essas marcações distinguem **fontes de áudio, não cada participante da reunião**.
 - O botão de relógio **Timestamp**, desativado por padrão, pode acrescentar `[YYYY/MM/DD HH:MM:SS]` aos novos blocos de fonte. Usa a hora local do início do trecho, não a conclusão do reconhecimento, e não reescreve texto anterior.
 - As barras do microfone e do áudio compartilhado são espelhadas: o ícone inicial alterna **Ouvindo / Ignorando**, com controles independentes de comandos exatos, timestamps e Manual / Fila / Guiar. Ambas têm a mesma contagem regressiva e cancelamento. Ignorar não encerra a captura; pare o compartilhamento pelo botão de áudio compartilhado no campo de mensagem. Comandos habilitados e envio automático seguem os controles de cada fonte; revise os comandos antes de habilitá-los para participantes.
 

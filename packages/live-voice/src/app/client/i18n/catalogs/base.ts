@@ -199,6 +199,10 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.settings.layout.voice': string;
   'dsh-live-voice.settings.persistence.loadError': string;
   'dsh-live-voice.settings.persistence.saveError': string;
+  'dsh-live-voice.settings.sourceNames.help': string;
+  'dsh-live-voice.settings.sourceNames.microphone': string;
+  'dsh-live-voice.settings.sourceNames.shared': string;
+  'dsh-live-voice.settings.sourceNames.title': string;
   'dsh-live-voice.settings.tabs.conversation': string;
   'dsh-live-voice.settings.tabs.recognition': string;
   'dsh-live-voice.settings.tabs.speak': string;

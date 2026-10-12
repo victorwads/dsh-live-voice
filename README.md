@@ -70,7 +70,7 @@ Keep an editable transcript of a meeting as it happens, then ask the DSH assista
 ### You control what is captured and sent
 
 - Shared audio and your microphone have separate controls and can be stopped independently. Normal voice commands and assistant speech remain available.
-- With both sources capturing, source changes introduce `Me:` or `Them:`; consecutive chunks continue on new lines. These labels distinguish audio sources, **not individual meeting participants**.
+- With both sources capturing, source changes introduce `Me:` or `Them:`; consecutive chunks continue on new lines. Customize the microphone and shared-audio names in **Live Voice Settings → Speech recognition → Meeting mode** (defaults: `Me` / `Them`). Names are saved when you leave the field; blank restores the default, with a maximum of 80 single-line characters. Changes apply to new source blocks without rewriting existing text. These labels distinguish audio sources, **not individual meeting participants**.
 - An optional **Timestamp** clock toggle adds local timestamps such as `[YYYY/MM/DD HH:MM:SS]` to new source blocks, using chunk onset rather than recognition completion. It is off by default and never rewrites earlier text.
 - Microphone and shared-audio bars mirror each other: the leading icon toggles **Listening / Ignoring**, with independent exact-command, timestamp, and Manual / Queue / Steer controls. Both use the same delivery countdown and cancel action. Ignoring does not end capture; stop sharing with the shared-audio button in the composer. Enabled commands and automatic delivery follow each source’s controls; review commands before enabling them for participant audio.
 

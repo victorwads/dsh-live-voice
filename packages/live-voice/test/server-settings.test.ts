@@ -59,6 +59,8 @@ test('all normalized preferences survive a host restart and another browser', as
     voiceDetectionCustomSilenceMs: 350,
     assistantSpeechDelaySeconds: 3,
     autoSendDelaySeconds: 6,
+    microphoneSourceName: 'Alice',
+    sharedSourceName: 'Team',
     inputDeviceId: 'mic',
     outputDeviceId: 'speaker',
   });

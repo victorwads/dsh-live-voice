@@ -131,6 +131,8 @@ test('valid local options survive normalization', () => {
     sharedVoiceCommandsEnabled: true,
     timestampsEnabled: true,
     sharedTimestampsEnabled: false,
+    microphoneSourceName: 'Me',
+    sharedSourceName: 'Them',
     voiceCommandSend: 'dispatch now',
     voiceCommandQueue: 'save for later',
     voiceCommandEnd: 'finish chat, close chat',
@@ -228,4 +230,17 @@ test('assistant response delay defaults to zero and accepts only zero through fo
       normalizeSettings({ assistantSpeechDelaySeconds: value }).assistantSpeechDelaySeconds,
       0,
     );
+});
+
+test('meeting source names normalize safely', () => {
+  assert.equal(
+    normalizeSettings({ microphoneSourceName: '  Ana Silva  ' }).microphoneSourceName,
+    'Ana Silva',
+  );
+  assert.equal(normalizeSettings({ sharedSourceName: '团队' }).sharedSourceName, '团队');
+  assert.equal(normalizeSettings({ sharedSourceName: 'x'.repeat(80) }).sharedSourceName.length, 80);
+  for (const value of [null, 42, '', '   ', 'x'.repeat(81), 'a\nb', 'a\0b', 'a\tb', 'a\u2028b']) {
+    assert.equal(normalizeSettings({ microphoneSourceName: value }).microphoneSourceName, 'Me');
+    assert.equal(normalizeSettings({ sharedSourceName: value }).sharedSourceName, 'Them');
+  }
 });

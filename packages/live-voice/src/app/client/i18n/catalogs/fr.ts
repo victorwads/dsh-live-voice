@@ -268,6 +268,11 @@ const fr: LiveVoiceTranslation = {
     'Impossible de charger les paramètres Voix en direct depuis le serveur. Rechargez pour réessayer.',
   'dsh-live-voice.settings.persistence.saveError':
     'Impossible de sauvegarder les paramètres Voix en direct sur le serveur. Réessayez.',
+  'dsh-live-voice.settings.sourceNames.help':
+    'Lorsque les deux sources capturent, ces noms identifient les nouveaux blocs de transcription, pas les participants individuels. Enregistrés en quittant le champ ; vide rétablit Me / Them. Maximum 80 caractères. Le texte existant reste inchangé.',
+  'dsh-live-voice.settings.sourceNames.microphone': 'Nom de la source microphone',
+  'dsh-live-voice.settings.sourceNames.shared': 'Nom de la source audio partagé',
+  'dsh-live-voice.settings.sourceNames.title': 'Noms des sources de réunion',
   'dsh-live-voice.settings.tabs.conversation': 'Conversation',
   'dsh-live-voice.settings.tabs.recognition': 'Reconnaissance vocale',
   'dsh-live-voice.settings.tabs.speak': 'Synthèse vocale',

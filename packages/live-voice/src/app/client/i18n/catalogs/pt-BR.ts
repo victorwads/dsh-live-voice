@@ -255,6 +255,11 @@ const ptBR: LiveVoiceTranslation = {
     'Não foi possível carregar as configurações da Voz ao Vivo do servidor. Recarregue para tentar novamente.',
   'dsh-live-voice.settings.persistence.saveError':
     'Não foi possível salvar as configurações da Voz ao Vivo no servidor. Tente novamente.',
+  'dsh-live-voice.settings.sourceNames.help':
+    'Quando as duas fontes capturam, estes nomes identificam novos blocos da transcrição, não participantes individuais. Salvos ao sair do campo; vazio restaura Me / Them. Máximo de 80 caracteres. O texto existente não muda.',
+  'dsh-live-voice.settings.sourceNames.microphone': 'Nome da fonte do microfone',
+  'dsh-live-voice.settings.sourceNames.shared': 'Nome da fonte do áudio compartilhado',
+  'dsh-live-voice.settings.sourceNames.title': 'Nomes das fontes da reunião',
   'dsh-live-voice.settings.tabs.conversation': 'Conversa',
   'dsh-live-voice.settings.tabs.recognition': 'Reconhecimento de voz',
   'dsh-live-voice.settings.tabs.speak': 'Fala',

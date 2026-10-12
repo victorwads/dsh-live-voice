@@ -1,3 +1,5 @@
+import { defaultSettings, normalizeSourceName } from '../../core/settings.js';
+
 export type MeetingSource = 'microphone' | 'shared';
 
 /** One composer writer; independent recognizers deliver final chunks in arrival order. */
@@ -16,7 +18,11 @@ export class MeetingTranscript {
     this.timestamps = enabled;
     this.last = null;
   }
-  constructor(private composer: { getDraft(): string; setDraft(text: string): void }) {}
+  constructor(
+    private composer: { getDraft(): string; setDraft(text: string): void },
+    private settings: () => { microphoneSourceName?: string; sharedSourceName?: string } = () =>
+      defaultSettings,
+  ) {}
   setActive(source: MeetingSource, enabled: boolean) {
     if (enabled) this.active.add(source);
     else this.active.delete(source);
@@ -48,7 +54,9 @@ export class MeetingTranscript {
           pad(date.getSeconds()) +
           '] '
         : '';
-    const prefix = changed ? stamp + (labelled ? (source === 'microphone' ? 'Me: ' : 'Them: ') : '') : '';
+    const key = source === 'microphone' ? 'microphoneSourceName' : 'sharedSourceName';
+    const name = normalizeSourceName(this.settings()[key], defaultSettings[key]);
+    const prefix = changed ? stamp + (labelled ? name + ': ' : '') : '';
     const separator = draft ? (changed ? '\n\n' : '\n') : '';
     const next = draft + separator + prefix + chunk;
     this.composer.setDraft(next);

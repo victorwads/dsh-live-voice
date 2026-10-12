@@ -247,6 +247,11 @@ const en: LiveVoiceTranslation = {
     'Could not load Live Voice settings from the server. Reload to try again.',
   'dsh-live-voice.settings.persistence.saveError':
     'Could not save Live Voice settings on the server. Please try again.',
+  'dsh-live-voice.settings.sourceNames.help':
+    'When both sources capture, these names label new transcript blocks, not individual participants. Saved on blur; blank restores Me / Them. Maximum 80 characters. Existing text is unchanged.',
+  'dsh-live-voice.settings.sourceNames.microphone': 'Microphone source name',
+  'dsh-live-voice.settings.sourceNames.shared': 'Shared-audio source name',
+  'dsh-live-voice.settings.sourceNames.title': 'Meeting source names',
   'dsh-live-voice.settings.tabs.conversation': 'Conversation',
   'dsh-live-voice.settings.tabs.recognition': 'Speech recognition',
   'dsh-live-voice.settings.tabs.speak': 'Speech',

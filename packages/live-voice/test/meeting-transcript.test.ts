@@ -54,3 +54,34 @@ test('timestamps use local chunk onset on source changes, default off, without r
   transcript.append('shared', 'No more timestamps', onset);
   assert.ok(draft.endsWith('\n\nThem: No more timestamps'));
 });
+
+test('custom source names affect new blocks without rewriting existing text', () => {
+  let draft = '';
+  let settings = { microphoneSourceName: 'Alice', sharedSourceName: '团队' };
+  const transcript = new MeetingTranscript(
+    {
+      getDraft: () => draft,
+      setDraft: (text) => {
+        draft = text;
+      },
+    },
+    () => settings,
+  );
+  transcript.setActive('microphone', true);
+  transcript.append('microphone', 'Solo');
+  assert.equal(draft, 'Solo');
+  transcript.setActive('shared', true);
+  transcript.append('microphone', 'First');
+  transcript.append('shared', 'Other');
+  settings = { microphoneSourceName: 'Bob', sharedSourceName: 'Team' };
+  transcript.append('shared', 'Continuation');
+  assert.equal(draft, 'Solo\n\nAlice: First\n\n团队: Other\nContinuation');
+  transcript.setTimestamps(true);
+  const onset = new Date(2026, 9, 7, 5, 43, 25).getTime();
+  transcript.append('shared', 'New block', onset);
+  assert.ok(draft.endsWith('\n\n[2026/10/07 05:43:25] Team: New block'));
+  draft = 'Manual edit';
+  transcript.setTimestamps(false);
+  transcript.append('microphone', 'After edit');
+  assert.equal(draft, 'Manual edit\n\nBob: After edit');
+});

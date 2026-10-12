@@ -6,6 +6,10 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ## [0.5.x] - Next
 
+### Features
+
+- Customize microphone and shared-audio source names in Live Voice Settings for new meeting transcript blocks. Keep Me / Them as defaults and preserve existing transcript text.
+
 ### Improvements
 
 - Improve Browser speech voice selection with language groups, Natural voices first within each group, and a localized default label on the voice preselected when switching to Browser. Preserve manual choices when the voice list refreshes.
