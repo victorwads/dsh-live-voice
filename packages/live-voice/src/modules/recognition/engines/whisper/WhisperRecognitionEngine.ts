@@ -109,7 +109,20 @@ export class WhisperHttpRecognitionEngine {
     if (signal?.aborted) throw abortError();
     const context = this.meter?.context,
       source = this.meter?.source;
-    const silero = this.voiceDetectionEngine === 'silero' && (await this.vadAvailable());
+    const silero = this.voiceDetectionEngine === 'silero';
+    if (silero) {
+      let available = false;
+      try {
+        available = await this.vadAvailable();
+      } catch {}
+      if (signal?.aborted || this.startGeneration !== startGeneration) throw abortError();
+      if (!available) {
+        const error = Object.assign(new Error('Silero VAD assets are unavailable.'), {
+          code: 'unavailable',
+        });
+        throw new Error(this.vadErrorMessage(error));
+      }
+    }
     if (signal?.aborted || this.startGeneration !== startGeneration) throw abortError();
     if (!context || !source || (!silero && typeof context.createScriptProcessor !== 'function'))
       throw new Error('This browser cannot capture PCM audio for Whisper HTTP.');

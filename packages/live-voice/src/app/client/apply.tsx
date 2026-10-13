@@ -250,7 +250,11 @@ export function apply(ctx) {
           vadErrorMessage: (error) =>
             t(
               'dsh-live-voice.recognition.silero.error.' +
-                (error?.code === 'overloaded' ? 'overloaded' : 'failed'),
+                (error?.code === 'unavailable'
+                  ? 'unavailable'
+                  : error?.code === 'overloaded'
+                    ? 'overloaded'
+                    : 'failed'),
             ),
           voiceDetectionEngine: settings.voiceDetectionEngine,
           voiceDetectionPreset: settings.voiceDetectionPreset,
@@ -263,7 +267,11 @@ export function apply(ctx) {
             vadErrorMessage: (error) =>
               t(
                 'dsh-live-voice.recognition.silero.error.' +
-                  (error?.code === 'overloaded' ? 'overloaded' : 'failed'),
+                  (error?.code === 'unavailable'
+                    ? 'unavailable'
+                    : error?.code === 'overloaded'
+                      ? 'overloaded'
+                      : 'failed'),
               ),
             voiceDetectionEngine: settings.voiceDetectionEngine,
             voiceDetectionPreset: settings.voiceDetectionPreset,

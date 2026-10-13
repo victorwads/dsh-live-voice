@@ -10,6 +10,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 - Prevent missing speech endings when earlier transcriptions finish or the assistant starts speaking.
 - Keep the end of your recording when releasing Hold-to-Talk.
+- Show an error if selected Silero voice detection cannot load, instead of silently switching detectors.
 
 ## [0.5.2] - 2026-10-12
 

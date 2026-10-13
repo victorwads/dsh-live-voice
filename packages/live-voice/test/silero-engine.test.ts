@@ -3,6 +3,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { WhisperHttpRecognitionEngine } from '../src/modules/recognition/engines/whisper/WhisperRecognitionEngine.ts';
 import { QwenHttpRecognitionEngine } from '../src/modules/recognition/engines/qwen/QwenRecognitionEngine.ts';
+import { VoiceCoordinator } from '../src/modules/core/coordinator.ts';
+import { sileroVadAvailable } from '../src/modules/recognition/vad/assets.ts';
 
 function harness(Engine = WhisperHttpRecognitionEngine, mode = 'silero') {
   const requests = [],
@@ -143,9 +145,12 @@ test('stopping one source does not affect the other and obsolete callbacks canno
 test('stop during asset check cannot resurrect capture', async () => {
   const h = harness();
   let resolve;
-  h.engine.vadAvailable = () => new Promise(r => { resolve = r; });
+  h.engine.vadAvailable = () =>
+    new Promise((r) => {
+      resolve = r;
+    });
   const starting = h.start();
-  await new Promise(r => setImmediate(r));
+  await new Promise((r) => setImmediate(r));
   await h.engine.stop();
   resolve(true);
   await assert.rejects(starting, { name: 'AbortError' });
@@ -153,15 +158,127 @@ test('stop during asset check cannot resurrect capture', async () => {
   assert.equal(h.engine.session, null);
 });
 
-test('saved Silero preference uses energy when npm assets are absent', async () => {
-  const h = harness();
-  h.engine.vadAvailable = async () => false;
-  await h.start();
-  assert.equal(h.engine.session.detector, 'energy');
-  assert.equal(h.counts().factoryCalls, 0);
-  assert.equal(h.errors.length, 0);
-  await h.engine.stop();
-});
+for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) {
+  for (const [reason, check] of [
+    ['missing assets', async () => false],
+    [
+      '404 versioned route',
+      () => sileroVadAvailable(async () => new Response('not found', { status: 404 })),
+    ],
+    [
+      'network failure',
+      () =>
+        sileroVadAvailable(async () => {
+          throw new Error('connection lost');
+        }),
+    ],
+    ['malformed response', () => sileroVadAvailable(async () => new Response('invalid json'))],
+    [
+      'throwing availability probe',
+      async () => {
+        throw new Error('probe failed');
+      },
+    ],
+  ]) {
+    test(Engine.name + ': configured Silero fails closed on ' + reason, async () => {
+      const h = harness(Engine);
+      h.engine.vadAvailable = check;
+      h.engine.vadErrorMessage = (e) =>
+        e.code === 'unavailable' ? 'localized Silero unavailable' : 'localized Silero failed';
+      await assert.rejects(h.start(), /localized Silero unavailable/);
+      assert.equal(h.engine.session, null);
+      assert.equal(h.engine.voiceDetectionEngine, 'silero');
+      assert.equal(h.counts().processorCalls, 0);
+      assert.equal(h.counts().factoryCalls, 0);
+      assert.equal(h.requests.length, 0);
+    });
+  }
+  test(
+    Engine.name + ': frontend shows Silero failure and releases microphone without fallback',
+    async (t) => {
+      const h = harness(Engine);
+      h.engine.vadAvailable = async () => false;
+      h.engine.vadErrorMessage = () => 'localized Silero unavailable';
+      h.engine.capability = async () => ({ supported: true });
+      const meter = h.engine.meter;
+      let stops = 0;
+      meter.start = async () => true;
+      meter.stop = async () => {
+        stops++;
+      };
+      const coordinator = new VoiceCoordinator({
+        recognition: h.engine,
+        meter,
+        engines: {},
+        settings: { mode: 'headphones' },
+        composer: { getDraft: () => '', setDraft() {} },
+      });
+      t.after(() => coordinator.dispose());
+      await coordinator.startDictation();
+      assert.equal(coordinator.snapshot.error, 'localized Silero unavailable');
+      assert.equal(coordinator.snapshot.listening, false);
+      assert.equal(coordinator.snapshot.starting, false);
+      assert.equal(h.engine.session, null);
+      assert.ok(stops > 0);
+      assert.equal(h.counts().processorCalls, 0);
+    },
+  );
+  for (const phase of ['model', 'worklet']) {
+    test(
+      Engine.name + ': ' + phase + ' loading failure reports error without energy capture',
+      async () => {
+        const h = harness(Engine);
+        h.engine.vadErrorMessage = () => 'localized Silero failed';
+        if (phase === 'model')
+          h.engine.vadFactory = () => {
+            throw new Error('model load failed');
+          };
+        else
+          h.engine.vadCapture = async () => {
+            throw new Error('worklet load failed');
+          };
+        await assert.rejects(h.start(), /localized Silero failed/);
+        assert.equal(h.engine.session, null);
+        assert.equal(h.engine.voiceDetectionEngine, 'silero');
+        assert.equal(h.counts().processorCalls, 0);
+        if (phase === 'worklet') assert.equal(h.counts().released, 1);
+      },
+    );
+  }
+  test(
+    Engine.name + ': cancelled availability failure cannot overwrite a newer capture',
+    async () => {
+      const h = harness(Engine);
+      let resolve;
+      h.engine.vadAvailable = () =>
+        new Promise((r) => {
+          resolve = r;
+        });
+      const old = h.start();
+      await settle();
+      await h.engine.stop();
+      h.engine.voiceDetectionEngine = 'energy';
+      await h.start();
+      const current = h.engine.session;
+      resolve(false);
+      await assert.rejects(old, { name: 'AbortError' });
+      assert.equal(h.engine.session, current);
+      assert.equal(current.detector, 'energy');
+      await h.engine.stop();
+    },
+  );
+  test(Engine.name + ': explicit energy does not check unavailable Silero', async () => {
+    const h = harness(Engine, 'energy');
+    h.engine.vadAvailable = () => {
+      throw new Error('energy must not probe Silero');
+    };
+    await h.start();
+    assert.equal(h.engine.session.detector, 'energy');
+    assert.equal(h.counts().factoryCalls, 0);
+    assert.equal(h.counts().processorCalls, 1);
+    await h.engine.stop();
+  });
+}
 
 test('model failure reports an error and never silently falls back to energy', async () => {
   const h = harness();
