@@ -67,6 +67,9 @@ export class WhisperHttpRecognitionEngine {
     this.maxUtteranceSeconds = maxUtteranceSeconds;
     this.route = ROUTE;
   }
+  get activityManaged() {
+    return true;
+  }
   get segmentation() {
     return { silenceMs: voiceDetectionSilenceMs(this) };
   }
@@ -102,7 +105,7 @@ export class WhisperHttpRecognitionEngine {
     onProcessingChange,
   } = {}) {
     await this.stop();
-    const startGeneration = this.startGeneration = (this.startGeneration || 0) + 1;
+    const startGeneration = (this.startGeneration = (this.startGeneration || 0) + 1);
     if (signal?.aborted) throw abortError();
     const context = this.meter?.context,
       source = this.meter?.source;
@@ -154,7 +157,7 @@ export class WhisperHttpRecognitionEngine {
         active: !!session.activeRequest,
         pending: session.transcriptionQueue.length + (session.activeRequest ? 1 : 0),
       });
-    const enqueue = () => {
+    const enqueue = (continuing = false) => {
       if (
         !session.voiced ||
         session.samples < sampleRate * 0.25 ||
@@ -166,6 +169,7 @@ export class WhisperHttpRecognitionEngine {
         session.voiced = false;
         session.silence = 0;
         session.speechSamples = 0;
+        onActivity?.(false);
         return;
       }
       const samples = new Float32Array(session.samples);
@@ -175,15 +179,16 @@ export class WhisperHttpRecognitionEngine {
         at += chunk.length;
       }
       const startedAt = session.startedAt;
-      session.startedAt = null;
+      session.startedAt = continuing ? Date.now() : null;
       session.chunks = [];
       session.samples = 0;
-      session.voiced = false;
+      session.voiced = continuing;
       session.silence = 0;
       session.speechSamples = 0;
       session.transcriptionQueue.push({ samples, startedAt });
       notifyProcessing();
       void drain();
+      if (!continuing) onActivity?.(false);
     };
     const drain = async () => {
       if (session.draining || !valid()) return;
@@ -237,7 +242,6 @@ export class WhisperHttpRecognitionEngine {
           onActivity?.(true);
         } else if (session.voiced) {
           session.silence += data.length;
-          onActivity?.(false);
         }
         session.chunks.push(data);
         session.samples += data.length;
@@ -246,7 +250,7 @@ export class WhisperHttpRecognitionEngine {
             session.silence > context.sampleRate * (this.segmentation.silenceMs / 1000)) ||
           session.samples > context.sampleRate * this.maxUtteranceSeconds
         )
-          enqueue();
+          enqueue(session.silence <= context.sampleRate * (this.segmentation.silenceMs / 1000));
       };
     session.finish = enqueue;
     session.abort = () => this.stop();
@@ -301,14 +305,14 @@ export class WhisperHttpRecognitionEngine {
             session.speechSamples += pcm.length;
             session.silence = 0;
           } else session.silence += pcm.length;
-          onActivity?.(active);
+          onActivity?.(true);
           session.chunks.push(pcm);
           session.samples += pcm.length;
           if (
             session.silence > sampleRate * (this.segmentation.silenceMs / 1000) ||
             session.samples > sampleRate * this.maxUtteranceSeconds
           )
-            enqueue();
+            enqueue(session.silence <= sampleRate * (this.segmentation.silenceMs / 1000));
         },
       });
       session.vad = vad;

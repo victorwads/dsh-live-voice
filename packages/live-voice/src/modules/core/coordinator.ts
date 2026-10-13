@@ -303,7 +303,7 @@ export class VoiceCoordinator {
     this.transcript.reset();
     this.updateSettings({ microphoneEnabled: true });
     if (this.snapshot.listening || this.snapshot.starting) {
-      this.patch({ recognizing: false });
+      if (!this.recognition.activityManaged) this.patch({ recognizing: false });
       return;
     }
     return this.startListening(this.snapshot.conversation);
@@ -413,6 +413,7 @@ export class VoiceCoordinator {
             if (count > 0) this.cancelAutoSend({ preserveIntent: true });
             else if (this.holdToTalkRelease) this._finishHoldToTalk();
             else this.maybeScheduleAutoSend();
+            if (count === 0) this._drain();
           },
           onActivity: (active) => {
             if (!valid()) return;
@@ -568,6 +569,7 @@ export class VoiceCoordinator {
 
   onResult({ final = '', interim = '', startedAt }) {
     if (this.disposed || (!this.snapshot.listening && !this.snapshot.starting)) return;
+    const recognizing = this.recognition.activityManaged ? this.snapshot.recognizing : !!interim;
     if (
       this.snapshot.speaking &&
       !this.snapshot.paused &&
@@ -591,7 +593,7 @@ export class VoiceCoordinator {
     ) {
       this.cancelAutoSend();
       this.transcript.reset();
-      this.patch({ recognizing: !!interim });
+      this.patch({ recognizing });
       return;
     }
     // A native event can contain a final result without an interim result. Do not
@@ -613,7 +615,7 @@ export class VoiceCoordinator {
         // Discard pending recognition without rewriting the composer.
         this.transcript.reset();
         this.cancelAutoSend();
-        this.patch({ recognizing: false });
+        this.patch({ recognizing });
         if (command === 'end') void this.endConversation();
         else if (command === 'mute') this.muteListening();
         else if (command === 'resume') this.resumeListeningInput();
@@ -636,9 +638,9 @@ export class VoiceCoordinator {
       if (this.snapshot.muted) {
         // Discard pending recognition without rewriting the composer.
         this.transcript.reset();
-        this.patch({ recognizing: !!interim });
+        this.patch({ recognizing });
         this._handleSpeechInterruption(this._speechActivity());
-        if (!interim) {
+        if (!interim && !recognizing) {
           this.assistantSpeechNotBefore =
             Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
           this._drain();
@@ -651,7 +653,7 @@ export class VoiceCoordinator {
       ) {
         // Discard pending recognition without rewriting the composer.
         this.transcript.reset();
-        this.patch({ recognizing: false });
+        this.patch({ recognizing });
         this.refreshDeliveryReadiness();
         return;
       }
@@ -666,10 +668,10 @@ export class VoiceCoordinator {
       this.cancelAutoSend({ preserveIntent: true });
       // Interim hypotheses affect recognition status only, never composer content.
     }
-    if (!interim && this.snapshot.recognizing)
+    if (!this.recognition.activityManaged && !interim && this.snapshot.recognizing)
       this.assistantSpeechNotBefore =
         Date.now() + this.snapshot.settings.assistantSpeechDelaySeconds * 1000;
-    this.patch({ recognizing: !!interim });
+    this.patch({ recognizing });
     this.refreshDeliveryReadiness();
     this._handleSpeechInterruption(this._speechActivity());
     this._drain();

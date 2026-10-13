@@ -181,6 +181,7 @@ export class MeetingController {
       const settings = this.settings();
       const { meter, engine } = this.createSource(source, settings);
       const input = this.input(source);
+      input.recognition.activityManaged = engine.activityManaged === true;
       input.meter = meter;
       input.updateSettings({ microphoneEnabled: true });
       this.applySettings(settings);
@@ -218,8 +219,8 @@ export class MeetingController {
           if (!valid()) return;
           const accepted = this.onSpeech?.(source, final || interim) !== false;
           if (accepted) input.onResult({ final, interim, startedAt });
-          else if (final) input.patch({ recognizing: false });
-          if (final && !interim) {
+          else if (final && !engine.activityManaged) input.patch({ recognizing: false });
+          if (final && !interim && !engine.activityManaged) {
             this.onActivity?.(source, false);
             input.refreshDeliveryReadiness();
           }
