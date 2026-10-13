@@ -8,6 +8,13 @@ export class StreamingResampler {
     this.weight = 0;
     this.sum = 0;
   }
+  /** Emit the observed fraction of the final averaging cell without zero dilution. */
+  flush(): Float32Array {
+    const tail =
+      this.weight > 1e-10 ? Float32Array.of(this.sum / this.weight) : new Float32Array(0);
+    this.reset();
+    return tail;
+  }
   process(input: Float32Array, sampleRate: number): Float32Array {
     if (!Number.isFinite(sampleRate) || sampleRate < 16000 || sampleRate > 192000)
       throw new Error('Unsupported VAD PCM sample rate.');
@@ -41,6 +48,14 @@ export class SileroFrameResampler {
   reset() {
     this.resampler.reset();
     this.tail = new Float32Array(0);
+  }
+  flush(): Float32Array {
+    const partial = this.resampler.flush();
+    const pcm = new Float32Array(this.tail.length + partial.length);
+    pcm.set(this.tail);
+    pcm.set(partial, this.tail.length);
+    this.tail = new Float32Array(0);
+    return pcm;
   }
   process(input: Float32Array, sampleRate: number): Float32Array[] {
     const chunk = this.resampler.process(input, sampleRate);

@@ -11,7 +11,15 @@ class VadCaptureProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
     this.port.onmessage = (event) => {
-      if (event.data?.type === 'stop') this.stopped = true;
+      if (event.data?.type === 'stop') {
+        this.stopped = true;
+        if (event.data.drain && this.at) {
+          const pcm = this.pcm.slice(0, this.at);
+          this.port.postMessage({ pcm, sampleRate }, [pcm.buffer]);
+        }
+        this.at = 0;
+        this.port.postMessage({ type: 'stopped' });
+      }
     };
   }
   process(inputs: Float32Array[][], outputs: Float32Array[][]): boolean {

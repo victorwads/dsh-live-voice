@@ -134,6 +134,8 @@ export class WhisperHttpRecognitionEngine {
       preRoll: [],
       speechSamples: 0,
       finished: false,
+      finishing: false,
+      finishPromise: null,
       chunks: [],
       samples: 0,
       voiced: false,
@@ -155,7 +157,10 @@ export class WhisperHttpRecognitionEngine {
       session.onProcessingChange?.({
         queued: session.transcriptionQueue.length,
         active: !!session.activeRequest,
-        pending: session.transcriptionQueue.length + (session.activeRequest ? 1 : 0),
+        pending:
+          session.transcriptionQueue.length +
+          (session.activeRequest ? 1 : 0) +
+          (session.finishing ? 1 : 0),
       });
     const enqueue = (continuing = false) => {
       if (
@@ -231,7 +236,7 @@ export class WhisperHttpRecognitionEngine {
     };
     if (!silero)
       processor.onaudioprocess = (event) => {
-        if (!valid()) return;
+        if (!valid() || session.finished) return;
         const data = new Float32Array(event.inputBuffer.getChannelData(0)),
           rms = Math.sqrt(data.reduce((sum, x) => sum + x * x, 0) / data.length);
         if (rms > 0.012) {
@@ -253,6 +258,7 @@ export class WhisperHttpRecognitionEngine {
           enqueue(session.silence <= context.sampleRate * (this.segmentation.silenceMs / 1000));
       };
     session.finish = enqueue;
+    session.notifyProcessing = notifyProcessing;
     session.abort = () => this.stop();
     signal?.addEventListener('abort', session.abort, { once: true });
     if (signal?.aborted || !valid()) {
@@ -331,15 +337,38 @@ export class WhisperHttpRecognitionEngine {
   }
   finish() {
     const session = this.session;
-    if (!session) return;
-    session.finished = true;
-    session.capture?.release();
-    session.vad?.release();
-    if (session.processor) session.processor.onaudioprocess = null;
-    try {
-      if (session.processor) this.meter?.source?.disconnect(session.processor);
-    } catch {}
-    session.finish?.();
+    if (!session) return Promise.resolve();
+    if (session.finishPromise) return session.finishPromise;
+    session.finishing = true;
+    let resolveFinish;
+    session.finishPromise = new Promise((resolve) => {
+      resolveFinish = resolve;
+    });
+    session.notifyProcessing();
+    void (async () => {
+      try {
+        if (session.capture) await session.capture.finish();
+        if (this.session !== session || session.signal?.aborted) return;
+        session.finished = true;
+        session.vad?.release();
+        if (session.processor) session.processor.onaudioprocess = null;
+        try {
+          if (session.processor) this.meter?.source?.disconnect(session.processor);
+        } catch {}
+        session.finish?.(false);
+      } catch (error) {
+        if (this.session === session) {
+          await this.stop();
+          if (error.name !== 'AbortError')
+            session.onError?.(new Error(this.vadErrorMessage(error)));
+        }
+      } finally {
+        session.finishing = false;
+        if (this.session === session) session.notifyProcessing();
+        resolveFinish();
+      }
+    })();
+    return session.finishPromise;
   }
   async stop() {
     this.startGeneration = (this.startGeneration || 0) + 1;

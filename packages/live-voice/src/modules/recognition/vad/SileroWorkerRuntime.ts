@@ -1,7 +1,7 @@
 import { SileroFrameResampler } from './StreamingResampler.js';
 
 export interface VadRequest {
-  type: 'open' | 'pcm' | 'reset' | 'release';
+  type: 'open' | 'pcm' | 'flush' | 'reset' | 'release';
   source: number;
   generation: number;
   request?: number;
@@ -89,10 +89,16 @@ export class SileroWorkerRuntime {
       for (const frame of source.queue) accountedBufferBytes += frame.pcm.byteLength;
     }
     return {
-      status: this.status, modelLoadMs: this.modelLoadMs,
-      processedFrames: this.processedFrames, inferenceLastMs: this.inferenceLastMs,
-      inferenceAverageMs: this.processedFrames ? this.inferenceTotalMs / this.processedFrames : null,
-      queuedFrames, accountedBufferBytes, activeSources: this.sources.size,
+      status: this.status,
+      modelLoadMs: this.modelLoadMs,
+      processedFrames: this.processedFrames,
+      inferenceLastMs: this.inferenceLastMs,
+      inferenceAverageMs: this.processedFrames
+        ? this.inferenceTotalMs / this.processedFrames
+        : null,
+      queuedFrames,
+      accountedBufferBytes,
+      activeSources: this.sources.size,
       overloadCount: this.overloadCount,
     };
   }
@@ -153,12 +159,20 @@ export class SileroWorkerRuntime {
     }
     if (generation !== source.generation) return;
     try {
-      if (!(message.pcm instanceof Float32Array) || !Number.isInteger(message.request))
-        throw new Error('Invalid VAD PCM request.');
-      if (message.pcm.length > (message.sampleRate || 0) / 4)
-        throw new Error('VAD PCM request exceeds capture bound.');
-      const frames = source.resampler.process(message.pcm, message.sampleRate!);
-      if (source.queue.length + frames.length > this.maxFrames) {
+      if (!Number.isInteger(message.request)) throw new Error('Invalid VAD request.');
+      let frames: Float32Array[];
+      if (message.type === 'flush') {
+        const tail = source.resampler.flush();
+        // Even an empty flush is queued: it must not pass an in-flight frame.
+        frames = [tail];
+      } else {
+        if (!(message.pcm instanceof Float32Array)) throw new Error('Invalid VAD PCM request.');
+        if (message.pcm.length > (message.sampleRate || 0) / 4)
+          throw new Error('VAD PCM request exceeds capture bound.');
+        frames = source.resampler.process(message.pcm, message.sampleRate!);
+      }
+      const limit = this.maxFrames + (message.type === 'flush' ? 1 : 0);
+      if (source.queue.length + frames.length > limit) {
         this.overloadCount++;
         const next = generation + 1;
         this.sources.set(id, this.source(next));
@@ -198,24 +212,26 @@ export class SileroWorkerRuntime {
       this.loading = this.ort.InferenceSession.create(this.base + 'silero_vad_v5.onnx', {
         executionProviders: ['wasm'],
         graphOptimizationLevel: 'all',
-      }).then(async (session) => {
-        if (this.disposed) {
-          await session.release();
-          throw new Error('VAD runtime released during model load.');
-        }
-        this.session = session;
-        this.modelLoadMs = Math.max(0, performance.now() - started);
-        this.status = 'ready';
-        this.telemetry(true);
-        return session;
-      }).catch((error) => {
-        if (!this.disposed) {
+      })
+        .then(async (session) => {
+          if (this.disposed) {
+            await session.release();
+            throw new Error('VAD runtime released during model load.');
+          }
+          this.session = session;
           this.modelLoadMs = Math.max(0, performance.now() - started);
-          this.status = 'error';
+          this.status = 'ready';
           this.telemetry(true);
-        }
-        throw error;
-      });
+          return session;
+        })
+        .catch((error) => {
+          if (!this.disposed) {
+            this.modelLoadMs = Math.max(0, performance.now() - started);
+            this.status = 'error';
+            this.telemetry(true);
+          }
+          throw error;
+        });
     }
     return this.loading;
   }
@@ -255,6 +271,15 @@ export class SileroWorkerRuntime {
         if (!next) break;
         const { id, source } = next;
         const frame = source.queue.shift()!;
+        if (!frame.pcm.length) {
+          this.emit({
+            type: 'done',
+            source: id,
+            generation: source.generation,
+            request: frame.request,
+          });
+          continue;
+        }
         const input = new Float32Array(576);
         input.set(source.context);
         input.set(frame.pcm, 64);
@@ -277,7 +302,7 @@ export class SileroWorkerRuntime {
           )
             throw new Error('Invalid Silero model output.');
           source.state = Float32Array.from(state as ArrayLike<number>);
-          source.context.set(frame.pcm.subarray(448));
+          source.context.set(input.subarray(512));
           this.emit({
             type: 'probability',
             source: id,

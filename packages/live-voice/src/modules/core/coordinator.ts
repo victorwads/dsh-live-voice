@@ -257,7 +257,9 @@ export class VoiceCoordinator {
     if (this.disposed || (!this.snapshot.listening && !this.snapshot.starting)) return;
     this.holdToTalkRelease = true;
     if (this.snapshot.starting) return;
+    const epoch = this.epoch;
     await this.recognition.finish?.();
+    if (this.disposed || this.epoch !== epoch) return;
     if (this.snapshot.pendingTranscriptions === 0) this._finishHoldToTalk();
   }
   _finishHoldToTalk() {

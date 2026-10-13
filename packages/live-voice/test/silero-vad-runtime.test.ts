@@ -307,7 +307,7 @@ test('pool is lazy, shares worker, releases independently and suppresses stale r
     onError: (e) => errors.push(e),
   });
   assert.equal(workers.length, 1);
-  assert.equal(urls[0], sileroVadAssetBase() + 'vad.worker.js?revision=telemetry-v1');
+  assert.equal(urls[0], sileroVadAssetBase() + 'vad.worker.js?revision=finish-v1');
   const pending = a.process(new Float32Array(512), 16000);
   const request = workers[0].messages.at(-1);
   const rejected = assert.rejects(pending, { name: 'AbortError' });
@@ -407,7 +407,7 @@ test('worklet module load is shared, released load races never attach, and captu
     audioWorklet: {
       addModule(url) {
         loads++;
-        assert.equal(url, sileroVadAssetBase() + 'vad.capture.js');
+        assert.equal(url, sileroVadAssetBase() + 'vad.capture.js?revision=finish-v1');
         return gate.promise;
       },
     },
