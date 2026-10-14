@@ -24,6 +24,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 ### Improvements
 
 - Keep recording and detection settings compact with help tooltips and paired fields.
+- Ask for browser confirmation before closing or reloading a page while microphone or meeting transcription is active.
 - Continue saving newly added settings across future frontend updates without requiring matching backend settings-field changes.
 
 ### Fixes

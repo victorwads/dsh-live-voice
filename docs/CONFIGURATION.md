@@ -16,7 +16,7 @@ Legacy browser preferences are not imported or used. Without a server preference
 
 The running backend must first receive this generic storage implementation once. Install the updated plugin and, if the DSH plugin manager requires a restart, restart DSH before refreshing the browser. A frontend refresh cannot retrofit an older server that still filters or normalizes settings fields. Once the generic implementation is running, adding frontend-only settings fields does not require backend field changes or a restart just to persist them. New routes, providers, or other backend runtime features still require their updated backend code to be loaded.
 
-Preference persistence does not restore active microphone capture, meeting sharing, voice sessions, pending delivery, or playback after a page refresh (F5). Saved recordings have a separate recovery mechanism; saving settings is not recovery of live voice or session state.
+While microphone or meeting transcription is acquiring, listening, or awaiting transcription results, Live Voice requests the browser’s native confirmation before closing, reloading (F5), or leaving the page. Cancelling leaves transcription running. The browser controls the message and requires prior user interaction; mobile app termination or forced closes may bypass it. No warning is requested for playback alone or idle voice mode. Preference persistence does not restore active microphone capture, meeting sharing, voice sessions, pending delivery, or playback after a page refresh (F5). Saved recordings have a separate recovery mechanism; saving settings is not recovery of live voice or session state.
 
 ---
 

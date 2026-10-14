@@ -235,6 +235,63 @@ async function fixture(
   };
 }
 
+test('microphone leave confirmation follows live state and cancellation does not end transcription', async (t) => {
+  const f = await fixture(t);
+  await f.render(h(f.Buttons, f.props('a')));
+  const controller = f.controllers.find((c) => !c.disposed);
+  const leave = () => {
+    const event = new window.Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  };
+  assert.equal(leave(), false);
+  await act(async () => controller.patch({ starting: true }));
+  assert.equal(leave(), true);
+  await act(async () => controller.patch({ starting: false, listening: true }));
+  const callsBefore = f.calls.length;
+  assert.equal(leave(), true);
+  assert.equal(leave(), true);
+  assert.equal(controller.getSnapshot().listening, true);
+  assert.equal(f.calls.length, callsBefore);
+  await act(async () => controller.patch({ listening: false, pendingTranscriptions: 1 }));
+  assert.equal(leave(), true);
+  await act(async () =>
+    controller.patch({ pendingTranscriptions: 0, conversation: true, speaking: true }),
+  );
+  assert.equal(leave(), false);
+  await act(async () => controller.patch({ listening: true }));
+  assert.equal(leave(), true);
+  await act(async () => f.close());
+  assert.equal(leave(), false);
+});
+
+test('meeting-only leave protection survives composer navigation and clears after source stop', async (t) => {
+  let meeting;
+  t.mock.method(MeetingController.prototype, 'start', async function (source, request) {
+    await request;
+    meeting = this;
+    this.patch(source, { starting: false, listening: true });
+  });
+  const f = await fixture(t);
+  const request = async () => new window.EventTarget();
+  window.navigator.mediaDevices.getDisplayMedia = request;
+  await f.render(h(f.Buttons, f.props('a')));
+  await act(async () => document.querySelector('[aria-label="Shared audio"]').click());
+  const leave = () => {
+    const event = new window.Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  };
+  assert.ok(meeting);
+  assert.equal(leave(), true);
+  await f.render(h(f.Buttons, f.props('b')));
+  assert.equal(leave(), true);
+  await act(async () => meeting.patch('shared', { listening: false, pending: 1 }));
+  assert.equal(leave(), true);
+  await act(async () => meeting.patch('shared', { pending: 0 }));
+  assert.equal(leave(), false);
+});
+
 test('real assistant-step rows enable playback even without local recognition', async (t) => {
   const f = await fixture(t);
   await f.render(h(f.Action, f.props('a')));

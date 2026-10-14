@@ -11,6 +11,7 @@ import { createRecordingRepository } from '../../modules/recording/repository.js
 import { RECORDING_KEY, RECORDING_CHANGED } from '../../modules/recording/types.js';
 import { sileroVadAssetBase } from '../../modules/recognition/vad/assets.js';
 import { createVadAssetDiagnostics } from './vadDiagnostics.js';
+import { createTranscriptionLeaveGuard } from './transcriptionLeaveGuard.js';
 import { SpeechStatusBar } from '../../modules/conversation/components/SpeechStatusBar.js';
 import { MeetingController } from '../../modules/conversation/models/meeting.js';
 import { SharedAudioMeter, requestSharedAudio } from '../../modules/core/sharedAudio.js';
@@ -66,6 +67,7 @@ export function apply(ctx) {
   const settingsControllers = new Set();
   let disposed = false;
   const recordings = createRecordingRepository();
+  const leaveGuard = createTranscriptionLeaveGuard(window);
   // Voice conversation mode belongs to the plugin, not to a mounted composer.
   // A route change may replace every conversation slot, but the next committed
   // composer should inherit the user's explicit choice to remain in voice mode.
@@ -109,6 +111,10 @@ export function apply(ctx) {
       return { meter, engine: recognitionFor(settings, meter, source) };
     },
   });
+  leaveGuard.watch(() => {
+    const state = meeting.getSnapshot();
+    return [state.microphone, state.shared];
+  }, meeting.subscribe);
   let updateManager;
   if (typeof ctx.inject === 'function')
     ctx.inject(['remote', 'remote.pluginManager'], (remoteCtx) => {
@@ -433,6 +439,7 @@ export function apply(ctx) {
     };
     retiring.add(barrier);
     void done.finally(() => {
+      entry.unsubscribeLeaveGuard?.();
       if (!entry.controller.speechStopError && !entry.controller.inputReleaseError)
         retiring.delete(barrier);
     });
@@ -555,6 +562,10 @@ export function apply(ctx) {
       settings,
     });
     const controller = entry.controller;
+    entry.unsubscribeLeaveGuard = leaveGuard.watch(
+      () => [controller.getSnapshot()],
+      controller.subscribe,
+    );
     controller.speechSuspended = true;
     controller.restoreSpeech(entry.speechState.checkpoint);
     entry.unsubscribeVoiceContext = controller.subscribe(() => {
@@ -968,6 +979,7 @@ export function apply(ctx) {
       const update = c.updateSettings.bind(c);
       c.applySavedSettings = update;
       settingsControllers.add(c);
+      const unsubscribeLeaveGuard = leaveGuard.watch(() => [c.getSnapshot()], c.subscribe);
       const unsubscribeDiagnostics = c.subscribe(notifyDiagnostics);
       notifyDiagnostics();
       void preferences.ready.catch(() =>
@@ -997,6 +1009,7 @@ export function apply(ctx) {
         document.removeEventListener('dsh-live-voice:capabilitieschanged', refresh);
         unsubscribeDiagnostics();
         settingsControllers.delete(c);
+        unsubscribeLeaveGuard();
         notifyDiagnostics();
         void c.dispose();
       };
@@ -1188,6 +1201,7 @@ export function apply(ctx) {
     window.addEventListener('pagehide', stop);
     return () => {
       disposed = true;
+      leaveGuard.dispose();
       if (window[RECORDING_KEY] === recordings) {
         delete window[RECORDING_KEY];
         window.dispatchEvent(new window.Event(RECORDING_CHANGED));
