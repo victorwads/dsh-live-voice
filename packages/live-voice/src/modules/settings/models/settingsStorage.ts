@@ -1,15 +1,36 @@
 import { normalizeSettings } from '../../core/settings.js';
+import { defaultSpeakingEngine } from '../../core/engineSelection.js';
+import { settingsDocument, type SettingsDocument } from './settingsDocument.js';
 export const SETTINGS_STORAGE_KEY = 'dsh-live-voice.settings';
 export const SETTINGS_PATH = '/api/dsh-live-voice/settings';
+type ClientSettings = SettingsDocument & ReturnType<typeof normalizeSettings>;
 
-/** No browser persistence or migration from legacy browser preferences. */
+/** Transport is schema-independent; only this client interprets its known preferences. */
 export function createSettingsClient(fetchImpl = globalThis.fetch) {
-  let settings = normalizeSettings({});
+  let settings = { ...normalizeSettings({}) } as ClientSettings;
+  let stored: SettingsDocument = {};
   let hostPlatform: string | undefined;
   let queue = Promise.resolve();
-  const pendingPatches: unknown[] = [];
-  const listeners = new Set<(settings: ReturnType<typeof normalizeSettings>) => void>();
-  async function request(method: string, patch?: unknown) {
+  const pendingPatches: SettingsDocument[] = [];
+  const listeners = new Set<(settings: ClientSettings) => void>();
+  const publish = () => {
+    // Pending patches are individually safe snapshots, but their optimistic union
+    // may exceed the on-disk budget until the host rejects the later save.
+    const document = structuredClone(Object.assign({}, stored, ...pendingPatches));
+    settings = {
+      ...document,
+      ...normalizeSettings({ engine: defaultSpeakingEngine(hostPlatform), ...document }),
+    };
+    for (const listener of listeners) {
+      try {
+        listener(settings);
+      } catch {
+        /* An observer cannot fail a committed save. */
+      }
+    }
+    return settings;
+  };
+  async function request(method: string, patch?: SettingsDocument) {
     const response = await fetchImpl(SETTINGS_PATH, {
       method,
       credentials: 'same-origin',
@@ -20,35 +41,42 @@ export function createSettingsClient(fetchImpl = globalThis.fetch) {
     });
     const body = await response.json();
     if (!response.ok || body?.ok !== true) throw new Error('settings-request-failed');
+    const document = settingsDocument(body.value);
     hostPlatform = typeof body.hostPlatform === 'string' ? body.hostPlatform : undefined;
-    if (method === 'PUT') pendingPatches.shift();
-    settings = normalizeSettings(Object.assign({}, body.value, ...pendingPatches));
-    for (const listener of listeners) listener(settings);
-    return settings;
+    stored = document;
   }
-  const ready = request('GET');
+  const ready = request('GET').then(publish);
   // Consumers report failures in their translated controller UI.
   void ready.catch(() => {});
   return {
     ready,
     getSnapshot: () => settings,
     getHostPlatform: () => hostPlatform,
-    subscribe(listener: (settings: ReturnType<typeof normalizeSettings>) => void) {
+    subscribe(listener: (settings: ClientSettings) => void) {
       listeners.add(listener);
       return () => {
         listeners.delete(listener);
       };
     },
     save(patch: unknown) {
-      pendingPatches.push(patch);
+      let snapshot: SettingsDocument;
+      try {
+        snapshot = settingsDocument(patch);
+      } catch (error) {
+        return Promise.reject(error);
+      }
+      pendingPatches.push(snapshot);
       const operation = queue.then(async () => {
         try {
           await ready;
-          return await request('PUT', patch);
+          await request('PUT', snapshot);
         } catch (error) {
-          pendingPatches.shift();
+          pendingPatches.splice(pendingPatches.indexOf(snapshot), 1);
+          publish();
           throw error;
         }
+        pendingPatches.splice(pendingPatches.indexOf(snapshot), 1);
+        return publish();
       });
       queue = operation.then(
         () => {},

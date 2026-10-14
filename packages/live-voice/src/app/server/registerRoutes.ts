@@ -1,3 +1,9 @@
+import {
+  InvalidSettingsDocument,
+  SETTINGS_MAX_BYTES,
+  settingsDocument,
+} from '../../modules/settings/models/settingsDocument.js';
+
 export const API_ROOT = '/api/dsh-live-voice';
 
 export function registerSettingsRoute(
@@ -14,10 +20,9 @@ export function registerSettingsRoute(
       if (request.method === 'PUT') {
         try {
           const text = await request.text();
-          if (text.length > 64000) throw new Error('too-large');
-          patch = JSON.parse(text);
-          if (!patch || typeof patch !== 'object' || Array.isArray(patch))
-            throw new Error('invalid');
+          if (new TextEncoder().encode(text).byteLength > SETTINGS_MAX_BYTES)
+            throw new InvalidSettingsDocument();
+          patch = settingsDocument(JSON.parse(text));
         } catch {
           return Response.json(
             { ok: false, error: { code: 'invalid-settings' } },
@@ -29,10 +34,11 @@ export function registerSettingsRoute(
         const value = request.method === 'GET' ? await store.load() : await store.save(patch);
         // Host platform chooses display order/defaults, never claims engine support.
         return Response.json({ ok: true, value, hostPlatform: process.platform }, { headers });
-      } catch {
+      } catch (error) {
+        const invalid = error instanceof InvalidSettingsDocument && request.method === 'PUT';
         return Response.json(
-          { ok: false, error: { code: 'settings-unavailable' } },
-          { status: 500, headers },
+          { ok: false, error: { code: invalid ? 'invalid-settings' : 'settings-unavailable' } },
+          { status: invalid ? 400 : 500, headers },
         );
       }
     },

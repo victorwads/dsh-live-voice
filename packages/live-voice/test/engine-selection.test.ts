@@ -23,11 +23,36 @@ for (const platform of ['darwin', 'linux', 'win32', undefined]) {
     const dir = await mkdtemp(join(tmpdir(), 'voice-engine-order-'));
     t.after(() => rm(dir, { recursive: true, force: true }));
     const path = join(dir, 'preferences.json');
-    const store = createSettingsStore(path, { platform: platform || 'linux' });
-    assert.equal((await store.load()).engine, mac ? 'say' : 'browser');
+    const store = createSettingsStore(path);
+    assert.deepEqual(await store.load(), {}, 'the host does not choose or persist an engine');
+    const client = createSettingsClient(async (_url, options) => {
+      const value =
+        options.method === 'PUT' ? await store.save(JSON.parse(options.body)) : await store.load();
+      return Response.json({ ok: true, value, hostPlatform: platform });
+    });
+    assert.equal((await client.ready).engine, mac ? 'say' : 'browser');
+    assert.equal(client.getSnapshot().engine, mac ? 'say' : 'browser');
+    await client.save({ rate: 1.2 });
+    assert.deepEqual(
+      await store.load(),
+      { rate: 1.2 },
+      'unrelated writes do not persist client defaults',
+    );
     for (const engine of ['browser', 'say', 'qwen-http']) {
       await writeFile(path, JSON.stringify({ engine }));
-      assert.equal((await store.load()).engine, engine, 'explicit saved selection wins');
+      assert.deepEqual(await store.load(), { engine }, 'raw saved selection is unchanged');
+      const reopened = createSettingsClient(async () =>
+        Response.json({
+          ok: true,
+          value: await store.load(),
+          hostPlatform: platform,
+        }),
+      );
+      assert.equal(
+        (await reopened.ready).engine,
+        engine,
+        'explicit saved selection wins client policy',
+      );
       await store.save({ rate: 1.2 });
       assert.equal((await store.load()).engine, engine);
     }
@@ -45,4 +70,31 @@ test('host platform metadata does not change or persist the explicit engine sele
   assert.equal(client.getSnapshot().engine, 'qwen-http');
   await client.save({ rate: 1.1 });
   assert.deepEqual(JSON.parse(requests[1].body), { rate: 1.1 });
+});
+
+test('malformed raw engine selections normalize on the client without rewriting host data', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'voice-engine-policy-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const path = join(dir, 'preferences.json');
+  const store = createSettingsStore(path);
+  for (const engine of ['future-engine', null, false, 12, { version: 2 }]) {
+    await writeFile(path, JSON.stringify({ engine, futureFeature: { enabled: true } }));
+    const client = createSettingsClient(async (_url, options) =>
+      Response.json({
+        ok: true,
+        value:
+          options.method === 'PUT'
+            ? await store.save(JSON.parse(options.body))
+            : await store.load(),
+        hostPlatform: 'darwin',
+      }),
+    );
+    assert.equal(
+      (await client.ready).engine,
+      'browser',
+      'malformed explicit values use known-field normalization',
+    );
+    await client.save({ volume: 0.5 });
+    assert.deepEqual(await store.load(), { engine, futureFeature: { enabled: true }, volume: 0.5 });
+  }
 });

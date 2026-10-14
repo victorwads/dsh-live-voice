@@ -2,30 +2,32 @@ import { readFile, mkdir, writeFile, rename, rm } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { normalizeSettings } from '../../core/settings.js';
-import { defaultSpeakingEngine } from '../../core/engineSelection.js';
+import {
+  InvalidSettingsDocument,
+  settingsDocument,
+  mergeSettingsDocuments,
+} from './settingsDocument.js';
 
 /** Host-wide preferences, shared by every authenticated browser. */
 export function createSettingsStore(
   path = join(homedir(), '.dsh', 'dsh-live-voice.settings.json'),
-  { platform = process.platform } = {},
 ) {
-  const normalize = (value: object = {}) =>
-    normalizeSettings({ engine: defaultSpeakingEngine(platform), ...value });
   let queue = Promise.resolve();
   async function load() {
     try {
-      return normalize(JSON.parse(await readFile(path, 'utf8')));
+      return settingsDocument(JSON.parse(await readFile(path, 'utf8')));
     } catch (error) {
-      if (error.code === 'ENOENT') return normalize();
+      if (error.code === 'ENOENT') return {};
+      if (error instanceof InvalidSettingsDocument) throw new Error('settings-storage-invalid');
       throw error;
     }
   }
   return {
     load: () => queue.then(load),
     save(patch: unknown) {
+      const snapshot = settingsDocument(patch);
       const operation = queue.then(async () => {
-        const settings = normalizeSettings({ ...(await load()), ...(patch as object) });
+        const settings = mergeSettingsDocuments(await load(), snapshot);
         await mkdir(dirname(path), { recursive: true, mode: 0o700 });
         const temporary = path + '.' + randomUUID() + '.tmp';
         try {
