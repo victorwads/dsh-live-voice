@@ -133,7 +133,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.permissionHelp':
     '仅在你开始听写或语音对话时才会请求麦克风权限。',
   'dsh-live-voice.recognition.microphone.resume': '恢复聆听',
-  'dsh-live-voice.recognition.microphone.starting': '正在启动麦克风…',
+  'dsh-live-voice.recognition.microphone.starting': '正在启动麦克风',
   'dsh-live-voice.recognition.microphone.takeControl': '接管麦克风',
   'dsh-live-voice.recognition.minimumWords.enabled': '忽略过短的最终转写片段',
   'dsh-live-voice.recognition.minimumWords.help':
@@ -196,11 +196,14 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.speakerMode.help':
     '播放时释放麦克风以减少扬声器反馈。接管麦克风可手动打断；共享会议音频中识别到的非回声参与者语音也可暂停播放，持续静音后恢复。',
   'dsh-live-voice.recognition.speakerMode.label': '扬声器 — 门控聆听',
-  'dsh-live-voice.recognition.status.answer': '正在识别回答…',
-  'dsh-live-voice.recognition.status.awaitingAnswer': '正在聆听你的回答…',
-  'dsh-live-voice.recognition.status.listening': '正在聆听 — 等待语音',
-  'dsh-live-voice.recognition.status.processing': '正在识别语音…',
+  'dsh-live-voice.recognition.status.answer': '正在识别回答',
+  'dsh-live-voice.recognition.status.awaitingAnswer': '正在聆听你的回答',
+  'dsh-live-voice.recognition.status.listening': '正在聆听',
+  'dsh-live-voice.recognition.status.listeningProcessing': '正在聆听并转写',
+  'dsh-live-voice.recognition.status.processing': '正在转写',
   'dsh-live-voice.recognition.status.unavailable': '语音识别不可用',
+  'dsh-live-voice.recognition.status.waiting': '等待中',
+  'dsh-live-voice.recognition.status.waitingCommand': '等待命令',
   'dsh-live-voice.recognition.voiceCommands.help':
     '用逗号分隔短语。匹配时忽略大小写、重音符号、标点和多余空格。整个最终片段必须完全匹配。',
   'dsh-live-voice.recognition.whisper.captureHelp':
@@ -240,7 +243,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recording.status.saved': '音频已保存至 {time}',
   'dsh-live-voice.recording.title': '可恢复录音',
   'dsh-live-voice.settings.autoSend.cancel': '取消自动发送',
-  'dsh-live-voice.settings.autoSend.countdown': '{remaining} 后发送…',
+  'dsh-live-voice.settings.autoSend.countdown': '{remaining} 后发送',
   'dsh-live-voice.settings.autoSend.delay': '静音后发送',
   'dsh-live-voice.settings.close': '关闭语音设置',
   'dsh-live-voice.settings.delivery.dshEnterHelp':

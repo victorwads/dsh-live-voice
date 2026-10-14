@@ -167,8 +167,11 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.recognition.status.answer': string;
   'dsh-live-voice.recognition.status.awaitingAnswer': string;
   'dsh-live-voice.recognition.status.listening': string;
+  'dsh-live-voice.recognition.status.listeningProcessing': string;
   'dsh-live-voice.recognition.status.processing': string;
   'dsh-live-voice.recognition.status.unavailable': string;
+  'dsh-live-voice.recognition.status.waiting': string;
+  'dsh-live-voice.recognition.status.waitingCommand': string;
   'dsh-live-voice.recognition.voiceCommands.help': string;
   'dsh-live-voice.recognition.whisper.captureHelp': string;
   'dsh-live-voice.recognition.whisper.connectionSuccess': string;

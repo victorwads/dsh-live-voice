@@ -1,9 +1,132 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { QwenHttpRecognitionEngine } from '../src/modules/recognition/engines/qwen/QwenRecognitionEngine.js';
+import { resolveConversationStatus } from '../src/modules/conversation/components/conversationStatus.js';
 import { PinDetector } from '../src/modules/recording/PinDetector.js';
 import { WhisperHttpRecognitionEngine } from '../src/modules/recognition/engines/whisper/WhisperRecognitionEngine.js';
 import { mockRecordingRepository } from './helpers/recording.js';
 import { recordingSegments } from '../src/modules/recording/types.js';
+for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) {
+  test(
+    Engine.name + ': silent audio writes never report transcription while real requests do',
+    async (t) => {
+      const recordings = mockRecordingRepository();
+      const begin = recordings.begin.bind(recordings);
+      let releaseWrite;
+      const writeGate = new Promise<void>((resolve) => {
+        releaseWrite = resolve;
+      });
+      recordings.begin = async (input) => {
+        const writer = await begin(input);
+        const append = writer.append.bind(writer);
+        writer.append = async (pcm) => {
+          await writeGate;
+          await append(pcm);
+        };
+        return writer;
+      };
+      let ingest, classify, reply;
+      let recognizing = false;
+      const changes = [];
+      const statuses = [];
+      const language = {
+        recognition: {
+          status: {
+            waiting: () => 'Waiting',
+            listening: () => 'Listening',
+            processing: () => 'Transcribing',
+            listeningProcessing: () => 'Listening and transcribing',
+          },
+        },
+      };
+      const engine = new Engine({
+        recordings,
+        meter: { context: { sampleRate: 16000 }, source: {} },
+        voiceDetectionEngine: 'silero',
+        voiceDetectionPreset: 'short',
+        voiceDetectionMinimumSpeechMs: 50,
+        vadAvailable: async () => true,
+        vadFactory: (options) => {
+          classify = options.onProbability;
+          return { release() {} };
+        },
+        vadCapture: async (_context, _source, _stream, callback) => {
+          ingest = callback;
+          return { finish: async () => {}, release() {} };
+        },
+        globals: {
+          fetch: () =>
+            new Promise((resolve) => {
+              reply = resolve;
+            }),
+        },
+      });
+      t.after(async () => {
+        releaseWrite();
+        await engine.stop();
+      });
+      await engine.start({
+        onActivity: (active) => {
+          recognizing = active;
+        },
+        onProcessingChange: (state) => {
+          changes.push(state);
+          statuses.push(
+            resolveConversationStatus(
+              {
+                listening: true,
+                recognizing,
+                pendingTranscriptions: state.pending,
+                pendingTranscriptionRequests: state.transcribing,
+              },
+              null,
+              language,
+            ),
+          );
+        },
+      });
+      const frame = (count, probability) => {
+        const pcm = new Float32Array(count).fill(probability ? 0.1 : 0);
+        ingest(pcm, 16000);
+        classify({ probability, pcm });
+      };
+      for (let i = 0; i < 20; i++) frame(512, 0);
+      assert.ok(
+        changes.some((change) => change.pending > 0),
+        'writes remain a release/delivery barrier',
+      );
+      assert.ok(changes.every((change) => change.transcribing === 0));
+      assert.ok(statuses.every((status) => status === 'Waiting'));
+      releaseWrite();
+      await tick();
+      assert.equal(changes.at(-1).pending, 0);
+      statuses.length = 0;
+      frame(1600, 0.9);
+      await tick();
+      assert.ok(
+        statuses.every((status) => !status.includes('transcrib')),
+        'speech storage alone is not HTTP work',
+      );
+      frame(6400, 0);
+      await tick();
+      assert.equal(typeof reply, 'function');
+      assert.equal(changes.at(-1).transcribing, 1);
+      assert.equal(statuses.at(-1), 'Transcribing');
+      for (let i = 0; i < 10; i++) frame(512, 0);
+      await tick();
+      assert.equal(changes.at(-1).transcribing, 1);
+      reply({ ok: true, json: async () => ({ ok: true, value: { text: 'words' } }) });
+      await tick();
+      assert.equal(changes.at(-1).transcribing, 0);
+      assert.equal(statuses.at(-1), 'Waiting');
+      const quietStart = statuses.length;
+      for (let i = 0; i < 10; i++) frame(512, 0);
+      await tick();
+      assert.ok(statuses.slice(quietStart).every((status) => status === 'Waiting'));
+    },
+  );
+}
+
 test('paragraph decisions follow captured silence rather than HTTP completion time', async () => {
   const recordings = mockRecordingRepository();
   let ingest: (pcm: Float32Array, rate: number) => void;

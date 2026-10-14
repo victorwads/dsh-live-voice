@@ -5,6 +5,9 @@ import {
   withAppLanguage as withLiveVoiceLanguage,
 } from '../../../app/client/i18n/index.js';
 
+import { resolveConversationStatus } from './conversationStatus.js';
+import { RecordingProgress } from './RecordingProgress.js';
+
 // UI only: the controller owns capture, recognition, playback and policy.
 export function createConversationComponents(
   React,
@@ -226,7 +229,8 @@ export function createConversationComponents(
       return () => clearInterval(timer);
     }, [state.autoSendAt]);
     const [invoke, error, clearError] = useActions(controller);
-    const capture = state.starting || state.listening || state.recognizing;
+    const capture =
+      state.starting || state.listening || state.recognizing || state.pendingTranscriptions > 0;
     if (questionOnly && !state.answeringQuestion) return null;
     if (
       !state.conversation &&
@@ -240,27 +244,31 @@ export function createConversationComponents(
     const remaining = state.autoSendAt
       ? Math.max(1, Math.ceil((state.autoSendAt - now) / 1000))
       : null;
-    const status =
-      state.answeringQuestion && state.recognizing
-        ? 'dsh-live-voice.recognition.status.answer'
-        : state.answeringQuestion && state.listening
-          ? 'dsh-live-voice.recognition.status.awaitingAnswer'
-          : remaining
-            ? t('dsh-live-voice.settings.autoSend.countdown', { remaining })
-            : state.starting
-              ? 'dsh-live-voice.recognition.microphone.starting'
-              : state.paused
-                ? 'dsh-live-voice.speak.status.paused'
-                : state.speaking
-                  ? 'dsh-live-voice.speak.status.playing'
-                  : state.recognizing
-                    ? 'dsh-live-voice.recognition.status.processing'
-                    : state.listening
-                      ? 'dsh-live-voice.recognition.status.listening'
-                      : state.conversation
-                        ? 'dsh-live-voice.commons.conversation.idle'
-                        : 'dsh-live-voice.commons.status.ready';
-    const localizedStatus = localize(status);
+    const localizedStatus = resolveConversationStatus(state, remaining, {
+      commons: {
+        conversation: { idle: () => t('dsh-live-voice.commons.conversation.idle') },
+        status: { ready: () => t('dsh-live-voice.commons.status.ready') },
+      },
+      recognition: {
+        microphone: { starting: () => t('dsh-live-voice.recognition.microphone.starting') },
+        status: Object.fromEntries(
+          [
+            'answer',
+            'awaitingAnswer',
+            'listening',
+            'listeningProcessing',
+            'processing',
+            'waiting',
+            'waitingCommand',
+          ].map((key) => [key, () => t('dsh-live-voice.recognition.status.' + key)]),
+        ),
+      },
+      settings: {
+        autoSend: {
+          countdown: (params) => t('dsh-live-voice.settings.autoSend.countdown', params),
+        },
+      },
+    });
     return (
       <div
         className={overlay ? 'dlv-bar-wrap dlv-question-overlay' : 'dlv-bar-wrap'}
@@ -286,6 +294,7 @@ export function createConversationComponents(
                 onClick={() => invoke('stopConversationInput')}
               />
             ) : null}
+            <RecordingProgress controller={controller} />
             {<Waveform controller={controller} enabled={Boolean(state.listening)} />}
             {
               <span className="dlv-status" role="status" aria-live="polite">

@@ -140,7 +140,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'माइक्रोफ़ोन की अनुमति केवल तभी माँगी जाएगी जब आप डिक्टेशन या वॉइस बातचीत शुरू करेंगे।',
   'dsh-live-voice.recognition.microphone.resume': 'सुनना फिर शुरू करें',
-  'dsh-live-voice.recognition.microphone.starting': 'माइक्रोफ़ोन शुरू हो रहा है…',
+  'dsh-live-voice.recognition.microphone.starting': 'माइक्रोफ़ोन शुरू हो रहा है',
   'dsh-live-voice.recognition.microphone.takeControl': 'माइक्रोफ़ोन का नियंत्रण लें',
   'dsh-live-voice.recognition.minimumWords.enabled': 'छोटे अंतिम ट्रांसक्रिप्शन खंड अनदेखा करें',
   'dsh-live-voice.recognition.minimumWords.help':
@@ -210,11 +210,14 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.speakerMode.help':
     'प्लेबैक स्पीकर फ़ीडबैक घटाने के लिए माइक्रोफ़ोन छोड़ देता है। माइक्रोफ़ोन लें से मैन्युअल बाधा डालें; साझा मीटिंग ऑडियो में बिना प्रतिध्वनि की पहचानी गई आवाज़ प्लेबैक रोक सकती है और स्थिर मौन के बाद यह फिर चलता है।',
   'dsh-live-voice.recognition.speakerMode.label': 'स्पीकर — नियंत्रित सुनना',
-  'dsh-live-voice.recognition.status.answer': 'उत्तर पहचाना जा रहा है…',
-  'dsh-live-voice.recognition.status.awaitingAnswer': 'आपका उत्तर सुना जा रहा है…',
-  'dsh-live-voice.recognition.status.listening': 'सुना जा रहा है — आपके बोलने की प्रतीक्षा है',
-  'dsh-live-voice.recognition.status.processing': 'वाक् पहचाना जा रहा है…',
+  'dsh-live-voice.recognition.status.answer': 'उत्तर पहचाना जा रहा है',
+  'dsh-live-voice.recognition.status.awaitingAnswer': 'आपका उत्तर सुना जा रहा है',
+  'dsh-live-voice.recognition.status.listening': 'सुना जा रहा है',
+  'dsh-live-voice.recognition.status.listeningProcessing': 'सुनना और लिप्यंतरण जारी है',
+  'dsh-live-voice.recognition.status.processing': 'लिप्यंतरण जारी है',
   'dsh-live-voice.recognition.status.unavailable': 'वाक् पहचान उपलब्ध नहीं है',
+  'dsh-live-voice.recognition.status.waiting': 'प्रतीक्षा में',
+  'dsh-live-voice.recognition.status.waitingCommand': 'कमांड की प्रतीक्षा में',
   'dsh-live-voice.recognition.voiceCommands.help':
     'वाक्यांशों को अल्पविराम से अलग करें। मिलान में बड़े-छोटे अक्षर, उच्चारण चिह्न, विराम चिह्न और अतिरिक्त स्पेस अनदेखे किए जाते हैं। पूरा अंतिम खंड मेल खाना चाहिए।',
   'dsh-live-voice.recognition.whisper.captureHelp':
@@ -258,7 +261,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recording.status.saved': 'ऑडियो {time} तक सहेजा गया',
   'dsh-live-voice.recording.title': 'पुनर्प्राप्त करने योग्य रिकॉर्डिंग',
   'dsh-live-voice.settings.autoSend.cancel': 'स्वचालित भेजना रद्द करें',
-  'dsh-live-voice.settings.autoSend.countdown': '{remaining} में भेजा जाएगा…',
+  'dsh-live-voice.settings.autoSend.countdown': '{remaining} में भेजा जाएगा',
   'dsh-live-voice.settings.autoSend.delay': 'मौन के बाद भेजें',
   'dsh-live-voice.settings.close': 'वॉइस सेटिंग्स बंद करें',
   'dsh-live-voice.settings.delivery.dshEnterHelp':

@@ -152,7 +152,7 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'L’autorisation d’utiliser le microphone ne sera demandée que lorsque vous démarrerez une dictée ou une conversation vocale.',
   'dsh-live-voice.recognition.microphone.resume': 'Reprendre l’écoute',
-  'dsh-live-voice.recognition.microphone.starting': 'Démarrage du microphone…',
+  'dsh-live-voice.recognition.microphone.starting': 'Démarrage du microphone',
   'dsh-live-voice.recognition.microphone.takeControl': 'Prendre le contrôle du microphone',
   'dsh-live-voice.recognition.minimumWords.enabled':
     'Ignorer les segments définitifs de transcription trop courts',
@@ -228,11 +228,14 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.speakerMode.help':
     'La lecture libère le microphone pour réduire le retour des haut-parleurs. Prendre le microphone interrompt manuellement ; les participants reconnus sans écho dans le son partagé peuvent mettre la lecture en pause, puis elle reprend après un silence stable.',
   'dsh-live-voice.recognition.speakerMode.label': 'Haut-parleurs — écoute contrôlée',
-  'dsh-live-voice.recognition.status.answer': 'Reconnaissance de la réponse…',
-  'dsh-live-voice.recognition.status.awaitingAnswer': 'Écoute de votre réponse…',
-  'dsh-live-voice.recognition.status.listening': 'Écoute — en attente de parole',
-  'dsh-live-voice.recognition.status.processing': 'Reconnaissance vocale…',
+  'dsh-live-voice.recognition.status.answer': 'Reconnaissance de la réponse',
+  'dsh-live-voice.recognition.status.awaitingAnswer': 'Écoute de votre réponse',
+  'dsh-live-voice.recognition.status.listening': 'Écoute',
+  'dsh-live-voice.recognition.status.listeningProcessing': 'Écoute et transcription',
+  'dsh-live-voice.recognition.status.processing': 'Transcription',
   'dsh-live-voice.recognition.status.unavailable': 'Reconnaissance vocale indisponible',
+  'dsh-live-voice.recognition.status.waiting': 'En attente',
+  'dsh-live-voice.recognition.status.waitingCommand': 'En attente de commande',
   'dsh-live-voice.recognition.voiceCommands.help':
     'Séparez les expressions par des virgules. La comparaison ignore la casse, les accents, la ponctuation et les espaces superflus. Le segment définitif entier doit correspondre.',
   'dsh-live-voice.recognition.whisper.captureHelp':
@@ -278,7 +281,7 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recording.status.saved': 'Audio enregistré jusqu’à {time}',
   'dsh-live-voice.recording.title': 'Enregistrements récupérables',
   'dsh-live-voice.settings.autoSend.cancel': 'Annuler l’envoi automatique',
-  'dsh-live-voice.settings.autoSend.countdown': 'Envoi dans {remaining}…',
+  'dsh-live-voice.settings.autoSend.countdown': 'Envoi dans {remaining}',
   'dsh-live-voice.settings.autoSend.delay': 'Envoyer après le silence',
   'dsh-live-voice.settings.close': 'Fermer les paramètres vocaux',
   'dsh-live-voice.settings.delivery.dshEnterHelp':

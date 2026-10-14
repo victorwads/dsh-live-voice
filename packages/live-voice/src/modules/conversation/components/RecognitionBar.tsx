@@ -5,11 +5,11 @@ export function RecognitionBar({ controller, listening, label, status, leading, 
   return (
     <div className="dlv-pill" role="group" aria-label={label}>
       {leading}
+      <RecordingProgress controller={controller} />
       <Waveform controller={controller} enabled={Boolean(listening)} />
       <span className="dlv-status" role="status" aria-live="polite">
         {status}
       </span>
-      <RecordingProgress controller={controller} />
       {children}
     </div>
   );

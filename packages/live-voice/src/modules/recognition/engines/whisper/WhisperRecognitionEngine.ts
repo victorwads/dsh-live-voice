@@ -175,6 +175,6 @@ export class WhisperHttpRecognitionEngine {
     this.session = null;
     session.signal?.removeEventListener('abort', session.abort);
     await session.stopRecording();
-    session.onProcessingChange?.({ queued: 0, active: false, pending: 0 });
+    session.onProcessingChange?.({ queued: 0, active: false, transcribing: 0, pending: 0 });
   }
 }

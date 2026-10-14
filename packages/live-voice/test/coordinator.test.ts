@@ -1012,6 +1012,25 @@ test('speaker mode preserves the auto-send countdown before assistant speech', a
   await f.coordinator.dispose();
 });
 
+test('audio persistence remains a delivery barrier without becoming visible transcription work', async () => {
+  const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 1 });
+  f.coordinator.composer.submit = () => {};
+  await f.coordinator.startDictation();
+  const callbacks = f.sessions[0];
+  callbacks.onProcessingChange({ pending: 2, transcribing: 0 });
+  assert.equal(f.coordinator.snapshot.pendingTranscriptions, 2);
+  assert.equal(f.coordinator.snapshot.pendingTranscriptionRequests, 0);
+  callbacks.onResult({ final: 'captured words' });
+  assert.equal(f.coordinator.snapshot.autoSendAt, null);
+  callbacks.onProcessingChange({ pending: 2, transcribing: 1 });
+  assert.equal(f.coordinator.snapshot.pendingTranscriptionRequests, 1);
+  callbacks.onProcessingChange({ pending: 1, transcribing: 0 });
+  assert.equal(f.coordinator.snapshot.autoSendAt, null);
+  callbacks.onProcessingChange({ pending: 0, transcribing: 0 });
+  assert.ok(f.coordinator.snapshot.autoSendAt);
+  await f.coordinator.dispose();
+});
+
 test('automatic sending waits until every queued transcription completes', async () => {
   const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 1 });
   f.coordinator.composer.submit = () => {};

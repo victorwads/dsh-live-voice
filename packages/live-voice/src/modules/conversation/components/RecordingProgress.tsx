@@ -1,4 +1,5 @@
 import React from 'react';
+import { recordingDuration } from '../models/recordingDuration.js';
 import { useLanguage } from '../../../app/client/i18n/index.js';
 import { RECORDING_KEY } from '../../recording/types.js';
 import type { RecordingService, RecordingSession } from '../../recording/types.js';
@@ -37,11 +38,11 @@ export function RecordingProgress({ controller }: { controller: any }) {
     };
   }, [controller]);
   if (!session || session.storage !== 'indexeddb') return null;
-  const seconds = Math.floor(session.savedSamples / session.sampleRate);
-  const time = Math.floor(seconds / 60) + ':' + String(seconds % 60).padStart(2, '0');
+  const time = recordingDuration(session.savedSamples, session.sampleRate);
+  const label = (copy as any).status.saved({ time });
   return (
-    <span className="dlv-status" title={(copy as any).status.saved({ time })}>
-      ● {(copy as any).status.saved({ time })}
+    <span className="dlv-recording-progress" aria-label={label} title={label}>
+      {time}
     </span>
   );
 }

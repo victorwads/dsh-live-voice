@@ -354,7 +354,8 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       state = { ...state, conversation: true, listening: true, recognizing: true };
       callbacks.forEach((cb) => cb());
     });
-    assert.equal(document.querySelector('[role=status]').textContent, 'Recognizing speech…');
+    assert.equal(document.querySelector('[role=status]').textContent, 'Listening');
+    assert.doesNotMatch(document.querySelector('[role=status]').textContent, /…|\.\.\./);
     const autoSendToggle = document.querySelector('[aria-label="Automatic delivery mode"]');
     const assistantSpeechToggle = document.querySelector(
       '[aria-label="Automatic assistant speech"]',

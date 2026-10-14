@@ -147,7 +147,7 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'Solo se solicitará permiso para usar el micrófono cuando inicies un dictado o una conversación por voz.',
   'dsh-live-voice.recognition.microphone.resume': 'Reanudar escucha',
-  'dsh-live-voice.recognition.microphone.starting': 'Iniciando micrófono…',
+  'dsh-live-voice.recognition.microphone.starting': 'Iniciando micrófono',
   'dsh-live-voice.recognition.microphone.takeControl': 'Tomar el control del micrófono',
   'dsh-live-voice.recognition.minimumWords.enabled':
     'Ignorar los fragmentos definitivos de transcripción demasiado cortos',
@@ -220,11 +220,14 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.speakerMode.help':
     'La reproducción libera el micrófono para reducir el retorno de los altavoces. Tomar micrófono interrumpe manualmente; participantes reconocidos sin eco en el audio compartido pueden pausar la reproducción, que se reanuda tras silencio estable.',
   'dsh-live-voice.recognition.speakerMode.label': 'Altavoces — escucha controlada',
-  'dsh-live-voice.recognition.status.answer': 'Reconociendo respuesta…',
-  'dsh-live-voice.recognition.status.awaitingAnswer': 'Escuchando tu respuesta…',
-  'dsh-live-voice.recognition.status.listening': 'Escuchando — esperando voz',
-  'dsh-live-voice.recognition.status.processing': 'Reconociendo voz…',
+  'dsh-live-voice.recognition.status.answer': 'Reconociendo respuesta',
+  'dsh-live-voice.recognition.status.awaitingAnswer': 'Escuchando tu respuesta',
+  'dsh-live-voice.recognition.status.listening': 'Escuchando',
+  'dsh-live-voice.recognition.status.listeningProcessing': 'Escuchando y transcribiendo',
+  'dsh-live-voice.recognition.status.processing': 'Transcribiendo',
   'dsh-live-voice.recognition.status.unavailable': 'Reconocimiento de voz no disponible',
+  'dsh-live-voice.recognition.status.waiting': 'Esperando',
+  'dsh-live-voice.recognition.status.waitingCommand': 'Esperando comando',
   'dsh-live-voice.recognition.voiceCommands.help':
     'Separa las frases con comas. La comparación ignora mayúsculas, acentos, puntuación y espacios adicionales. Debe coincidir todo el fragmento definitivo.',
   'dsh-live-voice.recognition.whisper.captureHelp':
@@ -270,7 +273,7 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.recording.status.saved': 'Audio guardado hasta {time}',
   'dsh-live-voice.recording.title': 'Grabaciones recuperables',
   'dsh-live-voice.settings.autoSend.cancel': 'Cancelar envío automático',
-  'dsh-live-voice.settings.autoSend.countdown': 'Enviando en {remaining}…',
+  'dsh-live-voice.settings.autoSend.countdown': 'Enviando en {remaining}',
   'dsh-live-voice.settings.autoSend.delay': 'Enviar después del silencio',
   'dsh-live-voice.settings.close': 'Cerrar configuración de voz',
   'dsh-live-voice.settings.delivery.dshEnterHelp':

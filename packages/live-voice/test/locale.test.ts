@@ -64,7 +64,7 @@ test('ships complete typed dictionaries for DSH built-ins and contributed langua
     createFallbackTranslator('pt-BR')('dsh-live-voice.settings.autoSend.countdown', {
       remaining: 3,
     }),
-    'Enviando em 3…',
+    'Enviando em 3',
   );
 });
 

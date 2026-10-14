@@ -223,6 +223,25 @@ test('both sources share exact commands and ignore semantics without closing cap
   assert.match(f.draft(), /send$/);
 });
 
+test('shared source keeps audio writes separate from displayed transcription and still blocks delivery', async (t) => {
+  const f = policyFixture(t);
+  await f.meeting.start('shared');
+  const input = f.meeting.input(),
+    cb = f.sources.shared.callbacks;
+  input.updateSettings({ sendingMode: 'queue', autoSendDelaySeconds: 1 });
+  cb.onProcessingChange({ pending: 2, transcribing: 0 });
+  assert.equal(input.getSnapshot().pendingTranscriptionRequests, 0);
+  assert.equal(input.getSnapshot().pendingTranscriptions, 2);
+  cb.onResult({ final: 'shared words' });
+  assert.equal(input.getSnapshot().autoSendAt, null);
+  cb.onProcessingChange({ pending: 2, transcribing: 1 });
+  assert.equal(input.getSnapshot().pendingTranscriptionRequests, 1);
+  cb.onProcessingChange({ pending: 1, transcribing: 0 });
+  assert.equal(input.getSnapshot().autoSendAt, null);
+  cb.onProcessingChange({ pending: 0, transcribing: 0 });
+  assert.ok(input.getSnapshot().autoSendAt);
+});
+
 test('automatic delivery waits for processing and is cancelled by ignore, manual edit, stop and disposal', async (t) => {
   t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
   const f = policyFixture(t);

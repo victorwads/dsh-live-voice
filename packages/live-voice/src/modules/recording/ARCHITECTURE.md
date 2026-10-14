@@ -13,6 +13,8 @@ This browser-only module owns recording sessions, speech/silence pin markers, re
 
 ## Ownership and limits
 
+Processing notifications expose `transcribing` (queued plus active speech attempts) separately from aggregate `pending` (including serialized audio writes and capture finish). Only the former drives visible transcription status; the latter still gates delivery, Hold-to-Talk release, playback admission and page-leave protection. Continuous silent PCM persistence must not announce transcription.
+
 Append, pin, attempt, read and finish operations are serialized per writer. Append owns a copy of its input and rejects more than eight seconds of queued PCM as backpressure rather than buffering indefinitely. Finish immediately seals further audio and pins, drains accepted appends, flushes the partial page, then releases ownership. Attempt upserts may still settle after audio is sealed, for already-running recognition requests. Dispose interrupts and drains active writers before closing storage.
 
 Explicit opt-out writers run the same codec pipeline in a non-persistent compressed memory store with a shared 32 MiB page budget. Crossing that budget fails explicitly; it never silently drops earlier ranges. Long-running opt-out sessions therefore must handle memory-limit errors (or finish and release older runs). User-requested range PCM/WAV and full JSON export allocations are outside the steady-state capture budget.

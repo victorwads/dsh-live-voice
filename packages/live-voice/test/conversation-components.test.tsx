@@ -83,6 +83,10 @@ function controllerFixture(overrides = {}) {
   const calls = [];
   return {
     calls,
+    patch(value) {
+      state = { ...state, ...value };
+      listeners.forEach((listener) => listener());
+    },
     getSnapshot: () => state,
     subscribe(listener) {
       listeners.add(listener);
@@ -240,7 +244,7 @@ test('conversation status bar composes status, delivery, autoplay, microphone, a
     root.querySelector('[aria-label="Voice controls"]').getAttribute('aria-label'),
     'Voice controls',
   );
-  assert.equal(root.querySelector('[role="status"]').textContent, 'Listening — waiting for speech');
+  assert.equal(root.querySelector('[role="status"]').textContent, 'Waiting');
   assert.ok(root.querySelector('.dlv-wave'));
   assert.equal(root.querySelector('[data-mode="queue"]').getAttribute('aria-pressed'), 'true');
   assert.equal(
@@ -249,6 +253,71 @@ test('conversation status bar composes status, delivery, autoplay, microphone, a
     'autoplay belongs to composer, not bars',
   );
   assert.equal(root.querySelector('[data-muted="false"]').getAttribute('aria-pressed'), 'true');
+});
+
+test('microphone status distinguishes speech, transcription backlog, waiting, and ignoring', async (t) => {
+  const controller = controllerFixture({ conversation: true, listening: true });
+  controller.clearError = () => {};
+  const root = await fixture(
+    t,
+    <LiveVoiceTranslationProvider>
+      <ConversationStatusBar controller={controller} includeSpeech={false} />
+    </LiveVoiceTranslationProvider>,
+  );
+  const cases = [
+    [{ recognizing: false, pendingTranscriptions: 0, muted: false }, 'Waiting'],
+    [{ recognizing: true, pendingTranscriptions: 0 }, 'Listening'],
+    [{ recognizing: true, pendingTranscriptions: 2 }, 'Listening and transcribing'],
+    [{ recognizing: false, pendingTranscriptions: 2 }, 'Transcribing'],
+    [{ muted: true, recognizing: true, pendingTranscriptions: 2 }, 'Waiting for command'],
+    [{ recognizing: false, pendingTranscriptions: 0 }, 'Waiting for command'],
+    [{ muted: false }, 'Waiting'],
+    [{ listening: false, recognizing: false, pendingTranscriptions: 2 }, 'Transcribing'],
+    [{ recognizing: true, pendingTranscriptions: 0 }, 'Transcribing'],
+    [{ recognizing: false }, 'Conversation idle'],
+    [{ starting: true }, 'Starting microphone'],
+    [{ starting: false, listening: true, answeringQuestion: true }, 'Listening for your answer'],
+    [{ recognizing: true }, 'Recognizing answer'],
+    [{ muted: true, pendingTranscriptions: 2 }, 'Waiting for command'],
+  ];
+  for (const [patch, expected] of cases) {
+    await act(async () => controller.patch(patch));
+    const status = root.querySelector('[role="status"]');
+    assert.equal(status.textContent, expected, JSON.stringify(patch));
+    assert.doesNotMatch(status.textContent, /…|\.\.\./);
+    assert.equal(status.getAttribute('aria-live'), 'polite');
+  }
+});
+
+test('continuous silent recording writes do not flash transcription text in the live bar', async (t) => {
+  const controller = controllerFixture({
+    conversation: true,
+    listening: true,
+    recognizing: false,
+    pendingTranscriptions: 0,
+    pendingTranscriptionRequests: 0,
+  });
+  controller.clearError = () => {};
+  const root = await fixture(
+    t,
+    <LiveVoiceTranslationProvider>
+      <ConversationStatusBar controller={controller} includeSpeech={false} />
+    </LiveVoiceTranslationProvider>,
+  );
+  for (let frame = 0; frame < 24; frame++) {
+    await act(async () => controller.patch({ pendingTranscriptions: 1 }));
+    assert.equal(root.querySelector('[role="status"]').textContent, 'Waiting');
+    await act(async () => controller.patch({ pendingTranscriptions: 0 }));
+    assert.equal(root.querySelector('[role="status"]').textContent, 'Waiting');
+  }
+  await act(async () =>
+    controller.patch({ pendingTranscriptions: 2, pendingTranscriptionRequests: 1 }),
+  );
+  assert.equal(root.querySelector('[role="status"]').textContent, 'Transcribing');
+  await act(async () =>
+    controller.patch({ pendingTranscriptions: 1, pendingTranscriptionRequests: 0 }),
+  );
+  assert.equal(root.querySelector('[role="status"]').textContent, 'Waiting');
 });
 
 test('conversation status bar respects visibility and question overlay contracts', async (t) => {

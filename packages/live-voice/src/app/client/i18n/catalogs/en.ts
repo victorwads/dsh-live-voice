@@ -142,7 +142,7 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.microphone.permissionHelp':
     'Microphone permission will be requested only when you start dictation or a voice conversation.',
   'dsh-live-voice.recognition.microphone.resume': 'Resume listening',
-  'dsh-live-voice.recognition.microphone.starting': 'Starting microphone…',
+  'dsh-live-voice.recognition.microphone.starting': 'Starting microphone',
   'dsh-live-voice.recognition.microphone.takeControl': 'Take microphone',
   'dsh-live-voice.recognition.minimumWords.enabled': 'Ignore short final transcription chunks',
   'dsh-live-voice.recognition.minimumWords.help':
@@ -210,11 +210,14 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.speakerMode.help':
     'Playback releases the microphone to reduce speaker feedback. Take microphone interrupts manually; recognized non-echo participants in shared meeting audio can pause playback and it resumes after stable silence.',
   'dsh-live-voice.recognition.speakerMode.label': 'Speakers — gated listening',
-  'dsh-live-voice.recognition.status.answer': 'Recognizing answer…',
-  'dsh-live-voice.recognition.status.awaitingAnswer': 'Listening for your answer…',
-  'dsh-live-voice.recognition.status.listening': 'Listening — waiting for speech',
-  'dsh-live-voice.recognition.status.processing': 'Recognizing speech…',
+  'dsh-live-voice.recognition.status.answer': 'Recognizing answer',
+  'dsh-live-voice.recognition.status.awaitingAnswer': 'Listening for your answer',
+  'dsh-live-voice.recognition.status.listening': 'Listening',
+  'dsh-live-voice.recognition.status.listeningProcessing': 'Listening and transcribing',
+  'dsh-live-voice.recognition.status.processing': 'Transcribing',
   'dsh-live-voice.recognition.status.unavailable': 'Speech recognition unavailable',
+  'dsh-live-voice.recognition.status.waiting': 'Waiting',
+  'dsh-live-voice.recognition.status.waitingCommand': 'Waiting for command',
   'dsh-live-voice.recognition.voiceCommands.help':
     'Separate phrases with commas. Matching ignores capitalization, accents, punctuation, and extra spaces. The entire final chunk must match.',
   'dsh-live-voice.recognition.whisper.captureHelp':
@@ -257,7 +260,7 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recording.status.saved': 'Audio saved through {time}',
   'dsh-live-voice.recording.title': 'Recoverable recordings',
   'dsh-live-voice.settings.autoSend.cancel': 'Cancel automatic send',
-  'dsh-live-voice.settings.autoSend.countdown': 'Sending in {remaining}…',
+  'dsh-live-voice.settings.autoSend.countdown': 'Sending in {remaining}',
   'dsh-live-voice.settings.autoSend.delay': 'Send after silence',
   'dsh-live-voice.settings.close': 'Close voice settings',
   'dsh-live-voice.settings.delivery.dshEnterHelp':

@@ -6,7 +6,7 @@ import type {
 } from './types.js';
 import type { SileroVadOptions, SileroVadStream } from '../recognition/vad/SileroVadRuntime.js';
 type CaptureHandle = { finish(): Promise<void>; release(): void };
-type Processing = { queued: number; active: boolean; pending: number };
+type Processing = { queued: number; active: boolean; transcribing: number; pending: number };
 interface RecognitionCallbacks {
   signal?: AbortSignal;
   lang?: string;
@@ -162,6 +162,9 @@ export async function startRecordingRecognition(
       session.onProcessingChange?.({
         queued: session.transcriptionQueue.length,
         active: !!session.activeRequest,
+        // Only queued/running speech attempts belong in the visible transcription status.
+        transcribing: session.transcriptionQueue.length + (session.activeRequest ? 1 : 0),
+        // Audio writes and final drain still block delivery/release, even in silence.
         pending:
           session.transcriptionQueue.length +
           (session.activeRequest ? 1 : 0) +

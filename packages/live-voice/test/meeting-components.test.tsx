@@ -86,7 +86,7 @@ test('shared audio toggle starts directly and only renders its own active bar wi
   assert.equal(document.querySelector('p'), null);
   assert.equal(
     document.querySelector('[role="status"]').textContent,
-    'Listening — waiting for speech',
+    'Waiting',
   );
   const clock = document.querySelector('[aria-label="Transcript timestamps"]');
   assert.equal(clock.getAttribute('data-toggle-active'), 'false');
@@ -101,7 +101,22 @@ test('shared audio toggle starts directly and only renders its own active bar wi
   await act(async () => document.querySelector('[role="group"] button').click());
   assert.equal(input.getSnapshot().muted, false);
   assert.ok(document.querySelector('[aria-label="Enable exact voice commands"]'));
-  await act(async () => input.patch({ recognizing: false, pendingTranscriptions: 1 }));
-  assert.match(document.querySelector('[role="status"]').textContent, /Recognizing speech/);
+  const cases = [
+    [{ recognizing: false, pendingTranscriptions: 1 }, 'Transcribing'],
+    [{ recognizing: true, pendingTranscriptions: 1 }, 'Listening and transcribing'],
+    [{ recognizing: true, pendingTranscriptions: 0 }, 'Listening'],
+    [{ recognizing: false, pendingTranscriptions: 0 }, 'Waiting'],
+    [{ muted: true, recognizing: true, pendingTranscriptions: 2 }, 'Waiting for command'],
+    [{ recognizing: false, pendingTranscriptions: 0 }, 'Waiting for command'],
+    [{ muted: false }, 'Waiting'],
+  ];
+  for (const [patch, expected] of cases) {
+    await act(async () => input.patch(patch));
+    const status = document.querySelector('[role="status"]');
+    assert.equal(status.textContent, expected, JSON.stringify(patch));
+    assert.doesNotMatch(status.textContent, /…|\.\.\./);
+    assert.equal(status.getAttribute('aria-live'), 'polite');
+    assert.equal(snapshot.microphone.listening, true, 'shared status never changes microphone capture');
+  }
   input.cancelAutoSend();
 });

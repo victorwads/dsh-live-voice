@@ -55,6 +55,7 @@ export class VoiceCoordinator {
       listening: false,
       recognizing: false,
       pendingTranscriptions: 0,
+      pendingTranscriptionRequests: undefined,
       muted: normalizeSettings(settings).microphoneEnabled === false,
       speaking: false,
       paused: false,
@@ -439,10 +440,12 @@ export class VoiceCoordinator {
           onResult: (result) => {
             if (valid()) this.onResult(result);
           },
-          onProcessingChange: ({ pending = 0 } = {}) => {
+          onProcessingChange: ({ pending = 0, transcribing } = {}) => {
             if (!valid()) return;
             const count = Number.isSafeInteger(pending) && pending >= 0 ? pending : 0;
-            this.patch({ pendingTranscriptions: count });
+            const requests =
+              Number.isSafeInteger(transcribing) && transcribing >= 0 ? transcribing : count;
+            this.patch({ pendingTranscriptions: count, pendingTranscriptionRequests: requests });
             if (count > 0) this.cancelAutoSend({ preserveIntent: true });
             else if (this.holdToTalkRelease) this._finishHoldToTalk();
             else this.maybeScheduleAutoSend();
@@ -798,7 +801,13 @@ export class VoiceCoordinator {
     this.cancelAutoSend();
     ++this.epoch;
     this.inputController?.abort();
-    this.patch({ listening: false, recognizing: false, pendingTranscriptions: 0, starting: false });
+    this.patch({
+      listening: false,
+      recognizing: false,
+      pendingTranscriptions: 0,
+      pendingTranscriptionRequests: 0,
+      starting: false,
+    });
     return this._input(async () => {
       try {
         await this._releaseInput();
