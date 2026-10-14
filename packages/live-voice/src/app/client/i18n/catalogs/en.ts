@@ -119,9 +119,9 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.headphoneMode.help':
     'The microphone stays open during playback. Recognized non-echo speech can pause playback after the configured delay; it resumes after microphone and shared meeting audio stay silent for that delay. Manual Pause requires Resume.',
   'dsh-live-voice.recognition.headphoneMode.label': 'Headphones — open microphone',
-  'dsh-live-voice.recognition.holdToTalk.enabled': 'Hold Control to talk',
+  'dsh-live-voice.recognition.holdToTalk.enabled': 'Hold to talk',
   'dsh-live-voice.recognition.holdToTalk.help':
-    'While a composer is open, hold Control anywhere on the page to capture speech. Release it to flush queued transcription, wait the configured send delay, queue the message, and close voice capture. Press Escape while holding to cancel.',
+    'While a composer is open, hold the configured shortcut anywhere on the page to capture speech. Release it to flush queued transcription, wait the configured send delay, queue the message, and close voice capture. Press Escape while holding to cancel.',
   'dsh-live-voice.recognition.language.automatic': 'Automatic — detect language',
   'dsh-live-voice.recognition.language.label': 'Recognition language',
   'dsh-live-voice.recognition.language.options.chinese': 'Chinese (Mandarin)',
@@ -287,6 +287,18 @@ const en: LiveVoiceTranslation = {
     'Could not load Live Voice settings from the server. Reload to try again.',
   'dsh-live-voice.settings.persistence.saveError':
     'Could not save Live Voice settings on the server. Please try again.',
+  'dsh-live-voice.settings.shortcuts.assistantSpeech': 'Toggle automatic assistant speech',
+  'dsh-live-voice.settings.shortcuts.clear': 'Clear',
+  'dsh-live-voice.settings.shortcuts.conflict':
+    'This shortcut is already assigned to another action.',
+  'dsh-live-voice.settings.shortcuts.edit': 'Click to replace',
+  'dsh-live-voice.settings.shortcuts.help':
+    'Click a shortcut, press the new keys together, then release to save. Ctrl, Shift, Alt and Command work alone or in combinations, with or without a letter. Escape cancels; Tab leaves the field. Browser or system shortcuts may take priority.',
+  'dsh-live-voice.settings.shortcuts.meeting': 'Toggle meeting sharing',
+  'dsh-live-voice.settings.shortcuts.microphone': 'Toggle microphone',
+  'dsh-live-voice.settings.shortcuts.record': 'Click to set',
+  'dsh-live-voice.settings.shortcuts.recording':
+    'Press a shortcut… Release to save. Escape cancels.',
   'dsh-live-voice.settings.sourceNames.help':
     'When both sources capture, these names label new transcript blocks, not individual participants. Saved on blur; blank restores Me / Them. Maximum 80 characters. Existing text is unchanged.',
   'dsh-live-voice.settings.sourceNames.microphone': 'Microphone source name',

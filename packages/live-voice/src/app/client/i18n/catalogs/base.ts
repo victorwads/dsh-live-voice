@@ -223,6 +223,15 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.settings.layout.voice': string;
   'dsh-live-voice.settings.persistence.loadError': string;
   'dsh-live-voice.settings.persistence.saveError': string;
+  'dsh-live-voice.settings.shortcuts.assistantSpeech': string;
+  'dsh-live-voice.settings.shortcuts.clear': string;
+  'dsh-live-voice.settings.shortcuts.conflict': string;
+  'dsh-live-voice.settings.shortcuts.edit': string;
+  'dsh-live-voice.settings.shortcuts.help': string;
+  'dsh-live-voice.settings.shortcuts.meeting': string;
+  'dsh-live-voice.settings.shortcuts.microphone': string;
+  'dsh-live-voice.settings.shortcuts.record': string;
+  'dsh-live-voice.settings.shortcuts.recording': string;
   'dsh-live-voice.settings.sourceNames.help': string;
   'dsh-live-voice.settings.sourceNames.microphone': string;
   'dsh-live-voice.settings.sourceNames.shared': string;

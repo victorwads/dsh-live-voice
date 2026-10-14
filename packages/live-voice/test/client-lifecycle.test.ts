@@ -397,6 +397,73 @@ test('holding Control globally starts one temporary capture and release finishes
   assert.equal(f.calls.filter(([name]) => name === 'hold-start').length, 1);
 });
 
+test('custom shortcuts use composer actions and settings capture never activates them', async (t) => {
+  const f = await fixture(t, {
+    initialSettings: {
+      holdToTalkEnabled: true,
+      holdToTalkShortcut: 'Alt+KeyH',
+      microphoneShortcut: 'Alt+KeyM',
+      meetingShortcut: 'Alt+KeyR',
+      assistantSpeechShortcut: 'Alt+KeyS',
+    },
+  });
+  let meeting;
+  let sharedRequests = 0;
+  navigator.mediaDevices.getDisplayMedia = () => {
+    sharedRequests++;
+    return Promise.resolve({ getTracks: () => [] });
+  };
+  t.mock.method(MeetingController.prototype, 'start', async function (source, request) {
+    await request;
+    meeting = this;
+    this.patch(source, { listening: true });
+  });
+  const stopped = [];
+  t.mock.method(MeetingController.prototype, 'stop', async function (source) {
+    stopped.push(source);
+    this.patch(source, { listening: false });
+  });
+  await f.render(h(f.Buttons, f.props('a')));
+  const c = f.controllers[0];
+  const key = async (code, options = {}, target = document, type = 'keydown') =>
+    act(async () => {
+      target.dispatchEvent(
+        new window.KeyboardEvent(type, {
+          code,
+          altKey: true,
+          bubbles: true,
+          cancelable: true,
+          ...options,
+        }),
+      );
+    });
+  await key('KeyM');
+  assert.equal(f.calls.filter(([name]) => name === 'conversation').length, 1);
+  c.patch({ conversation: true });
+  await key('KeyM');
+  assert.equal(c.getSnapshot().conversation, false);
+  await key('KeyR');
+  assert.equal(sharedRequests, 1);
+  assert.equal(meeting.getSnapshot().shared.listening, true);
+  await key('KeyR');
+  assert.deepEqual(stopped, ['shared']);
+  await key('KeyS');
+  assert.equal(c.getSnapshot().settings.announceAssistantMessages, false);
+  await key('KeyS', { repeat: true });
+  assert.equal(c.getSnapshot().settings.announceAssistantMessages, false);
+  await key('KeyS');
+  assert.equal(c.getSnapshot().settings.announceAssistantMessages, true);
+  await key('KeyH');
+  await key('KeyH', {}, document, 'keyup');
+  assert.equal(f.calls.filter(([name]) => name === 'hold-start').length, 1);
+  assert.equal(f.calls.filter(([name]) => name === 'hold-release').length, 1);
+  const field = document.createElement('button');
+  field.className = 'dlv-shortcut-field';
+  document.body.append(field);
+  await key('KeyM', {}, field);
+  assert.equal(f.calls.filter(([name]) => name === 'conversation').length, 1);
+});
+
 test('hold-Control is ignored when more than one composer session is mounted', async (t) => {
   const f = await fixture(t);
   await f.render([
@@ -435,7 +502,7 @@ test('one keyboard handler across duplicate mounts; ambiguous sessions are ignor
   await act(async () => {
     key();
   });
-  assert.equal(f.calls.filter(([name]) => name === 'start').length, 1);
+  assert.equal(f.calls.filter(([name]) => name === 'conversation').length, 1);
   await f.render([
     h(f.Buttons, { ...f.props('a'), key: 'one' }),
     h(f.Buttons, { ...f.props('b'), key: 'two' }),
@@ -443,12 +510,12 @@ test('one keyboard handler across duplicate mounts; ambiguous sessions are ignor
   await act(async () => {
     key();
   });
-  assert.equal(f.calls.filter(([name]) => name === 'start').length, 1);
+  assert.equal(f.calls.filter(([name]) => name === 'conversation').length, 1);
   f.close();
   await act(async () => {
     key();
   });
-  assert.equal(f.calls.filter(([name]) => name === 'start').length, 1);
+  assert.equal(f.calls.filter(([name]) => name === 'conversation').length, 1);
   assert.equal(f.store('a').listeners.size, 0);
   assert.equal(f.store('b').listeners.size, 0);
 });

@@ -13,6 +13,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 - Introduce a new voice pipeline with recording-based chunking, VAD speech/silence markers, and independent segmentation for microphone and shared audio.
 - Optionally save recoverable audio sessions locally, with configurable retention, quality, detection sensitivity, and transcription margins.
 - Configure separate silence pauses for transcription chunks and new paragraphs, using presets or custom timings.
+- Customize keyboard shortcuts for Hold-to-Talk, microphone, meeting sharing, and automatic assistant speech in Conversation settings. Click to record or replace a shortcut, use modifiers alone or combined with another key, clear bindings, and detect duplicate assignments.
 
 #### Live Voice Debugger
 

@@ -110,9 +110,9 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.headphoneMode.help':
     '播放时麦克风保持开启。识别到非回声语音后，可在设定延迟后暂停播放；麦克风和共享会议音频持续静音达到该时长后恢复。手动暂停后需点击恢复。',
   'dsh-live-voice.recognition.headphoneMode.label': '耳机 — 开放麦克风',
-  'dsh-live-voice.recognition.holdToTalk.enabled': '按住 Control 键说话',
+  'dsh-live-voice.recognition.holdToTalk.enabled': '按住说话',
   'dsh-live-voice.recognition.holdToTalk.help':
-    '消息输入框打开时，在页面任意位置按住 Control 键即可采集语音。松开后会处理完队列中的转写，等待设定的发送延迟，将消息加入队列，然后关闭语音采集。按住期间按 Escape 键可取消。',
+    '消息输入框打开时，在页面任意位置按住已配置的快捷键即可采集语音。松开后会处理完队列中的转写，等待设定的发送延迟，将消息加入队列，然后关闭语音采集。按住期间按 Escape 键可取消。',
   'dsh-live-voice.recognition.language.automatic': '自动 — 检测语言',
   'dsh-live-voice.recognition.language.label': '识别语言',
   'dsh-live-voice.recognition.language.options.chinese': '中文（普通话）',
@@ -267,6 +267,16 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.settings.layout.voice': '声音与引擎',
   'dsh-live-voice.settings.persistence.loadError': '无法从服务器加载 实时语音 设置。请刷新后重试。',
   'dsh-live-voice.settings.persistence.saveError': '无法在服务器上保存 实时语音 设置。请重试。',
+  'dsh-live-voice.settings.shortcuts.assistantSpeech': '开启/关闭助手自动语音',
+  'dsh-live-voice.settings.shortcuts.clear': '清除',
+  'dsh-live-voice.settings.shortcuts.conflict': '此快捷键已分配给其他操作。',
+  'dsh-live-voice.settings.shortcuts.edit': '点击替换',
+  'dsh-live-voice.settings.shortcuts.help':
+    '点击快捷键，同时按下新按键，然后松开以保存。Ctrl、Shift、Alt 和 Command 可单独使用或组合使用，也可搭配字母。Escape 取消，Tab 离开字段。浏览器或系统快捷键可能优先。',
+  'dsh-live-voice.settings.shortcuts.meeting': '开启/关闭会议音频共享',
+  'dsh-live-voice.settings.shortcuts.microphone': '开启/关闭麦克风',
+  'dsh-live-voice.settings.shortcuts.record': '点击设置',
+  'dsh-live-voice.settings.shortcuts.recording': '请按快捷键… 松开以保存，Escape 取消。',
   'dsh-live-voice.settings.sourceNames.help':
     '同时采集两个音源时，这些名称标记新的转录段落，而非各个参会者。离开输入框时保存；留空恢复 Me / Them。最多 80 个字符。现有文本不会改变。',
   'dsh-live-voice.settings.sourceNames.microphone': '麦克风音源名称',

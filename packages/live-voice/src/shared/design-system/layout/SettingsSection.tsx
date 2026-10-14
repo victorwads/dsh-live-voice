@@ -1,12 +1,14 @@
 import React from 'react';
 import { SettingsSectionBody } from './SettingsSectionBody.js';
 import { Icon, type IconName } from '../icons/index.js';
+import { Hint } from '../feedback/Hint.js';
 
 export function SettingsSection({
   title,
   children,
   icon,
   description,
+  hint,
   collapsible = true,
   defaultOpen = true,
   ariaLabel,
@@ -14,6 +16,7 @@ export function SettingsSection({
   title: string;
   icon?: IconName;
   description?: string;
+  hint?: React.ReactNode;
   collapsible?: boolean;
   defaultOpen?: boolean;
   ariaLabel?: string;
@@ -22,14 +25,10 @@ export function SettingsSection({
     <h4>
       {icon && <Icon name={icon} />}
       {title}
+      {(hint || description) && <Hint label={title}>{hint || description}</Hint>}
     </h4>
   );
-  const body = (
-    <SettingsSectionBody>
-      {description && <p>{description}</p>}
-      {children}
-    </SettingsSectionBody>
-  );
+  const body = <SettingsSectionBody>{children}</SettingsSectionBody>;
   if (!collapsible)
     return (
       <section className="dlv-settings-section">

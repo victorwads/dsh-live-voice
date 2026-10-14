@@ -3,6 +3,7 @@ import { useLanguage } from '../../../app/client/i18n/index.js';
 import { ErrorMessage } from '../../../shared/design-system/index.js';
 import { useConversationActions, useConversationController } from '../hooks/index.js';
 import { MicrophoneButton } from './MicrophoneButton.js';
+import { microphoneAction } from '../models/microphoneAction.js';
 import { AutoPlaybackToggle } from './AutoPlaybackToggle.js';
 
 export type ConversationControlsProps = { controller: any };
@@ -20,15 +21,7 @@ export function ConversationControls({ controller }: ConversationControlsProps) 
       <MicrophoneButton
         label={label}
         aria-pressed={Boolean(busy)}
-        onClick={() =>
-          invoke(
-            busy
-              ? state.conversation
-                ? 'stopConversationInput'
-                : 'cancelDictation'
-              : 'startConversation',
-          )
-        }
+        onClick={() => invoke(microphoneAction(state))}
       />
       <ErrorMessage
         error={error}

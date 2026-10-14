@@ -117,9 +117,9 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.headphoneMode.help':
     'प्लेबैक के दौरान माइक्रोफ़ोन चालू रहता है। बिना प्रतिध्वनि की पहचानी गई आवाज़ निर्धारित विलंब के बाद प्लेबैक रोक सकती है; माइक्रोफ़ोन और साझा मीटिंग ऑडियो उतनी देर शांत रहने पर यह फिर चलता है। मैन्युअल विराम के बाद फिर चलाएँ दबाएँ।',
   'dsh-live-voice.recognition.headphoneMode.label': 'हेडफ़ोन — खुला माइक्रोफ़ोन',
-  'dsh-live-voice.recognition.holdToTalk.enabled': 'बोलने के लिए Control दबाए रखें',
+  'dsh-live-voice.recognition.holdToTalk.enabled': 'बोलने के लिए दबाए रखें',
   'dsh-live-voice.recognition.holdToTalk.help':
-    'संदेश बॉक्स खुला होने पर, पेज पर कहीं भी Control दबाए रखकर आवाज़ रिकॉर्ड करें। छोड़ने पर कतार में मौजूद ट्रांसक्रिप्शन पूरा किया जाता है, तय भेजने के विलंब तक प्रतीक्षा होती है, संदेश कतार में जुड़ता है और आवाज़ रिकॉर्ड करना बंद हो जाता है। रद्द करने के लिए Control दबाए रखते हुए Escape दबाएँ।',
+    'संदेश बॉक्स खुला होने पर, पेज पर कहीं भी निर्धारित शॉर्टकट दबाए रखकर आवाज़ रिकॉर्ड करें। छोड़ने पर कतार में मौजूद ट्रांसक्रिप्शन पूरा किया जाता है, तय भेजने के विलंब तक प्रतीक्षा होती है, संदेश कतार में जुड़ता है और आवाज़ रिकॉर्ड करना बंद हो जाता है। रद्द करने के लिए दबाए रखते हुए Escape दबाएँ।',
   'dsh-live-voice.recognition.language.automatic': 'स्वचालित — भाषा पहचानें',
   'dsh-live-voice.recognition.language.label': 'वाक् पहचान की भाषा',
   'dsh-live-voice.recognition.language.options.chinese': 'चीनी (मंदारिन)',
@@ -288,6 +288,18 @@ const hi: LiveVoiceTranslation = {
     'सर्वर से लाइव वॉइस सेटिंग लोड नहीं हो सकीं। फिर प्रयास करने के लिए पेज रीलोड करें।',
   'dsh-live-voice.settings.persistence.saveError':
     'सर्वर पर लाइव वॉइस सेटिंग सेव नहीं हो सकीं। फिर प्रयास करें।',
+  'dsh-live-voice.settings.shortcuts.assistantSpeech': 'सहायक की स्वचालित आवाज़ चालू/बंद करें',
+  'dsh-live-voice.settings.shortcuts.clear': 'हटाएँ',
+  'dsh-live-voice.settings.shortcuts.conflict':
+    'यह शॉर्टकट पहले से किसी अन्य क्रिया को सौंपा गया है।',
+  'dsh-live-voice.settings.shortcuts.edit': 'बदलने के लिए क्लिक करें',
+  'dsh-live-voice.settings.shortcuts.help':
+    'शॉर्टकट पर क्लिक करें, नई कुंजियाँ एक साथ दबाएँ और सहेजने के लिए छोड़ें। Ctrl, Shift, Alt और Command अकेले या संयोजन में, अक्षर के साथ या बिना काम करते हैं। Escape रद्द करता है; Tab फ़ील्ड से बाहर जाता है। ब्राउज़र या सिस्टम शॉर्टकट को प्राथमिकता मिल सकती है।',
+  'dsh-live-voice.settings.shortcuts.meeting': 'बैठक साझाकरण चालू/बंद करें',
+  'dsh-live-voice.settings.shortcuts.microphone': 'माइक्रोफ़ोन चालू/बंद करें',
+  'dsh-live-voice.settings.shortcuts.record': 'सेट करने के लिए क्लिक करें',
+  'dsh-live-voice.settings.shortcuts.recording':
+    'शॉर्टकट दबाएँ… सहेजने के लिए छोड़ें। Escape रद्द करता है।',
   'dsh-live-voice.settings.sourceNames.help':
     'जब दोनों स्रोत रिकॉर्ड करते हैं, ये नाम नए ट्रांसक्रिप्ट ब्लॉक को चिह्नित करते हैं, अलग-अलग प्रतिभागियों को नहीं। फ़ील्ड छोड़ने पर सहेजे जाते हैं; खाली रखने पर Me / Them वापस आते हैं। अधिकतम 80 अक्षर। मौजूदा पाठ नहीं बदलता।',
   'dsh-live-voice.settings.sourceNames.microphone': 'माइक्रोफ़ोन स्रोत का नाम',

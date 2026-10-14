@@ -131,6 +131,20 @@ test('modular settings composes speech, recognition, and conversation tabs', asy
     assert.equal(section.open, true, 'essential sections start expanded');
   }
   const conversation = panels[2];
+  const shortcuts = conversation
+    .querySelector('.dlv-shortcut-field')
+    .closest('.dlv-settings-section');
+  assert.equal(shortcuts.querySelectorAll('[role="tooltip"]').length, 1);
+  assert.equal(
+    shortcuts.querySelectorAll('.dlv-section-content p, .dlv-shortcut-field small').length,
+    0,
+  );
+  const shortcutHelp = shortcuts.querySelector('[role="tooltip"]');
+  assert.equal(shortcutHelp.hidden, true);
+  assert.match(shortcutHelp.textContent, /press the new keys together/);
+  await act(async () => shortcuts.querySelector('.dlv-hint-trigger').click());
+  assert.equal(shortcutHelp.hidden, false);
+  assert.equal(shortcuts.open, true, 'opening help must not collapse the section');
   const general = conversation.querySelector('.dlv-settings-section');
   const delivery = general.querySelector('select');
   assert.ok(delivery);

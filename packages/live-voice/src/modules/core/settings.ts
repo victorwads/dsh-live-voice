@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { resolveCodeNotice } from './speechDefaults.js';
+import { normalizeShortcut } from '../../shared/design-system/forms/keyboardShortcut.js';
 export const voiceDetectionPresets = Object.freeze({
   short: Object.freeze({
     silenceMs: 400,
@@ -62,6 +63,10 @@ export const defaultSettings = Object.freeze({
   recognitionMaxUtteranceSeconds: 60,
   microphoneEnabled: true,
   holdToTalkEnabled: false,
+  holdToTalkShortcut: 'Control',
+  microphoneShortcut: 'Control+Shift+Space',
+  meetingShortcut: '',
+  assistantSpeechShortcut: '',
   announceAssistantMessages: true,
   agentVoiceContextEnabled: true,
   agentVoiceContext: defaultAgentVoiceContext,
@@ -226,6 +231,19 @@ export function normalizeSettings(value) {
       typeof source.holdToTalkEnabled === 'boolean'
         ? source.holdToTalkEnabled
         : defaultSettings.holdToTalkEnabled,
+    holdToTalkShortcut: normalizeShortcut(
+      source.holdToTalkShortcut,
+      defaultSettings.holdToTalkShortcut,
+    ),
+    microphoneShortcut: normalizeShortcut(
+      source.microphoneShortcut,
+      defaultSettings.microphoneShortcut,
+    ),
+    meetingShortcut: normalizeShortcut(source.meetingShortcut, defaultSettings.meetingShortcut),
+    assistantSpeechShortcut: normalizeShortcut(
+      source.assistantSpeechShortcut,
+      defaultSettings.assistantSpeechShortcut,
+    ),
     announceAssistantMessages:
       typeof source.announceAssistantMessages === 'boolean'
         ? source.announceAssistantMessages

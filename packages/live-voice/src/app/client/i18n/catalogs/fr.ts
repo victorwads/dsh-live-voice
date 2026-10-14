@@ -127,9 +127,9 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.headphoneMode.help':
     'Le microphone reste ouvert pendant la lecture. La parole reconnue sans écho peut la mettre en pause après le délai configuré ; elle reprend lorsque le microphone et le son partagé restent silencieux pendant ce délai. Une pause manuelle nécessite Reprendre.',
   'dsh-live-voice.recognition.headphoneMode.label': 'Casque — microphone ouvert',
-  'dsh-live-voice.recognition.holdToTalk.enabled': 'Maintenir Ctrl pour parler',
+  'dsh-live-voice.recognition.holdToTalk.enabled': 'Maintenir pour parler',
   'dsh-live-voice.recognition.holdToTalk.help':
-    'Lorsqu’une zone de rédaction est ouverte, maintenez Ctrl n’importe où sur la page pour capturer votre voix. Relâchez la touche pour traiter la transcription en attente, attendre le délai d’envoi configuré, mettre le message en file d’attente et arrêter la capture vocale. Appuyez sur Échap tout en maintenant Ctrl pour annuler.',
+    'Lorsqu’une zone de rédaction est ouverte, maintenez le raccourci configuré n’importe où sur la page pour capturer votre voix. Relâchez-le pour traiter la transcription en attente, attendre le délai d’envoi configuré, mettre le message en file d’attente et arrêter la capture vocale. Appuyez sur Échap pendant le maintien pour annuler.',
   'dsh-live-voice.recognition.language.automatic': 'Automatique — détecter la langue',
   'dsh-live-voice.recognition.language.label': 'Langue de reconnaissance',
   'dsh-live-voice.recognition.language.options.chinese': 'Chinois (mandarin)',
@@ -310,6 +310,19 @@ const fr: LiveVoiceTranslation = {
     'Impossible de charger les paramètres Voix en direct depuis le serveur. Rechargez pour réessayer.',
   'dsh-live-voice.settings.persistence.saveError':
     'Impossible de sauvegarder les paramètres Voix en direct sur le serveur. Réessayez.',
+  'dsh-live-voice.settings.shortcuts.assistantSpeech':
+    'Activer/désactiver la voix automatique de l’assistant',
+  'dsh-live-voice.settings.shortcuts.clear': 'Effacer',
+  'dsh-live-voice.settings.shortcuts.conflict':
+    'Ce raccourci est déjà attribué à une autre action.',
+  'dsh-live-voice.settings.shortcuts.edit': 'Cliquer pour remplacer',
+  'dsh-live-voice.settings.shortcuts.help':
+    'Cliquez sur un raccourci, appuyez sur les nouvelles touches ensemble, puis relâchez pour enregistrer. Ctrl, Maj, Alt et Command fonctionnent seuls ou combinés, avec ou sans lettre. Échap annule ; Tab quitte le champ. Les raccourcis du navigateur ou du système peuvent être prioritaires.',
+  'dsh-live-voice.settings.shortcuts.meeting': 'Activer/désactiver le partage de réunion',
+  'dsh-live-voice.settings.shortcuts.microphone': 'Activer/désactiver le microphone',
+  'dsh-live-voice.settings.shortcuts.record': 'Cliquer pour définir',
+  'dsh-live-voice.settings.shortcuts.recording':
+    'Appuyez sur un raccourci… Relâchez pour enregistrer. Échap annule.',
   'dsh-live-voice.settings.sourceNames.help':
     'Lorsque les deux sources capturent, ces noms identifient les nouveaux blocs de transcription, pas les participants individuels. Enregistrés en quittant le champ ; vide rétablit Me / Them. Maximum 80 caractères. Le texte existant reste inchangé.',
   'dsh-live-voice.settings.sourceNames.microphone': 'Nom de la source microphone',

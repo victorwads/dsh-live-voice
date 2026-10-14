@@ -1,5 +1,10 @@
 // @ts-nocheck
 import React from 'react';
+import {
+  matchesShortcut,
+  releasesShortcut,
+} from '../../shared/design-system/forms/keyboardShortcut.js';
+import { microphoneAction } from '../../modules/conversation/models/microphoneAction.js';
 import { SessionSpeechMemory } from '../../modules/speak/services/sessionSpeechMemory.js';
 import { readSileroVadDiagnostics } from '../../modules/recognition/vad/SileroVadRuntime.js';
 import { createRecordingRepository } from '../../modules/recording/repository.js';
@@ -765,6 +770,11 @@ export function apply(ctx) {
         entry.meeting.patch(source, { error: t('dsh-live-voice.meeting.failed') });
       }
     };
+    entry.toggleMeetingSource = () => {
+      const value = entry.meeting.getSnapshot().shared;
+      if (value.starting || value.listening) void entry.meeting.stop('shared');
+      else entry.startMeetingSource('shared');
+    };
     let microphoneActive = false;
     const unsubscribeMeetingMicrophone = controller.subscribe(() => {
       const state = controller.getSnapshot();
@@ -911,14 +921,7 @@ export function apply(ctx) {
     useComposer(entry, props);
     return entry ? (
       <div className="dlv-composer-toggles">
-        <MeetingToggle
-          meeting={entry.meeting}
-          onToggle={() => {
-            const value = entry.meeting.getSnapshot().shared;
-            if (value.starting || value.listening) void entry.meeting.stop('shared');
-            else entry.startMeetingSource('shared');
-          }}
-        />
+        <MeetingToggle meeting={entry.meeting} onToggle={entry.toggleMeetingSource} />
         <ConversationControls controller={entry.controller} />
       </div>
     ) : null;
@@ -1106,6 +1109,7 @@ export function apply(ctx) {
       }
     };
     let holdToTalk = null;
+    let heldShortcut = '';
     const candidate = () => {
       const candidates = [...controllers.values()].filter(
         (entry) => entry.buttons > 0 && entry.composers.size > 0,
@@ -1119,7 +1123,14 @@ export function apply(ctx) {
       run(entry.controller, entry.controller.releaseHoldToTalk());
     };
     const onKeyDown = (event) => {
-      if (disposed || event.defaultPrevented || event.repeat) return;
+      if (
+        disposed ||
+        event.defaultPrevented ||
+        event.repeat ||
+        event.isComposing ||
+        event.target?.closest?.('.dlv-settings, .dlv-shortcut-field')
+      )
+        return;
       if (event.key === 'Escape' && holdToTalk) {
         const entry = holdToTalk;
         holdToTalk = null;
@@ -1127,27 +1138,38 @@ export function apply(ctx) {
         run(entry.controller, entry.controller.cancelDictation());
         return;
       }
-      if (event.ctrlKey && event.shiftKey && event.code === 'Space') {
-        const entry = candidate();
-        if (!entry) return;
+      const entry = candidate();
+      if (!entry) return;
+      const c = entry.controller;
+      const state = c.getSnapshot();
+      const settings = state.settings;
+      if (matchesShortcut(event, settings.microphoneShortcut)) {
         event.preventDefault();
-        const c = entry.controller;
+        run(c, c[microphoneAction(state)]());
+      } else if (matchesShortcut(event, settings.meetingShortcut)) {
+        event.preventDefault();
+        entry.toggleMeetingSource();
+      } else if (matchesShortcut(event, settings.assistantSpeechShortcut)) {
+        event.preventDefault();
         run(
           c,
-          c.getSnapshot().listening || c.getSnapshot().starting
-            ? c.stopListening()
-            : c.startDictation(),
+          c.updateSettings({
+            announceAssistantMessages: settings.announceAssistantMessages === false,
+          }),
         );
-        return;
+      } else if (
+        !holdToTalk &&
+        settings.holdToTalkEnabled &&
+        matchesShortcut(event, settings.holdToTalkShortcut)
+      ) {
+        event.preventDefault();
+        holdToTalk = entry;
+        heldShortcut = settings.holdToTalkShortcut;
+        run(c, c.startHoldToTalk());
       }
-      if (event.key !== 'Control' || event.altKey || event.metaKey || event.shiftKey) return;
-      const entry = candidate();
-      if (!entry || !entry.controller.getSnapshot().settings.holdToTalkEnabled) return;
-      holdToTalk = entry;
-      run(entry.controller, entry.controller.startHoldToTalk());
     };
     const onKeyUp = (event) => {
-      if (event.key === 'Control') releaseHoldToTalk();
+      if (holdToTalk && releasesShortcut(event, heldShortcut)) releaseHoldToTalk();
     };
     const refreshCapabilities = () => {
       for (const entry of controllers.values())

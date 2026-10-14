@@ -123,9 +123,9 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.headphoneMode.help':
     'El micrófono sigue abierto durante la reproducción. El habla reconocida sin eco puede pausarla tras el retraso configurado; se reanuda cuando el micrófono y el audio compartido guardan silencio durante ese intervalo. La pausa manual requiere Reanudar.',
   'dsh-live-voice.recognition.headphoneMode.label': 'Auriculares — micrófono abierto',
-  'dsh-live-voice.recognition.holdToTalk.enabled': 'Mantener Control pulsado para hablar',
+  'dsh-live-voice.recognition.holdToTalk.enabled': 'Mantener pulsado para hablar',
   'dsh-live-voice.recognition.holdToTalk.help':
-    'Con un cuadro de mensaje abierto, mantén Control pulsado en cualquier parte de la página para capturar tu voz. Al soltarlo, se procesa la transcripción pendiente, se espera el retraso de envío configurado, se añade el mensaje a la cola y se cierra la captura de voz. Pulsa Escape mientras mantienes Control para cancelar.',
+    'Con un cuadro de mensaje abierto, mantén pulsado el atajo configurado en cualquier parte de la página para capturar tu voz. Al soltarlo, se procesa la transcripción pendiente, se espera el retraso de envío configurado, se añade el mensaje a la cola y se cierra la captura de voz. Pulsa Escape mientras lo mantienes pulsado para cancelar.',
   'dsh-live-voice.recognition.language.automatic': 'Automático — detectar idioma',
   'dsh-live-voice.recognition.language.label': 'Idioma de reconocimiento',
   'dsh-live-voice.recognition.language.options.chinese': 'Chino (mandarín)',
@@ -301,6 +301,18 @@ const es: LiveVoiceTranslation = {
     'No se pudieron cargar los ajustes de Voz en vivo del servidor. Recarga para volver a intentarlo.',
   'dsh-live-voice.settings.persistence.saveError':
     'No se pudieron guardar los ajustes de Voz en vivo en el servidor. Inténtalo de nuevo.',
+  'dsh-live-voice.settings.shortcuts.assistantSpeech':
+    'Activar/desactivar voz automática del asistente',
+  'dsh-live-voice.settings.shortcuts.clear': 'Borrar',
+  'dsh-live-voice.settings.shortcuts.conflict': 'Este atajo ya está asignado a otra acción.',
+  'dsh-live-voice.settings.shortcuts.edit': 'Haz clic para reemplazar',
+  'dsh-live-voice.settings.shortcuts.help':
+    'Haz clic en un atajo, pulsa las nuevas teclas juntas y suéltalas para guardar. Ctrl, Shift, Alt y Command funcionan solos o combinados, con o sin una letra. Escape cancela; Tab sale del campo. Los atajos del navegador o del sistema pueden tener prioridad.',
+  'dsh-live-voice.settings.shortcuts.meeting': 'Activar/desactivar audio compartido de reunión',
+  'dsh-live-voice.settings.shortcuts.microphone': 'Activar/desactivar micrófono',
+  'dsh-live-voice.settings.shortcuts.record': 'Haz clic para definir',
+  'dsh-live-voice.settings.shortcuts.recording':
+    'Pulsa un atajo… Suelta para guardar. Escape cancela.',
   'dsh-live-voice.settings.sourceNames.help':
     'Cuando ambas fuentes capturan, estos nombres etiquetan nuevos bloques de transcripción, no participantes individuales. Se guardan al salir del campo; vacío restaura Me / Them. Máximo 80 caracteres. El texto existente no cambia.',
   'dsh-live-voice.settings.sourceNames.microphone': 'Nombre de la fuente del micrófono',
