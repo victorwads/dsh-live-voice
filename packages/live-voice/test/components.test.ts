@@ -218,7 +218,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       'browser provider controls its own segmentation',
     );
     const checks = [...document.querySelectorAll('input[type=checkbox]')];
-    assert.equal(checks.length, 9);
+    assert.equal(checks.length, 10);
     assert.equal(checks.filter((input) => input.checked).length, 8);
     assert.equal(
       checks.find((input) =>
@@ -295,9 +295,9 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       ?.closest('details');
     assert.ok(detection);
     assert.equal(detection.open, false);
-    const maxUtterance = [...detection.querySelectorAll('label')]
-      .find((label) => label.textContent.includes('Maximum continuous speech'))
-      .querySelector('input');
+    const maxUtterance = [...detection.querySelectorAll('label')].find((label) =>
+      label.textContent.includes('Maximum continuous speech'),
+    ).control;
     assert.equal(maxUtterance.value, '60');
     assert.equal(maxUtterance.min, '10');
     assert.equal(maxUtterance.max, '300');
@@ -310,9 +310,9 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.match(detection.querySelector('.dlv-vad-summary').textContent, /2000 ms/);
     await act(async () => detection.querySelector('input[value=custom]').click());
     assert.deepEqual(calls.at(-1), ['settings', { voiceDetectionPreset: 'custom' }]);
-    const customPause = [...detection.querySelectorAll('label')]
-      .find((label) => label.textContent.includes('Custom pause (milliseconds)'))
-      .querySelector('input');
+    const customPause = [...detection.querySelectorAll('label')].find((label) =>
+      label.textContent.includes('Custom pause (milliseconds)'),
+    ).control;
     assert.equal(customPause.value, '1000');
     assert.equal(customPause.min, '100');
     assert.equal(customPause.max, '10000');

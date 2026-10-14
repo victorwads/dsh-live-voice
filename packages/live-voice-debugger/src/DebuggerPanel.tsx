@@ -7,6 +7,7 @@ import {
 import { createInspector } from './inspector.js';
 import type { DebuggerCopy } from './locales.js';
 import { StateTree } from './StateTree.js';
+import { RecordingPanel } from './RecordingPanel.js';
 export function DebuggerPanel({
   copy,
   onClose,
@@ -16,6 +17,8 @@ export function DebuggerPanel({
   onClose(): void;
   target?: any;
 }) {
+  const [tab, setTab] = React.useState<'recordings' | 'states'>('recordings');
+  const tabsId = React.useId();
   const [frozen, setFrozen] = React.useState(false);
   const [refreshHz, setRefreshHz] = React.useState(10);
   const updateRef = React.useRef<(() => void) | null>(null);
@@ -76,102 +79,155 @@ export function DebuggerPanel({
           ×
         </button>
       </header>
-      <p>{copy.help}</p>
-      <div className="dlvd-toolbar">
-        <label>
-          {copy.refreshRate}
-          <select value={refreshHz} onChange={(event) => setRefreshHz(Number(event.target.value))}>
-            {[1, 2, 5, 10, 20].map((hz) => (
-              <option key={hz} value={hz}>
-                {hz} Hz
-              </option>
-            ))}
-          </select>
-        </label>
-        <button type="button" onClick={() => setFrozen(!frozen)}>
-          {frozen ? copy.resume : copy.freeze}
-        </button>
-        <label>
-          <input
-            type="checkbox"
-            checked={content}
-            onChange={(event) => {
-              setView(null);
-              setFrozen(false);
-              setContent(event.target.checked);
+      <div className="dlvd-tabs" role="tablist" aria-label={copy.title}>
+        {(['recordings', 'states'] as const).map((name) => (
+          <button
+            type="button"
+            key={name}
+            role="tab"
+            id={tabsId + '-' + name + '-tab'}
+            aria-controls={tabsId + '-' + name}
+            aria-selected={tab === name}
+            tabIndex={tab === name ? 0 : -1}
+            onClick={() => setTab(name)}
+            onKeyDown={(event) => {
+              if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+                event.preventDefault();
+                const next =
+                  event.key === 'Home'
+                    ? 'recordings'
+                    : event.key === 'End'
+                      ? 'states'
+                      : tab === 'recordings'
+                        ? 'states'
+                        : 'recordings';
+                setTab(next);
+                event.currentTarget.parentElement
+                  ?.querySelector<HTMLButtonElement>('[id="' + tabsId + '-' + next + '-tab"]')
+                  ?.focus();
+              }
             }}
-          />
-          {copy.content}
-        </label>
+          >
+            {name === 'recordings' ? copy.recordingTitle : copy.states}
+          </button>
+        ))}
       </div>
-      {failed ? (
-        <p role="alert">{copy.error}</p>
-      ) : !view ? (
-        <p role="status">{copy.waiting}</p>
-      ) : (
-        <div className="dlvd-columns">
-          <section className="dlvd-state-pane" aria-label={copy.states}>
-            <h3>{copy.states}</h3>
-            <div className="dlvd-scroll" tabIndex={0}>
-              <StateTree name="context" value={view.state} omitted={copy.omitted} />
-            </div>
-          </section>
-          <section className="dlvd-event-pane" aria-label={copy.transitions}>
-            <h3>{copy.transitions}</h3>
-            <div className="dlvd-toolbar">
-              <button
-                type="button"
-                aria-pressed={eventsPaused}
-                onClick={() => {
-                  const paused = !eventsPaused;
-                  inspectorRef.current?.setPaused(paused);
-                  pausedRef.current = paused;
-                  setEventsPaused(paused);
-                }}
-              >
-                {eventsPaused ? copy.eventsResume : copy.eventsPause}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  inspectorRef.current?.clear();
-                  setView((current) => (current ? { ...current, transitions: [] } : current));
-                }}
-              >
-                {copy.eventsClear}
-              </button>
-            </div>
-            <label>
-              {copy.filter}
-              <select value={module} onChange={(event) => setModule(event.target.value)}>
-                <option value="">{copy.all}</option>
-                {modules.map((name) => (
-                  <option key={name}>{name}</option>
-                ))}
-              </select>
-            </label>
-            <div className="dlvd-history dlvd-scroll" tabIndex={0}>
-              {view.transitions
-                .filter((entry) => !module || entry.module === module)
-                .slice()
-                .reverse()
-                .map((entry) => (
-                  <details key={entry.sequence} data-level={entry.level}>
-                    <summary>
-                      <small>{new Date(entry.timeMs).toLocaleTimeString()}</small>{' '}
-                      <code>
-                        {entry.sessionId} / {entry.module}
-                      </code>
-                    </summary>
-                    <StateTree name="before" value={entry.before} omitted={copy.omitted} />
-                    <StateTree name="after" value={entry.after} omitted={copy.omitted} />
-                  </details>
-                ))}
-              {!view.transitions.length && <p>{copy.empty}</p>}
-            </div>
-          </section>
+      <div
+        className="dlvd-tab-panel"
+        role="tabpanel"
+        id={tabsId + '-recordings'}
+        aria-labelledby={tabsId + '-recordings-tab'}
+        hidden={tab !== 'recordings'}
+      >
+        {tab === 'recordings' && <RecordingPanel copy={copy} target={target} />}
+      </div>
+      <div
+        className="dlvd-tab-panel"
+        role="tabpanel"
+        id={tabsId + '-states'}
+        aria-labelledby={tabsId + '-states-tab'}
+        hidden={tab !== 'states'}
+      >
+        <p>{copy.help}</p>
+        <div className="dlvd-toolbar">
+          <label>
+            {copy.refreshRate}
+            <select
+              value={refreshHz}
+              onChange={(event) => setRefreshHz(Number(event.target.value))}
+            >
+              {[1, 2, 5, 10, 20].map((hz) => (
+                <option key={hz} value={hz}>
+                  {hz} Hz
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="button" onClick={() => setFrozen(!frozen)}>
+            {frozen ? copy.resume : copy.freeze}
+          </button>
+          <label>
+            <input
+              type="checkbox"
+              checked={content}
+              onChange={(event) => {
+                setView(null);
+                setFrozen(false);
+                setContent(event.target.checked);
+              }}
+            />
+            {copy.content}
+          </label>
         </div>
-      )}
+        {failed ? (
+          <p role="alert">{copy.error}</p>
+        ) : !view ? (
+          <p role="status">{copy.waiting}</p>
+        ) : (
+          <div className="dlvd-columns">
+            <section className="dlvd-state-pane" aria-label={copy.states}>
+              <h3>{copy.states}</h3>
+              <div className="dlvd-scroll" tabIndex={0}>
+                <StateTree name="context" value={view.state} omitted={copy.omitted} />
+              </div>
+            </section>
+            <section className="dlvd-event-pane" aria-label={copy.transitions}>
+              <h3>{copy.transitions}</h3>
+              <div className="dlvd-toolbar">
+                <button
+                  type="button"
+                  aria-pressed={eventsPaused}
+                  onClick={() => {
+                    const paused = !eventsPaused;
+                    inspectorRef.current?.setPaused(paused);
+                    pausedRef.current = paused;
+                    setEventsPaused(paused);
+                  }}
+                >
+                  {eventsPaused ? copy.eventsResume : copy.eventsPause}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    inspectorRef.current?.clear();
+                    setView((current) => (current ? { ...current, transitions: [] } : current));
+                  }}
+                >
+                  {copy.eventsClear}
+                </button>
+              </div>
+              <label>
+                {copy.filter}
+                <select value={module} onChange={(event) => setModule(event.target.value)}>
+                  <option value="">{copy.all}</option>
+                  {modules.map((name) => (
+                    <option key={name}>{name}</option>
+                  ))}
+                </select>
+              </label>
+              <div className="dlvd-history dlvd-scroll" tabIndex={0}>
+                {view.transitions
+                  .filter((entry) => !module || entry.module === module)
+                  .slice()
+                  .reverse()
+                  .map((entry) => (
+                    <details key={entry.sequence} data-level={entry.level}>
+                      <summary>
+                        <small>{new Date(entry.timeMs).toLocaleTimeString()}</small>{' '}
+                        <code>
+                          {entry.sessionId} / {entry.module}
+                        </code>
+                      </summary>
+                      <StateTree name="before" value={entry.before} omitted={copy.omitted} />
+                      <StateTree name="after" value={entry.after} omitted={copy.omitted} />
+                    </details>
+                  ))}
+                {!view.transitions.length && <p>{copy.empty}</p>}
+              </div>
+            </section>
+          </div>
+        )}
+      </div>
     </aside>
   );
 }

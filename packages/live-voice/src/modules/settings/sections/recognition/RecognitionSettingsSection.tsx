@@ -6,6 +6,7 @@ import { RecognitionFilterSettings } from './RecognitionFilterSettings.js';
 import { SilenceDetectionSettings } from './SilenceDetectionSettings.js';
 import { VoiceCommandSettings } from './VoiceCommandSettings.js';
 import { RecognitionStatus } from './RecognitionStatus.js';
+import { RecordingSettings } from './RecordingSettings.js';
 import { MeetingSourceSettings } from '../conversation/MeetingSourceSettings.js';
 export function RecognitionSettingsSection(props: any) {
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
@@ -19,6 +20,7 @@ export function RecognitionSettingsSection(props: any) {
         <MeetingSourceSettings {...props} />
         <VoiceCommandSettings {...props} />
         <SilenceDetectionSettings {...props} />
+        <RecordingSettings {...props} />
         <RecognitionFilterSettings {...props} />
       </div>
     </SettingsCard>

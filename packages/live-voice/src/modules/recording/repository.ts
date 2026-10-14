@@ -1,0 +1,640 @@
+import type {
+  RecordingAttempt,
+  RecordingPin,
+  RecordingRepository,
+  RecordingSession,
+  RecordingWriter,
+} from './types.js';
+import { recordingSegments } from './types.js';
+import { assertCodec, decodePage, encodePage, RecordingRepositoryError, wavBlob } from './codec.js';
+import type { AudioPage } from './codec.js';
+import { createMemoryStore, openRecordingStore, storageError } from './storage.js';
+import type { PageStore, StoredSession } from './storage.js';
+export { RecordingRepositoryError } from './codec.js';
+
+const lockName = (id: string) => 'dsh-live-voice.recording.' + id;
+const localActive = new Set<string>();
+let creationSequence = 0;
+const cloneSession = (value: StoredSession): RecordingSession => {
+  const { keepPrevious, createdOrder, ...session } = value;
+  return structuredClone(session);
+};
+const now = () => new Date().toISOString();
+function range(start: number, end: number, length: number): void {
+  if (
+    !Number.isSafeInteger(start) ||
+    !Number.isSafeInteger(end) ||
+    start < 0 ||
+    end < start ||
+    end > length
+  )
+    throw new RecordingRepositoryError(
+      'invalid-range',
+      'The requested sample range is outside the saved recording.',
+    );
+}
+async function holdLock(id: string): Promise<() => void> {
+  if (!globalThis.navigator?.locks)
+    throw new RecordingRepositoryError(
+      'storage-unavailable',
+      'Browser Web Locks are required to protect active persisted recordings.',
+    );
+  return new Promise((resolve, reject) => {
+    navigator.locks
+      .request(lockName(id), { ifAvailable: true }, async (lock) => {
+        if (!lock) {
+          reject(
+            new RecordingRepositoryError(
+              'active-recording',
+              'The recording is active in another browser context.',
+            ),
+          );
+          return;
+        }
+        await new Promise<void>((release) => resolve(release));
+      })
+      .catch(reject);
+  });
+}
+function base64(bytes: Uint8Array): string {
+  let text = '';
+  for (let offset = 0; offset < bytes.length; offset += 8192)
+    text += String.fromCharCode(...bytes.subarray(offset, offset + 8192));
+  return btoa(text);
+}
+
+export function createRecordingRepository(): RecordingRepository {
+  const memory = createMemoryStore();
+  const listeners = new Set<() => void>();
+  const writers = new Map<string, { writer: RecordingWriter; idle: () => Promise<void> }>();
+  let opening: Promise<PageStore> | undefined;
+  let disposed = false;
+  let disposing = false;
+  let lifecycle: Promise<unknown> = Promise.resolve();
+  const check = () => {
+    if (disposed || disposing)
+      throw new RecordingRepositoryError('disposed', 'The recording repository has been disposed.');
+  };
+  const emit = () => {
+    for (const listener of listeners) {
+      try {
+        listener();
+      } catch {
+        /* Observers cannot break a committed recording. */
+      }
+    }
+  };
+  const serial = <T>(run: () => Promise<T>): Promise<T> => {
+    const next = lifecycle.then(run);
+    lifecycle = next.catch(() => {});
+    return next;
+  };
+  async function persistentStore(): Promise<PageStore> {
+    if (!opening)
+      opening = (async () => {
+        const store = await openRecordingStore();
+        try {
+          // One recovery pass per repository lifetime, never on each list/get.
+          for (const session of await store.list()) {
+            if (session.state !== 'recording' || localActive.has(session.id)) continue;
+            if (!globalThis.navigator?.locks)
+              throw new RecordingRepositoryError(
+                'storage-unavailable',
+                'Browser Web Locks are required for safe recording recovery.',
+              );
+            await navigator.locks.request(
+              lockName(session.id),
+              { ifAvailable: true },
+              async (lock) => {
+                if (!lock || localActive.has(session.id)) return;
+                await store.update(session.id, (current) =>
+                  current.state === 'recording'
+                    ? {
+                        ...current,
+                        state: 'interrupted',
+                        endedAt: now(),
+                        pins: current.pins.filter((pin) => pin.atSample <= current.savedSamples),
+                        attempts: current.attempts.map((attempt) =>
+                          attempt.status === 'pending'
+                            ? {
+                                ...attempt,
+                                status: 'error' as const,
+                                error: 'interrupted',
+                                finishedAt: now(),
+                              }
+                            : attempt,
+                        ),
+                      }
+                    : current,
+                );
+              },
+            );
+          }
+          return store;
+        } catch (error) {
+          store.close();
+          throw error;
+        }
+      })();
+    return opening;
+  }
+  async function locate(id: string): Promise<{ store: PageStore; session: StoredSession }> {
+    check();
+    const ephemeral = await memory.get(id);
+    if (ephemeral) return { store: memory, session: ephemeral };
+    if (!globalThis.indexedDB)
+      throw new RecordingRepositoryError('not-found', 'The recording no longer exists.');
+    const store = await persistentStore();
+    const session = await store.get(id);
+    if (!session)
+      throw new RecordingRepositoryError('not-found', 'The recording no longer exists.');
+    return { store, session };
+  }
+  async function all(): Promise<StoredSession[]> {
+    const disk = globalThis.indexedDB ? await (await persistentStore()).list() : [];
+    return [...disk, ...(await memory.list())].sort(
+      (a, b) =>
+        b.startedAt.localeCompare(a.startedAt) ||
+        (b.createdOrder ?? 0) - (a.createdOrder ?? 0) ||
+        b.id.localeCompare(a.id),
+    );
+  }
+  async function deleteInactive(store: PageStore, id: string, strict: boolean): Promise<void> {
+    const activeError = () =>
+      new RecordingRepositoryError('active-recording', 'An active recording cannot be removed.');
+    if (localActive.has(id)) {
+      if (strict) throw activeError();
+      return;
+    }
+    if (store === memory) {
+      await store.remove(id);
+      return;
+    }
+    if (!globalThis.navigator?.locks)
+      throw new RecordingRepositoryError(
+        'storage-unavailable',
+        'Browser Web Locks are required for safe recording removal.',
+      );
+    await navigator.locks.request(lockName(id), { ifAvailable: true }, async (lock) => {
+      if (!lock || localActive.has(id)) {
+        if (strict) throw activeError();
+        return;
+      }
+      await store.remove(id);
+    });
+  }
+  async function prune(
+    sourceId: string,
+    keepPrevious: number,
+    starting = false,
+    target?: PageStore,
+  ): Promise<void> {
+    const available = target
+      ? (await target.list()).sort(
+          (a, b) =>
+            b.startedAt.localeCompare(a.startedAt) ||
+            (b.createdOrder ?? 0) - (a.createdOrder ?? 0) ||
+            b.id.localeCompare(a.id),
+        )
+      : await all();
+    const sessions = available.filter(
+      (session) =>
+        session.sourceId === sourceId &&
+        session.state !== 'recording' &&
+        !localActive.has(session.id),
+    );
+    const keep = Math.max(1, keepPrevious);
+    // Every active run plus previous completed runs survive. After a finish retain
+    // the newest run and at least one previous run, independently per source.
+    const hasActive =
+      starting ||
+      available.some((session) => session.sourceId === sourceId && session.state === 'recording');
+    const count = keep + (hasActive ? 0 : 1);
+    const retained = new Set(sessions.slice(0, count).map((session) => session.id));
+    // Failed/interrupted runs must not evict the last completed previous run.
+    for (const session of sessions
+      .filter((session) => session.state === 'completed')
+      .slice(0, count))
+      retained.add(session.id);
+    for (const session of sessions) {
+      if (
+        retained.has(session.id) ||
+        session.attempts.some((attempt) => attempt.status === 'pending')
+      )
+        continue;
+      const store = target ?? ((await memory.get(session.id)) ? memory : await persistentStore());
+      await deleteInactive(store, session.id, false);
+    }
+  }
+  async function readRange(
+    store: PageStore,
+    session: RecordingSession,
+    start: number,
+    end: number,
+  ): Promise<Float32Array> {
+    range(start, end, session.savedSamples);
+    const result = new Float32Array(end - start);
+    let position = start;
+    while (position < end) {
+      const page = await store.nextPage(session.id, position, end);
+      if (!page || page.startSample > position)
+        throw new RecordingRepositoryError(
+          'storage-failed',
+          'The recording contains a missing audio page.',
+        );
+      const data = await decodePage(page);
+      const until = Math.min(end, page.startSample + page.sampleCount);
+      result.set(
+        data.subarray(position - page.startSample, until - page.startSample),
+        position - start,
+      );
+      position = until;
+    }
+    return result;
+  }
+  async function settled(id: string): Promise<{ store: PageStore; session: StoredSession }> {
+    const active = writers.get(id);
+    if (active) {
+      await active.idle();
+      await active.writer.read(0, 0);
+    }
+    return locate(id);
+  }
+  const repository: RecordingRepository = {
+    version: 1,
+    segments: recordingSegments,
+    subscribe(listener) {
+      check();
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    async list() {
+      check();
+      return (await all()).map(
+        (session) => writers.get(session.id)?.writer.session ?? cloneSession(session),
+      );
+    },
+    async get(id) {
+      check();
+      try {
+        return writers.get(id)?.writer.session ?? cloneSession((await locate(id)).session);
+      } catch (error) {
+        if (error instanceof RecordingRepositoryError && error.code === 'not-found') return null;
+        throw error;
+      }
+    },
+    async audio(id, startSample = 0, endSample) {
+      const { store, session } = await settled(id);
+      const end = endSample ?? session.savedSamples;
+      range(startSample, end, session.savedSamples);
+      const count = end - startSample;
+      if (count * 2 > 0xffffffff - 36)
+        throw new RecordingRepositoryError(
+          'invalid-range',
+          'The requested audio exceeds the WAV size limit. Export the session archive instead.',
+        );
+      const header = await wavBlob(new Float32Array(0), session.sampleRate).arrayBuffer();
+      const view = new DataView(header);
+      view.setUint32(4, 36 + count * 2, true);
+      view.setUint32(40, count * 2, true);
+      const parts: BlobPart[] = [header];
+      for (let position = startSample; position < end; position += session.sampleRate * 10) {
+        const pcm = await readRange(
+          store,
+          session,
+          position,
+          Math.min(end, position + session.sampleRate * 10),
+        );
+        const encoded = await wavBlob(pcm, session.sampleRate).arrayBuffer();
+        parts.push(encoded.slice(44));
+      }
+      return new Blob(parts, { type: 'audio/wav' });
+    },
+    async export(id) {
+      const { store, session } = await settled(id);
+      const parts: BlobPart[] = [
+        '{"format":"dsh-live-voice-recording","version":1,"recording":',
+        JSON.stringify(cloneSession(session)),
+        ',"pages":[',
+      ];
+      let position = 0;
+      let first = true;
+      while (position < session.savedSamples) {
+        const page = await store.nextPage(id, position, session.savedSamples);
+        if (!page || page.startSample !== position)
+          throw new RecordingRepositoryError(
+            'storage-failed',
+            'The recording contains a missing audio page.',
+          );
+        const encoded = {
+          ...page,
+          decoderConfig: page.decoderConfig
+            ? {
+                ...page.decoderConfig,
+                description: page.decoderConfig.description
+                  ? base64(page.decoderConfig.description)
+                  : undefined,
+              }
+            : undefined,
+          packets: page.packets.map((packet) => ({ ...packet, data: base64(packet.data) })),
+        };
+        if (!first) parts.push(',');
+        parts.push(JSON.stringify(encoded));
+        first = false;
+        position += page.sampleCount;
+      }
+      parts.push(']}');
+      return new Blob(parts, { type: 'application/json' });
+    },
+    async remove(id) {
+      check();
+      return serial(async () => {
+        const { store, session } = await locate(id);
+        if (localActive.has(id) || session.state === 'recording')
+          throw new RecordingRepositoryError(
+            'active-recording',
+            'An active recording cannot be removed.',
+          );
+        await deleteInactive(store, id, true);
+        emit();
+      });
+    },
+    async begin(input) {
+      check();
+      return serial(async () => {
+        check();
+        const { sampleRate, policy } = input;
+        if (
+          !Number.isSafeInteger(sampleRate) ||
+          sampleRate < 8000 ||
+          sampleRate > 48000 ||
+          !Number.isFinite(policy.bitrate) ||
+          policy.bitrate < 6000 ||
+          policy.bitrate > 256000 ||
+          !Number.isFinite(policy.keepPrevious)
+        )
+          throw new RecordingRepositoryError(
+            'invalid-range',
+            'The recording sample rate, bitrate or retention policy is invalid.',
+          );
+        await assertCodec(sampleRate, policy.bitrate);
+        const store = policy.enabled ? await persistentStore() : memory;
+        let persistent = false;
+        if (policy.enabled && globalThis.navigator?.storage) {
+          try {
+            persistent = await navigator.storage.persisted();
+            if (!persistent && navigator.storage.persist)
+              persistent = await navigator.storage.persist();
+          } catch {
+            persistent = false;
+          } // A denied durability request is not a failed IDB write.
+        }
+        await prune(input.sourceId, Math.max(1, Math.floor(policy.keepPrevious)), true, store);
+        const id = crypto.randomUUID();
+        const release = policy.enabled ? await holdLock(id) : () => {};
+        let session: StoredSession = {
+          id,
+          sourceId: input.sourceId,
+          kind: input.kind,
+          label: input.label,
+          sampleRate,
+          startedAt: now(),
+          createdOrder: ++creationSequence,
+          state: 'recording',
+          capturedSamples: 0,
+          savedSamples: 0,
+          persistent,
+          codec: 'opus',
+          storage: policy.enabled ? 'indexeddb' : 'memory',
+          configuration: input.configuration,
+          pins: [],
+          attempts: [],
+          keepPrevious: Math.max(1, Math.floor(policy.keepPrevious)),
+        };
+        try {
+          await store.create(session);
+        } catch (error) {
+          release();
+          throw storageError(error);
+        }
+        localActive.add(id);
+        let tail: Promise<unknown> = Promise.resolve();
+        let pending = new Float32Array(sampleRate);
+        let pendingCount = 0;
+        let index = 0;
+        let queuedSamples = 0;
+        let sealed = false;
+        let finishPromise: Promise<void> | undefined;
+        let fatal: RecordingRepositoryError | undefined;
+        const publish = () => emit();
+        const update = async (
+          change: (current: StoredSession) => StoredSession,
+          page?: AudioPage,
+        ) => {
+          const captured = session.capturedSamples;
+          session = await store.update(
+            id,
+            (current) => ({
+              ...change(current),
+              capturedSamples: Math.max(current.capturedSamples, captured),
+            }),
+            page,
+          );
+          publish();
+        };
+        const enqueue = <T>(run: () => Promise<T>): Promise<T> => {
+          const next = tail.then(run);
+          tail = next.catch(() => {});
+          return next;
+        };
+        const ensureAudioOpen = () => {
+          if (fatal) throw fatal;
+          if (sealed)
+            throw new RecordingRepositoryError('sealed', 'The recording has been sealed.');
+        };
+        const flush = async () => {
+          if (!pendingCount) return;
+          const count = pendingCount;
+          const encoded = await encodePage(pending.subarray(0, count), sampleRate, policy.bitrate);
+          const page: AudioPage = {
+            recordingId: id,
+            index,
+            startSample: session.savedSamples,
+            sampleCount: count,
+            sampleRate,
+            ...encoded,
+          };
+          await update((current) => ({ ...current, savedSamples: page.startSample + count }), page);
+          pendingCount = 0;
+          index++;
+        };
+        const fail = async (error: unknown) => {
+          fatal = error instanceof RecordingRepositoryError ? error : storageError(error);
+          pendingCount = 0;
+          try {
+            await update((current) => ({
+              ...current,
+              state: 'failed',
+              error: fatal.code,
+              endedAt: now(),
+            }));
+          } catch {
+            session = { ...session, state: 'failed', error: fatal.code, endedAt: now() };
+            publish();
+          }
+          throw fatal;
+        };
+        const writer: RecordingWriter = {
+          get session() {
+            return cloneSession(session);
+          },
+          append(pcm) {
+            try {
+              check();
+              ensureAudioOpen();
+              if (queuedSamples + pcm.length > sampleRate * 8)
+                throw new RecordingRepositoryError(
+                  'memory-limit',
+                  'Recording append backpressure exceeded eight seconds of queued audio.',
+                );
+              const copy = pcm.slice();
+              queuedSamples += copy.length;
+              return enqueue(async () => {
+                try {
+                  if (fatal) throw fatal;
+                  session.capturedSamples += copy.length;
+                  let offset = 0;
+                  while (offset < copy.length) {
+                    const count = Math.min(pending.length - pendingCount, copy.length - offset);
+                    pending.set(copy.subarray(offset, offset + count), pendingCount);
+                    pendingCount += count;
+                    offset += count;
+                    if (pendingCount === pending.length) await flush();
+                  }
+                  publish();
+                } catch (error) {
+                  return fail(error);
+                } finally {
+                  queuedSamples -= copy.length;
+                }
+              });
+            } catch (error) {
+              return Promise.reject(error);
+            }
+          },
+          pin(kind, atSample, confirmedAtSample) {
+            try {
+              check();
+              ensureAudioOpen();
+            } catch (error) {
+              return Promise.reject(error);
+            }
+            return enqueue(async () => {
+              if (fatal) throw fatal;
+              range(atSample, confirmedAtSample, session.capturedSamples);
+              const pin: RecordingPin = {
+                id: crypto.randomUUID(),
+                kind,
+                atSample,
+                confirmedAtSample,
+                delaySamples: confirmedAtSample - atSample,
+              };
+              await update((current) => ({ ...current, pins: [...current.pins, pin] }));
+              return pin;
+            });
+          },
+          attempt(value: RecordingAttempt) {
+            try {
+              check();
+            } catch (error) {
+              return Promise.reject(error);
+            }
+            const copy = structuredClone(value);
+            return enqueue(async () => {
+              range(copy.startSample, copy.endSample, session.capturedSamples);
+              await update((current) => ({
+                ...current,
+                attempts: [...current.attempts.filter((attempt) => attempt.id !== copy.id), copy],
+              }));
+            });
+          },
+          read(start, end) {
+            try {
+              check();
+            } catch (error) {
+              return Promise.reject(error);
+            }
+            return enqueue(async () => {
+              if (!fatal) {
+                try {
+                  await flush();
+                } catch (error) {
+                  return fail(error);
+                }
+              }
+              return readRange(store, session, start, end);
+            });
+          },
+          finish(state = 'completed', error) {
+            if (finishPromise) return finishPromise;
+            sealed = true;
+            finishPromise = enqueue(async () => {
+              try {
+                if (!fatal) {
+                  try {
+                    await flush();
+                  } catch (failure) {
+                    await fail(failure);
+                  }
+                }
+                await update((current) => ({
+                  ...current,
+                  state: fatal ? 'failed' : state,
+                  error: fatal?.code ?? error,
+                  endedAt: now(),
+                }));
+              } finally {
+                pending = new Float32Array(0);
+                localActive.delete(id);
+                writers.delete(id);
+                release();
+              }
+              await serial(() => prune(input.sourceId, session.keepPrevious, false, store));
+              emit();
+            });
+            return finishPromise;
+          },
+        };
+        writers.set(id, {
+          writer,
+          idle: async () => {
+            await tail;
+          },
+        });
+        emit();
+        return writer;
+      });
+    },
+    async dispose() {
+      if (disposed) return;
+      disposing = true;
+      await lifecycle;
+      const results = await Promise.allSettled(
+        [...writers.values()].map((active) => active.writer.finish('interrupted')),
+      );
+      listeners.clear();
+      memory.close();
+      if (opening) {
+        try {
+          (await opening).close();
+        } catch {
+          /* Open failure was already reported. */
+        }
+      }
+      disposed = true;
+      const failed = results.find((result) => result.status === 'rejected');
+      if (failed?.status === 'rejected') throw failed.reason;
+    },
+  };
+  return repository;
+}

@@ -121,6 +121,7 @@ export class MeetingController {
       return updatePolicy(next);
     };
     this.transcript.setSourceTimestamps(source, input.getSnapshot().timestamps);
+    input.recordingId = () => this.jobs.get(source)?.engine?.session?.writer?.session.id;
     this.inputs.set(source, input);
     return input;
   }

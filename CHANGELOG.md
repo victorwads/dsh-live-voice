@@ -4,11 +4,27 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 [Product overview](README.md) · [Visão geral em português](README.pt.md) · [简体中文概览](README.zh-CN.md)
 
-## [0.5.x] - Next
+## [0.6.0] - Next
+
+### Features
+
+#### Live Voice
+
+- Introduce a new voice pipeline with recording-based chunking, VAD speech/silence markers, and independent segmentation for microphone and shared audio.
+- Optionally save recoverable audio sessions locally, with configurable retention, quality, detection sensitivity, and transcription margins.
+
+#### Live Voice Debugger
+
+- Browse recorded sessions, play speech or silence, and inspect their markers, transcriptions, and errors.
+- Export a complete session for analysis or delete its audio and history.
+
+### Improvements
+
+- Keep recording and detection settings compact with help tooltips and paired fields.
 
 ### Fixes
 
-- Prevent missing speech endings when earlier transcriptions finish or the assistant starts speaking.
+- Fix lost speech endings during transcription backlog or assistant playback, and preserve captured audio independently of speech detection when recording is enabled.
 - Keep the end of your recording when releasing Hold-to-Talk.
 - Show an error if selected Silero voice detection cannot load, instead of silently switching detectors.
 

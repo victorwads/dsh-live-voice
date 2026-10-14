@@ -116,6 +116,17 @@ export class VoiceCoordinator {
       voiceDetectionEngine: this.snapshot.settings.voiceDetectionEngine,
       voiceDetectionPreset: this.snapshot.settings.voiceDetectionPreset,
       voiceDetectionCustomSilenceMs: this.snapshot.settings.voiceDetectionCustomSilenceMs,
+      ...Object.fromEntries(
+        [
+          'recordingEnabled',
+          'recordingKeepPrevious',
+          'recordingBitrate',
+          'recordingPreRollMs',
+          'recordingPostRollMs',
+          'voiceDetectionThreshold',
+          'voiceDetectionMinimumSpeechMs',
+        ].map((key) => [key, this.snapshot.settings[key]]),
+      ),
     });
     this.patch({ capabilities: { ...this.snapshot.capabilities, recognition: undefined } });
   }
@@ -146,6 +157,17 @@ export class VoiceCoordinator {
       voiceDetectionEngine: settings.voiceDetectionEngine,
       voiceDetectionPreset: settings.voiceDetectionPreset,
       voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
+      ...Object.fromEntries(
+        [
+          'recordingEnabled',
+          'recordingKeepPrevious',
+          'recordingBitrate',
+          'recordingPreRollMs',
+          'recordingPostRollMs',
+          'voiceDetectionThreshold',
+          'voiceDetectionMinimumSpeechMs',
+        ].map((key) => [key, settings[key]]),
+      ),
     });
     this.patch({
       settings,
@@ -237,10 +259,17 @@ export class VoiceCoordinator {
     return result;
   }
   async _releaseInput() {
-    const results = await Promise.allSettled([
-      Promise.resolve().then(() => this.recognition.stop()),
-      Promise.resolve().then(() => this.meter.stop()),
-    ]);
+    // Drain recorder-owned worklet buffers while its context/source still exist.
+    const recognitionResult = await Promise.resolve()
+      .then(() => this.recognition.stop())
+      .then(
+        () => ({ status: 'fulfilled' }),
+        (reason) => ({ status: 'rejected', reason }),
+      );
+    const results = [
+      recognitionResult,
+      ...(await Promise.allSettled([Promise.resolve().then(() => this.meter.stop())])),
+    ];
     const errors = results
       .filter((result) => result.status === 'rejected')
       .map((result) => result.reason);

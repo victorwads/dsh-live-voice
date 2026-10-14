@@ -1,8 +1,8 @@
 {
   "name": "dsh-live-voice-debugger",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "type": "module",
-  "description": "Optional read-only state inspector for DSH Live Voice.",
+  "description": "Optional recording-session and runtime-state debugger for DSH Live Voice.",
   "license": "Apache-2.0",
   "main": "./lib/server.js",
   "exports": {

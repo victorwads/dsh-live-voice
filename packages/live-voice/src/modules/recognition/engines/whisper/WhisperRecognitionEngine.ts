@@ -1,10 +1,12 @@
 // @ts-nocheck
+import { startRecordingRecognition } from '../../../recording/RecordingRecognition.js';
+import { createRecordingRepository } from '../../../recording/repository.js';
 import { sileroVadAvailable } from '../../vad/assets.js';
 import { defaultSettings, voiceDetectionSilenceMs } from '../../../core/settings.js';
 import { acquireSileroVadStream, attachSileroVadCapture } from '../../vad/SileroVadRuntime.js';
 
 const ROUTE = '/api/dsh-live-voice/whisper';
-const id = () => globalThis.crypto.randomUUID();
+
 const abortError = () =>
   Object.assign(new Error('Whisper recognition was cancelled.'), { name: 'AbortError' });
 export function encodeMonoPcm16Wav(samples, inputRate) {
@@ -52,6 +54,19 @@ export class WhisperHttpRecognitionEngine {
     voiceDetectionPreset = defaultSettings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs = defaultSettings.voiceDetectionCustomSilenceMs,
     maxUtteranceSeconds = 60,
+    recordings,
+    inputSource = 'microphone',
+    sourceId = inputSource,
+    sourceLabel = inputSource,
+    recordingErrorMessage = () =>
+      'Recording could not be saved. Capture stopped to avoid silent data loss.',
+    recordingEnabled = false,
+    recordingKeepPrevious = 3,
+    recordingBitrate = 48000,
+    recordingPreRollMs = 320,
+    recordingPostRollMs = 320,
+    voiceDetectionThreshold = 0.5,
+    voiceDetectionMinimumSpeechMs = 250,
   } = {}) {
     this.g = globals;
     this.meter = meter;
@@ -65,6 +80,20 @@ export class WhisperHttpRecognitionEngine {
     this.voiceDetectionPreset = voiceDetectionPreset;
     this.voiceDetectionCustomSilenceMs = voiceDetectionCustomSilenceMs;
     this.maxUtteranceSeconds = maxUtteranceSeconds;
+    Object.assign(this, {
+      recordings: recordings ?? createRecordingRepository(),
+      inputSource,
+      sourceId,
+      sourceLabel,
+      recordingErrorMessage,
+      recordingEnabled,
+      recordingKeepPrevious,
+      recordingBitrate,
+      recordingPreRollMs,
+      recordingPostRollMs,
+      voiceDetectionThreshold,
+      voiceDetectionMinimumSpeechMs,
+    });
     this.route = ROUTE;
   }
   get activityManaged() {
@@ -126,262 +155,16 @@ export class WhisperHttpRecognitionEngine {
     if (signal?.aborted || this.startGeneration !== startGeneration) throw abortError();
     if (!context || !source || (!silero && typeof context.createScriptProcessor !== 'function'))
       throw new Error('This browser cannot capture PCM audio for Whisper HTTP.');
-    const sampleRate = silero ? 16000 : context.sampleRate;
-    const processor = silero ? null : context.createScriptProcessor(4096, 1, 1),
-      gain = silero ? null : context.createGain?.();
-    if (processor) {
-      if (gain) {
-        gain.gain.value = 0;
-        processor.connect(gain);
-        gain.connect(context.destination);
-      } else processor.connect(context.destination);
-    }
-    const session = {
-      operation: id(),
-      processor,
-      gain,
-      detector: silero ? 'silero' : 'energy',
-      sampleRate,
-      vad: null,
-      capture: null,
-      preRoll: [],
-      speechSamples: 0,
-      finished: false,
-      finishing: false,
-      finishPromise: null,
-      chunks: [],
-      samples: 0,
-      voiced: false,
-      startedAt: null,
-      silence: 0,
-      transcriptionQueue: [],
-      activeRequest: null,
-      draining: false,
-      onResult,
-      onActivity,
-      onError,
-      onProcessingChange,
-      lang,
-      signal,
-    };
-    this.session = session;
-    const valid = () => this.session === session && !signal?.aborted;
-    const notifyProcessing = () =>
-      session.onProcessingChange?.({
-        queued: session.transcriptionQueue.length,
-        active: !!session.activeRequest,
-        pending:
-          session.transcriptionQueue.length +
-          (session.activeRequest ? 1 : 0) +
-          (session.finishing ? 1 : 0),
-      });
-    const enqueue = (continuing = false) => {
-      if (
-        !session.voiced ||
-        session.samples < sampleRate * 0.25 ||
-        (silero && session.speechSamples < sampleRate * 0.25)
-      ) {
-        session.chunks = [];
-        session.startedAt = null;
-        session.samples = 0;
-        session.voiced = false;
-        session.silence = 0;
-        session.speechSamples = 0;
-        onActivity?.(false);
-        return;
-      }
-      const samples = new Float32Array(session.samples);
-      let at = 0;
-      for (const chunk of session.chunks) {
-        samples.set(chunk, at);
-        at += chunk.length;
-      }
-      const startedAt = session.startedAt;
-      session.startedAt = continuing ? Date.now() : null;
-      session.chunks = [];
-      session.samples = 0;
-      session.voiced = continuing;
-      session.silence = 0;
-      session.speechSamples = 0;
-      session.transcriptionQueue.push({ samples, startedAt });
-      notifyProcessing();
-      void drain();
-      if (!continuing) onActivity?.(false);
-    };
-    const drain = async () => {
-      if (session.draining || !valid()) return;
-      session.draining = true;
-      try {
-        while (valid() && session.transcriptionQueue.length) {
-          const { samples, startedAt } = session.transcriptionQueue.shift();
-          const request = new AbortController();
-          session.activeRequest = request;
-          notifyProcessing();
-          try {
-            const response = await this.g.fetch(this.route + '/transcribe', {
-              method: 'POST',
-              credentials: 'same-origin',
-              headers: {
-                'content-type': 'audio/wav',
-                'x-dlv-client-id': session.operation,
-                'x-dlv-operation-id': id(),
-                'x-dlv-language': lang,
-              },
-              body: encodeMonoPcm16Wav(samples, sampleRate),
-              signal: request.signal,
-            });
-            const json = await response.json();
-            if (!response.ok || !json?.ok)
-              throw new Error(json?.error?.message || 'HTTP transcription failed.');
-            if (valid() && json.value.text)
-              onResult?.({ final: json.value.text, interim: '', startedAt });
-          } catch (error) {
-            if (error.name !== 'AbortError' && valid()) onError?.(error);
-          } finally {
-            if (session.activeRequest === request) session.activeRequest = null;
-            notifyProcessing();
-          }
-        }
-      } finally {
-        session.draining = false;
-        notifyProcessing();
-      }
-    };
-    if (!silero)
-      processor.onaudioprocess = (event) => {
-        if (!valid() || session.finished) return;
-        const data = new Float32Array(event.inputBuffer.getChannelData(0)),
-          rms = Math.sqrt(data.reduce((sum, x) => sum + x * x, 0) / data.length);
-        if (rms > 0.012) {
-          if (!session.voiced)
-            session.startedAt = Date.now() - Math.round((data.length / context.sampleRate) * 1000);
-          session.voiced = true;
-          session.silence = 0;
-          onActivity?.(true);
-        } else if (session.voiced) {
-          session.silence += data.length;
-        }
-        session.chunks.push(data);
-        session.samples += data.length;
-        if (
-          (session.voiced &&
-            session.silence > context.sampleRate * (this.segmentation.silenceMs / 1000)) ||
-          session.samples > context.sampleRate * this.maxUtteranceSeconds
-        )
-          enqueue(session.silence <= context.sampleRate * (this.segmentation.silenceMs / 1000));
-      };
-    session.finish = enqueue;
-    session.notifyProcessing = notifyProcessing;
-    session.abort = () => this.stop();
-    signal?.addEventListener('abort', session.abort, { once: true });
-    if (signal?.aborted || !valid()) {
-      await this.stop();
-      throw abortError();
-    }
-    if (!silero) {
-      source.connect(processor);
-      return;
-    }
-    const resetSegment = () => {
-      session.chunks = [];
-      session.samples = session.silence = session.speechSamples = 0;
-      session.preRoll = [];
-      session.voiced = false;
-      session.startedAt = null;
-      onActivity?.(false);
-    };
-    const failVad = (error) => {
-      if (!valid() || session.finished) return;
-      void this.stop();
-      onActivity?.(false);
-      onError?.(new Error(this.vadErrorMessage(error)));
-    };
-    try {
-      const vad = this.vadFactory({
-        onReset: () => {
-          if (valid()) resetSegment();
-        },
-        onError: failVad,
-        onProbability: ({ probability, pcm }) => {
-          if (!valid() || session.finished) return;
-          session.probability = probability;
-          // Hysteresis and a bounded 320 ms pre-roll are isolated per source.
-          const active = probability >= (session.voiced ? 0.35 : 0.5);
-          if (!session.voiced && !active) {
-            session.preRoll.push(pcm);
-            if (session.preRoll.length > 10) session.preRoll.shift();
-            return;
-          }
-          if (!session.voiced) {
-            session.chunks = session.preRoll;
-            session.preRoll = [];
-            session.samples = session.chunks.reduce((n, frame) => n + frame.length, 0);
-            session.startedAt =
-              Date.now() - Math.round(((session.samples + pcm.length) / sampleRate) * 1000);
-            session.voiced = true;
-          }
-          if (active) {
-            session.speechSamples += pcm.length;
-            session.silence = 0;
-          } else session.silence += pcm.length;
-          onActivity?.(true);
-          session.chunks.push(pcm);
-          session.samples += pcm.length;
-          if (
-            session.silence > sampleRate * (this.segmentation.silenceMs / 1000) ||
-            session.samples > sampleRate * this.maxUtteranceSeconds
-          )
-            enqueue(session.silence <= sampleRate * (this.segmentation.silenceMs / 1000));
-        },
-      });
-      session.vad = vad;
-      const capture = await this.vadCapture(context, source, vad);
-      if (!valid()) {
-        capture.release();
-        vad.release();
-        throw abortError();
-      }
-      session.capture = capture;
-    } catch (error) {
-      if (this.session === session) await this.stop();
-      if (error.name === 'AbortError' || signal?.aborted) throw abortError();
-      throw new Error(this.vadErrorMessage(error));
-    }
+    const recording = await startRecordingRecognition(
+      this,
+      { lang, signal, onResult, onActivity, onError, onProcessingChange },
+      { silero, encode: encodeMonoPcm16Wav },
+    );
+    if (this.startGeneration !== startGeneration || signal?.aborted) throw abortError();
+    return recording;
   }
   finish() {
-    const session = this.session;
-    if (!session) return Promise.resolve();
-    if (session.finishPromise) return session.finishPromise;
-    session.finishing = true;
-    let resolveFinish;
-    session.finishPromise = new Promise((resolve) => {
-      resolveFinish = resolve;
-    });
-    session.notifyProcessing();
-    void (async () => {
-      try {
-        if (session.capture) await session.capture.finish();
-        if (this.session !== session || session.signal?.aborted) return;
-        session.finished = true;
-        session.vad?.release();
-        if (session.processor) session.processor.onaudioprocess = null;
-        try {
-          if (session.processor) this.meter?.source?.disconnect(session.processor);
-        } catch {}
-        session.finish?.(false);
-      } catch (error) {
-        if (this.session === session) {
-          await this.stop();
-          if (error.name !== 'AbortError')
-            session.onError?.(new Error(this.vadErrorMessage(error)));
-        }
-      } finally {
-        session.finishing = false;
-        if (this.session === session) session.notifyProcessing();
-        resolveFinish();
-      }
-    })();
-    return session.finishPromise;
+    return this.session?.finishRecording() ?? Promise.resolve();
   }
   async stop() {
     this.startGeneration = (this.startGeneration || 0) + 1;
@@ -389,20 +172,7 @@ export class WhisperHttpRecognitionEngine {
     if (!session) return;
     this.session = null;
     session.signal?.removeEventListener('abort', session.abort);
-    session.finished = true;
-    session.capture?.release();
-    session.vad?.release();
-    if (session.processor) session.processor.onaudioprocess = null;
-    try {
-      if (session.processor) this.meter?.source?.disconnect(session.processor);
-    } catch {}
-    try {
-      session.processor?.disconnect();
-      session.gain?.disconnect();
-    } catch {}
-    session.transcriptionQueue = [];
-    session.activeRequest?.abort();
-    session.activeRequest = null;
+    await session.stopRecording();
     session.onProcessingChange?.({ queued: 0, active: false, pending: 0 });
   }
 }

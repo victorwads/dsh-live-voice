@@ -363,6 +363,7 @@ export async function attachSileroVadCapture(
   context: AudioContext,
   source: AudioNode,
   stream: SileroVadStream,
+  onPcm?: (pcm: Float32Array, sampleRate: number) => void,
 ): Promise<{ finish(): Promise<void>; release(): void }> {
   if (!context.audioWorklet || typeof AudioWorkletNode !== 'function')
     throw new Error('AudioWorklet PCM capture is unavailable.');
@@ -440,7 +441,12 @@ export async function attachSileroVadCapture(
         }
       }, fail);
     } else if (!acknowledged) {
-      stream.ingest(event.data?.pcm, event.data?.sampleRate);
+      try {
+        onPcm?.(event.data?.pcm, event.data?.sampleRate);
+        stream.ingest(event.data?.pcm, event.data?.sampleRate);
+      } catch (error) {
+        stream.reportError(error instanceof Error ? error : new Error('Audio recording failed.'));
+      }
     }
   };
   node.onprocessorerror = () => {

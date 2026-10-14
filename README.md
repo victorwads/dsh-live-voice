@@ -12,9 +12,9 @@ DSH Live Voice is a local-first voice plugin for DeepSeek Harness (DSH), with sp
 
 ![DSH Live Voice conversation with assistant speech captions, playback controls, and active speech recognition](https://github.com/user-attachments/assets/6c6f8b2c-a7ff-4478-ad97-882617fff8ea)
 
-*Speak to your assistant, listen to its answers, and control the conversation without returning to the keyboard.*
+_Speak to your assistant, listen to its answers, and control the conversation without returning to the keyboard._
 
-*Built in Brazil 🇧🇷 and tested daily with Brazilian Portuguese on macOS.*
+_Built in Brazil 🇧🇷 and tested daily with Brazilian Portuguese on macOS._
 
 ---
 
@@ -48,14 +48,14 @@ Interface translated into: 🇺🇸 English · 🇧🇷 Portuguese (Brazil) · �
 - ❓ **Spoken Structured Questions:** Narrates DSH prompt questions and submits your spoken answer.
 - ⌨️ **Optional Hold-to-Talk (Push-to-Talk):** Enable it in Settings, then hold `Control` anywhere on the page to speak; release to queue the message after the configured send delay. Disabled by default.
 - 🎧 **Acoustic Mode Isolation:** Gated listening for speakers (no echo) and open-mic interruption for headphones.
-- 🗣️ **Spoken Commands:** Control the chat using phrases like *"send"*, *"mute"*, *"clear"*, and *"stop speaking"*.
+- 🗣️ **Spoken Commands:** Control the chat using phrases like _"send"_, _"mute"_, _"clear"_, and _"stop speaking"_.
 - ⭐ **Dedicated Speech Bar:** Smoothly scrolling approximate captions, a moving highlight, previous/next navigation, pause/resume, stop, and a current/total segment counter. Captions show the text sent to the speech engine, without claiming word-level alignment.
 - 🔊 **Speech Volume:** Save a playback volume from silent to full in Speech settings for Browser, Say, and Qwen, without changing microphone input.
 - 🧹 **Markdown-Aware Speech:** Remove formatting, announce links without reading full URLs, shorten file paths and line references, read checkbox states and table rows, and replace long code blocks with a localized notice. Preserve custom notices.
 - ⚡ **Responsive Conversation Settings:** Automatic-send delays of 600 ms, 800 ms, or 1–6 seconds (4 seconds by default), plus an assistant response delay of zero to 4 seconds (no delay by default). Recognition and synthesis still contribute to overall latency.
 - 🛠️ **Optional Live Voice Debugger:** Install `dsh-live-voice-debugger` separately to inspect runtime state and queues from the Developer tab in Live Voice Settings. The main plugin works without it.
 - 🏠 **Local-First Speech Options:** Use local engines such as Qwen or Whisper where supported. Browser recognition and configured HTTP services have their own processing requirements; do not assume every setup keeps audio on your machine.
-- 🌐 **Your DSH voice assistant, even on your phone:** access your DSH over your home network or while away from home, and keep speaking to it (STT) and listening to its answers (TTS) from your phone’s browser. With host-backed engines, speech processing stays on the DSH computer while your phone captures your voice and plays the answers—no local model installation on the phone is needed. *I use Cloudflare Tunnel with authentication to access my DSH away from home.* Use HTTPS and authenticated access; microphone capture requires browser support and permission, including on your home network.
+- 🌐 **Your DSH voice assistant, even on your phone:** access your DSH over your home network or while away from home, and keep speaking to it (STT) and listening to its answers (TTS) from your phone’s browser. With host-backed engines, speech processing stays on the DSH computer while your phone captures your voice and plays the answers—no local model installation on the phone is needed. _I use Cloudflare Tunnel with authentication to access my DSH away from home._ Use HTTPS and authenticated access; microphone capture requires browser support and permission, including on your home network.
 
 ## 🧑‍💻 Meeting Mode — Real-Time Meeting Transcription and Live AI Q&A
 
@@ -65,7 +65,7 @@ Keep an editable transcript of a meeting as it happens, then ask the DSH assista
 
 1. Select **Browser** recognition when your browser supports shared audio tracks, or use **Qwen HTTP** / **Whisper HTTP**. Browser shared audio is checked at start and never silently falls back to your microphone; local-only processing and language-pack requirements still apply.
 2. Click the shared-audio icon beside the composer microphone and enable audio in the browser sharing dialog. Capture your microphone too when you want to include your own contributions.
-3. Review the transcript in the composer, add a question, and send the relevant context to DSH. For example: *“What decisions have we made so far?”*, *“Help us answer this point”*, or *“Compare this proposal with the project code.”* Answers depend on the transcript you send and the code, spreadsheet, or documents you make available to the agent.
+3. Review the transcript in the composer, add a question, and send the relevant context to DSH. For example: _“What decisions have we made so far?”_, _“Help us answer this point”_, or _“Compare this proposal with the project code.”_ Answers depend on the transcript you send and the code, spreadsheet, or documents you make available to the agent.
 4. Read or listen to the answer while the meeting continues. For other participants to hear it, your meeting app must separately be configured to share the assistant’s playback audio.
 
 ### You control what is captured and sent
@@ -76,6 +76,12 @@ Keep an editable transcript of a meeting as it happens, then ask the DSH assista
 - Microphone and shared-audio bars mirror each other: the leading icon toggles **Listening / Ignoring**, with independent exact-command, timestamp, and Manual / Queue / Steer controls. Both use the same delivery countdown and cancel action. Ignoring does not end capture; stop sharing with the shared-audio button in the composer. Enabled commands and automatic delivery follow each source’s controls; review commands before enabling them for participant audio.
 
 Audio availability depends on the browser, operating system, and sharing surface. This is **not a built-in Google Meet or Teams integration**. Capturing meeting audio and sharing the assistant’s voice back into a call require separate setup. Use headphones to reduce feedback, and obtain appropriate participant consent before capturing a meeting. Transcription and AI responses have processing latency; “real-time” does not mean instantaneous or guaranteed accurate.
+
+## Recoverable audio sessions
+
+With Qwen or Whisper, enable **Speech recognition → Recording** to retain compressed audio locally, including silence, independently of transcription. Choose previous-session retention per source (minimum one), quality, and transcription margins. The optional debugger lists microphone/shared sources separately and lets you inspect pins, play speech or silence, review transcription results/errors, export a complete session, or delete a finished session.
+
+This requires browser WebCodecs Opus support; persistent recording also requires IndexedDB and Web Locks. Saving is incremental, not a guarantee against power loss, storage clearing, or loss of the newest unsaved samples. Recordings belong to this browser profile and exact site origin, including its port. Opus is lossy; obtain consent before recording other people. Recording is disabled by default. Browser SpeechRecognition does not use this archive pipeline.
 
 ## Documentation
 
@@ -102,6 +108,7 @@ Run `pnpm install --frozen-lockfile`, then `pnpm build` or `pnpm test` from the 
 Listening and speaking should work together. A heartfelt thank you to [GooDAnDReaDY](https://github.com/GooDAnDReaDY) for [dsh-voice](https://github.com/GooDAnDReaDY/dsh-voice) and [Alan2Z](https://github.com/Alan2Z) for [dsh-speak](https://github.com/Alan2Z/dsh-speak), which inspired this unified coordinator. [Read the full story](HISTORY.md).
 
 I use DSH Live Voice for at least 8 hours every day. Feedback, ideas, and contributions are welcome:
+
 - [Open an Issue](https://github.com/victorwads/dsh-live-voice/issues)
 - [Send a Pull Request](https://github.com/victorwads/dsh-live-voice/pulls)
 

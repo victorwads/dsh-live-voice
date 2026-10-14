@@ -14,9 +14,9 @@ O DSH Live Voice é um plugin de voz para o DeepSeek Harness (DSH), com priorida
 
 ![Conversa no DSH Live Voice com legendas da fala do assistente, controles de reprodução e reconhecimento de voz ativo](https://github.com/user-attachments/assets/6c6f8b2c-a7ff-4478-ad97-882617fff8ea)
 
-*Fale com seu assistente, ouça as respostas e controle a conversa sem voltar ao teclado.*
+_Fale com seu assistente, ouça as respostas e controle a conversa sem voltar ao teclado._
 
-*Feito no Brasil 🇧🇷 e testado diariamente com português brasileiro no macOS.*
+_Feito no Brasil 🇧🇷 e testado diariamente com português brasileiro no macOS._
 
 ---
 
@@ -57,7 +57,7 @@ Interface traduzida: 🇺🇸 inglês · 🇧🇷 português brasileiro · 🇪�
 - ⚡ **Ritmo ajustável:** envio automático após 600 ms, 800 ms ou 1–6 segundos (4 segundos por padrão); resposta do assistente sem atraso adicional por padrão, ou com atraso de 1–4 segundos. Reconhecimento e síntese ainda contribuem para a latência.
 - 🛠️ **Live Voice Debugger opcional:** instale `dsh-live-voice-debugger` separadamente para inspecionar estado e filas na aba Developer das configurações. O plugin principal funciona sem ele.
 - 🏠 **Opções de voz locais:** use mecanismos como Qwen ou Whisper quando houver suporte. Reconhecimento do navegador e serviços HTTP configurados têm seus próprios requisitos de processamento; nem toda configuração mantém o áudio na sua máquina.
-- 🌐 **Seu assistente de voz do DSH, até pelo celular:** acesse seu DSH pela rede de casa ou mesmo estando fora de casa e continue falando com ele (STT) e ouvindo as respostas (TTS) pelo navegador do celular. Com os mecanismos executados no host, o processamento de voz fica no computador do DSH, enquanto o celular captura sua fala e reproduz as respostas — sem precisar instalar modelos locais no telefone. *Eu uso Cloudflare Tunnel com autenticação para acessar meu DSH fora de casa.* Use HTTPS e acesso autenticado; a captura do microfone depende do suporte e da permissão do navegador, inclusive na rede de casa.
+- 🌐 **Seu assistente de voz do DSH, até pelo celular:** acesse seu DSH pela rede de casa ou mesmo estando fora de casa e continue falando com ele (STT) e ouvindo as respostas (TTS) pelo navegador do celular. Com os mecanismos executados no host, o processamento de voz fica no computador do DSH, enquanto o celular captura sua fala e reproduz as respostas — sem precisar instalar modelos locais no telefone. _Eu uso Cloudflare Tunnel com autenticação para acessar meu DSH fora de casa._ Use HTTPS e acesso autenticado; a captura do microfone depende do suporte e da permissão do navegador, inclusive na rede de casa.
 
 ## 🧑‍💻 Modo reunião — Transcrição de reuniões em tempo real e perguntas à IA
 
@@ -67,7 +67,7 @@ Mantenha uma transcrição editável enquanto a reunião acontece e faça pergun
 
 1. Selecione o reconhecimento **Browser** quando o navegador suportar faixas de áudio compartilhado, ou use **Qwen HTTP** / **Whisper HTTP**. O suporte do Browser é verificado ao iniciar e nunca troca silenciosamente para o microfone; processamento local e pacotes de idioma continuam sujeitos aos requisitos do navegador.
 2. Clique no ícone de áudio compartilhado ao lado do microfone do campo de mensagem e habilite o áudio na janela de compartilhamento do navegador. Ative também seu microfone para incluir suas próprias falas.
-3. Revise a transcrição, acrescente uma pergunta e envie o contexto relevante ao DSH. Por exemplo: *“Quais decisões tomamos até agora?”*, *“Ajude a responder este ponto”* ou *“Compare esta proposta com o código do projeto.”* A resposta depende da transcrição enviada e do código, planilha ou documentos disponibilizados ao agente.
+3. Revise a transcrição, acrescente uma pergunta e envie o contexto relevante ao DSH. Por exemplo: _“Quais decisões tomamos até agora?”_, _“Ajude a responder este ponto”_ ou _“Compare esta proposta com o código do projeto.”_ A resposta depende da transcrição enviada e do código, planilha ou documentos disponibilizados ao agente.
 4. Leia ou ouça a resposta enquanto a reunião continua. Para os outros participantes ouvirem, configure separadamente o aplicativo de reunião para compartilhar o áudio de reprodução do assistente.
 
 ### Você controla o que é capturado e enviado
@@ -78,6 +78,12 @@ Mantenha uma transcrição editável enquanto a reunião acontece e faça pergun
 - As barras do microfone e do áudio compartilhado são espelhadas: o ícone inicial alterna **Ouvindo / Ignorando**, com controles independentes de comandos exatos, timestamps e Manual / Fila / Guiar. Ambas têm a mesma contagem regressiva e cancelamento. Ignorar não encerra a captura; pare o compartilhamento pelo botão de áudio compartilhado no campo de mensagem. Comandos habilitados e envio automático seguem os controles de cada fonte; revise os comandos antes de habilitá-los para participantes.
 
 A disponibilidade de áudio depende do navegador, sistema operacional e superfície compartilhada. **Não é uma integração nativa com Google Meet ou Teams.** Capturar a reunião e compartilhar a voz do assistente de volta para a chamada exigem configurações separadas. Use fones para reduzir realimentação de áudio e obtenha o consentimento adequado dos participantes antes de capturar uma reunião. A transcrição e as respostas da IA têm latência de processamento: “tempo real” não significa instantâneo nem precisão garantida.
+
+## Sessões de áudio recuperáveis
+
+Com Qwen ou Whisper, habilite **Reconhecimento de voz → Gravação** para guardar áudio comprimido localmente, incluindo silêncio, independentemente da transcrição. Escolha retenção por fonte (mínimo de uma sessão anterior), qualidade e margens de transcrição. O debugger opcional separa microfone e áudio compartilhado e permite ver pinos, ouvir fala ou silêncio, conferir resultados/erros, exportar uma sessão completa ou excluir uma sessão encerrada.
+
+É necessário suporte a WebCodecs Opus; a gravação persistente também exige IndexedDB e Web Locks. O salvamento incremental não garante proteção contra queda de energia, limpeza do storage ou perda das últimas amostras ainda não salvas. As gravações pertencem ao perfil do navegador e à origem exata, incluindo a porta. Opus tem perdas; obtenha consentimento antes de gravar outras pessoas. A gravação vem desativada. Browser SpeechRecognition não utiliza este pipeline.
 
 ## Documentação
 

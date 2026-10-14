@@ -1,8 +1,10 @@
 import React from 'react';
+import { Hint } from '../feedback/Hint.js';
 
 type Element = HTMLInputElement | HTMLTextAreaElement;
 export type DraftFieldProps = {
   label: string;
+  hint?: string;
   value?: string | number | readonly string[];
   defaultValue?: string | number | readonly string[];
   onCommit?: (value: string) => void;
@@ -15,6 +17,7 @@ export type DraftFieldProps = {
 /** Keep raw edits local; parent normalization and persistence run only on blur. */
 export function DraftField({
   label,
+  hint,
   value,
   defaultValue,
   onCommit,
@@ -25,6 +28,8 @@ export function DraftField({
   onBlur,
   ...props
 }: DraftFieldProps) {
+  const generatedId = React.useId();
+  const fieldId = props.id || generatedId;
   const saved = String(value ?? defaultValue ?? '');
   const [draft, setDraft] = React.useState(saved);
   const editing = React.useRef(false);
@@ -34,6 +39,7 @@ export function DraftField({
   }, [saved]);
   const inputProps = {
     ...props,
+    ...(hint ? { id: fieldId } : {}),
     value: draft,
     onFocus: (event: React.FocusEvent<Element>) => {
       editing.current = true;
@@ -66,6 +72,20 @@ export function DraftField({
       onBlur?.(event as never);
     },
   };
+  if (hint)
+    return (
+      <div className="dlv-form-field">
+        <div className="dlv-field-label">
+          <label htmlFor={fieldId}>{label}</label>
+          <Hint label={label}>{hint}</Hint>
+        </div>
+        {multiline ? (
+          <textarea {...(inputProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)} />
+        ) : (
+          <input {...(inputProps as React.InputHTMLAttributes<HTMLInputElement>)} />
+        )}
+      </div>
+    );
   return (
     <label>
       {label}

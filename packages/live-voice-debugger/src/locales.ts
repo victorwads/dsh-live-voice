@@ -16,6 +16,56 @@ export type DebuggerCopy = {
   help: string;
   omitted: string;
   popupBlocked: string;
+  recordingActive: string;
+  recordingAllSources: string;
+  recordingAttempts: string;
+  recordingAudio: string;
+  recordingAudioError: string;
+  recordingCancel: string;
+  recordingCaptured: string;
+  recordingCompleted: string;
+  recordingConfirmDelete: string;
+  recordingDate: string;
+  recordingDelete: string;
+  recordingDeleteError: string;
+  recordingDuration: string;
+  recordingEmpty: string;
+  recordingEnd: string;
+  recordingEngine: string;
+  recordingError: string;
+  recordingExport: string;
+  recordingExportError: string;
+  recordingFailed: string;
+  recordingHelp: string;
+  recordingInterrupted: string;
+  recordingLoadError: string;
+  recordingLoading: string;
+  recordingMemory: string;
+  recordingMicrophone: string;
+  recordingNoAttempts: string;
+  recordingOpen: string;
+  recordingPending: string;
+  recordingPersistent: string;
+  recordingPinConfirmed: string;
+  recordingPinDelay: string;
+  recordingPins: string;
+  recordingPlay: string;
+  recordingPlaySession: string;
+  recordingRefresh: string;
+  recordingSaved: string;
+  recordingSegments: string;
+  recordingSelectSession: string;
+  recordingShared: string;
+  recordingSilence: string;
+  recordingSource: string;
+  recordingSourceFilter: string;
+  recordingSpeech: string;
+  recordingStart: string;
+  recordingState: string;
+  recordingSuccess: string;
+  recordingTimeline: string;
+  recordingTitle: string;
+  recordingUnavailable: string;
   refreshRate: string;
   resume: string;
   states: string;
@@ -42,6 +92,59 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     omitted: 'Additional items omitted',
     popupBlocked:
       'The browser blocked the debugger window. Allow popups for this site and try again.',
+    recordingActive: 'Recording',
+    recordingAllSources: 'All sources',
+    recordingAttempts: 'Transcription history',
+    recordingAudio: 'Recording playback',
+    recordingAudioError: 'Unable to load or play recording audio.',
+    recordingCancel: 'Cancel',
+    recordingCaptured: 'Captured audio',
+    recordingCompleted: 'Completed',
+    recordingConfirmDelete:
+      'Delete this entire recording, including its audio and transcription history? This cannot be undone. Deleting an active recording also discards its future saved audio.',
+    recordingDate: 'Started',
+    recordingDelete: 'Delete entire session',
+    recordingDeleteError: 'Unable to delete the recording.',
+    recordingDuration: 'Duration',
+    recordingEmpty: 'No recording sessions match this filter.',
+    recordingEnd: 'End',
+    recordingEngine: 'Engine',
+    recordingError: 'Error',
+    recordingExport: 'Export self-contained JSON',
+    recordingExportError: 'Unable to export the recording.',
+    recordingFailed: 'Failed',
+    recordingHelp:
+      'Inspect saved audio, speech/silence boundaries and transcription attempts. Audio and transcripts may be sensitive. Playback is local; export includes audio and text. Inspection never changes capture; only explicit deletion removes recordings.',
+    recordingInterrupted: 'Interrupted',
+    recordingLoadError: 'Unable to load recording sessions. Try refreshing.',
+    recordingLoading: 'Loading recordings…',
+    recordingMemory: 'Memory only',
+    recordingMicrophone: 'Microphone',
+    recordingNoAttempts: 'No transcription attempts yet.',
+    recordingOpen: 'Open segment',
+    recordingPending: 'Pending',
+    recordingPersistent: 'Saved locally',
+    recordingPinConfirmed: 'Confirmed at',
+    recordingPinDelay: 'Confirmation delay',
+    recordingPins: 'Boundary pins',
+    recordingPlay: 'Play segment',
+    recordingPlaySession: 'Play saved session',
+    recordingRefresh: 'Refresh recordings',
+    recordingSaved: 'Saved audio',
+    recordingSegments: 'Segments',
+    recordingSelectSession: 'Select a recording session.',
+    recordingShared: 'Shared audio',
+    recordingSilence: 'Silence',
+    recordingSource: 'Source',
+    recordingSourceFilter: 'Filter sources',
+    recordingSpeech: 'Speech',
+    recordingStart: 'Start',
+    recordingState: 'State',
+    recordingSuccess: 'Success',
+    recordingTimeline: 'Speech / silence timeline',
+    recordingTitle: 'Recordings',
+    recordingUnavailable:
+      'Recording service unavailable. Enable recording in Live Voice settings with a compatible runtime.',
     refreshRate: 'Refresh rate',
     resume: 'Resume updates',
     states: 'Current states',
@@ -67,6 +170,59 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     omitted: 'Itens adicionais omitidos',
     popupBlocked:
       'O navegador bloqueou a janela do debugger. Permita pop-ups neste site e tente novamente.',
+    recordingActive: 'Gravando',
+    recordingAllSources: 'Todas as fontes',
+    recordingAttempts: 'Histórico de transcrição',
+    recordingAudio: 'Reprodução da gravação',
+    recordingAudioError: 'Não foi possível carregar ou reproduzir o áudio.',
+    recordingCancel: 'Cancelar',
+    recordingCaptured: 'Áudio capturado',
+    recordingCompleted: 'Concluída',
+    recordingConfirmDelete:
+      'Excluir esta gravação inteira, incluindo áudio e histórico de transcrição? Não é possível desfazer. Excluir uma gravação ativa também descarta o áudio salvo futuro.',
+    recordingDate: 'Início',
+    recordingDelete: 'Excluir sessão inteira',
+    recordingDeleteError: 'Não foi possível excluir a gravação.',
+    recordingDuration: 'Duração',
+    recordingEmpty: 'Nenhuma gravação corresponde ao filtro.',
+    recordingEnd: 'Fim',
+    recordingEngine: 'Motor',
+    recordingError: 'Erro',
+    recordingExport: 'Exportar JSON completo',
+    recordingExportError: 'Não foi possível exportar a gravação.',
+    recordingFailed: 'Falhou',
+    recordingHelp:
+      'Inspecione áudio salvo, limites de fala/silêncio e tentativas de transcrição. Áudio e texto podem ser sensíveis. Reprodução local; a exportação inclui áudio e texto. Inspecionar não altera a captura; apenas a exclusão explícita remove gravações.',
+    recordingInterrupted: 'Interrompida',
+    recordingLoadError: 'Não foi possível carregar as gravações. Tente atualizar.',
+    recordingLoading: 'Carregando gravações…',
+    recordingMemory: 'Somente na memória',
+    recordingMicrophone: 'Microfone',
+    recordingNoAttempts: 'Nenhuma tentativa de transcrição ainda.',
+    recordingOpen: 'Segmento aberto',
+    recordingPending: 'Pendente',
+    recordingPersistent: 'Salva localmente',
+    recordingPinConfirmed: 'Confirmado em',
+    recordingPinDelay: 'Atraso de confirmação',
+    recordingPins: 'Marcadores de limite',
+    recordingPlay: 'Reproduzir segmento',
+    recordingPlaySession: 'Reproduzir sessão salva',
+    recordingRefresh: 'Atualizar gravações',
+    recordingSaved: 'Áudio salvo',
+    recordingSegments: 'Segmentos',
+    recordingSelectSession: 'Selecione uma sessão de gravação.',
+    recordingShared: 'Áudio compartilhado',
+    recordingSilence: 'Silêncio',
+    recordingSource: 'Fonte',
+    recordingSourceFilter: 'Filtrar fontes',
+    recordingSpeech: 'Fala',
+    recordingStart: 'Início',
+    recordingState: 'Estado',
+    recordingSuccess: 'Sucesso',
+    recordingTimeline: 'Linha do tempo de fala / silêncio',
+    recordingTitle: 'Gravações',
+    recordingUnavailable:
+      'Serviço de gravação indisponível. Ative a gravação nas configurações da Voz ao Vivo com um runtime compatível.',
     refreshRate: 'Frequência de atualização',
     resume: 'Retomar atualizações',
     states: 'Estados atuais',
@@ -92,6 +248,59 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     omitted: 'Elementos adicionales omitidos',
     popupBlocked:
       'El navegador bloqueó la ventana del depurador. Permita ventanas emergentes en este sitio e inténtelo de nuevo.',
+    recordingActive: 'Grabando',
+    recordingAllSources: 'Todas las fuentes',
+    recordingAttempts: 'Historial de transcripción',
+    recordingAudio: 'Reproducción de la grabación',
+    recordingAudioError: 'No se pudo cargar o reproducir el audio.',
+    recordingCancel: 'Cancelar',
+    recordingCaptured: 'Audio capturado',
+    recordingCompleted: 'Completada',
+    recordingConfirmDelete:
+      '¿Eliminar toda esta grabación, incluido el audio y el historial de transcripción? No se puede deshacer. Eliminar una grabación activa también descarta su audio guardado futuro.',
+    recordingDate: 'Inicio',
+    recordingDelete: 'Eliminar sesión completa',
+    recordingDeleteError: 'No se pudo eliminar la grabación.',
+    recordingDuration: 'Duración',
+    recordingEmpty: 'Ninguna grabación coincide con el filtro.',
+    recordingEnd: 'Fin',
+    recordingEngine: 'Motor',
+    recordingError: 'Error',
+    recordingExport: 'Exportar JSON completo',
+    recordingExportError: 'No se pudo exportar la grabación.',
+    recordingFailed: 'Fallida',
+    recordingHelp:
+      'Inspeccione audio guardado, límites de voz/silencio e intentos de transcripción. Audio y texto pueden ser sensibles. La reproducción es local; la exportación incluye audio y texto. Inspeccionar no cambia la captura; solo la eliminación explícita borra grabaciones.',
+    recordingInterrupted: 'Interrumpida',
+    recordingLoadError: 'No se pudieron cargar las grabaciones. Intente actualizar.',
+    recordingLoading: 'Cargando grabaciones…',
+    recordingMemory: 'Solo en memoria',
+    recordingMicrophone: 'Micrófono',
+    recordingNoAttempts: 'Todavía no hay intentos de transcripción.',
+    recordingOpen: 'Segmento abierto',
+    recordingPending: 'Pendiente',
+    recordingPersistent: 'Guardada localmente',
+    recordingPinConfirmed: 'Confirmado en',
+    recordingPinDelay: 'Demora de confirmación',
+    recordingPins: 'Marcadores de límite',
+    recordingPlay: 'Reproducir segmento',
+    recordingPlaySession: 'Reproducir sesión guardada',
+    recordingRefresh: 'Actualizar grabaciones',
+    recordingSaved: 'Audio guardado',
+    recordingSegments: 'Segmentos',
+    recordingSelectSession: 'Seleccione una sesión de grabación.',
+    recordingShared: 'Audio compartido',
+    recordingSilence: 'Silencio',
+    recordingSource: 'Fuente',
+    recordingSourceFilter: 'Filtrar fuentes',
+    recordingSpeech: 'Voz',
+    recordingStart: 'Inicio',
+    recordingState: 'Estado',
+    recordingSuccess: 'Éxito',
+    recordingTimeline: 'Cronología de voz / silencio',
+    recordingTitle: 'Grabaciones',
+    recordingUnavailable:
+      'Servicio de grabación no disponible. Active la grabación en los ajustes de Voz en vivo con un runtime compatible.',
     refreshRate: 'Frecuencia de actualización',
     resume: 'Reanudar actualizaciones',
     states: 'Estados actuales',
@@ -117,6 +326,59 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     omitted: 'Éléments supplémentaires masqués',
     popupBlocked:
       'Le navigateur a bloqué la fenêtre du débogueur. Autorisez les fenêtres contextuelles pour ce site et réessayez.',
+    recordingActive: 'Enregistrement',
+    recordingAllSources: 'Toutes les sources',
+    recordingAttempts: 'Historique des transcriptions',
+    recordingAudio: 'Lecture de l’enregistrement',
+    recordingAudioError: 'Impossible de charger ou lire l’audio.',
+    recordingCancel: 'Annuler',
+    recordingCaptured: 'Audio capturé',
+    recordingCompleted: 'Terminé',
+    recordingConfirmDelete:
+      'Supprimer cet enregistrement entier, y compris son audio et son historique de transcription ? Cette action est irréversible. Supprimer un enregistrement actif supprime aussi son futur audio enregistré.',
+    recordingDate: 'Début',
+    recordingDelete: 'Supprimer toute la session',
+    recordingDeleteError: 'Impossible de supprimer l’enregistrement.',
+    recordingDuration: 'Durée',
+    recordingEmpty: 'Aucun enregistrement ne correspond au filtre.',
+    recordingEnd: 'Fin',
+    recordingEngine: 'Moteur',
+    recordingError: 'Erreur',
+    recordingExport: 'Exporter le JSON autonome',
+    recordingExportError: 'Impossible d’exporter l’enregistrement.',
+    recordingFailed: 'Échec',
+    recordingHelp:
+      'Inspectez l’audio sauvegardé, les limites parole/silence et les tentatives de transcription. Audio et texte peuvent être sensibles. Lecture locale ; l’export contient l’audio et le texte. L’inspection ne change pas la capture ; seule une suppression explicite efface les enregistrements.',
+    recordingInterrupted: 'Interrompu',
+    recordingLoadError: 'Impossible de charger les enregistrements. Actualisez la liste.',
+    recordingLoading: 'Chargement des enregistrements…',
+    recordingMemory: 'En mémoire uniquement',
+    recordingMicrophone: 'Microphone',
+    recordingNoAttempts: 'Aucune tentative de transcription.',
+    recordingOpen: 'Segment ouvert',
+    recordingPending: 'En attente',
+    recordingPersistent: 'Sauvegardé localement',
+    recordingPinConfirmed: 'Confirmé à',
+    recordingPinDelay: 'Délai de confirmation',
+    recordingPins: 'Marqueurs de limite',
+    recordingPlay: 'Lire le segment',
+    recordingPlaySession: 'Lire la session sauvegardée',
+    recordingRefresh: 'Actualiser les enregistrements',
+    recordingSaved: 'Audio sauvegardé',
+    recordingSegments: 'Segments',
+    recordingSelectSession: 'Sélectionnez une session d’enregistrement.',
+    recordingShared: 'Audio partagé',
+    recordingSilence: 'Silence',
+    recordingSource: 'Source',
+    recordingSourceFilter: 'Filtrer les sources',
+    recordingSpeech: 'Parole',
+    recordingStart: 'Début',
+    recordingState: 'État',
+    recordingSuccess: 'Réussite',
+    recordingTimeline: 'Chronologie parole / silence',
+    recordingTitle: 'Enregistrements',
+    recordingUnavailable:
+      'Service d’enregistrement indisponible. Activez l’enregistrement dans les paramètres de Voix en direct avec un runtime compatible.',
     refreshRate: 'Fréquence de mise à jour',
     resume: 'Reprendre les mises à jour',
     states: 'États actuels',
@@ -142,6 +404,59 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     omitted: 'अतिरिक्त आइटम छिपाए गए',
     popupBlocked:
       'ब्राउज़र ने डीबगर विंडो ब्लॉक कर दी। इस साइट के लिए पॉप-अप की अनुमति दें और फिर कोशिश करें।',
+    recordingActive: 'रिकॉर्डिंग जारी',
+    recordingAllSources: 'सभी स्रोत',
+    recordingAttempts: 'ट्रांसक्रिप्शन इतिहास',
+    recordingAudio: 'रिकॉर्डिंग प्लेबैक',
+    recordingAudioError: 'रिकॉर्डिंग ऑडियो लोड या चलाया नहीं जा सका।',
+    recordingCancel: 'रद्द करें',
+    recordingCaptured: 'कैप्चर किया गया ऑडियो',
+    recordingCompleted: 'पूर्ण',
+    recordingConfirmDelete:
+      'ऑडियो और ट्रांसक्रिप्शन इतिहास सहित यह पूरी रिकॉर्डिंग हटाएँ? इसे वापस नहीं लाया जा सकता। सक्रिय रिकॉर्डिंग हटाने पर आगे सहेजा जाने वाला ऑडियो भी हटा दिया जाता है।',
+    recordingDate: 'शुरुआत',
+    recordingDelete: 'पूरी सत्र रिकॉर्डिंग हटाएँ',
+    recordingDeleteError: 'रिकॉर्डिंग हटाई नहीं जा सकी।',
+    recordingDuration: 'अवधि',
+    recordingEmpty: 'इस फ़िल्टर से मेल खाती कोई रिकॉर्डिंग नहीं है।',
+    recordingEnd: 'अंत',
+    recordingEngine: 'इंजन',
+    recordingError: 'त्रुटि',
+    recordingExport: 'स्वयंपूर्ण JSON निर्यात करें',
+    recordingExportError: 'रिकॉर्डिंग निर्यात नहीं की जा सकी।',
+    recordingFailed: 'विफल',
+    recordingHelp:
+      'सहेजा ऑडियो, आवाज़/मौन सीमाएँ और ट्रांसक्रिप्शन प्रयास देखें। ऑडियो और टेक्स्ट संवेदनशील हो सकते हैं। प्लेबैक स्थानीय है; निर्यात में ऑडियो और टेक्स्ट शामिल हैं। निरीक्षण कैप्चर नहीं बदलता; केवल स्पष्ट हटाने की कार्रवाई रिकॉर्डिंग हटाती है।',
+    recordingInterrupted: 'बाधित',
+    recordingLoadError: 'रिकॉर्डिंग सत्र लोड नहीं हो सके। रीफ़्रेश करें।',
+    recordingLoading: 'रिकॉर्डिंग लोड हो रही हैं…',
+    recordingMemory: 'केवल मेमोरी में',
+    recordingMicrophone: 'माइक्रोफ़ोन',
+    recordingNoAttempts: 'अभी कोई ट्रांसक्रिप्शन प्रयास नहीं है।',
+    recordingOpen: 'खुला खंड',
+    recordingPending: 'लंबित',
+    recordingPersistent: 'स्थानीय रूप से सहेजा',
+    recordingPinConfirmed: 'पुष्टि समय',
+    recordingPinDelay: 'पुष्टि में विलंब',
+    recordingPins: 'सीमा चिह्न',
+    recordingPlay: 'खंड चलाएँ',
+    recordingPlaySession: 'सहेजा सत्र चलाएँ',
+    recordingRefresh: 'रिकॉर्डिंग रीफ़्रेश करें',
+    recordingSaved: 'सहेजा ऑडियो',
+    recordingSegments: 'खंड',
+    recordingSelectSession: 'रिकॉर्डिंग सत्र चुनें।',
+    recordingShared: 'साझा ऑडियो',
+    recordingSilence: 'मौन',
+    recordingSource: 'स्रोत',
+    recordingSourceFilter: 'स्रोत फ़िल्टर करें',
+    recordingSpeech: 'आवाज़',
+    recordingStart: 'शुरुआत',
+    recordingState: 'स्थिति',
+    recordingSuccess: 'सफल',
+    recordingTimeline: 'आवाज़ / मौन समयरेखा',
+    recordingTitle: 'रिकॉर्डिंग',
+    recordingUnavailable:
+      'रिकॉर्डिंग सेवा उपलब्ध नहीं है। संगत रनटाइम के साथ लाइव वॉइस सेटिंग्स में रिकॉर्डिंग चालू करें।',
     refreshRate: 'अपडेट आवृत्ति',
     resume: 'अपडेट फिर शुरू करें',
     states: 'वर्तमान स्थितियाँ',
@@ -166,6 +481,58 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     help: '只读状态树以 10 Hz 更新。默认隐藏文本。此面板不控制语音。',
     omitted: '已省略其他项目',
     popupBlocked: '浏览器阻止了调试器窗口。请允许此网站的弹出窗口，然后重试。',
+    recordingActive: '正在录制',
+    recordingAllSources: '所有来源',
+    recordingAttempts: '转录历史',
+    recordingAudio: '录音播放',
+    recordingAudioError: '无法加载或播放录音音频。',
+    recordingCancel: '取消',
+    recordingCaptured: '已捕获音频',
+    recordingCompleted: '已完成',
+    recordingConfirmDelete:
+      '删除整个录音，包括音频和转录历史？此操作无法撤销。删除正在录制的会话还会丢弃后续保存的音频。',
+    recordingDate: '开始时间',
+    recordingDelete: '删除整个会话',
+    recordingDeleteError: '无法删除录音。',
+    recordingDuration: '时长',
+    recordingEmpty: '没有符合筛选条件的录音会话。',
+    recordingEnd: '结束',
+    recordingEngine: '引擎',
+    recordingError: '错误',
+    recordingExport: '导出完整独立 JSON',
+    recordingExportError: '无法导出录音。',
+    recordingFailed: '失败',
+    recordingHelp:
+      '查看已保存音频、语音/静音边界和转录尝试。音频和文本可能敏感。播放在本地进行；导出包含音频和文本。查看不会更改采集；只有明确删除操作才会移除录音。',
+    recordingInterrupted: '已中断',
+    recordingLoadError: '无法加载录音会话。请刷新重试。',
+    recordingLoading: '正在加载录音…',
+    recordingMemory: '仅在内存中',
+    recordingMicrophone: '麦克风',
+    recordingNoAttempts: '尚无转录尝试。',
+    recordingOpen: '未结束片段',
+    recordingPending: '处理中',
+    recordingPersistent: '已保存到本地',
+    recordingPinConfirmed: '确认时间',
+    recordingPinDelay: '确认延迟',
+    recordingPins: '边界标记',
+    recordingPlay: '播放片段',
+    recordingPlaySession: '播放已保存会话',
+    recordingRefresh: '刷新录音',
+    recordingSaved: '已保存音频',
+    recordingSegments: '片段',
+    recordingSelectSession: '请选择录音会话。',
+    recordingShared: '共享音频',
+    recordingSilence: '静音',
+    recordingSource: '来源',
+    recordingSourceFilter: '筛选来源',
+    recordingSpeech: '语音',
+    recordingStart: '开始',
+    recordingState: '状态',
+    recordingSuccess: '成功',
+    recordingTimeline: '语音 / 静音时间线',
+    recordingTitle: '录音',
+    recordingUnavailable: '录音服务不可用。请在兼容的实时语音设置中启用录音。',
     refreshRate: '更新频率',
     resume: '恢复更新',
     states: '当前状态',

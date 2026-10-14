@@ -1,6 +1,7 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mockRecordingRepository } from './helpers/recording.js';
 import { WhisperHttpRecognitionEngine } from '../src/modules/recognition/engines/whisper/WhisperRecognitionEngine.ts';
 import { QwenHttpRecognitionEngine } from '../src/modules/recognition/engines/qwen/QwenRecognitionEngine.ts';
 import { VoiceCoordinator } from '../src/modules/core/coordinator.ts';
@@ -15,7 +16,8 @@ const deferred = () => {
   return { promise, resolve };
 };
 function fixture(Engine, detector = 'silero', delayedFinish = false) {
-  let callbacks,
+  let onPcm,
+    callbacks,
     draft = '',
     speechDone;
   const requests = [],
@@ -38,6 +40,7 @@ function fixture(Engine, detector = 'silero', delayedFinish = false) {
     async stop() {},
   };
   const recognition = new Engine({
+    recordings: mockRecordingRepository(),
     meter,
     voiceDetectionEngine: detector,
     vadAvailable: async () => true,
@@ -49,16 +52,19 @@ function fixture(Engine, detector = 'silero', delayedFinish = false) {
         },
       };
     },
-    vadCapture: async () => ({
-      async finish() {
-        if (delayedFinish) await finishGate.promise;
-        captureReleased = true;
-      },
-      release() {
-        captureReleased = true;
-        finishGate.resolve();
-      },
-    }),
+    vadCapture: async (_context, _source, _vad, ingest) => {
+      onPcm = ingest;
+      return {
+        async finish() {
+          if (delayedFinish) await finishGate.promise;
+          captureReleased = true;
+        },
+        release() {
+          captureReleased = true;
+          finishGate.resolve();
+        },
+      };
+    },
     globals: {
       fetch: (_url, options) => {
         const gate = deferred();
@@ -112,8 +118,10 @@ function fixture(Engine, detector = 'silero', delayedFinish = false) {
     },
     frame(active, value = active ? 0.25 : 0) {
       const pcm = new Float32Array(512).fill(value);
-      if (detector === 'silero') callbacks.onProbability({ probability: active ? 0.9 : 0.01, pcm });
-      else processor.onaudioprocess?.({ inputBuffer: { getChannelData: () => pcm } });
+      if (detector === 'silero') {
+        onPcm(pcm, 16000);
+        callbacks.onProbability({ probability: active ? 0.9 : 0.01, pcm });
+      } else processor.onaudioprocess?.({ inputBuffer: { getChannelData: () => pcm } });
     },
     respond(index) {
       requests[index].resolve(
@@ -135,6 +143,7 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
         const h = fixture(Engine, detector);
         t.after(() => h.coordinator.dispose());
         await h.coordinator.startConversation();
+        await tick();
         for (let i = 0; i < 100; i++) h.frame(true);
         queuedReply(h);
         h.frame(false);
@@ -142,14 +151,16 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
         assert.equal(h.coordinator.snapshot.listening, true);
         assert.equal(h.spoken.length, 0);
         for (let i = 0; i < 15; i++) h.frame(false);
+        await tick();
         assert.equal(h.requests.length, 1);
-        assert.equal(wavSamples(h.requests[0]).length, 116 * 512);
+        assert.equal(wavSamples(h.requests[0]).length, 100 * 512 + 5120);
         assert.ok(
           wavSamples(h.requests[0])
             .subarray(0, 100 * 512)
             .every((x) => x === 8191),
         );
         assert.equal(h.spoken.length, 0, 'closed segment must still wait for transcription');
+        await tick();
         h.respond(0);
         await tick();
         assert.match(h.draft(), /synthetic phrase 0/);
@@ -166,8 +177,10 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
         h.recognition.maxUtteranceSeconds = 0.3;
         await h.coordinator.startConversation();
         for (let i = 0; i < 10; i++) h.frame(true);
+        await tick();
         assert.equal(h.requests.length, 1);
         queuedReply(h);
+        await tick();
         h.respond(0);
         await tick();
         assert.equal(h.coordinator.snapshot.recognizing, true);
@@ -175,6 +188,7 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
         assert.equal(h.spoken.length, 0);
         h.recognition.maxUtteranceSeconds = 60;
         for (let i = 0; i < 16; i++) h.frame(false);
+        await tick();
         assert.equal(h.coordinator.snapshot.recognizing, false);
       },
     );
@@ -187,9 +201,11 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
       for (let i = 0; i < 10; i++) h.frame(true);
       for (let i = 0; i < 16; i++) h.frame(false);
     }
+    await tick();
     for (let i = 0; i < 100; i++) h.frame(true);
     queuedReply(h);
     for (let n = 0; n < 2; n++) {
+      await tick();
       h.respond(n);
       await tick();
       assert.equal(
@@ -204,8 +220,15 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
     assert.equal(h.coordinator.snapshot.listening, true);
     assert.equal(h.spoken.length, 0);
     for (let i = 0; i < 15; i++) h.frame(false);
+    await tick();
     assert.equal(h.requests.length, 3);
-    assert.equal(wavSamples(h.requests[2]).length, 116 * 512);
+    assert.equal(wavSamples(h.requests[2]).length, 5120 + 100 * 512 + 5120);
+    assert.ok(
+      wavSamples(h.requests[2])
+        .subarray(5120, 5120 + 100 * 512)
+        .every((x) => x === 8191),
+      'pre/post-roll overlap must not discard any of the new utterance',
+    );
     h.respond(2);
     await tick();
     assert.equal(h.draft(), 'synthetic phrase 0 synthetic phrase 1 synthetic phrase 2');
@@ -231,7 +254,9 @@ for (const outcome of ['filtered', 'muted', 'command', 'resume', 'question']) {
     if (outcome === 'question') h.coordinator.composer.handleQuestionResult = () => true;
     for (let i = 0; i < 10; i++) h.frame(true);
     for (let i = 0; i < 16; i++) h.frame(false);
+    await tick();
     for (let i = 0; i < 100; i++) h.frame(true);
+    await tick();
     h.respond(0);
     await tick();
     assert.equal(h.coordinator.snapshot.recognizing, true);

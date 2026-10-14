@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mockRecordingRepository } from './helpers/recording.js';
 import {
   SileroVadPool,
   attachSileroVadCapture,
@@ -91,7 +92,12 @@ function loopFixture(t: any, run?: (feeds: any) => Promise<void>, bound = 32, pe
   return { ...fake, runtime, worker, pool, stream, frames, errors };
 }
 let Processor: any;
-async function captureFixture(t: any, stream: any, holdStop = false) {
+async function captureFixture(
+  t: any,
+  stream: any,
+  holdStop = false,
+  onPcm?: (pcm: Float32Array, sampleRate: number) => void,
+) {
   const originals = [
     'AudioWorkletProcessor',
     'registerProcessor',
@@ -168,7 +174,7 @@ async function captureFixture(t: any, stream: any, holdStop = false) {
     },
   };
   const context: any = { audioWorklet: { async addModule() {} }, destination: {} };
-  const capture = await attachSileroVadCapture(context, source, stream);
+  const capture = await attachSileroVadCapture(context, source, stream, onPcm);
   t.after(() => capture.release());
   return {
     capture,
@@ -489,11 +495,12 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
         results: any[] = [],
         errors: any[] = [];
       const engine = new Engine({
+        recordings: mockRecordingRepository(),
         meter: { context: { sampleRate: 48000 }, source: {} },
         vadAvailable: async () => true,
         vadFactory: (callbacks: any) => f.pool.acquire(callbacks),
-        vadCapture: async (_context: any, _source: any, stream: any) => {
-          c = await captureFixture(t, stream);
+        vadCapture: async (_context: any, _source: any, stream: any, onPcm: any) => {
+          c = await captureFixture(t, stream, false, onPcm);
           return c.capture;
         },
         globals: {
@@ -520,7 +527,13 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
       assert.equal(errors.length, 0);
       assert.equal(requests.length, 1);
       const pcm = new Int16Array(requests[0].options.body, 44);
-      assert.equal(pcm.length, Math.ceil((12 * 2048 + 31) / 3));
+      const stored = await engine.session.writer.read(0, 12 * 2048 + 31);
+      assert.equal(stored.length, 12 * 2048 + 31);
+      assert.ok(
+        stored.every((n: number) => n === 0.25),
+        'raw recording preserves every residual capture sample',
+      );
+      assert.equal(pcm.length, Math.floor((12 * 2048 + 31) / 3));
       assert.ok(pcm.every((n) => n === 8191));
       assert.equal(c.closed, true);
       assert.equal(results.length, 1);

@@ -5,6 +5,7 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
 import { VoiceCoordinator } from '../../live-voice/src/modules/core/coordinator.ts';
+import { mockRecordingRepository } from '../../live-voice/test/helpers/recording.js';
 import { WhisperHttpRecognitionEngine } from '../../live-voice/src/modules/recognition/engines/whisper/WhisperRecognitionEngine.ts';
 import {
   DIAGNOSTIC_KEY,
@@ -115,7 +116,9 @@ test('simulated recognition events expose real cross-domain transitions without 
   assert.equal(inspector.read().state.sessions.example.capture.listening, false);
 });
 
-test('PCM chunks expose actual HTTP adapter VAD, buffered chunks and queued recognition', async (t) => {
+const tick = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+test('PCM chunks expose recording-owned pins, saved samples and range recognition', async (t) => {
   const processor = { connect() {}, disconnect() {} };
   const context = {
     sampleRate: 16000,
@@ -125,6 +128,7 @@ test('PCM chunks expose actual HTTP adapter VAD, buffered chunks and queued reco
   };
   const meter = { context, source: { connect() {}, disconnect() {} }, level: () => 0.2 };
   const engine = new WhisperHttpRecognitionEngine({
+    recordings: mockRecordingRepository(),
     voiceDetectionEngine: 'energy',
     meter,
     globals: { fetch: () => new Promise(() => {}) },
@@ -142,14 +146,18 @@ test('PCM chunks expose actual HTTP adapter VAD, buffered chunks and queued reco
       inputBuffer: { getChannelData: () => new Float32Array(4096).fill(value) },
     });
   emit(0.1);
-  assert.equal(readCoordinatorDiagnostics(controller).chunker.containsSpeech, true);
+  await tick();
+  assert.equal(readCoordinatorDiagnostics(controller).recording.pins, 2);
   emit(0);
-  assert.equal(readCoordinatorDiagnostics(controller).vad.silenceMs, 256);
+  await tick();
+  assert.equal(readCoordinatorDiagnostics(controller).recording.savedSamples, 8192);
   emit(0);
+  await tick();
   assert.equal(readCoordinatorDiagnostics(controller).recognition.activeRequest, true);
   emit(0.1);
   emit(0);
   emit(0);
+  await tick();
   const queue = readCoordinatorDiagnostics(controller).recognition.queue;
   assert.equal(queue.length, 1);
   assert.ok(queue[0].durationMs > 500);
@@ -389,7 +397,7 @@ test('floating panel updates at 100ms, waits for runtime and releases subscripti
   await act(async () => timers.tick(100));
   assert.match(document.body.textContent, /listeningtrue/);
   assert.match(document.body.textContent, /characters12/);
-  const rate = document.querySelector('.dlvd-toolbar select');
+  const rate = document.querySelector('[id$="-states"] .dlvd-toolbar select');
   assert.equal(rate.value, '10');
   const historyCount = document.querySelectorAll('.dlvd-history > details').length;
   await act(async () => {

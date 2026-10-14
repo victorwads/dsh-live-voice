@@ -38,6 +38,8 @@ Do not narrate routine tool activity by default. If the user explicitly asks you
 
 export const autoSendDelayOptions = Object.freeze([0.6, 0.8, 1, 2, 3, 4, 5, 6]);
 
+export const recordingBitrateOptions = Object.freeze([24000, 32000, 48000, 64000, 96000]);
+
 export const defaultSettings = Object.freeze({
   engine: 'browser',
   recognitionEngine: 'browser',
@@ -46,6 +48,13 @@ export const defaultSettings = Object.freeze({
   voiceDetectionEngine: 'silero',
   voiceDetectionPreset: 'short',
   voiceDetectionCustomSilenceMs: 1000,
+  voiceDetectionThreshold: 0.5,
+  voiceDetectionMinimumSpeechMs: 250,
+  recordingEnabled: false,
+  recordingKeepPrevious: 3,
+  recordingBitrate: 48000,
+  recordingPreRollMs: 320,
+  recordingPostRollMs: 320,
   recognitionMaxUtteranceSeconds: 60,
   microphoneEnabled: true,
   holdToTalkEnabled: false,
@@ -144,6 +153,44 @@ export function normalizeSettings(value) {
         ? source.voiceDetectionPreset
         : defaultSettings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs: normalizeCustomSilenceMs(source.voiceDetectionCustomSilenceMs),
+    voiceDetectionThreshold:
+      typeof source.voiceDetectionThreshold === 'number' &&
+      Number.isFinite(source.voiceDetectionThreshold) &&
+      source.voiceDetectionThreshold >= 0.05 &&
+      source.voiceDetectionThreshold <= 0.95
+        ? source.voiceDetectionThreshold
+        : defaultSettings.voiceDetectionThreshold,
+    voiceDetectionMinimumSpeechMs:
+      Number.isInteger(source.voiceDetectionMinimumSpeechMs) &&
+      source.voiceDetectionMinimumSpeechMs >= 50 &&
+      source.voiceDetectionMinimumSpeechMs <= 2000
+        ? source.voiceDetectionMinimumSpeechMs
+        : defaultSettings.voiceDetectionMinimumSpeechMs,
+    recordingEnabled:
+      typeof source.recordingEnabled === 'boolean'
+        ? source.recordingEnabled
+        : defaultSettings.recordingEnabled,
+    recordingKeepPrevious:
+      Number.isInteger(source.recordingKeepPrevious) &&
+      source.recordingKeepPrevious >= 1 &&
+      source.recordingKeepPrevious <= 100
+        ? source.recordingKeepPrevious
+        : defaultSettings.recordingKeepPrevious,
+    recordingBitrate: recordingBitrateOptions.includes(source.recordingBitrate)
+      ? source.recordingBitrate
+      : defaultSettings.recordingBitrate,
+    recordingPreRollMs:
+      Number.isInteger(source.recordingPreRollMs) &&
+      source.recordingPreRollMs >= 0 &&
+      source.recordingPreRollMs <= 2000
+        ? source.recordingPreRollMs
+        : defaultSettings.recordingPreRollMs,
+    recordingPostRollMs:
+      Number.isInteger(source.recordingPostRollMs) &&
+      source.recordingPostRollMs >= 0 &&
+      source.recordingPostRollMs <= 2000
+        ? source.recordingPostRollMs
+        : defaultSettings.recordingPostRollMs,
     recognitionMaxUtteranceSeconds:
       Number.isInteger(source.recognitionMaxUtteranceSeconds) &&
       source.recognitionMaxUtteranceSeconds >= 10 &&

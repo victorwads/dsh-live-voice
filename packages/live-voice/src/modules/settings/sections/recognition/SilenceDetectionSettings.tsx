@@ -37,37 +37,69 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
       icon="pause"
       defaultOpen={false}
     >
-      <p>{(recognition as any).silenceDetection.help()}</p>
-      <SelectField
-        label={(recognition as any).silenceDetection.detector.label()}
-        value={
-          settings.voiceDetectionEngine === 'energy'
-            ? 'energy'
-            : defaultSettings.voiceDetectionEngine
-        }
-        options={[
-          { value: 'energy', label: (recognition as any).silenceDetection.detector.energy() },
-          {
-            value: 'silero',
-            label: (recognition as any).silenceDetection.detector.silero(),
-            disabled: !sileroAvailable,
-          },
-        ]}
-        onChange={(event) => updateSettings({ voiceDetectionEngine: event.target.value })}
-      />
-      <NumberField
-        label={(recognition as any).maxUtterance.label()}
-        min={10}
-        max={300}
-        step={1}
-        value={settings.recognitionMaxUtteranceSeconds ?? 60}
-        onCommit={(raw) => {
-          const value = Number(raw);
-          if (Number.isInteger(value) && value >= 10 && value <= 300)
-            updateSettings({ recognitionMaxUtteranceSeconds: value });
-        }}
-      />
-      <small>{(recognition as any).maxUtterance.help()}</small>
+      <div className="dlv-field-pair">
+        <SelectField
+          label={(recognition as any).silenceDetection.detector.label()}
+          hint={(recognition as any).silenceDetection.help()}
+          value={
+            settings.voiceDetectionEngine === 'energy'
+              ? 'energy'
+              : defaultSettings.voiceDetectionEngine
+          }
+          options={[
+            { value: 'energy', label: (recognition as any).silenceDetection.detector.energy() },
+            {
+              value: 'silero',
+              label: (recognition as any).silenceDetection.detector.silero(),
+              disabled: !sileroAvailable,
+            },
+          ]}
+          onChange={(event) => updateSettings({ voiceDetectionEngine: event.target.value })}
+        />
+        <NumberField
+          label={(recognition as any).silenceDetection.threshold.label()}
+          hint={(recognition as any).silenceDetection.threshold.help()}
+          min={0.05}
+          max={0.95}
+          step={0.01}
+          value={settings.voiceDetectionThreshold ?? defaultSettings.voiceDetectionThreshold}
+          onCommit={(raw) => {
+            const value = Number(raw);
+            if (Number.isFinite(value) && value >= 0.05 && value <= 0.95)
+              updateSettings({ voiceDetectionThreshold: value });
+          }}
+        />
+      </div>
+      <div className="dlv-field-pair">
+        <NumberField
+          label={(recognition as any).silenceDetection.minimumSpeech.label()}
+          hint={(recognition as any).silenceDetection.minimumSpeech.help()}
+          min={50}
+          max={2000}
+          step={1}
+          value={
+            settings.voiceDetectionMinimumSpeechMs ?? defaultSettings.voiceDetectionMinimumSpeechMs
+          }
+          onCommit={(raw) => {
+            const value = Number(raw);
+            if (Number.isInteger(value) && value >= 50 && value <= 2000)
+              updateSettings({ voiceDetectionMinimumSpeechMs: value });
+          }}
+        />
+        <NumberField
+          label={(recognition as any).maxUtterance.label()}
+          hint={(recognition as any).maxUtterance.help()}
+          min={10}
+          max={300}
+          step={1}
+          value={settings.recognitionMaxUtteranceSeconds ?? 60}
+          onCommit={(raw) => {
+            const value = Number(raw);
+            if (Number.isInteger(value) && value >= 10 && value <= 300)
+              updateSettings({ recognitionMaxUtteranceSeconds: value });
+          }}
+        />
+      </div>
       <div
         className="dlv-preset-group"
         role="radiogroup"
@@ -93,6 +125,7 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
         <>
           <NumberField
             label={(recognition as any).silenceDetection.customLabel()}
+            hint={(recognition as any).silenceDetection.customHelp()}
             min={customSilenceMinMs}
             max={customSilenceMaxMs}
             step={1}
@@ -108,7 +141,6 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
                 updateSettings({ voiceDetectionCustomSilenceMs: value });
             }}
           />
-          <small>{(recognition as any).silenceDetection.customHelp()}</small>
         </>
       )}
       <p className="dlv-vad-summary">

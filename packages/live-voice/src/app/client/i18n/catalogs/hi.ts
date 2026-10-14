@@ -184,7 +184,13 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.help':
     'तय करता है कि रिकॉर्ड की गई आवाज़ को पहचान के लिए भेजने से पहले विराम कितनी देर रहना चाहिए।',
   'dsh-live-voice.recognition.silenceDetection.label': 'मौन का पता लगाना',
+  'dsh-live-voice.recognition.silenceDetection.minimumSpeech.help':
+    'किसी खंड को स्वीकार करने से पहले न्यूनतम पहचानी गई वाणी (50–2,000 ms)। इससे छोटी ध्वनियाँ अनदेखी होती हैं।',
+  'dsh-live-voice.recognition.silenceDetection.minimumSpeech.label': 'न्यूनतम वाणी (मिलीसेकंड)',
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'भेजने से पहले का विराम',
+  'dsh-live-voice.recognition.silenceDetection.threshold.help':
+    'वाणी सक्रियता सीमा (0.05–0.95)। कम मान धीमी वाणी पहचानते हैं, लेकिन अधिक शोर भी स्वीकार कर सकते हैं।',
+  'dsh-live-voice.recognition.silenceDetection.threshold.label': 'वाणी सक्रियता सीमा',
   'dsh-live-voice.recognition.silenceDetection.title': 'मौन का पता लगाने की सेटिंग्स',
   'dsh-live-voice.recognition.silero.error.failed':
     'Silero से आवाज़ का पता लगाने में विफलता हुई। सेटिंग्स में ऑडियो ऊर्जा चुनें या कैप्चर फिर से शुरू करने का प्रयास करें।',
@@ -218,6 +224,30 @@ const hi: LiveVoiceTranslation = {
     'DSH होस्ट पर सहेजा गया। होस्ट पर चल रहे ट्रांसक्रिप्शन अनुरोध रद्द कर दिए गए।',
   'dsh-live-voice.recognition.whisper.signInRequired':
     'Whisper सेटिंग्स प्रबंधित करने के लिए DSH में साइन इन करें।',
+  'dsh-live-voice.recording.bitrate.help':
+    'संपीड़ित ऑडियो की लक्षित बिटरेट। अधिक मान अधिक स्थानीय संग्रहण उपयोग करते हैं।',
+  'dsh-live-voice.recording.bitrate.label': 'रिकॉर्डिंग बिटरेट',
+  'dsh-live-voice.recording.bitrate.option': '{bitrate} किलोबिट/सेकंड',
+  'dsh-live-voice.recording.browserUnsupported':
+    'ब्राउज़र पहचान पुनर्प्राप्त करने योग्य रिकॉर्डिंग या सहेजे गए ऑडियो खंडों के ट्रांसक्रिप्शन का समर्थन नहीं करती। Qwen या Whisper HTTP चुनें।',
+  'dsh-live-voice.recording.durabilityWarning':
+    'स्थानीय संग्रहण भर सकता है या मिटाया जा सकता है; पुनर्प्राप्ति की गारंटी नहीं है। सहेजना विफल होने पर बिना सूचना डेटा खोने से बचाने के लिए कैप्चर रुक जाता है।',
+  'dsh-live-voice.recording.enabled.help':
+    'डिफ़ॉल्ट रूप से बंद। कैप्चर के दौरान पुनर्प्राप्त करने योग्य ऑडियो स्थानीय रूप से सहेजने के लिए चालू करें।',
+  'dsh-live-voice.recording.enabled.label': 'पुनर्प्राप्त करने योग्य रिकॉर्डिंग सहेजें',
+  'dsh-live-voice.recording.error.failed':
+    'रिकॉर्डिंग सहेजी नहीं जा सकी। बिना सूचना डेटा खोने से बचाने के लिए कैप्चर रोक दिया गया।',
+  'dsh-live-voice.recording.keepPrevious.help':
+    'प्रत्येक स्रोत की 1–100 पूरी हो चुकी पिछली रिकॉर्डिंग रखें (माइक्रोफ़ोन और साझा ऑडियो अलग-अलग)। सक्रिय रिकॉर्डिंग इस सीमा में नहीं गिनी जातीं।',
+  'dsh-live-voice.recording.keepPrevious.label': 'प्रति स्रोत पिछली रिकॉर्डिंग',
+  'dsh-live-voice.recording.paddingHelp':
+    'सहेजे गए ऑडियो खंड का ट्रांसक्रिप्शन करते समय पहचानी गई वाणी से पहले और बाद में 0–2,000 ms शामिल करें।',
+  'dsh-live-voice.recording.postRoll.label': 'वाणी के बाद का ऑडियो (मिलीसेकंड)',
+  'dsh-live-voice.recording.preRoll.label': 'वाणी से पहले का ऑडियो (मिलीसेकंड)',
+  'dsh-live-voice.recording.privacyWarning':
+    'संपीड़ित ऑडियो, जिसमें मौन और पृष्ठभूमि की ध्वनि भी शामिल है, इस डिवाइस पर तब तक रहता है जब तक प्रतिधारण नीति या आप उसे मिटा न दें। दूसरों को रिकॉर्ड करने से पहले सहमति लें। इसे बंद करने से सहेजी गई रिकॉर्डिंग नहीं मिटतीं।',
+  'dsh-live-voice.recording.status.saved': 'ऑडियो {time} तक सहेजा गया',
+  'dsh-live-voice.recording.title': 'पुनर्प्राप्त करने योग्य रिकॉर्डिंग',
   'dsh-live-voice.settings.autoSend.cancel': 'स्वचालित भेजना रद्द करें',
   'dsh-live-voice.settings.autoSend.countdown': '{remaining} में भेजा जाएगा…',
   'dsh-live-voice.settings.autoSend.delay': 'मौन के बाद भेजें',

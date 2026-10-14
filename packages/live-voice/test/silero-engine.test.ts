@@ -1,6 +1,7 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mockRecordingRepository } from './helpers/recording.js';
 import { WhisperHttpRecognitionEngine } from '../src/modules/recognition/engines/whisper/WhisperRecognitionEngine.ts';
 import { QwenHttpRecognitionEngine } from '../src/modules/recognition/engines/qwen/QwenRecognitionEngine.ts';
 import { VoiceCoordinator } from '../src/modules/core/coordinator.ts';
@@ -11,7 +12,8 @@ function harness(Engine = WhisperHttpRecognitionEngine, mode = 'silero') {
     results = [],
     activity = [],
     errors = [];
-  let callbacks,
+  let onPcm,
+    callbacks,
     released = 0,
     captureReleased = 0,
     factoryCalls = 0,
@@ -30,6 +32,7 @@ function harness(Engine = WhisperHttpRecognitionEngine, mode = 'silero') {
   };
   const source = { connect() {}, disconnect() {} };
   const engine = new Engine({
+    recordings: mockRecordingRepository(),
     voiceDetectionEngine: mode,
     meter: { context, source },
     globals: {
@@ -48,11 +51,17 @@ function harness(Engine = WhisperHttpRecognitionEngine, mode = 'silero') {
         },
       };
     },
-    vadCapture: async () => ({
-      release() {
-        captureReleased++;
-      },
-    }),
+    vadCapture: async (_context, _source, _vad, ingest) => {
+      onPcm = ingest;
+      return {
+        async finish() {
+          captureReleased++;
+        },
+        release() {
+          captureReleased++;
+        },
+      };
+    },
   });
   return {
     engine,
@@ -68,6 +77,7 @@ function harness(Engine = WhisperHttpRecognitionEngine, mode = 'silero') {
         onError: (x) => errors.push(x),
       }),
     frame(probability, value = 0.001) {
+      onPcm(new Float32Array(1536).fill(value), 48000);
       callbacks.onProbability({
         probability,
         pcm: new Float32Array(512).fill(value),
@@ -80,12 +90,15 @@ function harness(Engine = WhisperHttpRecognitionEngine, mode = 'silero') {
     get callbacks() {
       return callbacks;
     },
+    get onPcm() {
+      return onPcm;
+    },
     counts: () => ({ released, captureReleased, factoryCalls, processorCalls }),
   };
 }
 const settle = () => new Promise((resolve) => setImmediate(resolve));
 
-test('energy default never acquires Silero or changes the legacy RMS processor', async () => {
+test('explicit energy never acquires Silero and uses the PCM processor', async () => {
   const h = harness(WhisperHttpRecognitionEngine, 'energy');
   await h.start();
   assert.equal(h.engine.voiceDetectionEngine, 'energy');
@@ -111,12 +124,22 @@ test('Silero probabilities accept quiet speech for both engines without RMS gati
   }
 });
 
-test('Silero silence buffers are bounded and short misfires do not transcribe', async () => {
+test('Silero silence stays in the recording without queued PCM and short misfires do not transcribe', async () => {
   const h = harness();
   await h.start();
-  for (let i = 0; i < 2000; i++) h.frame(0.01);
-  assert.equal(h.engine.session.samples, 0);
-  assert.equal(h.engine.session.preRoll.length, 10);
+  for (let i = 0; i < 2000; i++) {
+    h.frame(0.01);
+    if (i % 64 === 63) await settle();
+  }
+  await settle();
+  assert.equal(h.engine.session.writer.session.capturedSamples, 2000 * 1536);
+  assert.equal(h.engine.session.transcriptionQueue.length, 0);
+  assert.equal(h.engine.session.writer.session.pins.length, 1);
+  assert.equal(
+    'preRoll' in h.engine.session,
+    false,
+    'the engine must not retain legacy PCM buffers',
+  );
   h.frame(0.9);
   for (let i = 0; i < 16; i++) h.frame(0.01);
   await settle();
@@ -130,14 +153,22 @@ test('stopping one source does not affect the other and obsolete callbacks canno
   await a.start();
   await b.start();
   const old = a.callbacks;
+  const stalePcm = a.onPcm;
+  const writer = a.engine.session.writer;
   await a.engine.stop();
   for (let i = 0; i < 10; i++) {
+    stalePcm(new Float32Array(1536), 48000);
     old.onProbability({ probability: 0.9, pcm: new Float32Array(512) });
     b.frame(0.9);
   }
   for (let i = 0; i < 16; i++) b.frame(0.01);
   await settle();
   assert.equal(a.requests.length, 0);
+  assert.equal(
+    writer.session.capturedSamples,
+    0,
+    'stale capture PCM cannot append to a sealed recording',
+  );
   assert.equal(b.requests.length, 1);
   await b.engine.stop();
 });

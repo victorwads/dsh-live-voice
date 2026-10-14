@@ -57,6 +57,13 @@ test('all normalized preferences survive a host restart and another browser', as
     agentVoiceContext: 'Keep answers short.',
     voiceDetectionPreset: 'custom',
     voiceDetectionCustomSilenceMs: 350,
+    voiceDetectionThreshold: 0.65,
+    voiceDetectionMinimumSpeechMs: 400,
+    recordingEnabled: true,
+    recordingKeepPrevious: 1,
+    recordingBitrate: 64000,
+    recordingPreRollMs: 0,
+    recordingPostRollMs: 2000,
     assistantSpeechDelaySeconds: 3,
     autoSendDelaySeconds: 6,
     microphoneSourceName: 'Alice',
@@ -114,4 +121,25 @@ test('route rejects malformed requests and reports disk errors without claiming 
   const failing = createSettingsClient(async () => Response.json({ ok: false }, { status: 500 }));
   await assert.rejects(failing.ready);
   await assert.rejects(failing.save({ mode: 'headphones' }));
+});
+
+test('host normalizes malformed recoverable recording and detector settings before persistence', async (t) => {
+  const f = await fixture(t);
+  const invalid = {
+    recordingEnabled: 'true',
+    recordingKeepPrevious: 0,
+    recordingBitrate: 16000,
+    recordingPreRollMs: -1,
+    recordingPostRollMs: 2001,
+    voiceDetectionThreshold: 1,
+    voiceDetectionMinimumSpeechMs: 49,
+  };
+  const response = await f.fetch('/api/dsh-live-voice/settings', {
+    method: 'PUT',
+    body: JSON.stringify(invalid),
+  });
+  assert.equal(response.status, 200);
+  const saved = await createSettingsStore(f.path).load();
+  const defaults = normalizeSettings({});
+  for (const key of Object.keys(invalid)) assert.equal(saved[key], defaults[key], key);
 });

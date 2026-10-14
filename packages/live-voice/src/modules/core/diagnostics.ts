@@ -110,12 +110,32 @@ export function readCoordinatorDiagnostics(
           4
         : null,
     },
+    recording: recognition?.writer
+      ? {
+          id: recognition.writer.session.id,
+          capturedSamples: recognition.writer.session.capturedSamples,
+          savedSamples: recognition.writer.session.savedSamples,
+          state: recognition.writer.session.state,
+          pins: recognition.writer.session.pins.length,
+          storage: recognition.writer.session.storage,
+          persistent: recognition.writer.session.persistent,
+        }
+      : null,
     recognition: {
       pendingTranscriptions: number(state.pendingTranscriptions),
       activeRequest: Boolean(recognition?.activeRequest),
       queue: (recognition?.transcriptionQueue ?? []).map((chunk: any) => ({
-        samples: (chunk.samples ?? chunk).length,
-        durationMs: sampleRate ? ((chunk.samples ?? chunk).length / sampleRate) * 1000 : null,
+        samples:
+          chunk.endSample != null
+            ? chunk.endSample - chunk.startSample
+            : (chunk.samples ?? chunk).length,
+        durationMs: sampleRate
+          ? ((chunk.endSample != null
+              ? chunk.endSample - chunk.startSample
+              : (chunk.samples ?? chunk).length) /
+              sampleRate) *
+            1000
+          : null,
       })),
     },
     delivery: {

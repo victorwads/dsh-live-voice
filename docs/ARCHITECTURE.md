@@ -17,6 +17,7 @@ DSH Live Voice uses application composition roots, domain modules, and a domain-
 - [Core voice policy, ownership, settings normalization](../packages/live-voice/src/modules/core/ARCHITECTURE.md)
 - [Conversation and composer behavior](../packages/live-voice/src/modules/conversation/ARCHITECTURE.md)
 - [Settings presentation and storage](../packages/live-voice/src/modules/settings/ARCHITECTURE.md)
+- [Recoverable recordings, pin decisions and range transcription](../packages/live-voice/src/modules/recording/ARCHITECTURE.md)
 - [Recognition engines and capability](../packages/live-voice/src/modules/recognition/ARCHITECTURE.md)
 - [Speaking engines and playback](../packages/live-voice/src/modules/speak/ARCHITECTURE.md)
 - [Shared design system](../packages/live-voice/src/shared/ARCHITECTURE.md)

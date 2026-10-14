@@ -187,7 +187,13 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.help':
     'Controla a duração mínima da pausa antes de enviar a fala capturada para reconhecimento.',
   'dsh-live-voice.recognition.silenceDetection.label': 'Detecção de silêncio',
+  'dsh-live-voice.recognition.silenceDetection.minimumSpeech.help':
+    'Fala mínima detectada antes de aceitar um intervalo (50–2.000 ms). Sons mais curtos são ignorados.',
+  'dsh-live-voice.recognition.silenceDetection.minimumSpeech.label': 'Fala mínima (milissegundos)',
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'Pausa antes de enviar',
+  'dsh-live-voice.recognition.silenceDetection.threshold.help':
+    'Limiar de atividade de voz (0,05–0,95). Valores menores detectam falas mais baixas, mas podem aceitar mais ruído.',
+  'dsh-live-voice.recognition.silenceDetection.threshold.label': 'Limiar de atividade de voz',
   'dsh-live-voice.recognition.silenceDetection.title': 'Configurações de detecção de silêncio',
   'dsh-live-voice.recognition.silero.error.failed':
     'A detecção de voz Silero falhou. Selecione Energia do áudio nas configurações ou tente iniciar a captura novamente.',
@@ -223,6 +229,30 @@ const ptBR: LiveVoiceTranslation = {
     'Salvo no host DSH. Requisições ativas de transcrição do host foram canceladas.',
   'dsh-live-voice.recognition.whisper.signInRequired':
     'Faça login no DSH para gerenciar as configurações do Whisper.',
+  'dsh-live-voice.recording.bitrate.help':
+    'Taxa de bits desejada para o áudio comprimido. Valores maiores usam mais armazenamento local.',
+  'dsh-live-voice.recording.bitrate.label': 'Taxa de bits da gravação',
+  'dsh-live-voice.recording.bitrate.option': '{bitrate} kbit/s',
+  'dsh-live-voice.recording.browserUnsupported':
+    'O reconhecimento do navegador não oferece gravações recuperáveis nem transcrição de intervalos de áudio salvos. Selecione Qwen ou Whisper HTTP.',
+  'dsh-live-voice.recording.durabilityWarning':
+    'O armazenamento local pode ficar cheio ou ser apagado; a recuperação não é garantida. Se o salvamento falhar, a captura para para evitar perda silenciosa de dados.',
+  'dsh-live-voice.recording.enabled.help':
+    'Desativado por padrão. Ative para salvar áudio recuperável localmente durante a captura.',
+  'dsh-live-voice.recording.enabled.label': 'Salvar gravações recuperáveis',
+  'dsh-live-voice.recording.error.failed':
+    'Não foi possível salvar a gravação. A captura foi interrompida para evitar perda silenciosa de dados.',
+  'dsh-live-voice.recording.keepPrevious.help':
+    'Mantém de 1 a 100 gravações anteriores concluídas por fonte (microfone e áudio compartilhado separadamente). Gravações ativas não contam para esse limite.',
+  'dsh-live-voice.recording.keepPrevious.label': 'Gravações anteriores por fonte',
+  'dsh-live-voice.recording.paddingHelp':
+    'Inclui de 0 a 2.000 ms antes e depois da fala detectada ao transcrever um intervalo de áudio salvo.',
+  'dsh-live-voice.recording.postRoll.label': 'Áudio após a fala (milissegundos)',
+  'dsh-live-voice.recording.preRoll.label': 'Áudio antes da fala (milissegundos)',
+  'dsh-live-voice.recording.privacyWarning':
+    'O áudio comprimido, incluindo silêncio e sons de fundo, permanece neste dispositivo até ser removido pela retenção ou excluído por você. Obtenha consentimento antes de gravar outras pessoas. Desativar esta opção não exclui gravações salvas.',
+  'dsh-live-voice.recording.status.saved': 'Áudio salvo até {time}',
+  'dsh-live-voice.recording.title': 'Gravações recuperáveis',
   'dsh-live-voice.settings.autoSend.cancel': 'Cancelar envio automático',
   'dsh-live-voice.settings.autoSend.countdown': 'Enviando em {remaining}…',
   'dsh-live-voice.settings.autoSend.delay': 'Enviar após o silêncio',

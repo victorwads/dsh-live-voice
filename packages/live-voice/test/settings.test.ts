@@ -121,6 +121,13 @@ test('valid local options survive normalization', () => {
     voiceDetectionEngine: 'energy',
     voiceDetectionPreset: 'short',
     voiceDetectionCustomSilenceMs: 400,
+    voiceDetectionThreshold: 0.5,
+    voiceDetectionMinimumSpeechMs: 250,
+    recordingEnabled: false,
+    recordingKeepPrevious: 3,
+    recordingBitrate: 48000,
+    recordingPreRollMs: 320,
+    recordingPostRollMs: 320,
     recognitionMaxUtteranceSeconds: 120,
     microphoneEnabled: false,
     holdToTalkEnabled: true,
@@ -256,5 +263,42 @@ test('meeting source names normalize safely', () => {
   for (const value of [null, 42, '', '   ', 'x'.repeat(81), 'a\nb', 'a\0b', 'a\tb', 'a\u2028b']) {
     assert.equal(normalizeSettings({ microphoneSourceName: value }).microphoneSourceName, 'Me');
     assert.equal(normalizeSettings({ sharedSourceName: value }).sharedSourceName, 'Them');
+  }
+});
+
+test('recoverable recording is opt-in and validates retention, bitrate, padding and detector bounds', () => {
+  const defaults = {
+    recordingEnabled: false,
+    recordingKeepPrevious: 3,
+    recordingBitrate: 48000,
+    recordingPreRollMs: 320,
+    recordingPostRollMs: 320,
+    voiceDetectionThreshold: 0.5,
+    voiceDetectionMinimumSpeechMs: 250,
+  };
+  const pick = (settings) =>
+    Object.fromEntries(Object.keys(defaults).map((key) => [key, settings[key]]));
+  assert.deepEqual(pick(normalizeSettings({})), defaults);
+  for (const enabled of [true, false])
+    assert.equal(normalizeSettings({ recordingEnabled: enabled }).recordingEnabled, enabled);
+  for (const enabled of [1, 'true', null, undefined])
+    assert.equal(normalizeSettings({ recordingEnabled: enabled }).recordingEnabled, false);
+  const cases = [
+    ['recordingKeepPrevious', [1, 3, 100], [0, -1, 101, 1.5, '3', null]],
+    ['recordingBitrate', [24000, 32000, 48000, 64000, 96000], [0, 16000, 48001, '48000', null]],
+    ['recordingPreRollMs', [0, 320, 2000], [-1, 2001, 320.5, '320', null]],
+    ['recordingPostRollMs', [0, 320, 2000], [-1, 2001, 320.5, '320', null]],
+    ['voiceDetectionThreshold', [0.05, 0.5, 0.95], [0, 0.049, 0.951, '0.5', null]],
+    ['voiceDetectionMinimumSpeechMs', [50, 250, 2000], [0, 49, 2001, 250.5, '250', null]],
+  ];
+  for (const [key, valid, invalid] of cases) {
+    for (const value of valid) {
+      const saved = normalizeSettings(
+        JSON.parse(JSON.stringify(normalizeSettings({ [key]: value }))),
+      );
+      assert.equal(saved[key], value, key);
+    }
+    for (const value of [...invalid, undefined, true, NaN, Infinity, -Infinity])
+      assert.equal(normalizeSettings({ [key]: value })[key], defaults[key], key);
   }
 });

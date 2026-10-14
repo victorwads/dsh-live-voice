@@ -2,6 +2,8 @@
 import React from 'react';
 import { SessionSpeechMemory } from '../../modules/speak/services/sessionSpeechMemory.js';
 import { readSileroVadDiagnostics } from '../../modules/recognition/vad/SileroVadRuntime.js';
+import { createRecordingRepository } from '../../modules/recording/repository.js';
+import { RECORDING_KEY, RECORDING_CHANGED } from '../../modules/recording/types.js';
 import { sileroVadAssetBase } from '../../modules/recognition/vad/assets.js';
 import { createVadAssetDiagnostics } from './vadDiagnostics.js';
 import { SpeechStatusBar } from '../../modules/conversation/components/SpeechStatusBar.js';
@@ -58,6 +60,7 @@ export function apply(ctx) {
   let preferencesLoaded = false;
   const settingsControllers = new Set();
   let disposed = false;
+  const recordings = createRecordingRepository();
   // Voice conversation mode belongs to the plugin, not to a mounted composer.
   // A route change may replace every conversation slot, but the next committed
   // composer should inherit the user's explicit choice to remain in voice mode.
@@ -160,6 +163,8 @@ export function apply(ctx) {
     }
   };
   ctx.effect(() => {
+    window[RECORDING_KEY] = recordings;
+    window.dispatchEvent(new window.Event(RECORDING_CHANGED));
     const unpublish = publishDiagnosticSource(window, {
       version: 1,
       read: ({ includeContent = false } = {}) => ({
@@ -240,12 +245,34 @@ export function apply(ctx) {
     'voiceDetectionPreset',
     'voiceDetectionCustomSilenceMs',
     'recognitionMaxUtteranceSeconds',
+    'recordingEnabled',
+    'recordingKeepPrevious',
+    'recordingBitrate',
+    'recordingPreRollMs',
+    'recordingPostRollMs',
+    'voiceDetectionThreshold',
+    'voiceDetectionMinimumSpeechMs',
   ]);
   const changesRecognition = (next) =>
     Object.keys(next).some((key) => recognitionSettingKeys.has(key));
+  const recordingOptions = (settings, inputSource) => ({
+    recordings,
+    inputSource,
+    sourceId: inputSource,
+    sourceLabel: inputSource === 'shared' ? settings.sharedSourceName : settings.micSourceName,
+    recordingEnabled: settings.recordingEnabled,
+    recordingKeepPrevious: settings.recordingKeepPrevious,
+    recordingBitrate: settings.recordingBitrate,
+    recordingPreRollMs: settings.recordingPreRollMs,
+    recordingPostRollMs: settings.recordingPostRollMs,
+    voiceDetectionThreshold: settings.voiceDetectionThreshold,
+    voiceDetectionMinimumSpeechMs: settings.voiceDetectionMinimumSpeechMs,
+    recordingErrorMessage: () => t('dsh-live-voice.recording.error.failed'),
+  });
   const recognitionFor = (settings, meter, inputSource = 'microphone') =>
     settings.recognitionEngine === 'qwen-http'
       ? new QwenHttpRecognitionEngine({
+          ...recordingOptions(settings, inputSource),
           meter,
           vadErrorMessage: (error) =>
             t(
@@ -263,6 +290,7 @@ export function apply(ctx) {
         })
       : settings.recognitionEngine === 'whisper-http'
         ? new WhisperHttpRecognitionEngine({
+            ...recordingOptions(settings, inputSource),
             meter,
             vadErrorMessage: (error) =>
               t(
@@ -1136,6 +1164,15 @@ export function apply(ctx) {
     window.addEventListener('pagehide', stop);
     return () => {
       disposed = true;
+      if (window[RECORDING_KEY] === recordings) {
+        delete window[RECORDING_KEY];
+        window.dispatchEvent(new window.Event(RECORDING_CHANGED));
+      }
+      void Promise.allSettled(
+        [...controllers.values()].map((entry) => entry.controller.stopListening()),
+      )
+        .then(() => meeting.dispose())
+        .then(() => recordings.dispose());
       ownership.close();
       speechMemory.clear();
       window.speechSynthesis?.removeEventListener?.('voiceschanged', refreshCapabilities);

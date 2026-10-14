@@ -173,7 +173,13 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.silenceDetection.help':
     '设置停顿持续多久后，将采集的语音发送进行识别。',
   'dsh-live-voice.recognition.silenceDetection.label': '静音检测',
+  'dsh-live-voice.recognition.silenceDetection.minimumSpeech.help':
+    '接受语音区间前所需的最短检测语音（50–2,000 毫秒）。更短的声音会被忽略。',
+  'dsh-live-voice.recognition.silenceDetection.minimumSpeech.label': '最短语音时长（毫秒）',
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': '发送前停顿',
+  'dsh-live-voice.recognition.silenceDetection.threshold.help':
+    '语音活动阈值（0.05–0.95）。较低的值可检测更轻的语音，但也可能接受更多噪声。',
+  'dsh-live-voice.recognition.silenceDetection.threshold.label': '语音活动阈值',
   'dsh-live-voice.recognition.silenceDetection.title': '静音检测设置',
   'dsh-live-voice.recognition.silero.error.failed':
     'Silero 语音检测失败。请在设置中选择音频能量，或重试采集。',
@@ -205,6 +211,27 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.whisper.save': '保存 Whisper 设置',
   'dsh-live-voice.recognition.whisper.saved': '已保存到 DSH 主机。主机上正在进行的转写请求已取消。',
   'dsh-live-voice.recognition.whisper.signInRequired': '请登录 DSH 以管理 Whisper 设置。',
+  'dsh-live-voice.recording.bitrate.help': '压缩音频的目标比特率。值越高，占用的本地存储越多。',
+  'dsh-live-voice.recording.bitrate.label': '录音比特率',
+  'dsh-live-voice.recording.bitrate.option': '{bitrate} 千比特/秒',
+  'dsh-live-voice.recording.browserUnsupported':
+    '浏览器识别不支持可恢复录音或已保存音频区间的转写。请选择 Qwen 或 Whisper HTTP。',
+  'dsh-live-voice.recording.durabilityWarning':
+    '本地存储可能已满或被清除，无法保证恢复。保存失败时，采集将停止，以避免无提示的数据丢失。',
+  'dsh-live-voice.recording.enabled.help': '默认关闭。启用后，采集期间会在本地保存可恢复的音频。',
+  'dsh-live-voice.recording.enabled.label': '保存可恢复录音',
+  'dsh-live-voice.recording.error.failed': '无法保存录音。采集已停止，以避免无提示的数据丢失。',
+  'dsh-live-voice.recording.keepPrevious.help':
+    '每个来源保留 1–100 条已完成的历史录音（麦克风与共享音频分别计算）。正在录制的音频不计入此限制。',
+  'dsh-live-voice.recording.keepPrevious.label': '每个来源的历史录音数量',
+  'dsh-live-voice.recording.paddingHelp':
+    '转写已保存的音频区间时，在检测到的语音前后各包含 0–2,000 毫秒。',
+  'dsh-live-voice.recording.postRoll.label': '语音后音频（毫秒）',
+  'dsh-live-voice.recording.preRoll.label': '语音前音频（毫秒）',
+  'dsh-live-voice.recording.privacyWarning':
+    '压缩音频（包括静音和背景声音）将保留在此设备上，直到被保留策略移除或由您删除。录制他人前请先征得同意。关闭此选项不会删除已保存的录音。',
+  'dsh-live-voice.recording.status.saved': '音频已保存至 {time}',
+  'dsh-live-voice.recording.title': '可恢复录音',
   'dsh-live-voice.settings.autoSend.cancel': '取消自动发送',
   'dsh-live-voice.settings.autoSend.countdown': '{remaining} 后发送…',
   'dsh-live-voice.settings.autoSend.delay': '静音后发送',

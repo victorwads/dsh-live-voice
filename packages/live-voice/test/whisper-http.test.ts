@@ -1,6 +1,7 @@
 // @ts-nocheck
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mockRecordingRepository } from './helpers/recording.js';
 import {
   encodeMonoPcm16Wav,
   WhisperHttpRecognitionEngine,
@@ -10,6 +11,19 @@ import {
   validateMonoPcm16Wav,
   WhisperHttpHost,
 } from '../src/modules/recognition/engines/whisper/whisperRecognitionHost.ts';
+
+test('Whisper uses a lazy per-engine repository unless an application singleton is injected', async () => {
+  const a = new WhisperHttpRecognitionEngine();
+  const b = new WhisperHttpRecognitionEngine();
+  assert.ok(a.recordings);
+  assert.notEqual(a.recordings, b.recordings);
+  const repository = mockRecordingRepository();
+  const injected = new WhisperHttpRecognitionEngine({ recordings: repository });
+  assert.equal(injected.recordings, repository);
+  // Constructing a fallback must not open IndexedDB or require WebCodecs.
+  await a.recordings.dispose();
+  await b.recordings.dispose();
+});
 
 test('Whisper host accepts only loopback and canonical mono PCM16 WAV', () => {
   assert.equal(resolveWhisperUrl('http://127.0.0.1:8080/inference').pathname, '/inference');
@@ -81,7 +95,12 @@ test('Whisper browser engine segments speech and sends authenticated complete ut
     },
   };
   const results = [],
-    engine = new WhisperHttpRecognitionEngine({ voiceDetectionEngine: 'energy', globals, meter: { context, source } });
+    engine = new WhisperHttpRecognitionEngine({
+      recordings: mockRecordingRepository(),
+      voiceDetectionEngine: 'energy',
+      globals,
+      meter: { context, source },
+    });
   assert.equal((await engine.capability()).supported, true);
   await engine.start({ lang: 'pt-BR', onResult: (value) => results.push(value) });
   const emit = (value) =>
@@ -109,8 +128,8 @@ test('Whisper browser engine segments speech and sends authenticated complete ut
   );
   assert.equal(
     results[0].startedAt,
-    100000 - 256,
-    'onset precedes request completion by buffered speech time',
+    100000,
+    'range onset uses the recording sample clock, not request completion',
   );
   await engine.stop();
 });
@@ -130,7 +149,9 @@ test('Whisper voice detection defaults to short pauses and external presets chan
         return { gain: { value: 1 }, connect() {}, disconnect() {} };
       },
     };
-    const engine = new WhisperHttpRecognitionEngine({ voiceDetectionEngine: 'energy',
+    const engine = new WhisperHttpRecognitionEngine({
+      recordings: mockRecordingRepository(),
+      voiceDetectionEngine: 'energy',
       voiceDetectionPreset: preset,
       voiceDetectionCustomSilenceMs: customMs,
       globals: {
@@ -186,7 +207,9 @@ test('Whisper browser engine serializes closed utterances and discards queued wo
       },
     },
     requests = [];
-  const engine = new WhisperHttpRecognitionEngine({ voiceDetectionEngine: 'energy',
+  const engine = new WhisperHttpRecognitionEngine({
+    recordings: mockRecordingRepository(),
+    voiceDetectionEngine: 'energy',
     globals: {
       crypto,
       fetch: (_url, options) => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { RecordingProgress } from './RecordingProgress.js';
 import { Waveform } from './Waveform.js';
 export function RecognitionBar({ controller, listening, label, status, leading, children }: any) {
   return (
@@ -8,6 +9,7 @@ export function RecognitionBar({ controller, listening, label, status, leading, 
       <span className="dlv-status" role="status" aria-live="polite">
         {status}
       </span>
+      <RecordingProgress controller={controller} />
       {children}
     </div>
   );

@@ -41,6 +41,20 @@ function setup(t, available = true) {
   };
 }
 
+test('VAD fields use compact paired rows with accessible help instead of inline paragraphs', async (t) => {
+  const { render } = setup(t);
+  await render({ ...defaultSettings, recognitionEngine: 'whisper-http' });
+  const pairs = [...document.querySelectorAll('.dlv-field-pair')];
+  assert.equal(pairs.length, 2);
+  assert.equal(pairs[0].querySelectorAll('select').length, 1);
+  assert.equal(pairs[0].querySelectorAll('input[type=number]').length, 1);
+  assert.equal(pairs[1].querySelectorAll('input[type=number]').length, 2);
+  assert.equal(document.querySelectorAll('.dlv-section-content > small').length, 0);
+  assert.equal(document.querySelectorAll('.dlv-hint-trigger').length, 4);
+  for (const input of document.querySelectorAll('input[type=number]'))
+    assert.ok(input.labels.length);
+});
+
 test('missing or invalid detector settings show Silero without overwriting explicit energy', async (t) => {
   const { render, calls } = setup(t);
   assert.equal(defaultSettings.voiceDetectionEngine, 'silero');
@@ -67,7 +81,11 @@ test('only an explicit detector selection sends the Silero settings patch', asyn
   const { render, calls } = setup(t);
   for (const recognitionEngine of ['whisper-http', 'qwen-http']) {
     calls.length = 0;
-    const select = await render({ ...defaultSettings, recognitionEngine, voiceDetectionEngine: 'energy' });
+    const select = await render({
+      ...defaultSettings,
+      recognitionEngine,
+      voiceDetectionEngine: 'energy',
+    });
     assert.equal(select.value, 'energy');
     assert.deepEqual(calls, []);
     await act(async () => {
