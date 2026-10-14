@@ -262,19 +262,19 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recording.durabilityWarning':
     'Le stockage local peut être saturé ou effacé ; la récupération n’est pas garantie. Si l’enregistrement échoue, la capture s’arrête pour éviter une perte de données silencieuse.',
   'dsh-live-voice.recording.enabled.help':
-    'Désactivé par défaut. Activez pour sauvegarder localement un son récupérable pendant la capture.',
+    'Activé par défaut. Désactivez pour ne pas sauvegarder localement le son récupérable pendant la capture.',
   'dsh-live-voice.recording.enabled.label': 'Sauvegarder des enregistrements récupérables',
   'dsh-live-voice.recording.error.failed':
     'L’enregistrement n’a pas pu être sauvegardé. La capture s’est arrêtée pour éviter une perte de données silencieuse.',
   'dsh-live-voice.recording.keepPrevious.help':
-    'Conserve de 1 à 100 enregistrements précédents terminés par source (microphone et son partagé séparément). Les enregistrements actifs ne comptent pas dans cette limite.',
-  'dsh-live-voice.recording.keepPrevious.label': 'Enregistrements précédents par source',
+    'Conserve de 1 à 100 enregistrements ordinaires terminés par type de source : un groupe microphone et un groupe réunion/son partagé. Par défaut : 1 microphone + 1 réunion. Les enregistrements protégés ou favoris ne comptent pas. Les actifs restent jusqu’à leur clôture, puis comptent dans ce total, sans enregistrement précédent supplémentaire.',
+  'dsh-live-voice.recording.keepPrevious.label': 'Enregistrements conservés par type de source',
   'dsh-live-voice.recording.paddingHelp':
     'Inclut de 0 à 2 000 ms avant et après la parole détectée lors de la transcription d’une plage enregistrée.',
   'dsh-live-voice.recording.postRoll.label': 'Son après la parole (millisecondes)',
   'dsh-live-voice.recording.preRoll.label': 'Son avant la parole (millisecondes)',
   'dsh-live-voice.recording.privacyWarning':
-    'Le son compressé, y compris les silences et les bruits de fond, reste sur cet appareil jusqu’à sa suppression par rétention ou par vous. Obtenez le consentement avant d’enregistrer d’autres personnes. Désactiver cette option ne supprime pas les enregistrements sauvegardés.',
+    'Le son, y compris les silences et les bruits de fond, est stocké localement dans ce profil de navigateur et ce site, avec compression avec perte. Obtenez le consentement avant d’enregistrer d’autres personnes. Désactiver cette option ne supprime pas les enregistrements sauvegardés.',
   'dsh-live-voice.recording.status.saved': 'Audio enregistré jusqu’à {time}',
   'dsh-live-voice.recording.title': 'Enregistrements récupérables',
   'dsh-live-voice.settings.autoSend.cancel': 'Annuler l’envoi automatique',

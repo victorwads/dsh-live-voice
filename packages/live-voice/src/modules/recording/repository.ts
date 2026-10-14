@@ -66,7 +66,14 @@ function base64(bytes: Uint8Array): string {
 export function createRecordingRepository(): RecordingRepository {
   const memory = createMemoryStore();
   const listeners = new Set<() => void>();
-  const writers = new Map<string, { writer: RecordingWriter; idle: () => Promise<void> }>();
+  const writers = new Map<
+    string,
+    {
+      writer: RecordingWriter;
+      idle: () => Promise<void>;
+      setStarred(value: boolean): Promise<void>;
+    }
+  >();
   let opening: Promise<PageStore> | undefined;
   let disposed = false;
   let disposing = false;
@@ -167,6 +174,12 @@ export function createRecordingRepository(): RecordingRepository {
       return;
     }
     if (store === memory) {
+      const latest = await store.get(id);
+      if (
+        !strict &&
+        (latest?.starred || latest?.attempts.some((attempt) => attempt.status === 'pending'))
+      )
+        return;
       await store.remove(id);
       return;
     }
@@ -180,13 +193,20 @@ export function createRecordingRepository(): RecordingRepository {
         if (strict) throw activeError();
         return;
       }
+      const latest = await store.get(id);
+      if (
+        !strict &&
+        (latest?.starred ||
+          latest?.state === 'recording' ||
+          latest?.attempts.some((attempt) => attempt.status === 'pending'))
+      )
+        return;
       await store.remove(id);
     });
   }
   async function prune(
-    sourceId: string,
+    kind: RecordingSession['kind'],
     keepPrevious: number,
-    starting = false,
     target?: PageStore,
   ): Promise<void> {
     const available = target
@@ -199,23 +219,16 @@ export function createRecordingRepository(): RecordingRepository {
       : await all();
     const sessions = available.filter(
       (session) =>
-        session.sourceId === sourceId &&
+        session.kind === kind &&
+        !session.starred &&
+        !session.attempts.some((attempt) => attempt.status === 'pending') &&
         session.state !== 'recording' &&
         !localActive.has(session.id),
     );
     const keep = Math.max(1, keepPrevious);
-    // Every active run plus previous completed runs survive. After a finish retain
-    // the newest run and at least one previous run, independently per source.
-    const hasActive =
-      starting ||
-      available.some((session) => session.sourceId === sourceId && session.state === 'recording');
-    const count = keep + (hasActive ? 0 : 1);
-    const retained = new Set(sessions.slice(0, count).map((session) => session.id));
-    // Failed/interrupted runs must not evict the last completed previous run.
-    for (const session of sessions
-      .filter((session) => session.state === 'completed')
-      .slice(0, count))
-      retained.add(session.id);
+    // Retain exactly the newest N ordinary finished sessions per type.
+    // Active, unsettled and starred sessions neither expire nor consume slots.
+    const retained = new Set(sessions.slice(0, keep).map((session) => session.id));
     for (const session of sessions) {
       if (
         retained.has(session.id) ||
@@ -359,6 +372,32 @@ export function createRecordingRepository(): RecordingRepository {
         emit();
       });
     },
+    async setStarred(id, starred) {
+      check();
+      if (typeof starred !== 'boolean')
+        throw new RecordingRepositoryError(
+          'invalid-range',
+          'Recording protection must be a boolean.',
+        );
+      const active = writers.get(id);
+      if (active) {
+        await active.setStarred(starred);
+        return;
+      }
+      return serial(async () => {
+        const { store } = await locate(id);
+        const release = store === memory ? () => {} : await holdLock(id);
+        let updated: StoredSession;
+        try {
+          updated = await store.update(id, (current) => ({ ...current, starred }));
+        } finally {
+          release();
+        }
+        emit();
+        if (!starred) await prune(updated.kind, updated.keepPrevious, store);
+        emit();
+      });
+    },
     async begin(input) {
       check();
       return serial(async () => {
@@ -389,7 +428,7 @@ export function createRecordingRepository(): RecordingRepository {
             persistent = false;
           } // A denied durability request is not a failed IDB write.
         }
-        await prune(input.sourceId, Math.max(1, Math.floor(policy.keepPrevious)), true, store);
+        await prune(input.kind, Math.max(1, Math.floor(policy.keepPrevious)), store);
         const id = crypto.randomUUID();
         const release = policy.enabled ? await holdLock(id) : () => {};
         let session: StoredSession = {
@@ -556,6 +595,10 @@ export function createRecordingRepository(): RecordingRepository {
                 ...current,
                 attempts: [...current.attempts.filter((attempt) => attempt.id !== copy.id), copy],
               }));
+              if (sealed && copy.status !== 'pending') {
+                await serial(() => prune(input.kind, session.keepPrevious, store));
+                emit();
+              }
             });
           },
           read(start, end) {
@@ -599,7 +642,7 @@ export function createRecordingRepository(): RecordingRepository {
                 writers.delete(id);
                 release();
               }
-              await serial(() => prune(input.sourceId, session.keepPrevious, false, store));
+              await serial(() => prune(input.kind, session.keepPrevious, store));
               emit();
             });
             return finishPromise;
@@ -607,6 +650,10 @@ export function createRecordingRepository(): RecordingRepository {
         };
         writers.set(id, {
           writer,
+          setStarred: (value) =>
+            enqueue(async () => {
+              await update((current) => ({ ...current, starred: value }));
+            }),
           idle: async () => {
             await tail;
           },

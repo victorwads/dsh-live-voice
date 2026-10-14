@@ -241,19 +241,19 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recording.durabilityWarning':
     'Local storage can fill or be cleared; recovery is not guaranteed. If saving fails, capture stops to avoid silent data loss.',
   'dsh-live-voice.recording.enabled.help':
-    'Off by default. Enable to save recoverable audio locally while capturing.',
+    'On by default. Turn off to opt out of saving recoverable audio locally while capturing.',
   'dsh-live-voice.recording.enabled.label': 'Save recoverable recordings',
   'dsh-live-voice.recording.error.failed':
     'Recording could not be saved. Capture stopped to avoid silent data loss.',
   'dsh-live-voice.recording.keepPrevious.help':
-    'Keep 1–100 completed previous recordings per source (microphone and shared audio separately). Active recordings do not count toward this limit.',
-  'dsh-live-voice.recording.keepPrevious.label': 'Previous recordings per source',
+    'Keep 1–100 ordinary completed recordings per source type: microphone and meeting/shared audio as one group each. Default: 1 microphone + 1 meeting. Protected/starred recordings do not count. Active recordings remain until closed, then count toward this total—not an extra previous recording.',
+  'dsh-live-voice.recording.keepPrevious.label': 'Retained recordings per source type',
   'dsh-live-voice.recording.paddingHelp':
     'Include 0–2,000 ms before and after detected speech when transcribing a saved audio range.',
   'dsh-live-voice.recording.postRoll.label': 'Audio after speech (milliseconds)',
   'dsh-live-voice.recording.preRoll.label': 'Audio before speech (milliseconds)',
   'dsh-live-voice.recording.privacyWarning':
-    'Compressed audio, including silence and background sound, stays on this device until retention removes it or you delete it. Obtain consent before recording others. Turning this off does not delete saved recordings.',
+    'Audio, including silence and background sound, is stored locally in this browser profile and site, using lossy compression. Obtain consent before recording others. Turning this off does not delete saved recordings.',
   'dsh-live-voice.recording.status.saved': 'Audio saved through {time}',
   'dsh-live-voice.recording.title': 'Recoverable recordings',
   'dsh-live-voice.settings.autoSend.cancel': 'Cancel automatic send',

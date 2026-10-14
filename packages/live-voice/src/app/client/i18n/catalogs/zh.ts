@@ -224,18 +224,19 @@ const zh: LiveVoiceTranslation = {
     '浏览器识别不支持可恢复录音或已保存音频区间的转写。请选择 Qwen 或 Whisper HTTP。',
   'dsh-live-voice.recording.durabilityWarning':
     '本地存储可能已满或被清除，无法保证恢复。保存失败时，采集将停止，以避免无提示的数据丢失。',
-  'dsh-live-voice.recording.enabled.help': '默认关闭。启用后，采集期间会在本地保存可恢复的音频。',
+  'dsh-live-voice.recording.enabled.help':
+    '默认开启。如果不希望在采集期间将可恢复音频保存在本地，可关闭此选项。',
   'dsh-live-voice.recording.enabled.label': '保存可恢复录音',
   'dsh-live-voice.recording.error.failed': '无法保存录音。采集已停止，以避免无提示的数据丢失。',
   'dsh-live-voice.recording.keepPrevious.help':
-    '每个来源保留 1–100 条已完成的历史录音（麦克风与共享音频分别计算）。正在录制的音频不计入此限制。',
-  'dsh-live-voice.recording.keepPrevious.label': '每个来源的历史录音数量',
+    '按来源类型保留 1–100 条已完成的普通录音：麦克风为一组，会议/共享音频为另一组。默认保留 1 条麦克风录音 + 1 条会议录音。受保护/星标录音不计入限额。正在录制的音频会保留到结束，之后计入此总数，不额外保留一条历史录音。',
+  'dsh-live-voice.recording.keepPrevious.label': '按来源类型保留的录音数量',
   'dsh-live-voice.recording.paddingHelp':
     '转写已保存的音频区间时，在检测到的语音前后各包含 0–2,000 毫秒。',
   'dsh-live-voice.recording.postRoll.label': '语音后音频（毫秒）',
   'dsh-live-voice.recording.preRoll.label': '语音前音频（毫秒）',
   'dsh-live-voice.recording.privacyWarning':
-    '压缩音频（包括静音和背景声音）将保留在此设备上，直到被保留策略移除或由您删除。录制他人前请先征得同意。关闭此选项不会删除已保存的录音。',
+    '音频（包括静音和背景声音）使用有损压缩保存在此浏览器配置文件和站点的本地存储中。录制他人前请先征得同意。关闭此选项不会删除已保存的录音。',
   'dsh-live-voice.recording.status.saved': '音频已保存至 {time}',
   'dsh-live-voice.recording.title': '可恢复录音',
   'dsh-live-voice.settings.autoSend.cancel': '取消自动发送',

@@ -85,7 +85,7 @@ export function createRecordingInspector(target: any, changed: (view: RecordingV
       const candidate = target[RECORDING_KEY];
       const next =
         candidate?.version === 1 &&
-        ['list', 'get', 'segments', 'audio', 'export', 'remove', 'subscribe'].every(
+        ['list', 'get', 'segments', 'audio', 'export', 'remove', 'setStarred', 'subscribe'].every(
           (k) => typeof candidate[k] === 'function',
         )
           ? (candidate as RecordingService)

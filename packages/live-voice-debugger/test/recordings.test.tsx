@@ -17,11 +17,12 @@ const flush = async () => {
   for (let i = 0; i < 8; i++) await Promise.resolve();
 };
 const deferred = () => {
-  let resolve;
-  const promise = new Promise((r) => {
+  let resolve, reject;
+  const promise = new Promise((r, fail) => {
     resolve = r;
+    reject = fail;
   });
-  return { promise, resolve };
+  return { promise, resolve, reject };
 };
 const session = (id = 'mic', kind = 'microphone', sourceId = id) => ({
   id,
@@ -65,6 +66,11 @@ function service(records) {
       const i = records.findIndex((s) => s.id === id);
       records.splice(i, 1);
     },
+    setStarred: async (id, starred) => {
+      const i = records.findIndex((s) => s.id === id);
+      records[i] = { ...records[i], starred };
+      [...listeners].forEach((f) => f());
+    },
     subscribe: (listener) => {
       listeners.add(listener);
       return () => listeners.delete(listener);
@@ -82,6 +88,7 @@ test('recording inspector rejects stale selection/service results and never muta
   old.audio =
     old.export =
     old.remove =
+    old.setStarred =
       () => {
         mutations++;
       };
@@ -112,6 +119,24 @@ test('recording inspector rejects stale selection/service results and never muta
   assert.equal(mutations, 0);
   inspector.dispose();
   assert.equal(next.listeners.size, 0);
+});
+
+test('recording inspector requires the protection service method', async () => {
+  const legacy = service([session()]);
+  const target = { [RECORDING_KEY]: legacy };
+  let view;
+  const inspector = createRecordingInspector(target, (next) => {
+    view = next;
+  });
+  inspector.discover();
+  await flush();
+  assert.equal(view.service, legacy);
+  delete legacy.setStarred;
+  inspector.discover();
+  await flush();
+  assert.equal(view.service, null);
+  assert.equal(legacy.listeners.size, 0);
+  inspector.dispose();
 });
 
 test('recording inspector refreshes subscriptions, reports promise failures and releases removed services', async () => {
@@ -340,9 +365,218 @@ test('recording actions localize errors and reject late playback after selection
   assert.equal(current.listeners.size, 0);
 });
 
+test('recording protection toggles, persists on reload, and leaves storage and manual deletion independent', async (t) => {
+  const dom = new JSDOM('<div id="root"></div>');
+  const previous = {
+    window: globalThis.window,
+    document: globalThis.document,
+    IS_REACT_ACT_ENVIRONMENT: globalThis.IS_REACT_ACT_ENVIRONMENT,
+  };
+  Object.assign(globalThis, {
+    window: dom.window,
+    document: dom.window.document,
+    IS_REACT_ACT_ENVIRONMENT: true,
+  });
+  const root = createRoot(document.getElementById('root'));
+  t.after(async () => {
+    await act(async () => root.unmount());
+    Object.assign(globalThis, previous);
+    dom.window.close();
+  });
+  const records = [{ ...session(), storage: 'indexeddb', persistent: false }];
+  const current = service(records);
+  dom.window[RECORDING_KEY] = current;
+  const copy = copyFor();
+  const render = async () => {
+    await act(async () => {
+      root.render(<DebuggerPanel copy={copy} target={dom.window} onClose={() => {}} />);
+      await flush();
+    });
+  };
+  const star = () => document.querySelector('.dlvd-recording-detail button[aria-pressed]');
+  const button = (label) =>
+    [...document.querySelectorAll('.dlvd-recordings button')].find((b) => b.textContent === label);
+  await render();
+  assert.equal(star().textContent, '☆');
+  assert.equal(star().getAttribute('aria-label'), 'Keep indefinitely');
+  assert.equal(star().getAttribute('aria-pressed'), 'false');
+  assert.equal(star().title, copy.recordingStarHelp);
+  assert.ok(
+    document.querySelector('.dlvd-session-list').textContent.includes(copy.recordingPersistent),
+  );
+  assert.ok(
+    !document.querySelector('.dlvd-session-list').textContent.includes(copy.recordingMemory),
+  );
+
+  const pending = deferred();
+  const setStarred = current.setStarred;
+  let calls = 0;
+  current.setStarred = async (id, starred) => {
+    calls++;
+    await pending.promise;
+    await setStarred(id, starred);
+  };
+  await act(async () => star().click());
+  assert.equal(star().disabled, true);
+  assert.equal(button(copy.recordingDelete).disabled, true);
+  assert.equal(star().getAttribute('aria-pressed'), 'false');
+  await act(async () => star().click());
+  assert.equal(calls, 1);
+  await act(async () => {
+    pending.resolve();
+    await flush();
+  });
+  assert.equal(records[0].starred, true);
+  assert.equal(records[0].persistent, false);
+  assert.equal(records[0].storage, 'indexeddb');
+  assert.equal(star().textContent, '★');
+  assert.equal(star().getAttribute('aria-label'), 'Remove protection');
+  assert.equal(star().getAttribute('aria-pressed'), 'true');
+  assert.equal(star().title, copy.recordingUnstarHelp);
+  assert.equal(
+    document.querySelector('.dlvd-session-list [aria-label="' + copy.recordingStarred + '"]')
+      .textContent,
+    '★',
+  );
+  assert.equal(button(copy.recordingDelete).disabled, false);
+
+  await act(async () => root.render(null));
+  await render();
+  assert.equal(star().getAttribute('aria-pressed'), 'true');
+  current.setStarred = async () => {
+    throw new Error('private protection failure');
+  };
+  await act(async () => {
+    star().click();
+    await flush();
+  });
+  assert.equal(document.querySelector('[role=alert]').textContent, copy.recordingStarError);
+  assert.ok(!document.body.textContent.includes('private protection failure'));
+  assert.equal(star().getAttribute('aria-pressed'), 'true');
+  assert.equal(star().disabled, false);
+  current.setStarred = setStarred;
+  await act(async () => {
+    star().click();
+    await flush();
+  });
+  assert.equal(records[0].starred, false);
+  assert.equal(records[0].persistent, false);
+  assert.equal(star().textContent, '☆');
+  assert.equal(
+    document.querySelector('.dlvd-session-list [aria-label="' + copy.recordingStarred + '"]'),
+    null,
+  );
+  assert.equal(document.querySelector('[role=alert]'), null);
+
+  await act(async () => {
+    star().click();
+    await flush();
+  });
+  await act(async () => button(copy.recordingDelete).click());
+  await act(async () => {
+    document.querySelector('.dlvd-delete-confirm button').click();
+    await flush();
+  });
+  assert.equal(records.length, 0, 'Protected recordings still permit confirmed manual deletion');
+});
+
+test('protection actions ignore late results after selection, service replacement, page hiding, and disposal', async (t) => {
+  const dom = new JSDOM('<div id="root"></div>');
+  const previous = {
+    window: globalThis.window,
+    document: globalThis.document,
+    IS_REACT_ACT_ENVIRONMENT: globalThis.IS_REACT_ACT_ENVIRONMENT,
+  };
+  Object.assign(globalThis, {
+    window: dom.window,
+    document: dom.window.document,
+    IS_REACT_ACT_ENVIRONMENT: true,
+  });
+  const root = createRoot(document.getElementById('root'));
+  t.after(async () => {
+    await act(async () => root.unmount());
+    Object.assign(globalThis, previous);
+    dom.window.close();
+  });
+  const records = [session('a'), session('b')];
+  const current = service(records);
+  dom.window[RECORDING_KEY] = current;
+  const copy = copyFor('pt-BR');
+  await act(async () => {
+    root.render(<DebuggerPanel copy={copy} target={dom.window} onClose={() => {}} />);
+    await flush();
+  });
+  const star = () => document.querySelector('.dlvd-recording-detail button[aria-pressed]');
+  const lateSelection = deferred();
+  current.setStarred = () => lateSelection.promise;
+  await act(async () => star().click());
+  await act(async () => {
+    document.querySelectorAll('.dlvd-session-list button')[1].click();
+    await flush();
+  });
+  await act(async () => {
+    lateSelection.reject(new Error('private stale failure'));
+    await flush();
+  });
+  assert.equal(document.querySelector('[role=alert]'), null);
+  assert.equal(star().disabled, false);
+  assert.equal(star().getAttribute('aria-pressed'), 'false');
+
+  const lateService = deferred();
+  current.setStarred = () => lateService.promise;
+  await act(async () => star().click());
+  const nextRecords = [{ ...session('b'), starred: true }];
+  const next = service(nextRecords);
+  let lists = 0;
+  next.list = async () => {
+    lists++;
+    return nextRecords;
+  };
+  await act(async () => {
+    dom.window[RECORDING_KEY] = next;
+    dom.window.dispatchEvent(new dom.window.Event(RECORDING_CHANGED));
+    await flush();
+  });
+  const baseline = lists;
+  await act(async () => {
+    lateService.resolve();
+    await flush();
+  });
+  assert.equal(lists, baseline, 'A stale completion must not refresh a replacement service');
+  assert.equal(star().getAttribute('aria-pressed'), 'true');
+  assert.equal(star().disabled, false);
+
+  const lateHidden = deferred();
+  next.setStarred = () => lateHidden.promise;
+  await act(async () => star().click());
+  await act(async () => dom.window.dispatchEvent(new dom.window.Event('pagehide')));
+  await act(async () => {
+    lateHidden.reject(new Error('private hidden failure'));
+    await flush();
+  });
+  assert.equal(document.querySelector('[role=alert]'), null);
+  await act(async () => root.render(null));
+  await act(async () => {
+    root.render(<DebuggerPanel copy={copy} target={dom.window} onClose={() => {}} />);
+    await flush();
+  });
+  const lateDisposed = deferred();
+  next.setStarred = () => lateDisposed.promise;
+  await act(async () => star().click());
+  await act(async () => root.render(null));
+  const disposedLists = lists;
+  await act(async () => {
+    lateDisposed.resolve();
+    await flush();
+  });
+  assert.equal(lists, disposedLists);
+  assert.equal(next.listeners.size, 0);
+});
+
 test('all six recording catalogs contain the same nonempty localized keys', () => {
   const keys = Object.keys(dictionaries.en).filter((k) => k.startsWith('recording'));
   for (const copy of Object.values(dictionaries)) {
+    assert.deepEqual(Object.keys(copy), Object.keys(copy).sort(), 'Catalog keys must be sorted');
     assert.deepEqual(
       Object.keys(copy).filter((k) => k.startsWith('recording')),
       keys,

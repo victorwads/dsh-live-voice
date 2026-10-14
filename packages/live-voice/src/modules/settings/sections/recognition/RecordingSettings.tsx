@@ -18,7 +18,11 @@ export function RecordingSettings({ settings, updateSettings }: RecordingSetting
   const { scoped } = useLanguage((ctx) => ctx.recording);
   const recording = scoped as any;
   const unsupported = settings.recognitionEngine === 'browser';
-  const disabled = unsupported || !settings.recordingEnabled;
+  const enabled =
+    typeof settings.recordingEnabled === 'boolean'
+      ? settings.recordingEnabled
+      : defaultSettings.recordingEnabled;
+  const disabled = unsupported || !enabled;
   const paddingFields = [
     ['recordingPreRollMs', recording.preRoll.label()],
     ['recordingPostRollMs', recording.postRoll.label()],
@@ -34,7 +38,7 @@ export function RecordingSettings({ settings, updateSettings }: RecordingSetting
             recording.privacyWarning(),
             recording.durabilityWarning(),
           ].join('\n\n')}
-          checked={settings.recordingEnabled === true}
+          checked={enabled}
           disabled={unsupported}
           onChange={(event) => updateSettings({ recordingEnabled: event.target.checked })}
         />

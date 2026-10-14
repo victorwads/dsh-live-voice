@@ -100,7 +100,7 @@ function fakeCodecs() {
 }
 const input = (sourceId = 'microphone') => ({
   sourceId,
-  kind: 'microphone' as const,
+  kind: (sourceId === 'microphone' ? 'microphone' : 'shared') as 'microphone' | 'shared',
   label: 'Test source',
   sampleRate: 16000,
   policy: { enabled: false, keepPrevious: 0, bitrate: 24000, preRollMs: 100, postRollMs: 100 },
@@ -171,7 +171,7 @@ test('repository serializes append, pins, reads and attempt upserts; exports enc
   }
 });
 
-test('digital zero pages keep exact timeline; retention keeps a completed previous run and all active sources', async () => {
+test('digital zero pages keep exact timeline; retention keeps one finished run per type and all active sources', async () => {
   const codecs = fakeCodecs();
   const repository = createRecordingRepository();
   try {
@@ -190,7 +190,90 @@ test('digital zero pages keep exact timeline; retention keeps a completed previo
     assert.equal(codecs.counts.decoded, 0);
     await third.finish();
     await other.finish();
-    assert.ok(await repository.get(second.session.id));
+    assert.equal(await repository.get(second.session.id), null);
+    assert.ok(await repository.get(third.session.id));
+    assert.ok(await repository.get(other.session.id));
+  } finally {
+    await repository.dispose();
+    codecs.restore();
+  }
+});
+
+test('protected recordings do not consume retention and shared source IDs share one quota', async () => {
+  const codecs = fakeCodecs();
+  const repository = createRecordingRepository();
+  try {
+    const create = async (sourceId = 'microphone') => {
+      const value = input(sourceId === 'microphone' ? 'microphone' : 'shared');
+      value.sourceId = sourceId;
+      value.policy.keepPrevious = 2;
+      return repository.begin(value);
+    };
+    const first = await create();
+    await first.append(new Float32Array(105));
+    await repository.setStarred(first.session.id, true); // active writer mutation cannot deadlock
+    await first.finish();
+    const second = await create();
+    await second.finish();
+    await repository.setStarred(second.session.id, true);
+    for (let i = 0; i < 4; i++) {
+      const writer = await create();
+      await writer.finish();
+    }
+    const mic = (await repository.list()).filter((s) => s.kind === 'microphone');
+    assert.equal(mic.length, 4);
+    assert.equal(mic.filter((s) => s.starred).length, 2);
+    assert.equal(
+      JSON.parse(await (await repository.export(first.session.id)).text()).recording.starred,
+      true,
+    );
+    for (let i = 0; i < 4; i++) {
+      const writer = await create('participant-' + i);
+      await writer.finish();
+    }
+    assert.equal((await repository.list()).filter((s) => s.kind === 'shared').length, 2);
+    assert.equal((await repository.list()).filter((s) => s.kind === 'microphone').length, 4);
+    await repository.setStarred(first.session.id, false);
+    assert.equal(await repository.get(first.session.id), null);
+    await repository.remove(second.session.id); // stars never prevent explicit deletion
+    assert.equal(await repository.get(second.session.id), null);
+  } finally {
+    await repository.dispose();
+    codecs.restore();
+  }
+});
+
+test('pending transcript sessions do not consume slots and clean up after settlement', async () => {
+  const codecs = fakeCodecs();
+  const repository = createRecordingRepository();
+  try {
+    const old = await repository.begin(input());
+    await old.attempt({
+      id: 'pending',
+      segmentId: 'speech',
+      startSample: 0,
+      endSample: 0,
+      engine: 'test',
+      createdAt: new Date().toISOString(),
+      status: 'pending',
+    });
+    await old.finish();
+    const fresh = await repository.begin(input());
+    await fresh.finish();
+    assert.ok(await repository.get(old.session.id));
+    assert.ok(await repository.get(fresh.session.id));
+    await old.attempt({
+      id: 'pending',
+      segmentId: 'speech',
+      startSample: 0,
+      endSample: 0,
+      engine: 'test',
+      createdAt: new Date().toISOString(),
+      status: 'success',
+      text: 'done',
+    });
+    assert.equal(await repository.get(old.session.id), null);
+    assert.ok(await repository.get(fresh.session.id));
   } finally {
     await repository.dispose();
     codecs.restore();

@@ -169,3 +169,20 @@ test('host normalizes malformed recoverable recording and detector settings befo
   const defaults = normalizeSettings({});
   for (const key of Object.keys(invalid)) assert.equal(saved[key], defaults[key], key);
 });
+
+test('recording defaults on for old settings while saved opt-out survives reloads and patches', async (t) => {
+  const f = await fixture(t);
+  await writeFile(f.path, JSON.stringify({ rate: 1.2 }));
+  const client = createSettingsClient(f.fetch);
+  const initial = await client.ready;
+  assert.equal(initial.recordingEnabled, true);
+  assert.equal(initial.recordingKeepPrevious, 1);
+  await client.save({ recordingEnabled: false, recordingKeepPrevious: 3 });
+  assert.equal((await createSettingsStore(f.path).load()).recordingEnabled, false);
+  const reloaded = createSettingsClient(f.fetch);
+  assert.equal((await reloaded.ready).recordingEnabled, false);
+  await reloaded.save({ volume: 0.5 });
+  const saved = await createSettingsStore(f.path).load();
+  assert.equal(saved.recordingEnabled, false);
+  assert.equal(saved.recordingKeepPrevious, 3, 'valid explicit retention is not reset');
+});

@@ -141,6 +141,15 @@ export function RecordingPanel({ copy, target }: { copy: DebuggerCopy; target: a
                                   aria-pressed={session.id === selected?.id}
                                   onClick={() => inspector.current?.select(session.id)}
                                 >
+                                  {session.starred && (
+                                    <span
+                                      role="img"
+                                      aria-label={copy.recordingStarred}
+                                      title={copy.recordingStarHelp}
+                                    >
+                                      ★
+                                    </span>
+                                  )}{' '}
                                   <time dateTime={session.startedAt}>
                                     {new Date(session.startedAt).toLocaleString()}
                                   </time>
@@ -151,7 +160,7 @@ export function RecordingPanel({ copy, target }: { copy: DebuggerCopy; target: a
                               <td>
                                 {duration(session.savedSamples, session.sampleRate)}
                                 <br />
-                                {session.persistent
+                                {session.storage === 'indexeddb' || session.persistent
                                   ? copy.recordingPersistent
                                   : copy.recordingMemory}
                               </td>
@@ -206,6 +215,7 @@ function RecordingDetail({
   const [playing, setPlaying] = React.useState(false);
   const [exporting, setExporting] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
+  const [starring, setStarring] = React.useState(false);
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   const [selectedSegment, setSelectedSegment] = React.useState('');
   const clearPlayback = (player = audio.current) => {
@@ -223,6 +233,7 @@ function RecordingDetail({
     download.current = null;
   };
   React.useEffect(() => {
+    setStarring(false);
     const owner = container.current?.ownerDocument.defaultView;
     const player = audio.current;
     const release = () => {
@@ -294,6 +305,19 @@ function RecordingDetail({
       if (token === generation.current) setExporting(false);
     }
   };
+  const toggleStarred = async () => {
+    const token = generation.current;
+    setStarring(true);
+    setError(null);
+    try {
+      await service.setStarred(session.id, !session.starred);
+      if (token === generation.current) refresh();
+    } catch {
+      if (token === generation.current) setError('recordingStarError');
+    } finally {
+      if (token === generation.current) setStarring(false);
+    }
+  };
   const removeSession = async () => {
     const token = ++generation.current;
     setExporting(false);
@@ -353,6 +377,16 @@ function RecordingDetail({
       <div className="dlvd-toolbar">
         <button
           type="button"
+          aria-label={session.starred ? copy.recordingUnstar : copy.recordingStar}
+          aria-pressed={!!session.starred}
+          title={session.starred ? copy.recordingUnstarHelp : copy.recordingStarHelp}
+          disabled={starring || deleting}
+          onClick={() => void toggleStarred()}
+        >
+          {session.starred ? '★' : '☆'}
+        </button>
+        <button
+          type="button"
           disabled={playing || deleting || !session.savedSamples}
           onClick={() => void play()}
         >
@@ -361,14 +395,22 @@ function RecordingDetail({
         <button type="button" disabled={exporting || deleting} onClick={() => void exportSession()}>
           {copy.recordingExport}
         </button>
-        <button type="button" disabled={deleting} onClick={() => setConfirmDelete(true)}>
+        <button
+          type="button"
+          disabled={deleting || starring}
+          onClick={() => setConfirmDelete(true)}
+        >
           {copy.recordingDelete}
         </button>
       </div>
       {confirmDelete && (
         <div className="dlvd-delete-confirm" role="group" aria-label={copy.recordingConfirmDelete}>
           <p>{copy.recordingConfirmDelete}</p>
-          <button type="button" disabled={deleting} onClick={() => void removeSession()}>
+          <button
+            type="button"
+            disabled={deleting || starring}
+            onClick={() => void removeSession()}
+          >
             {copy.recordingDelete}
           </button>{' '}
           <button type="button" disabled={deleting} onClick={() => setConfirmDelete(false)}>

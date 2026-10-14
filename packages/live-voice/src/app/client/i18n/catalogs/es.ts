@@ -254,19 +254,19 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.recording.durabilityWarning':
     'El almacenamiento local puede llenarse o borrarse; la recuperación no está garantizada. Si falla el guardado, la captura se detiene para evitar pérdidas de datos inadvertidas.',
   'dsh-live-voice.recording.enabled.help':
-    'Desactivado por defecto. Actívalo para guardar audio recuperable localmente durante la captura.',
+    'Activado por defecto. Desactívalo si no quieres guardar audio recuperable localmente durante la captura.',
   'dsh-live-voice.recording.enabled.label': 'Guardar grabaciones recuperables',
   'dsh-live-voice.recording.error.failed':
     'No se pudo guardar la grabación. Se detuvo la captura para evitar pérdidas de datos inadvertidas.',
   'dsh-live-voice.recording.keepPrevious.help':
-    'Conserva de 1 a 100 grabaciones anteriores completadas por fuente (micrófono y audio compartido por separado). Las grabaciones activas no cuentan para este límite.',
-  'dsh-live-voice.recording.keepPrevious.label': 'Grabaciones anteriores por fuente',
+    'Conserva de 1 a 100 grabaciones ordinarias completadas por tipo de fuente: un grupo para micrófono y otro para reunión/audio compartido. Por defecto: 1 de micrófono + 1 de reunión. Las protegidas o destacadas no cuentan. Las activas permanecen hasta cerrarse y entonces cuentan en este total; no se añade una grabación anterior extra.',
+  'dsh-live-voice.recording.keepPrevious.label': 'Grabaciones conservadas por tipo de fuente',
   'dsh-live-voice.recording.paddingHelp':
     'Incluye de 0 a 2.000 ms antes y después de la voz detectada al transcribir un intervalo de audio guardado.',
   'dsh-live-voice.recording.postRoll.label': 'Audio después de la voz (milisegundos)',
   'dsh-live-voice.recording.preRoll.label': 'Audio antes de la voz (milisegundos)',
   'dsh-live-voice.recording.privacyWarning':
-    'El audio comprimido, incluidos el silencio y los sonidos de fondo, permanece en este dispositivo hasta que se elimine por retención o lo borres. Obtén el consentimiento antes de grabar a otras personas. Desactivar esto no borra las grabaciones guardadas.',
+    'El audio, incluidos el silencio y los sonidos de fondo, se guarda localmente en este perfil del navegador y sitio, con compresión con pérdida. Obtén consentimiento antes de grabar a otras personas. Desactivar esto no borra las grabaciones guardadas.',
   'dsh-live-voice.recording.status.saved': 'Audio guardado hasta {time}',
   'dsh-live-voice.recording.title': 'Grabaciones recuperables',
   'dsh-live-voice.settings.autoSend.cancel': 'Cancelar envío automático',

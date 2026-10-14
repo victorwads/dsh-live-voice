@@ -91,8 +91,8 @@ export async function startRecordingRecognition(
   const { signal, lang = engine.lang, onResult, onActivity, onError, onProcessingChange } = options;
   const rate = engine.meter.context.sampleRate;
   const policy = {
-    enabled: engine.recordingEnabled === true,
-    keepPrevious: engine.recordingKeepPrevious ?? 3,
+    enabled: engine.recordingEnabled !== false,
+    keepPrevious: engine.recordingKeepPrevious ?? 1,
     bitrate: engine.recordingBitrate ?? 48000,
     preRollMs: engine.recordingPreRollMs ?? 320,
     postRollMs: engine.recordingPostRollMs ?? 320,

@@ -33,6 +33,10 @@ export function mockRecordingRepository(): RecordingRepository {
     dispose: async () => {
       await Promise.all([...writers.values()].map((w) => w.finish('interrupted')));
     },
+    async setStarred(id, starred) {
+      const session = sessions.find((s) => s.id === id);
+      if (session) session.starred = starred;
+    },
     async begin(input) {
       const session: RecordingSession = {
         id: crypto.randomUUID(),

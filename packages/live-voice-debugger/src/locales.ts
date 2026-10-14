@@ -60,12 +60,18 @@ export type DebuggerCopy = {
   recordingSource: string;
   recordingSourceFilter: string;
   recordingSpeech: string;
+  recordingStar: string;
+  recordingStarError: string;
+  recordingStarHelp: string;
+  recordingStarred: string;
   recordingStart: string;
   recordingState: string;
   recordingSuccess: string;
   recordingTimeline: string;
   recordingTitle: string;
   recordingUnavailable: string;
+  recordingUnstar: string;
+  recordingUnstarHelp: string;
   refreshRate: string;
   resume: string;
   states: string;
@@ -138,6 +144,11 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     recordingSource: 'Source',
     recordingSourceFilter: 'Filter sources',
     recordingSpeech: 'Speech',
+    recordingStar: 'Keep indefinitely',
+    recordingStarError: 'Unable to change recording protection.',
+    recordingStarHelp:
+      'Exclude this recording from automatic cleanup and the retention count. Manual deletion is still allowed. This does not change browser storage or eviction protection.',
+    recordingStarred: 'Protected from automatic cleanup',
     recordingStart: 'Start',
     recordingState: 'State',
     recordingSuccess: 'Success',
@@ -145,6 +156,9 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     recordingTitle: 'Recordings',
     recordingUnavailable:
       'Recording service unavailable. Enable recording in Live Voice settings with a compatible runtime.',
+    recordingUnstar: 'Remove protection',
+    recordingUnstarHelp:
+      'Allow automatic cleanup and include this recording in the retention count again. Manual deletion is still allowed. Browser storage and eviction protection are unchanged.',
     refreshRate: 'Refresh rate',
     resume: 'Resume updates',
     states: 'Current states',
@@ -216,6 +230,11 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     recordingSource: 'Fonte',
     recordingSourceFilter: 'Filtrar fontes',
     recordingSpeech: 'Fala',
+    recordingStar: 'Manter por tempo indeterminado',
+    recordingStarError: 'Não foi possível alterar a proteção da gravação.',
+    recordingStarHelp:
+      'Exclui esta gravação da limpeza automática e da contagem de retenção. A exclusão manual continua permitida. Não altera o armazenamento nem a proteção contra remoção pelo navegador.',
+    recordingStarred: 'Protegida da limpeza automática',
     recordingStart: 'Início',
     recordingState: 'Estado',
     recordingSuccess: 'Sucesso',
@@ -223,6 +242,9 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     recordingTitle: 'Gravações',
     recordingUnavailable:
       'Serviço de gravação indisponível. Ative a gravação nas configurações da Voz ao Vivo com um runtime compatível.',
+    recordingUnstar: 'Remover proteção',
+    recordingUnstarHelp:
+      'Permite a limpeza automática e inclui novamente esta gravação na contagem de retenção. A exclusão manual continua permitida. O armazenamento e a proteção contra remoção pelo navegador não mudam.',
     refreshRate: 'Frequência de atualização',
     resume: 'Retomar atualizações',
     states: 'Estados atuais',
@@ -294,6 +316,11 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     recordingSource: 'Fuente',
     recordingSourceFilter: 'Filtrar fuentes',
     recordingSpeech: 'Voz',
+    recordingStar: 'Conservar indefinidamente',
+    recordingStarError: 'No se pudo cambiar la protección de la grabación.',
+    recordingStarHelp:
+      'Excluye esta grabación de la limpieza automática y del recuento de retención. La eliminación manual sigue permitida. No cambia el almacenamiento ni la protección contra eliminación del navegador.',
+    recordingStarred: 'Protegida de la limpieza automática',
     recordingStart: 'Inicio',
     recordingState: 'Estado',
     recordingSuccess: 'Éxito',
@@ -301,6 +328,9 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     recordingTitle: 'Grabaciones',
     recordingUnavailable:
       'Servicio de grabación no disponible. Active la grabación en los ajustes de Voz en vivo con un runtime compatible.',
+    recordingUnstar: 'Quitar protección',
+    recordingUnstarHelp:
+      'Permite la limpieza automática e incluye de nuevo esta grabación en el recuento de retención. La eliminación manual sigue permitida. El almacenamiento y la protección contra eliminación del navegador no cambian.',
     refreshRate: 'Frecuencia de actualización',
     resume: 'Reanudar actualizaciones',
     states: 'Estados actuales',
@@ -372,6 +402,11 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     recordingSource: 'Source',
     recordingSourceFilter: 'Filtrer les sources',
     recordingSpeech: 'Parole',
+    recordingStar: 'Conserver indéfiniment',
+    recordingStarError: 'Impossible de modifier la protection de l’enregistrement.',
+    recordingStarHelp:
+      'Exclut cet enregistrement du nettoyage automatique et du nombre d’enregistrements à conserver. La suppression manuelle reste autorisée. Le stockage et la protection contre l’éviction par le navigateur ne changent pas.',
+    recordingStarred: 'Protégé du nettoyage automatique',
     recordingStart: 'Début',
     recordingState: 'État',
     recordingSuccess: 'Réussite',
@@ -379,6 +414,9 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     recordingTitle: 'Enregistrements',
     recordingUnavailable:
       'Service d’enregistrement indisponible. Activez l’enregistrement dans les paramètres de Voix en direct avec un runtime compatible.',
+    recordingUnstar: 'Retirer la protection',
+    recordingUnstarHelp:
+      'Autorise le nettoyage automatique et compte à nouveau cet enregistrement parmi ceux à conserver. La suppression manuelle reste autorisée. Le stockage et la protection contre l’éviction par le navigateur ne changent pas.',
     refreshRate: 'Fréquence de mise à jour',
     resume: 'Reprendre les mises à jour',
     states: 'États actuels',
@@ -450,6 +488,11 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     recordingSource: 'स्रोत',
     recordingSourceFilter: 'स्रोत फ़िल्टर करें',
     recordingSpeech: 'आवाज़',
+    recordingStar: 'अनिश्चित काल तक रखें',
+    recordingStarError: 'रिकॉर्डिंग की सुरक्षा बदली नहीं जा सकी।',
+    recordingStarHelp:
+      'इस रिकॉर्डिंग को स्वचालित सफ़ाई और रखी जाने वाली रिकॉर्डिंग की गिनती से बाहर रखें। मैन्युअल रूप से हटाना अब भी संभव है। इससे ब्राउज़र के स्टोरेज या निष्कासन सुरक्षा में बदलाव नहीं होता।',
+    recordingStarred: 'स्वचालित सफ़ाई से सुरक्षित',
     recordingStart: 'शुरुआत',
     recordingState: 'स्थिति',
     recordingSuccess: 'सफल',
@@ -457,6 +500,9 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     recordingTitle: 'रिकॉर्डिंग',
     recordingUnavailable:
       'रिकॉर्डिंग सेवा उपलब्ध नहीं है। संगत रनटाइम के साथ लाइव वॉइस सेटिंग्स में रिकॉर्डिंग चालू करें।',
+    recordingUnstar: 'सुरक्षा हटाएँ',
+    recordingUnstarHelp:
+      'स्वचालित सफ़ाई की अनुमति दें और इस रिकॉर्डिंग को फिर से रखी जाने वाली रिकॉर्डिंग की गिनती में शामिल करें। मैन्युअल रूप से हटाना अब भी संभव है। ब्राउज़र का स्टोरेज और निष्कासन सुरक्षा नहीं बदलते।',
     refreshRate: 'अपडेट आवृत्ति',
     resume: 'अपडेट फिर शुरू करें',
     states: 'वर्तमान स्थितियाँ',
@@ -527,12 +573,20 @@ export const dictionaries: Record<string, DebuggerCopy> = {
     recordingSource: '来源',
     recordingSourceFilter: '筛选来源',
     recordingSpeech: '语音',
+    recordingStar: '无限期保留',
+    recordingStarError: '无法更改录音保护。',
+    recordingStarHelp:
+      '将此录音排除在自动清理和保留数量统计之外。仍可手动删除。这不会更改浏览器存储或防逐出保护。',
+    recordingStarred: '受保护，不会自动清理',
     recordingStart: '开始',
     recordingState: '状态',
     recordingSuccess: '成功',
     recordingTimeline: '语音 / 静音时间线',
     recordingTitle: '录音',
     recordingUnavailable: '录音服务不可用。请在兼容的实时语音设置中启用录音。',
+    recordingUnstar: '取消保护',
+    recordingUnstarHelp:
+      '允许自动清理，并将此录音重新计入保留数量。仍可手动删除。浏览器存储和防逐出保护保持不变。',
     refreshRate: '更新频率',
     resume: '恢复更新',
     states: '当前状态',

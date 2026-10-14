@@ -325,10 +325,10 @@ test('meeting source names normalize safely', () => {
   }
 });
 
-test('recoverable recording is opt-in and validates retention, bitrate, padding and detector bounds', () => {
+test('recoverable recording defaults on and validates retention, bitrate, padding and detector bounds', () => {
   const defaults = {
-    recordingEnabled: false,
-    recordingKeepPrevious: 3,
+    recordingEnabled: true,
+    recordingKeepPrevious: 1,
     recordingBitrate: 48000,
     recordingPreRollMs: 320,
     recordingPostRollMs: 320,
@@ -340,8 +340,10 @@ test('recoverable recording is opt-in and validates retention, bitrate, padding 
   assert.deepEqual(pick(normalizeSettings({})), defaults);
   for (const enabled of [true, false])
     assert.equal(normalizeSettings({ recordingEnabled: enabled }).recordingEnabled, enabled);
-  for (const enabled of [1, 'true', null, undefined])
-    assert.equal(normalizeSettings({ recordingEnabled: enabled }).recordingEnabled, false);
+  for (const enabled of [0, 1, 'true', 'false', null, undefined, {}, []])
+    assert.equal(normalizeSettings({ recordingEnabled: enabled }).recordingEnabled, true);
+  const optedOut = JSON.parse(JSON.stringify(normalizeSettings({ recordingEnabled: false })));
+  assert.equal(normalizeSettings(optedOut).recordingEnabled, false);
   const cases = [
     ['recordingKeepPrevious', [1, 3, 100], [0, -1, 101, 1.5, '3', null]],
     ['recordingBitrate', [24000, 32000, 48000, 64000, 96000], [0, 16000, 48001, '48000', null]],

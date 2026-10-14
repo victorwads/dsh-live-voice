@@ -32,6 +32,7 @@ export interface RecordingSession {
   capturedSamples: number;
   savedSamples: number;
   storage?: 'indexeddb' | 'memory';
+  starred?: boolean; // Protected from automatic retention; manual deletion remains available.
   persistent: boolean; // Browser eviction protection, independent of storage backend.
   codec: string;
   configuration?: {
@@ -74,6 +75,7 @@ export interface RecordingService {
   audio(id: string, startSample?: number, endSample?: number): Promise<Blob>;
   export(id: string): Promise<Blob>;
   remove(id: string): Promise<void>;
+  setStarred(id: string, starred: boolean): Promise<void>;
   subscribe(listener: () => void): () => void;
 }
 export interface RecordingWriter {

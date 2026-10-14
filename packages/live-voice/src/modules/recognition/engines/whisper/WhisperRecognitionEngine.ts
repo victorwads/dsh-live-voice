@@ -61,8 +61,8 @@ export class WhisperHttpRecognitionEngine {
     sourceLabel = inputSource,
     recordingErrorMessage = () =>
       'Recording could not be saved. Capture stopped to avoid silent data loss.',
-    recordingEnabled = false,
-    recordingKeepPrevious = 3,
+    recordingEnabled = true,
+    recordingKeepPrevious = 1,
     recordingBitrate = 48000,
     recordingPreRollMs = 320,
     recordingPostRollMs = 320,

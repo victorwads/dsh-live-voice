@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
 import { createConversationComponents } from '../src/modules/conversation/components/createConversationComponents.tsx';
 import { createLiveVoiceSettings } from '../src/modules/settings/components/createLiveVoiceSettings.tsx';
+import { RecordingSettings } from '../src/modules/settings/sections/recognition/RecordingSettings.tsx';
 import { withAppLanguage } from '../src/app/client/i18n/index.ts';
 import { normalizeSettings } from '../src/modules/core/settings.ts';
 import { CURRENT_VERSION } from '../src/modules/settings/services/releases.ts';
@@ -505,6 +506,61 @@ test('Qwen speech output exposes and persists the selected preset voice', async 
       select.dispatchEvent(new window.Event('change', { bubbles: true }));
     });
     assert.deepEqual(calls.at(-1), { voice: 'ryan' });
+  } finally {
+    await act(async () => root.unmount());
+    dom.window.close();
+    Object.assign(globalThis, previous);
+    delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+  }
+});
+
+test('recording settings default on, preserve explicit opt-out and explain per-type totals', async () => {
+  const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost' });
+  const previous = { window: globalThis.window, document: globalThis.document };
+  globalThis.window = dom.window;
+  globalThis.document = dom.window.document;
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const root = createRoot(document.getElementById('root'));
+  const Panel = withAppLanguage(RecordingSettings, EN_LOCALE);
+  const calls = [];
+  const render = async (settings) =>
+    act(async () =>
+      root.render(
+        React.createElement(Panel, { settings, updateSettings: (patch) => calls.push(patch) }),
+      ),
+    );
+  try {
+    await render({ recognitionEngine: 'whisper-http' });
+    const enabled = document.querySelector('input[type=checkbox]');
+    const retained = [...document.querySelectorAll('label')].find(
+      (label) => label.textContent === 'Retained recordings per source type',
+    ).control;
+    assert.equal(enabled.checked, true, 'missing preference displays the enabled default');
+    assert.equal(enabled.disabled, false);
+    assert.equal(retained.value, '1');
+    assert.equal(retained.disabled, false);
+    assert.match(document.body.textContent, /On by default/);
+    assert.match(document.body.textContent, /Turn off to opt out/);
+    assert.match(document.body.textContent, /1 microphone \+ 1 meeting/);
+    assert.match(document.body.textContent, /Protected\/starred recordings do not count/);
+    assert.match(document.body.textContent, /remain until closed/);
+    assert.match(document.body.textContent, /not an extra previous recording/);
+    assert.match(document.body.textContent, /browser profile and site/);
+    assert.match(document.body.textContent, /lossy compression/);
+    assert.match(document.body.textContent, /consent/);
+    assert.match(document.body.textContent, /recovery is not guaranteed/);
+    await act(async () => enabled.click());
+    assert.deepEqual(calls.at(-1), { recordingEnabled: false });
+    await render({ recognitionEngine: 'whisper-http', recordingEnabled: false });
+    assert.equal(enabled.checked, false, 'explicit opt-out is never treated as missing');
+    assert.equal(retained.disabled, true);
+    await render({ recognitionEngine: 'whisper-http', recordingEnabled: 'false' });
+    assert.equal(enabled.checked, true, 'invalid preferences display the enabled default');
+    assert.equal(retained.disabled, false);
+    await render({ recognitionEngine: 'browser' });
+    assert.equal(enabled.checked, true);
+    assert.equal(enabled.disabled, true, 'Browser recognition still cannot use the archive');
+    assert.equal(retained.disabled, true);
   } finally {
     await act(async () => root.unmount());
     dom.window.close();

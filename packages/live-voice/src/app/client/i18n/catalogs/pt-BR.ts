@@ -248,19 +248,19 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.recording.durabilityWarning':
     'O armazenamento local pode ficar cheio ou ser apagado; a recuperação não é garantida. Se o salvamento falhar, a captura para para evitar perda silenciosa de dados.',
   'dsh-live-voice.recording.enabled.help':
-    'Desativado por padrão. Ative para salvar áudio recuperável localmente durante a captura.',
+    'Ativado por padrão. Desative se não quiser salvar áudio recuperável localmente durante a captura.',
   'dsh-live-voice.recording.enabled.label': 'Salvar gravações recuperáveis',
   'dsh-live-voice.recording.error.failed':
     'Não foi possível salvar a gravação. A captura foi interrompida para evitar perda silenciosa de dados.',
   'dsh-live-voice.recording.keepPrevious.help':
-    'Mantém de 1 a 100 gravações anteriores concluídas por fonte (microfone e áudio compartilhado separadamente). Gravações ativas não contam para esse limite.',
-  'dsh-live-voice.recording.keepPrevious.label': 'Gravações anteriores por fonte',
+    'Mantém de 1 a 100 gravações comuns concluídas por tipo de fonte: um grupo de microfone e outro de reunião/áudio compartilhado. Padrão: 1 de microfone + 1 de reunião. Protegidas/favoritas não contam. Gravações ativas permanecem até serem encerradas e então contam nesse total, sem uma gravação anterior extra.',
+  'dsh-live-voice.recording.keepPrevious.label': 'Gravações mantidas por tipo de fonte',
   'dsh-live-voice.recording.paddingHelp':
     'Inclui de 0 a 2.000 ms antes e depois da fala detectada ao transcrever um intervalo de áudio salvo.',
   'dsh-live-voice.recording.postRoll.label': 'Áudio após a fala (milissegundos)',
   'dsh-live-voice.recording.preRoll.label': 'Áudio antes da fala (milissegundos)',
   'dsh-live-voice.recording.privacyWarning':
-    'O áudio comprimido, incluindo silêncio e sons de fundo, permanece neste dispositivo até ser removido pela retenção ou excluído por você. Obtenha consentimento antes de gravar outras pessoas. Desativar esta opção não exclui gravações salvas.',
+    'O áudio, incluindo silêncio e sons de fundo, fica salvo localmente neste perfil do navegador e site, com compressão com perdas. Obtenha consentimento antes de gravar outras pessoas. Desativar esta opção não exclui gravações salvas.',
   'dsh-live-voice.recording.status.saved': 'Áudio salvo até {time}',
   'dsh-live-voice.recording.title': 'Gravações recuperáveis',
   'dsh-live-voice.settings.autoSend.cancel': 'Cancelar envio automático',
