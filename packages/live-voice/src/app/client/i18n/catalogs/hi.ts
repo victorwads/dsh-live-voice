@@ -152,7 +152,8 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.planned.vote': 'जल्द आ रहा है — रिपॉज़िटरी के इश्यू में वोट दें',
   'dsh-live-voice.recognition.planned.voxtral': 'Voxtral Realtime — जल्द आ रहा है',
   'dsh-live-voice.recognition.planned.webGpu': 'ब्राउज़र में WebGPU इन्फ़रेंस — जल्द आ रहा है',
-  'dsh-live-voice.recognition.presets.custom.description': 'मौन की अवधि स्वयं चुनें।',
+  'dsh-live-voice.recognition.presets.custom.description':
+    'खंड और अनुच्छेद के लिए स्वतंत्र विराम चुनें।',
   'dsh-live-voice.recognition.presets.custom.label': 'कस्टम',
   'dsh-live-voice.recognition.presets.long.description':
     'लंबे सोच-विचार वाले विरामों तक प्रतीक्षा करें।',
@@ -160,7 +161,8 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.presets.natural.description':
     'वाक्यांशों के बीच सामान्य विराम की अनुमति दें।',
   'dsh-live-voice.recognition.presets.natural.label': 'स्वाभाविक',
-  'dsh-live-voice.recognition.presets.short.description': 'छोटे विराम के बाद जल्दी भेजें।',
+  'dsh-live-voice.recognition.presets.short.description':
+    'छोटे विराम के बाद जल्दी ट्रांसक्राइब करें।',
   'dsh-live-voice.recognition.presets.short.label': 'छोटा',
   'dsh-live-voice.recognition.providerSettings.help':
     'प्रदाता की सेटिंग्स चुने गए वाक् पहचान इंजन के अनुसार बदलती हैं।',
@@ -173,25 +175,32 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.qwen.hostHelp':
     'Qwen3 ASR + TTS सर्वर की पूरे होस्ट पर लागू होने वाली सेटिंग्स। कोई भी HTTP या HTTPS बेस URL दर्ज करें जिस तक DSH होस्ट पहुँच सके। ब्राउज़र प्रमाणीकरण वाले DSH रूटों के ज़रिए इसे एक्सेस करता है।',
   'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR — HTTP API',
+  'dsh-live-voice.recognition.silenceDetection.chunkPause':
+    'ट्रांसक्रिप्शन से पहले: {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     '100 से 10,000 ms तक पूर्णांक दर्ज करें। फ़ील्ड छोड़ने पर सहेजा जाता है। छोटे विराम बोलने को खंडों में बाँट सकते हैं; पहचान में अतिरिक्त समय लगता है।',
-  'dsh-live-voice.recognition.silenceDetection.customLabel': 'कस्टम विराम (मिलीसेकंड)',
+  'dsh-live-voice.recognition.silenceDetection.customLabel': 'खंड का विराम (मिलीसेकंड)',
+  'dsh-live-voice.recognition.silenceDetection.customParagraphHelp':
+    'बोले गए पाठ में नया अनुच्छेद शुरू करने से पहले का मौन (100–30,000 ms, पूर्णांक)। फ़ील्ड छोड़ने पर सहेजा जाता है; खंड के विराम और संदेश भेजने से स्वतंत्र है।',
+  'dsh-live-voice.recognition.silenceDetection.customParagraphLabel':
+    'अनुच्छेद का विराम (मिलीसेकंड)',
   'dsh-live-voice.recognition.silenceDetection.detector.energy': 'ऑडियो ऊर्जा',
   'dsh-live-voice.recognition.silenceDetection.detector.label': 'आवाज़ का डिटेक्टर',
   'dsh-live-voice.recognition.silenceDetection.detector.silero': 'Silero — प्रयोगात्मक (डिफ़ॉल्ट)',
   'dsh-live-voice.recognition.silenceDetection.duration':
-    'भेजने से पहले का विराम: {milliseconds} मिलीसेकंड',
+    'ट्रांसक्रिप्शन से पहले: {milliseconds} ms · नया अनुच्छेद: {paragraphMilliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.help':
     'तय करता है कि रिकॉर्ड की गई आवाज़ को पहचान के लिए भेजने से पहले विराम कितनी देर रहना चाहिए।',
-  'dsh-live-voice.recognition.silenceDetection.label': 'मौन का पता लगाना',
+  'dsh-live-voice.recognition.silenceDetection.label': 'मौन का पता लगाना और अनुच्छेद',
   'dsh-live-voice.recognition.silenceDetection.minimumSpeech.help':
     'किसी खंड को स्वीकार करने से पहले न्यूनतम पहचानी गई वाणी (50–2,000 ms)। इससे छोटी ध्वनियाँ अनदेखी होती हैं।',
   'dsh-live-voice.recognition.silenceDetection.minimumSpeech.label': 'न्यूनतम वाणी (मिलीसेकंड)',
-  'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'भेजने से पहले का विराम',
+  'dsh-live-voice.recognition.silenceDetection.paragraphPause': 'नया अनुच्छेद: {milliseconds} ms',
+  'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'खंड और अनुच्छेद के विराम',
   'dsh-live-voice.recognition.silenceDetection.threshold.help':
     'वाणी सक्रियता सीमा (0.05–0.95)। कम मान धीमी वाणी पहचानते हैं, लेकिन अधिक शोर भी स्वीकार कर सकते हैं।',
   'dsh-live-voice.recognition.silenceDetection.threshold.label': 'वाणी सक्रियता सीमा',
-  'dsh-live-voice.recognition.silenceDetection.title': 'मौन का पता लगाने की सेटिंग्स',
+  'dsh-live-voice.recognition.silenceDetection.title': 'मौन का पता लगाने और अनुच्छेद की सेटिंग्स',
   'dsh-live-voice.recognition.silero.error.failed':
     'Silero से आवाज़ का पता लगाने में विफलता हुई। सेटिंग्स में ऑडियो ऊर्जा चुनें या कैप्चर फिर से शुरू करने का प्रयास करें।',
   'dsh-live-voice.recognition.silero.error.overloaded':

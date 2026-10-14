@@ -125,6 +125,7 @@ export class VoiceCoordinator {
           'recordingPostRollMs',
           'voiceDetectionThreshold',
           'voiceDetectionMinimumSpeechMs',
+          'voiceDetectionCustomParagraphMs',
         ].map((key) => [key, this.snapshot.settings[key]]),
       ),
     });
@@ -166,6 +167,7 @@ export class VoiceCoordinator {
           'recordingPostRollMs',
           'voiceDetectionThreshold',
           'voiceDetectionMinimumSpeechMs',
+          'voiceDetectionCustomParagraphMs',
         ].map((key) => [key, settings[key]]),
       ),
     });
@@ -598,7 +600,7 @@ export class VoiceCoordinator {
     }, this.snapshot.settings.assistantSpeechDelaySeconds * 1000);
   }
 
-  onResult({ final = '', interim = '', startedAt }) {
+  onResult({ final = '', interim = '', startedAt, paragraphBefore = false }) {
     if (this.disposed || (!this.snapshot.listening && !this.snapshot.starting)) return;
     const recognizing = this.recognition.activityManaged ? this.snapshot.recognizing : !!interim;
     if (
@@ -689,8 +691,9 @@ export class VoiceCoordinator {
         return;
       }
       this.cancelAutoSend();
-      const appended = this.composer.appendFinal?.(final, startedAt);
-      const next = appended ?? this.transcript.update(this.composer.getDraft(), final, true);
+      const appended = this.composer.appendFinal?.(final, startedAt, paragraphBefore);
+      const next =
+        appended ?? this.transcript.update(this.composer.getDraft(), final, true, paragraphBefore);
       if (appended == null) this.composer.setDraft(next);
       if (this.snapshot.settings.sendingMode !== 'manual') this.autoSendIntent = next;
       this.maybeScheduleAutoSend(next);

@@ -154,13 +154,14 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.planned.vote': 'Coming Soon — vote on repo issues',
   'dsh-live-voice.recognition.planned.voxtral': 'Voxtral Realtime — Soon',
   'dsh-live-voice.recognition.planned.webGpu': 'Browser WebGPU Inference — Soon',
-  'dsh-live-voice.recognition.presets.custom.description': 'Choose your own silence duration.',
+  'dsh-live-voice.recognition.presets.custom.description':
+    'Choose independent chunk and paragraph pauses.',
   'dsh-live-voice.recognition.presets.custom.label': 'Custom',
   'dsh-live-voice.recognition.presets.long.description': 'Wait through longer thinking pauses.',
   'dsh-live-voice.recognition.presets.long.label': 'Long',
   'dsh-live-voice.recognition.presets.natural.description': 'Allow normal pauses between phrases.',
   'dsh-live-voice.recognition.presets.natural.label': 'Natural',
-  'dsh-live-voice.recognition.presets.short.description': 'Send quickly after a short pause.',
+  'dsh-live-voice.recognition.presets.short.description': 'Transcribe quickly after a short pause.',
   'dsh-live-voice.recognition.presets.short.label': 'Short',
   'dsh-live-voice.recognition.providerSettings.help':
     'Provider settings change with the selected recognition engine.',
@@ -173,25 +174,33 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.qwen.hostHelp':
     'Host-wide settings for the Qwen3 ASR + TTS server. Enter any HTTP or HTTPS base URL reachable from the DSH host. The browser accesses it through authenticated DSH routes.',
   'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR — HTTP API',
+  'dsh-live-voice.recognition.silenceDetection.chunkPause':
+    'Before transcribing: {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     'Enter a whole number from 100 to 10,000 ms. Saved when you leave the field. Short pauses may split speech; recognition adds its own latency.',
-  'dsh-live-voice.recognition.silenceDetection.customLabel': 'Custom pause (milliseconds)',
+  'dsh-live-voice.recognition.silenceDetection.customLabel': 'Chunk pause (milliseconds)',
+  'dsh-live-voice.recognition.silenceDetection.customParagraphHelp':
+    'Silence before a new paragraph in dictated text (100–30,000 ms, whole numbers). Saved when you leave the field; independent of the chunk pause and message delivery.',
+  'dsh-live-voice.recognition.silenceDetection.customParagraphLabel':
+    'Paragraph pause (milliseconds)',
   'dsh-live-voice.recognition.silenceDetection.detector.energy': 'Audio energy',
   'dsh-live-voice.recognition.silenceDetection.detector.label': 'Voice detector',
   'dsh-live-voice.recognition.silenceDetection.detector.silero': 'Silero — experimental (default)',
-  'dsh-live-voice.recognition.silenceDetection.duration': 'Pause before sending: {milliseconds} ms',
+  'dsh-live-voice.recognition.silenceDetection.duration':
+    'Before transcribing: {milliseconds} ms · New paragraph: {paragraphMilliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.help':
     'Controls how long a pause must last before captured speech is sent for recognition.',
-  'dsh-live-voice.recognition.silenceDetection.label': 'Silence detection',
+  'dsh-live-voice.recognition.silenceDetection.label': 'Silence detection and paragraphs',
   'dsh-live-voice.recognition.silenceDetection.minimumSpeech.help':
     'Minimum detected speech before accepting a range (50–2,000 ms). Shorter sounds are ignored.',
   'dsh-live-voice.recognition.silenceDetection.minimumSpeech.label':
     'Minimum speech (milliseconds)',
-  'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'Pause before sending',
+  'dsh-live-voice.recognition.silenceDetection.paragraphPause': 'New paragraph: {milliseconds} ms',
+  'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'Chunk and paragraph pauses',
   'dsh-live-voice.recognition.silenceDetection.threshold.help':
     'Voice activity threshold (0.05–0.95). Lower values detect quieter speech but may accept more noise.',
   'dsh-live-voice.recognition.silenceDetection.threshold.label': 'Voice activity threshold',
-  'dsh-live-voice.recognition.silenceDetection.title': 'Silence detection settings',
+  'dsh-live-voice.recognition.silenceDetection.title': 'Silence detection and paragraph settings',
   'dsh-live-voice.recognition.silero.error.failed':
     'Silero voice detection failed. Select Audio energy in settings or retry capture.',
   'dsh-live-voice.recognition.silero.error.overloaded':

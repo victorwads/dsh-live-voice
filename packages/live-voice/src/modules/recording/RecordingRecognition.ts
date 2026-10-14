@@ -10,7 +10,12 @@ type Processing = { queued: number; active: boolean; pending: number };
 interface RecognitionCallbacks {
   signal?: AbortSignal;
   lang?: string;
-  onResult?(result: { final: string; interim: string; startedAt: number }): void;
+  onResult?(result: {
+    final: string;
+    interim: string;
+    startedAt: number;
+    paragraphBefore?: boolean;
+  }): void;
   onActivity?(active: boolean): void;
   onError?(error: Error): void;
   onProcessingChange?(state: Processing): void;
@@ -27,6 +32,7 @@ interface RecordingEngine {
   voiceDetectionMinimumSpeechMs?: number;
   voiceDetectionPreset?: string;
   voiceDetectionCustomSilenceMs?: number;
+  voiceDetectionCustomParagraphMs?: number;
   maxUtteranceSeconds?: number;
   recordingEnabled?: boolean;
   recordingKeepPrevious?: number;
@@ -74,7 +80,7 @@ interface RecognitionSession {
 const asError = (value: unknown): Error =>
   value instanceof Error ? value : new Error(String(value));
 import { PinDetector } from './PinDetector.js';
-import { voiceDetectionSilenceMs } from '../core/settings.js';
+import { voiceDetectionSilenceMs, voiceDetectionParagraphMs } from '../core/settings.js';
 const uid = () => crypto.randomUUID();
 /** Audio ownership stays with the recording; the queue only holds range references. */
 export async function startRecordingRecognition(
@@ -104,6 +110,7 @@ export async function startRecordingRecognition(
         threshold: engine.voiceDetectionThreshold ?? 0.5,
         minimumSpeechMs: engine.voiceDetectionMinimumSpeechMs ?? 250,
         silenceMs: voiceDetectionSilenceMs(engine),
+        paragraphMs: voiceDetectionParagraphMs(engine),
         maxUtteranceSeconds: engine.maxUtteranceSeconds ?? 60,
         preRollMs: policy.preRollMs,
         postRollMs: policy.postRollMs,
@@ -182,6 +189,8 @@ export async function startRecordingRecognition(
   };
   const max = Math.max(1, Math.floor((engine.maxUtteranceSeconds || 60) * rate));
   let queuedThrough = 0;
+  const paragraphStarts = new Set<number>();
+  const paragraphSamples = (voiceDetectionParagraphMs(engine) * rate) / 1000;
   let liveSpeechStart: number | null = null;
   let lastSplitQueued = 0;
   const checkLiveSplit = () => {
@@ -210,6 +219,8 @@ export async function startRecordingRecognition(
         segmentId: pin.id,
         startSample: Math.floor(requestedStart),
         endSample: Math.floor(requestedEnd),
+        paragraphBefore: at === pin.atSample && paragraphStarts.has(pin.atSample),
+        speechStartSample: at,
         engine: engine.route.includes('qwen') ? 'qwen-http' : 'whisper-http',
         createdAt: new Date().toISOString(),
         status: 'pending',
@@ -236,6 +247,13 @@ export async function startRecordingRecognition(
     } else liveSpeechStart = null;
     void serialize(async () => {
       const previous = writer.session.pins.at(-1);
+      if (
+        kind === 'speech-start' &&
+        previous?.kind === 'silence-start' &&
+        previous.atSample > 0 &&
+        startSample - previous.atSample >= paragraphSamples
+      )
+        paragraphStarts.add(startSample);
       await writer.pin(kind, startSample, confirmedSample);
       if (valid() && kind === 'silence-start' && previous?.kind === 'speech-start')
         await queueSpeech(previous, startSample);
@@ -294,7 +312,10 @@ export async function startRecordingRecognition(
             onResult?.({
               final: json.value.text,
               interim: '',
-              startedAt: Date.parse(writer.session.startedAt) + (attempt.startSample / rate) * 1000,
+              startedAt:
+                Date.parse(writer.session.startedAt) +
+                ((attempt.speechStartSample ?? attempt.startSample) / rate) * 1000,
+              paragraphBefore: attempt.paragraphBefore,
             });
         } catch (error) {
           await writer

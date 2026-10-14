@@ -244,6 +244,7 @@ export function apply(ctx) {
     'voiceDetectionEngine',
     'voiceDetectionPreset',
     'voiceDetectionCustomSilenceMs',
+    'voiceDetectionCustomParagraphMs',
     'recognitionMaxUtteranceSeconds',
     'recordingEnabled',
     'recordingKeepPrevious',
@@ -267,6 +268,7 @@ export function apply(ctx) {
     recordingPostRollMs: settings.recordingPostRollMs,
     voiceDetectionThreshold: settings.voiceDetectionThreshold,
     voiceDetectionMinimumSpeechMs: settings.voiceDetectionMinimumSpeechMs,
+    voiceDetectionCustomParagraphMs: settings.voiceDetectionCustomParagraphMs,
     recordingErrorMessage: () => t('dsh-live-voice.recording.error.failed'),
   });
   const recognitionFor = (settings, meter, inputSource = 'microphone') =>
@@ -472,7 +474,7 @@ export function apply(ctx) {
         getDraft: () => entry.draft,
         canAutoSend: () =>
           !meeting.getSnapshot().shared.pending && !meeting.input().getSnapshot().recognizing,
-        appendFinal: (text, startedAt) => {
+        appendFinal: (text, startedAt, paragraphBefore) => {
           meeting.cancelDelivery();
           if (
             meetingEntry === entry &&
@@ -483,7 +485,7 @@ export function apply(ctx) {
               'microphone',
               !!entry.controller.getSnapshot().timestamps,
             );
-            entry.meeting.transcript.append('microphone', text, startedAt);
+            entry.meeting.transcript.append('microphone', text, startedAt, paragraphBefore);
             return entry.draft;
           }
           return null;

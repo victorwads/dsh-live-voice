@@ -57,6 +57,7 @@ test('all normalized preferences survive a host restart and another browser', as
     agentVoiceContext: 'Keep answers short.',
     voiceDetectionPreset: 'custom',
     voiceDetectionCustomSilenceMs: 350,
+    voiceDetectionCustomParagraphMs: 12000,
     voiceDetectionThreshold: 0.65,
     voiceDetectionMinimumSpeechMs: 400,
     recordingEnabled: true,
@@ -80,6 +81,31 @@ test('all normalized preferences survive a host restart and another browser', as
   assert.equal((await stat(f.path)).mode & 0o777, 0o600);
   f.cleanup();
   assert.equal(f.removed(), true);
+});
+
+test('host paragraph preferences normalize old files and malformed browser patches', async (t) => {
+  const f = await fixture(t);
+  await writeFile(
+    f.path,
+    JSON.stringify({ voiceDetectionPreset: 'custom', voiceDetectionCustomSilenceMs: 350 }),
+  );
+  const client = createSettingsClient(f.fetch);
+  assert.equal((await client.ready).voiceDetectionCustomParagraphMs, 3000);
+  for (const value of [100, 30000]) {
+    await client.save({ voiceDetectionCustomParagraphMs: value });
+    const saved = await createSettingsStore(f.path).load();
+    assert.equal(saved.voiceDetectionCustomParagraphMs, value);
+    assert.equal(saved.voiceDetectionCustomSilenceMs, 350);
+  }
+  for (const value of [null, '4000', 99, 30001, 3000.5]) {
+    const response = await f.fetch('/api/dsh-live-voice/settings', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ voiceDetectionCustomParagraphMs: value }),
+    });
+    assert.equal(response.status, 200);
+    assert.equal((await createSettingsStore(f.path).load()).voiceDetectionCustomParagraphMs, 3000);
+  }
 });
 
 test('concurrent browser patches preserve unrelated preferences and rapid saves stay ordered', async (t) => {

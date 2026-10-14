@@ -1475,13 +1475,13 @@ test('shared meeting capture survives chat replacement and routes only to the co
   const meeting = creates[0];
   const job = meeting.jobs.get('shared');
   await act(async () => meeting.transcript.append('shared', 'Before navigation'));
-  assert.deepEqual(edits, [['a', 'Draft\nBefore navigation']]);
+  assert.deepEqual(edits, [['a', 'Draft Before navigation']]);
   await f.render(h(f.Buttons, b));
   assert.equal(meeting.jobs.get('shared'), job);
   assert.equal(stopped, 0);
   assert.equal(requests, 1);
   await act(async () => meeting.transcript.append('shared', 'After navigation'));
-  assert.deepEqual(edits.at(-1), ['b', 'Draft\nAfter navigation']);
+  assert.deepEqual(edits.at(-1), ['b', 'Draft After navigation']);
   await f.render(null);
   await act(async () => meeting.transcript.append('shared', 'No destination'));
   assert.equal(edits.length, 2);

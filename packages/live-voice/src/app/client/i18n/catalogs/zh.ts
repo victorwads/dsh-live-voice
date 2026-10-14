@@ -145,13 +145,13 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.planned.vote': '即将推出 — 请在仓库议题中投票',
   'dsh-live-voice.recognition.planned.voxtral': 'Voxtral Realtime — 即将推出',
   'dsh-live-voice.recognition.planned.webGpu': '浏览器 WebGPU 推理 — 即将推出',
-  'dsh-live-voice.recognition.presets.custom.description': '自行选择静音时长。',
+  'dsh-live-voice.recognition.presets.custom.description': '分别设置片段与段落的停顿时长。',
   'dsh-live-voice.recognition.presets.custom.label': '自定义',
   'dsh-live-voice.recognition.presets.long.description': '等待较长的思考停顿。',
   'dsh-live-voice.recognition.presets.long.label': '长',
   'dsh-live-voice.recognition.presets.natural.description': '允许短语之间出现自然停顿。',
   'dsh-live-voice.recognition.presets.natural.label': '自然',
-  'dsh-live-voice.recognition.presets.short.description': '短暂停顿后快速发送。',
+  'dsh-live-voice.recognition.presets.short.description': '短暂停顿后快速转写。',
   'dsh-live-voice.recognition.presets.short.label': '短',
   'dsh-live-voice.recognition.providerSettings.help': '服务提供方设置会随所选识别引擎而变化。',
   'dsh-live-voice.recognition.qwen.captureHelp':
@@ -163,24 +163,30 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.qwen.hostHelp':
     'Qwen3 ASR + TTS 服务器的主机级设置。请输入 DSH 主机可访问的任意 HTTP 或 HTTPS 基础 URL。浏览器通过需要身份验证的 DSH 路由访问该服务器。',
   'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR — HTTP API',
+  'dsh-live-voice.recognition.silenceDetection.chunkPause': '转写前停顿：{milliseconds} 毫秒',
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     '请输入 100 至 10,000 ms 的整数。离开输入框时保存。短停顿可能切分语音；识别还需要额外时间。',
-  'dsh-live-voice.recognition.silenceDetection.customLabel': '自定义停顿（毫秒）',
+  'dsh-live-voice.recognition.silenceDetection.customLabel': '片段停顿（毫秒）',
+  'dsh-live-voice.recognition.silenceDetection.customParagraphHelp':
+    '口述文本开始新段落前的静音时长（100–30,000 毫秒，整数）。离开输入框时保存；与片段停顿和消息发送无关。',
+  'dsh-live-voice.recognition.silenceDetection.customParagraphLabel': '段落停顿（毫秒）',
   'dsh-live-voice.recognition.silenceDetection.detector.energy': '音频能量',
   'dsh-live-voice.recognition.silenceDetection.detector.label': '语音检测器',
   'dsh-live-voice.recognition.silenceDetection.detector.silero': 'Silero — 实验性（默认）',
-  'dsh-live-voice.recognition.silenceDetection.duration': '发送前停顿：{milliseconds} 毫秒',
+  'dsh-live-voice.recognition.silenceDetection.duration':
+    '转写前停顿：{milliseconds} 毫秒 · 新段落：{paragraphMilliseconds} 毫秒',
   'dsh-live-voice.recognition.silenceDetection.help':
     '设置停顿持续多久后，将采集的语音发送进行识别。',
-  'dsh-live-voice.recognition.silenceDetection.label': '静音检测',
+  'dsh-live-voice.recognition.silenceDetection.label': '静音检测与段落',
   'dsh-live-voice.recognition.silenceDetection.minimumSpeech.help':
     '接受语音区间前所需的最短检测语音（50–2,000 毫秒）。更短的声音会被忽略。',
   'dsh-live-voice.recognition.silenceDetection.minimumSpeech.label': '最短语音时长（毫秒）',
-  'dsh-live-voice.recognition.silenceDetection.pauseLabel': '发送前停顿',
+  'dsh-live-voice.recognition.silenceDetection.paragraphPause': '新段落：{milliseconds} 毫秒',
+  'dsh-live-voice.recognition.silenceDetection.pauseLabel': '片段与段落停顿',
   'dsh-live-voice.recognition.silenceDetection.threshold.help':
     '语音活动阈值（0.05–0.95）。较低的值可检测更轻的语音，但也可能接受更多噪声。',
   'dsh-live-voice.recognition.silenceDetection.threshold.label': '语音活动阈值',
-  'dsh-live-voice.recognition.silenceDetection.title': '静音检测设置',
+  'dsh-live-voice.recognition.silenceDetection.title': '静音检测与段落设置',
   'dsh-live-voice.recognition.silero.error.failed':
     'Silero 语音检测失败。请在设置中选择音频能量，或重试采集。',
   'dsh-live-voice.recognition.silero.error.overloaded':

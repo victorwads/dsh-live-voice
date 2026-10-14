@@ -12,6 +12,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 - Introduce a new voice pipeline with recording-based chunking, VAD speech/silence markers, and independent segmentation for microphone and shared audio.
 - Optionally save recoverable audio sessions locally, with configurable retention, quality, detection sensitivity, and transcription margins.
+- Configure separate silence pauses for transcription chunks and new paragraphs, using presets or custom timings.
 
 #### Live Voice Debugger
 
@@ -24,6 +25,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ### Fixes
 
+- Stop inserting line breaks between transcription chunks and repeating timestamps without a paragraph or source change.
 - Fix lost speech endings during transcription backlog or assistant playback, and preserve captured audio independently of speech detection when recording is enabled.
 - Keep the end of your recording when releasing Hold-to-Talk.
 - Show an error if selected Silero voice detection cannot load, instead of silently switching detectors.

@@ -12,6 +12,8 @@ export interface RecordingAttempt {
   startSample: number;
   endSample: number;
   engine: string;
+  paragraphBefore?: boolean;
+  speechStartSample?: number;
   createdAt: string;
   finishedAt?: string;
   status: 'pending' | 'success' | 'error';
@@ -37,6 +39,7 @@ export interface RecordingSession {
     threshold: number;
     minimumSpeechMs: number;
     silenceMs: number;
+    paragraphMs?: number;
     maxUtteranceSeconds: number;
     preRollMs: number;
     postRollMs: number;

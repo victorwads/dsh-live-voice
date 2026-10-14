@@ -2,7 +2,64 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PinDetector } from '../src/modules/recording/PinDetector.js';
 import { WhisperHttpRecognitionEngine } from '../src/modules/recognition/engines/whisper/WhisperRecognitionEngine.js';
+import { mockRecordingRepository } from './helpers/recording.js';
 import { recordingSegments } from '../src/modules/recording/types.js';
+test('paragraph decisions follow captured silence rather than HTTP completion time', async () => {
+  const recordings = mockRecordingRepository();
+  let ingest: (pcm: Float32Array, rate: number) => void;
+  let classify: (result: any) => void;
+  const results: any[] = [];
+  const replies: Array<(result: any) => void> = [];
+  const engine = new WhisperHttpRecognitionEngine({
+    recordings,
+    meter: { context: { sampleRate: 16000 }, source: {} },
+    voiceDetectionEngine: 'silero',
+    voiceDetectionPreset: 'short',
+    voiceDetectionMinimumSpeechMs: 50,
+    vadAvailable: async () => true,
+    vadFactory: (options) => {
+      classify = options.onProbability;
+      return { release() {} };
+    },
+    vadCapture: async (_context, _source, _stream, onPcm) => {
+      ingest = onPcm;
+      return { finish: async () => {}, release() {} };
+    },
+    globals: { fetch: () => new Promise((resolve) => replies.push(resolve)) },
+  });
+  await engine.start({ onResult: (result) => results.push(result) });
+  const frame = (seconds: number, voiced: boolean) => {
+    const pcm = new Float32Array(seconds * 16000).fill(voiced ? 0.1 : 0);
+    ingest(pcm, 16000);
+    classify({ probability: voiced ? 0.9 : 0, pcm });
+  };
+  frame(0.1, true);
+  frame(0.4, false);
+  await tick();
+  frame(0.1, true);
+  frame(2, false);
+  await tick();
+  frame(0.1, true);
+  frame(0.4, false);
+  await engine.finish();
+  for (let i = 0; i < 3; i++) {
+    assert.equal(replies.length, i + 1);
+    replies[i]({ ok: true, json: async () => ({ ok: true, value: { text: 'phrase ' + i } }) });
+    await tick();
+  }
+  assert.deepEqual(
+    results.map((result) => result.paragraphBefore),
+    [false, false, true],
+  );
+  const session = (await recordings.list())[0];
+  assert.deepEqual(
+    session.attempts.map((attempt) => attempt.paragraphBefore),
+    [false, false, true],
+  );
+  assert.equal(results[2].startedAt - results[1].startedAt, 2100);
+  await engine.stop();
+});
+
 const tick = () => new Promise((resolve) => setTimeout(resolve, 0));
 test('VAD retains transition pins only and backdates confirmed silence', () => {
   const pins: unknown[] = [];

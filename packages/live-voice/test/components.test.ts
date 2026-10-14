@@ -213,7 +213,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       ['Browser SpeechRecognition — Default option', 'Qwen3 ASR — HTTP API', 'Whisper — HTTP API'],
     );
     assert.equal(
-      document.querySelector('[aria-label="Silence detection settings"]'),
+      document.querySelector('[aria-label="Silence detection and paragraph settings"]'),
       null,
       'browser provider controls its own segmentation',
     );
@@ -291,7 +291,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
       'connection fields are not wrapped in another card',
     );
     const detection = document
-      .querySelector('summary[aria-label="Silence detection settings"]')
+      .querySelector('summary[aria-label="Silence detection and paragraph settings"]')
       ?.closest('details');
     assert.ok(detection);
     assert.equal(detection.open, false);
@@ -311,7 +311,7 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     await act(async () => detection.querySelector('input[value=custom]').click());
     assert.deepEqual(calls.at(-1), ['settings', { voiceDetectionPreset: 'custom' }]);
     const customPause = [...detection.querySelectorAll('label')].find((label) =>
-      label.textContent.includes('Custom pause (milliseconds)'),
+      label.textContent.includes('Chunk pause (milliseconds)'),
     ).control;
     assert.equal(customPause.value, '1000');
     assert.equal(customPause.min, '100');
@@ -339,10 +339,16 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     assert.equal(calls.length, count);
     assert.equal(customPause.value, '400');
     await act(async () => detection.querySelector('input[value=short]').click());
-    assert.match(detection.querySelector('.dlv-vad-summary').textContent, /500 ms/);
+    assert.match(detection.querySelector('.dlv-vad-summary').textContent, /400 ms/);
     assert.equal(customPause.isConnected, false);
     await act(async () => detection.querySelector('input[value=custom]').click());
-    assert.equal([...detection.querySelectorAll('input[type=number]')].at(-1).value, '400');
+    assert.equal(
+      [...detection.querySelectorAll('input[type=number]')].find((input) =>
+        input.labels[0]?.textContent.includes('Chunk pause'),
+      ).value,
+      '400',
+    );
+    assert.equal([...detection.querySelectorAll('input[type=number]')].at(-1).value, '3000');
     await act(async () => {
       state = { ...state, conversation: true, listening: true, recognizing: true };
       callbacks.forEach((cb) => cb());

@@ -108,7 +108,7 @@ test('meeting sources recognize independently and reject stale results without s
   await meeting.stop('microphone');
   old.onResult({ final: 'Stale' });
   sources.shared.callbacks.onResult({ final: 'Only shared' });
-  assert.equal(draft, 'First\n\nThem: Second\nOnly shared');
+  assert.equal(draft, 'First\n\nThem: Second Only shared');
   await meeting.dispose();
   assert.equal(meeting.jobs.size, 0);
 });

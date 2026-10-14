@@ -82,8 +82,8 @@ export class MeetingController {
       composer: {
         getDraft: () => this.composer.getDraft(),
         setDraft: (text) => this.composer.setDraft(text),
-        appendFinal: (text, startedAt) => {
-          this.transcript.append(source, text, startedAt);
+        appendFinal: (text, startedAt, paragraphBefore) => {
+          this.transcript.append(source, text, startedAt, paragraphBefore);
           return this.composer.getDraft();
         },
         submit: (mode) => this.composer.submit?.(mode),
@@ -216,10 +216,10 @@ export class MeetingController {
       await engine.start({
         lang: settings.recognitionLang,
         signal: abort.signal,
-        onResult: ({ final, interim, startedAt }) => {
+        onResult: ({ final, interim, startedAt, paragraphBefore }) => {
           if (!valid()) return;
           const accepted = this.onSpeech?.(source, final || interim) !== false;
-          if (accepted) input.onResult({ final, interim, startedAt });
+          if (accepted) input.onResult({ final, interim, startedAt, paragraphBefore });
           else if (final && !engine.activityManaged) input.patch({ recognizing: false });
           if (final && !interim && !engine.activityManaged) {
             this.onActivity?.(source, false);

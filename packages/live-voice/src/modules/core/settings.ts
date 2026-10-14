@@ -2,17 +2,20 @@
 import { resolveCodeNotice } from './speechDefaults.js';
 export const voiceDetectionPresets = Object.freeze({
   short: Object.freeze({
-    silenceMs: 500,
+    silenceMs: 400,
+    paragraphMs: 2000,
     label: 'Short',
-    description: 'Send quickly after a short pause.',
+    description: 'Transcribe quickly after a short pause.',
   }),
   natural: Object.freeze({
     silenceMs: 1000,
+    paragraphMs: 3000,
     label: 'Natural',
     description: 'Allow normal pauses between phrases.',
   }),
   long: Object.freeze({
     silenceMs: 2000,
+    paragraphMs: 4000,
     label: 'Long',
     description: 'Wait through longer thinking pauses.',
   }),
@@ -48,6 +51,7 @@ export const defaultSettings = Object.freeze({
   voiceDetectionEngine: 'silero',
   voiceDetectionPreset: 'short',
   voiceDetectionCustomSilenceMs: 1000,
+  voiceDetectionCustomParagraphMs: 3000,
   voiceDetectionThreshold: 0.5,
   voiceDetectionMinimumSpeechMs: 250,
   recordingEnabled: false,
@@ -118,6 +122,20 @@ export const normalizeCustomSilenceMs = (value) =>
   Number.isInteger(value) && value >= customSilenceMinMs && value <= customSilenceMaxMs
     ? value
     : defaultSettings.voiceDetectionCustomSilenceMs;
+export const customParagraphMinMs = 100;
+export const customParagraphMaxMs = 30000;
+export const normalizeCustomParagraphMs = (value) =>
+  Number.isInteger(value) && value >= customParagraphMinMs && value <= customParagraphMaxMs
+    ? value
+    : defaultSettings.voiceDetectionCustomParagraphMs;
+export const voiceDetectionParagraphMs = (settings) =>
+  settings.voiceDetectionPreset === 'custom'
+    ? normalizeCustomParagraphMs(settings.voiceDetectionCustomParagraphMs)
+    : voiceDetectionPresets[
+        Object.hasOwn(voiceDetectionPresets, settings.voiceDetectionPreset)
+          ? settings.voiceDetectionPreset
+          : defaultSettings.voiceDetectionPreset
+      ].paragraphMs;
 export const voiceDetectionSilenceMs = (settings) =>
   settings.voiceDetectionPreset === 'custom'
     ? normalizeCustomSilenceMs(settings.voiceDetectionCustomSilenceMs)
@@ -153,6 +171,9 @@ export function normalizeSettings(value) {
         ? source.voiceDetectionPreset
         : defaultSettings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs: normalizeCustomSilenceMs(source.voiceDetectionCustomSilenceMs),
+    voiceDetectionCustomParagraphMs: normalizeCustomParagraphMs(
+      source.voiceDetectionCustomParagraphMs,
+    ),
     voiceDetectionThreshold:
       typeof source.voiceDetectionThreshold === 'number' &&
       Number.isFinite(source.voiceDetectionThreshold) &&

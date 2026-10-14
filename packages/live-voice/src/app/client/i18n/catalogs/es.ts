@@ -161,7 +161,8 @@ const es: LiveVoiceTranslation = {
     'Próximamente — vota en las incidencias del repositorio',
   'dsh-live-voice.recognition.planned.voxtral': 'Voxtral Realtime — Próximamente',
   'dsh-live-voice.recognition.planned.webGpu': 'Inferencia WebGPU en el navegador — Próximamente',
-  'dsh-live-voice.recognition.presets.custom.description': 'Elige la duración del silencio.',
+  'dsh-live-voice.recognition.presets.custom.description':
+    'Elige pausas independientes para fragmentos y párrafos.',
   'dsh-live-voice.recognition.presets.custom.label': 'Personalizada',
   'dsh-live-voice.recognition.presets.long.description':
     'Espera durante pausas de reflexión más largas.',
@@ -169,7 +170,7 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.presets.natural.description': 'Permite pausas normales entre frases.',
   'dsh-live-voice.recognition.presets.natural.label': 'Natural',
   'dsh-live-voice.recognition.presets.short.description':
-    'Envía rápidamente después de una pausa corta.',
+    'Transcribe rápidamente después de una pausa corta.',
   'dsh-live-voice.recognition.presets.short.label': 'Corta',
   'dsh-live-voice.recognition.providerSettings.help':
     'La configuración del proveedor cambia según el motor de reconocimiento seleccionado.',
@@ -182,26 +183,34 @@ const es: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.qwen.hostHelp':
     'Configuración para todo el host del servidor Qwen3 ASR + TTS. Introduce una URL base HTTP o HTTPS accesible desde el host de DSH. El navegador accede a ella mediante las rutas autenticadas de DSH.',
   'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR — API HTTP',
+  'dsh-live-voice.recognition.silenceDetection.chunkPause':
+    'Antes de transcribir: {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     'Introduce un número entero de 100 a 10.000 ms. Se guarda al salir del campo. Las pausas cortas pueden dividir el habla; el reconocimiento añade su propia latencia.',
-  'dsh-live-voice.recognition.silenceDetection.customLabel': 'Pausa personalizada (milisegundos)',
+  'dsh-live-voice.recognition.silenceDetection.customLabel': 'Pausa del fragmento (milisegundos)',
+  'dsh-live-voice.recognition.silenceDetection.customParagraphHelp':
+    'Silencio antes de un nuevo párrafo en el texto dictado (100–30.000 ms, números enteros). Se guarda al salir del campo; independiente de la pausa del fragmento y del envío del mensaje.',
+  'dsh-live-voice.recognition.silenceDetection.customParagraphLabel':
+    'Pausa de párrafo (milisegundos)',
   'dsh-live-voice.recognition.silenceDetection.detector.energy': 'Energía del audio',
   'dsh-live-voice.recognition.silenceDetection.detector.label': 'Detector de voz',
   'dsh-live-voice.recognition.silenceDetection.detector.silero':
     'Silero — experimental (predeterminado)',
   'dsh-live-voice.recognition.silenceDetection.duration':
-    'Pausa antes de enviar: {milliseconds} ms',
+    'Antes de transcribir: {milliseconds} ms · Nuevo párrafo: {paragraphMilliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.help':
     'Determina cuánto debe durar una pausa antes de enviar la voz capturada para su reconocimiento.',
-  'dsh-live-voice.recognition.silenceDetection.label': 'Detección de silencio',
+  'dsh-live-voice.recognition.silenceDetection.label': 'Detección de silencio y párrafos',
   'dsh-live-voice.recognition.silenceDetection.minimumSpeech.help':
     'Voz mínima detectada antes de aceptar un intervalo (50–2.000 ms). Se ignoran los sonidos más cortos.',
   'dsh-live-voice.recognition.silenceDetection.minimumSpeech.label': 'Voz mínima (milisegundos)',
-  'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'Pausa antes de enviar',
+  'dsh-live-voice.recognition.silenceDetection.paragraphPause': 'Nuevo párrafo: {milliseconds} ms',
+  'dsh-live-voice.recognition.silenceDetection.pauseLabel': 'Pausas de fragmento y párrafo',
   'dsh-live-voice.recognition.silenceDetection.threshold.help':
     'Umbral de actividad de voz (0,05–0,95). Los valores bajos detectan voces más suaves, pero pueden aceptar más ruido.',
   'dsh-live-voice.recognition.silenceDetection.threshold.label': 'Umbral de actividad de voz',
-  'dsh-live-voice.recognition.silenceDetection.title': 'Configuración de detección de silencio',
+  'dsh-live-voice.recognition.silenceDetection.title':
+    'Configuración de detección de silencio y párrafos',
   'dsh-live-voice.recognition.silero.error.failed':
     'La detección de voz Silero falló. Selecciona Energía del audio en la configuración o vuelve a intentar la captura.',
   'dsh-live-voice.recognition.silero.error.overloaded':

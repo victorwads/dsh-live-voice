@@ -124,7 +124,7 @@ test('Whisper browser engine segments speech and sends authenticated complete ut
   assert.doesNotThrow(() => validateMonoPcm16Wav(requests.at(-1).options.body));
   assert.deepEqual(
     results.map(({ startedAt, ...text }) => text),
-    [{ final: 'Olá do Whisper', interim: '' }],
+    [{ final: 'Olá do Whisper', interim: '', paragraphBefore: false }],
   );
   assert.equal(
     results[0].startedAt,
@@ -175,7 +175,7 @@ test('Whisper voice detection defaults to short pauses and external presets chan
     await engine.stop();
     return sent;
   };
-  assert.equal(new WhisperHttpRecognitionEngine().segmentation.silenceMs, 500);
+  assert.equal(new WhisperHttpRecognitionEngine().segmentation.silenceMs, 400);
   assert.equal(await run(undefined), 1, 'default profile sends after a short pause');
   assert.equal(await run('natural'), 0, '768 ms of silence remains in the same utterance');
   assert.equal(await run('short'), 1, 'short profile sends the utterance sooner');

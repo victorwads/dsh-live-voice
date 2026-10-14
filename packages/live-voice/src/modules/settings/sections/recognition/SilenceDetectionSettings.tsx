@@ -5,12 +5,17 @@ import {
   defaultSettings,
   customSilenceMinMs,
   customSilenceMaxMs,
+  customParagraphMinMs,
+  customParagraphMaxMs,
   usesPluginVoiceDetection,
   voiceDetectionPresets,
   voiceDetectionSilenceMs,
+  voiceDetectionParagraphMs,
   normalizeCustomSilenceMs,
+  normalizeCustomParagraphMs,
 } from '../../../core/settings.js';
 import {
+  Hint,
   NumberField,
   SelectField,
   SettingsSection,
@@ -28,6 +33,9 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
     };
   }, []);
   const savedCustomMs = normalizeCustomSilenceMs(settings.voiceDetectionCustomSilenceMs);
+  const savedCustomParagraphMs = normalizeCustomParagraphMs(
+    settings.voiceDetectionCustomParagraphMs,
+  );
   if (!usesPluginVoiceDetection(settings.recognitionEngine)) return null;
   const selected = settings.voiceDetectionPreset || defaultSettings.voiceDetectionPreset;
   return (
@@ -115,14 +123,32 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
               onChange={() => updateSettings({ voiceDetectionPreset: value })}
             />
             <span>
-              <strong>{(recognition as any).presets[value].label()}</strong>
-              <small>{(recognition as any).presets[value].description()}</small>
+              <strong style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                {(recognition as any).presets[value].label()}{' '}
+                <Hint label={(recognition as any).presets[value].label()}>
+                  {(recognition as any).presets[value].description()}
+                </Hint>
+              </strong>
+              <small>
+                {(recognition as any).silenceDetection.chunkPause({
+                  milliseconds:
+                    value === 'custom' ? savedCustomMs : voiceDetectionPresets[value].silenceMs,
+                })}
+              </small>
+              <small>
+                {(recognition as any).silenceDetection.paragraphPause({
+                  milliseconds:
+                    value === 'custom'
+                      ? savedCustomParagraphMs
+                      : voiceDetectionPresets[value].paragraphMs,
+                })}
+              </small>
             </span>
           </label>
         ))}
       </div>
       {selected === 'custom' && (
-        <>
+        <div className="dlv-field-pair">
           <NumberField
             label={(recognition as any).silenceDetection.customLabel()}
             hint={(recognition as any).silenceDetection.customHelp()}
@@ -141,11 +167,30 @@ export function SilenceDetectionSettings({ settings, updateSettings }: any) {
                 updateSettings({ voiceDetectionCustomSilenceMs: value });
             }}
           />
-        </>
+          <NumberField
+            label={(recognition as any).silenceDetection.customParagraphLabel()}
+            hint={(recognition as any).silenceDetection.customParagraphHelp()}
+            min={customParagraphMinMs}
+            max={customParagraphMaxMs}
+            step={1}
+            value={savedCustomParagraphMs}
+            onCommit={(draft) => {
+              const value = Number(draft);
+              if (
+                draft.trim() &&
+                Number.isInteger(value) &&
+                value >= customParagraphMinMs &&
+                value <= customParagraphMaxMs
+              )
+                updateSettings({ voiceDetectionCustomParagraphMs: value });
+            }}
+          />
+        </div>
       )}
       <p className="dlv-vad-summary">
         {(recognition as any).silenceDetection.duration({
           milliseconds: voiceDetectionSilenceMs(settings),
+          paragraphMilliseconds: voiceDetectionParagraphMs(settings),
         })}
       </p>
     </SettingsSection>

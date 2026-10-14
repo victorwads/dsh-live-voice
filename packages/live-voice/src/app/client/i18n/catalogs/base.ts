@@ -142,8 +142,11 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.recognition.qwen.endpointHelp': string;
   'dsh-live-voice.recognition.qwen.hostHelp': string;
   'dsh-live-voice.recognition.qwen.label': string;
+  'dsh-live-voice.recognition.silenceDetection.chunkPause': string;
   'dsh-live-voice.recognition.silenceDetection.customHelp': string;
   'dsh-live-voice.recognition.silenceDetection.customLabel': string;
+  'dsh-live-voice.recognition.silenceDetection.customParagraphHelp': string;
+  'dsh-live-voice.recognition.silenceDetection.customParagraphLabel': string;
   'dsh-live-voice.recognition.silenceDetection.detector.energy': string;
   'dsh-live-voice.recognition.silenceDetection.detector.silero': string;
   'dsh-live-voice.recognition.silenceDetection.duration': string;
@@ -151,6 +154,7 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.recognition.silenceDetection.label': string;
   'dsh-live-voice.recognition.silenceDetection.minimumSpeech.help': string;
   'dsh-live-voice.recognition.silenceDetection.minimumSpeech.label': string;
+  'dsh-live-voice.recognition.silenceDetection.paragraphPause': string;
   'dsh-live-voice.recognition.silenceDetection.pauseLabel': string;
   'dsh-live-voice.recognition.silenceDetection.threshold.help': string;
   'dsh-live-voice.recognition.silenceDetection.threshold.label': string;

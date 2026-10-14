@@ -5,6 +5,8 @@ import {
   normalizeSettings,
   defaultSettings,
   voiceDetectionSilenceMs,
+  voiceDetectionParagraphMs,
+  voiceDetectionPresets,
 } from '../src/modules/core/settings.ts';
 test('speech volume defaults safely and survives normalized persistence', () => {
   assert.equal(defaultSettings.volume, 1);
@@ -61,8 +63,8 @@ test('Whisper HTTP recognition and simple voice detection presets survive normal
 });
 test('short is the default without overriding existing saved profiles', () => {
   assert.equal(defaultSettings.voiceDetectionPreset, 'short');
-  assert.equal(voiceDetectionSilenceMs(normalizeSettings({})), 500);
-  assert.equal(voiceDetectionSilenceMs({}), 500);
+  assert.equal(voiceDetectionSilenceMs(normalizeSettings({})), 400);
+  assert.equal(voiceDetectionSilenceMs({}), 400);
   for (const preset of ['short', 'natural', 'long', 'custom'])
     assert.equal(normalizeSettings({ voiceDetectionPreset: preset }).voiceDetectionPreset, preset);
 });
@@ -87,7 +89,7 @@ test('custom silence survives persistence and rejects malformed or unsafe timing
       1000,
     );
   for (const [preset, ms] of [
-    ['short', 500],
+    ['short', 400],
     ['natural', 1000],
     ['long', 2000],
   ])
@@ -97,6 +99,58 @@ test('custom silence survives persistence and rejects malformed or unsafe timing
       ),
       ms,
     );
+});
+
+test('paragraph presets are independent of chunk pauses and unknown presets use short', () => {
+  for (const [preset, silenceMs, paragraphMs] of [
+    ['short', 400, 2000],
+    ['natural', 1000, 3000],
+    ['long', 2000, 4000],
+  ]) {
+    assert.equal(voiceDetectionPresets[preset].silenceMs, silenceMs);
+    assert.equal(voiceDetectionPresets[preset].paragraphMs, paragraphMs);
+    const settings = normalizeSettings({
+      voiceDetectionPreset: preset,
+      voiceDetectionCustomSilenceMs: 300,
+      voiceDetectionCustomParagraphMs: 12000,
+    });
+    assert.equal(voiceDetectionSilenceMs(settings), silenceMs);
+    assert.equal(voiceDetectionParagraphMs(settings), paragraphMs);
+  }
+  for (const settings of [
+    {},
+    { voiceDetectionPreset: 'unknown' },
+    { voiceDetectionPreset: 'toString' },
+    { voiceDetectionPreset: '__proto__' },
+  ])
+    assert.equal(voiceDetectionParagraphMs(settings), 2000);
+});
+
+test('custom paragraph timings persist independently and reject malformed values', () => {
+  assert.equal(defaultSettings.voiceDetectionCustomParagraphMs, 3000);
+  for (const value of [100, 400, 1800, 3000, 10000, 30000]) {
+    const settings = normalizeSettings({
+      voiceDetectionPreset: 'custom',
+      voiceDetectionCustomSilenceMs: 10000,
+      voiceDetectionCustomParagraphMs: value,
+    });
+    const restored = normalizeSettings(JSON.parse(JSON.stringify(settings)));
+    assert.equal(restored.voiceDetectionCustomParagraphMs, value);
+    assert.equal(voiceDetectionParagraphMs(restored), value);
+    assert.equal(voiceDetectionSilenceMs(restored), 10000);
+  }
+  for (const value of [undefined, null, '3000', true, 0, 99, 30001, 3000.5, NaN, Infinity]) {
+    const raw = { voiceDetectionPreset: 'custom', voiceDetectionCustomParagraphMs: value };
+    assert.equal(normalizeSettings(raw).voiceDetectionCustomParagraphMs, 3000);
+    assert.equal(voiceDetectionParagraphMs(raw), 3000);
+  }
+  const independent = normalizeSettings({
+    voiceDetectionPreset: 'custom',
+    voiceDetectionCustomParagraphMs: 4000,
+    voiceDetectionCustomSilenceMs: 0,
+  });
+  assert.equal(voiceDetectionParagraphMs(independent), 4000);
+  assert.equal(voiceDetectionSilenceMs(independent), 1000);
 });
 
 test('Qwen local ASR and TTS selections survive normalization', () => {
@@ -121,6 +175,7 @@ test('valid local options survive normalization', () => {
     voiceDetectionEngine: 'energy',
     voiceDetectionPreset: 'short',
     voiceDetectionCustomSilenceMs: 400,
+    voiceDetectionCustomParagraphMs: 3000,
     voiceDetectionThreshold: 0.5,
     voiceDetectionMinimumSpeechMs: 250,
     recordingEnabled: false,

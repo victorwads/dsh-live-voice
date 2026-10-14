@@ -23,6 +23,7 @@ Live Voice appends final recognized chunks to the end of the current message dra
 How listening and speaking coordinate depends on whether you use speakers or headphones:
 
 ### Speakers — Gated Listening (Default)
+
 When using speakers, microphone input is automatically gated while the assistant is speaking so the assistant never hears its own voice or transcribes its own output.
 
 ```mermaid
@@ -56,7 +57,9 @@ sequenceDiagram
 - **Interrupting on speakers:** Click **Take microphone** or use the push-to-talk shortcut to take your turn immediately and pause the assistant.
 
 ### Headphones — Open Microphone
+
 With headphones, the microphone remains open during playback:
+
 - **Debounced interruption:** Recognized non-echo speech confirms an interruption; sustained activity pauses playback after the configured Assistant Response Delay. Noise alone does not confirm it. Shared meeting participants can also interrupt in Speakers mode.
 - **Automatic recovery:** After the microphone and shared meeting audio remain silent for that delay, automatically paused audio resumes at its retained position. Renewed speech resets the countdown.
 - **Manual control:** Manual Pause waits for Resume. Stop cancels playback and its queue; it does not end voice input.
@@ -68,16 +71,16 @@ With headphones, the microphone remains open during playback:
 
 ## 2. Conversation Settings
 
-| Setting | Default | Description |
-| --- | --- | --- |
-| **Sending Mode** | `Manual` | `Manual` (review before sending), `Automatic` (sends after silence countdown), or `Steer` (send directly to running agent). |
-| **What does Enter do in your DSH when the agent is busy?** | `Queue` | Report your existing DSH behavior (`Steer` or `Queue`). This changes only how Live Voice chooses normal submission versus Ctrl+Enter; it does not change DSH settings. Update this answer whenever you change that behavior in DSH. Queue preserves the previous plugin mapping. |
-| **Auto-Send Delay** | `4 seconds` | Silence countdown before automatically submitting your draft (configurable from 2 to 10 seconds). |
-| **Assistant Response Delay** | `3 seconds` | Continuous silence required after you stop speaking before the assistant begins automatic audio playback. |
-| **Automatic Assistant Speech** | `Enabled` | Automatically reads new assistant responses aloud as they stream in. |
-| **Stop Speech on Send** | `Disabled` | Immediately stops current assistant playback whenever you submit a new message. |
-| **Hold-to-Talk (Push-to-Talk)** | `Enabled` | Hold `Control` anywhere on the page to speak; release to transcribe and auto-send, or press `Escape` to cancel. |
-| **Hands-Free Structured Questions** | Automatic | Narrates DSH structured questions, captures your spoken response, and submits it as a custom answer. |
+| Setting                                                    | Default     | Description                                                                                                                                                                                                                                                                      |
+| ---------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Sending Mode**                                           | `Manual`    | `Manual` (review before sending), `Automatic` (sends after silence countdown), or `Steer` (send directly to running agent).                                                                                                                                                      |
+| **What does Enter do in your DSH when the agent is busy?** | `Queue`     | Report your existing DSH behavior (`Steer` or `Queue`). This changes only how Live Voice chooses normal submission versus Ctrl+Enter; it does not change DSH settings. Update this answer whenever you change that behavior in DSH. Queue preserves the previous plugin mapping. |
+| **Auto-Send Delay**                                        | `4 seconds` | Silence countdown before automatically submitting your draft (configurable from 2 to 10 seconds).                                                                                                                                                                                |
+| **Assistant Response Delay**                               | `3 seconds` | Continuous silence required after you stop speaking before the assistant begins automatic audio playback.                                                                                                                                                                        |
+| **Automatic Assistant Speech**                             | `Enabled`   | Automatically reads new assistant responses aloud as they stream in.                                                                                                                                                                                                             |
+| **Stop Speech on Send**                                    | `Disabled`  | Immediately stops current assistant playback whenever you submit a new message.                                                                                                                                                                                                  |
+| **Hold-to-Talk (Push-to-Talk)**                            | `Enabled`   | Hold `Control` anywhere on the page to speak; release to transcribe and auto-send, or press `Escape` to cancel.                                                                                                                                                                  |
+| **Hands-Free Structured Questions**                        | Automatic   | Narrates DSH structured questions, captures your spoken response, and submits it as a custom answer.                                                                                                                                                                             |
 
 ---
 
@@ -92,14 +95,14 @@ Configure your microphone and speech-to-text (STT) engine:
 - **Input Device:** Explicitly select a microphone (USB mic, headset, or built-in).
 - **Recognition Language:** Choose **Português (Brasil)**, **English (United States)**, or **Automatic — detect language** (available on Qwen3 and Whisper).
 - **Local Processing:**
-  - *Process recognition locally on this device:* Ensures speech is not sent to external browser vendor cloud servers.
-  - *Automatically install language pack:* Allows the browser to download offline language packs on demand.
-- **Silence Detection (VAD) Profiles:**
-  - *Short (500 ms - default):* Fast turnaround for concise commands.
-  - *Natural (1000 ms):* Balanced for conversational cadence.
-  - *Long (2000 ms):* Accommodates thinking pauses during complex prompts.
-  - *Custom:* Choose any whole-millisecond value from 100 to 10,000 ms, including 300 or 400 ms. The value is saved when the field loses focus and retained when switching profiles; invalid edits revert to the saved value. Shorter pauses may split speech between phrases.
-  - These profiles apply to Qwen and Whisper plugin-managed capture, not Browser SpeechRecognition. The pause ends a transcription chunk, not the total recognition latency or the separate automatic message-send countdown. Actual boundaries are evaluated in audio-buffer increments.
+  - _Process recognition locally on this device:_ Ensures speech is not sent to external browser vendor cloud servers.
+  - _Automatically install language pack:_ Allows the browser to download offline language packs on demand.
+- **Silence and Paragraph Detection (VAD) Profiles:**
+  - _Short (default):_ Transcribe after 400 ms; start a new paragraph after 2,000 ms.
+  - _Natural:_ Transcribe after 1,000 ms; start a new paragraph after 3,000 ms.
+  - _Long:_ Transcribe after 2,000 ms; start a new paragraph after 4,000 ms.
+  - _Custom:_ Set two whole-millisecond values: 100–10,000 ms for transcription chunks and 100–30,000 ms for paragraphs. Each field saves on blur and survives switching profiles; invalid edits restore its saved value.
+  - These profiles apply to Qwen and Whisper plugin-managed capture, not Browser SpeechRecognition. Chunk completion joins text with a space, not a newline. A paragraph inserts two newlines before the next recognized speech; enabled timestamps repeat only at the first block, a paragraph, or a source change. Silence is measured on the captured sample clock, independently of transcription backlog. The chunk pause is not total recognition latency or the separate automatic message-send countdown.
 - **Maximum Utterance Limit:** Split continuous speech after 10 to 300 seconds (default: 60s) to keep transcription chunks manageable.
 
 ---
@@ -123,7 +126,7 @@ New host preferences default to macOS Say on a macOS DSH host and Browser speech
 - **Code Block Filtering:**
   - Automatically filter out lengthy Markdown code blocks so the assistant doesn't recite syntax line by line.
   - Read code blocks up to a configured line count (e.g. 5 lines).
-  - Replace larger code blocks with a custom spoken notice (e.g. *"Look at the code in our conversation"*).
+  - Replace larger code blocks with a custom spoken notice (e.g. _"Look at the code in our conversation"_).
 
 ---
 
@@ -131,24 +134,26 @@ New host preferences default to macOS Say on a macOS DSH host and Browser speech
 
 When voice commands are enabled, you can speak exact trigger phrases to control the conversation hands-free:
 
-| Action | Default Trigger Phrases |
-| --- | --- |
-| **Send Message** | `send`, `send message` |
-| **Queue Message** | `queue`, `queue message` |
-| **End Conversation** | `end`, `end conversation` |
-| **Ignore Microphone Dictation (capture stays active)** | `mute`, `stop listening` |
-| **Resume Microphone** | `resume`, `start listening` |
-| **Stop Speech** | `stop talking`, `stop speaking`, `shut up` |
-| **Clear Input** | `clear all`, `clear message` |
+| Action                                                 | Default Trigger Phrases                    |
+| ------------------------------------------------------ | ------------------------------------------ |
+| **Send Message**                                       | `send`, `send message`                     |
+| **Queue Message**                                      | `queue`, `queue message`                   |
+| **End Conversation**                                   | `end`, `end conversation`                  |
+| **Ignore Microphone Dictation (capture stays active)** | `mute`, `stop listening`                   |
+| **Resume Microphone**                                  | `resume`, `start listening`                |
+| **Stop Speech**                                        | `stop talking`, `stop speaking`, `shut up` |
+| **Clear Input**                                        | `clear all`, `clear message`               |
 
-*Phrases are configurable in Settings → Live Voice → Commands, supporting comma-separated alternatives.*
+_Phrases are configurable in Settings → Live Voice → Commands, supporting comma-separated alternatives._
 
 ---
 
 ## 6. External Host Engine Setup
 
 ### Qwen3 HTTP Service
+
 When using Qwen3 ASR or TTS:
+
 - Runs as an external local process (e.g. via Apple MLX, OminiX-API, or Python).
 - Configured via base URL (default: `http://127.0.0.1:8080/`).
 - Exposes standard OpenAI-compatible endpoints:
@@ -158,7 +163,9 @@ When using Qwen3 ASR or TTS:
 - Credentials and host settings are stored with owner-only permissions in `~/.dsh/dsh-live-voice-qwen.json`.
 
 ### Whisper HTTP Service
+
 When using Whisper:
+
 - Connects to `whisper.cpp` server or compatible loopback HTTP daemon.
 - Configured via inference endpoint URL (default: `http://127.0.0.1:8080/inference`).
 - Audio is validated as bounded 16 kHz mono PCM16 WAV and passed strictly through authenticated same-origin DSH routes.

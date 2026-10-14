@@ -1,5 +1,7 @@
 # Conversation module
 
+Final recognition chunks join with a space. A confirmed paragraph boundary adds exactly two newlines; source changes also start a new block. Timestamp/source prefixes appear only at the first block, source change or paragraph. Recognition completion time and normal source activity/settings updates do not create timestamp boundaries. Composer text is append-only; user edits remain untouched.
+
 Dictation is append-only at the current composer end. Final chunks preserve existing and manually edited text; provisional hypotheses never rewrite the editor. Client synchronization must accept a new manual publication even when the previous voice echo was skipped, while ignoring unchanged stale slot snapshots. Explicit Clear and normal submit actions are separate from dictation. Appends preserve the active caret, directional selection, focus and scroll; `app/client/composerSelection.ts` restores DOM bookmarks after the synchronous DSH editor write and publishes selectionchange through the editor bridge.
 
 `models/chat.ts` interprets DSH chat turns and pending questions. `hooks/useConversationController.ts` subscribes to session state; `hooks/useConversationActions.ts` maps user actions onto the controller. `components/` renders composer controls, microphone state, playback controls, status, and waveform; `createConversationComponents.tsx` composes them for the application slot boundary.

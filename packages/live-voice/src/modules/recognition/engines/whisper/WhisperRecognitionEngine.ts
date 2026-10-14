@@ -53,6 +53,7 @@ export class WhisperHttpRecognitionEngine {
     vadErrorMessage = () => 'Silero VAD is unavailable. Select energy detection or retry.',
     voiceDetectionPreset = defaultSettings.voiceDetectionPreset,
     voiceDetectionCustomSilenceMs = defaultSettings.voiceDetectionCustomSilenceMs,
+    voiceDetectionCustomParagraphMs = defaultSettings.voiceDetectionCustomParagraphMs,
     maxUtteranceSeconds = 60,
     recordings,
     inputSource = 'microphone',
@@ -79,6 +80,7 @@ export class WhisperHttpRecognitionEngine {
     this.lang = 'pt-BR';
     this.voiceDetectionPreset = voiceDetectionPreset;
     this.voiceDetectionCustomSilenceMs = voiceDetectionCustomSilenceMs;
+    this.voiceDetectionCustomParagraphMs = voiceDetectionCustomParagraphMs;
     this.maxUtteranceSeconds = maxUtteranceSeconds;
     Object.assign(this, {
       recordings: recordings ?? createRecordingRepository(),
