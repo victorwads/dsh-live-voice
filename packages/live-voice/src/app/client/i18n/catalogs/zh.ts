@@ -63,6 +63,32 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.commons.version.label': 'DSH 实时语音 v{version}',
   'dsh-live-voice.commons.version.link': 'DSH 实时语音 v{version}。打开版本发布列表',
   'dsh-live-voice.commons.version.title': '版本信息',
+  'dsh-live-voice.debugger.applied':
+    '调试器 {version} 已安装，DSH 已应用。正在等待诊断功能在本页注册。如果仍不可用，请检查 DSH 插件管理器；不会自动重新加载。',
+  'dsh-live-voice.debugger.busy': '安装前请停止语音采集、转录和播放。',
+  'dsh-live-voice.debugger.close': '关闭',
+  'dsh-live-voice.debugger.confirm':
+    '要在此 DSH 配置中安装并启用 dsh-live-voice-debugger {version} 吗？从软件包注册表下载需要网络访问。仅在管理器要求时重启 DSH。不会自动重启或重新加载。安装期间请勿通过其他管理器或 CLI 更改此依赖。',
+  'dsh-live-voice.debugger.description':
+    '诊断和录音会话管理需要可选的 dsh-live-voice-debugger 插件。它可查看运行状态和队列、浏览录音、播放音频、检查转录结果和错误、导出会话及删除已完成的录音。实时语音 和录音功能无需此插件也可使用。',
+  'dsh-live-voice.debugger.failed':
+    '安装失败或已取消。继续前请检查 DSH 插件管理器；此处不会重试安装。',
+  'dsh-live-voice.debugger.installNow': '立即安装',
+  'dsh-live-voice.debugger.installed':
+    '调试器已安装，但在本页不可用。请在 DSH 插件管理器中检查启用状态和加载错误。仅在要求时重启 DSH；此对话框不会重新安装。',
+  'dsh-live-voice.debugger.installing': '正在检查或安装调试器…',
+  'dsh-live-voice.debugger.label': '诊断',
+  'dsh-live-voice.debugger.local':
+    '已存在本地、Git 或自定义调试器依赖。请使用原安装方式管理；此处不会替换。',
+  'dsh-live-voice.debugger.ready': '诊断已就绪。请关闭此对话框，然后点击“诊断”打开调试器。',
+  'dsh-live-voice.debugger.restart':
+    '调试器 {version} 已安装。DSH 管理器要求重启。请在准备好后重启 DSH，再重新加载此页面。不会自动重启。',
+  'dsh-live-voice.debugger.scripts':
+    '软件包脚本需要批准。请在 DSH 插件管理器中审核；此处未批准任何脚本，也不会重试安装。',
+  'dsh-live-voice.debugger.title': '诊断与录音会话',
+  'dsh-live-voice.debugger.unavailable': '此配置或 DSH 版本无法在此安装。请使用 DSH 插件管理器。',
+  'dsh-live-voice.debugger.uncertain':
+    '安装结果未知。继续前请检查 DSH 插件管理器；此处不会重试安装。',
   'dsh-live-voice.meeting.browserLocalUnavailable':
     '此语言的浏览器本地识别不可用。请安装语言包，或在设置中明确关闭仅本地处理，以允许浏览器服务识别。',
   'dsh-live-voice.meeting.browserSharedUnsupported':
@@ -234,6 +260,8 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recording.keepPrevious.help':
     '按来源类型保留 1–100 条已完成的普通录音：麦克风为一组，会议/共享音频为另一组。默认保留 1 条麦克风录音 + 1 条会议录音。受保护/星标录音不计入限额。正在录制的音频会保留到结束，之后计入此总数，不额外保留一条历史录音。',
   'dsh-live-voice.recording.keepPrevious.label': '按来源类型保留的录音数量',
+  'dsh-live-voice.recording.managementHelp':
+    '浏览、播放、查看转录、导出和删除已保存的会话需要可选的 dsh-live-voice-debugger 插件。请使用下方的“诊断”安装。录音本身无需调试器。',
   'dsh-live-voice.recording.paddingHelp':
     '转写已保存的音频区间时，在检测到的语音前后各包含 0–2,000 毫秒。',
   'dsh-live-voice.recording.postRoll.label': '语音后音频（毫秒）',

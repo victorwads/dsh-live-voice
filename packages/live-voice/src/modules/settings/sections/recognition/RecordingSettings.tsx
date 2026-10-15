@@ -30,7 +30,12 @@ export function RecordingSettings({ settings, updateSettings }: RecordingSetting
   return (
     <>
       {unsupported && <StatusMessage>{recording.browserUnsupported()}</StatusMessage>}
-      <SettingsSection title={recording.title()} icon="mic" defaultOpen={false}>
+      <SettingsSection
+        title={recording.title()}
+        hint={recording.managementHelp()}
+        icon="mic"
+        defaultOpen={false}
+      >
         <CheckboxField
           label={recording.enabled.label()}
           hint={[

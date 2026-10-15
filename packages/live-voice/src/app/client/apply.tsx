@@ -42,6 +42,7 @@ import { registerLiveVoiceLocales } from './i18n/index.js';
 import { registerConversationSlots, registerSettingsSlot } from './registerSlots.js';
 import { styles } from '../../styles/index.js';
 import { createPluginUpdate } from '../../modules/settings/services/pluginUpdate.js';
+import { createDebuggerInstall } from '../../modules/settings/services/debuggerInstall.js';
 import { createSettingsClient } from '../../modules/settings/models/settingsStorage.js';
 import {
   publishDiagnosticSource,
@@ -126,34 +127,39 @@ export function apply(ctx) {
         'dsh-live-voice: release update manager',
       );
     });
+  const isPluginOperationBusy = () => {
+    const m = meeting.getSnapshot();
+    if (
+      disposed ||
+      voiceModeActive ||
+      retiring.size ||
+      m.active ||
+      m.shared.starting ||
+      m.shared.pending ||
+      m.microphone.starting ||
+      m.microphone.pending
+    )
+      return true;
+    return [...controllers.values()].some((entry) => {
+      const s = entry.controller.getSnapshot();
+      return (
+        s.starting ||
+        s.listening ||
+        s.recognizing ||
+        s.pendingTranscriptions ||
+        s.speaking ||
+        s.autoSendPending ||
+        s.speechBarVisible
+      );
+    });
+  };
   const pluginUpdate = createPluginUpdate({
     manager: () => updateManager,
-    isBusy: () => {
-      const m = meeting.getSnapshot();
-      if (
-        disposed ||
-        voiceModeActive ||
-        retiring.size ||
-        m.active ||
-        m.shared.starting ||
-        m.shared.pending ||
-        m.microphone.starting ||
-        m.microphone.pending
-      )
-        return true;
-      return [...controllers.values()].some((entry) => {
-        const s = entry.controller.getSnapshot();
-        return (
-          s.starting ||
-          s.listening ||
-          s.recognizing ||
-          s.pendingTranscriptions ||
-          s.speaking ||
-          s.autoSendPending ||
-          s.speechBarVisible
-        );
-      });
-    },
+    isBusy: isPluginOperationBusy,
+  });
+  const debuggerInstall = createDebuggerInstall({
+    manager: () => updateManager,
+    isBusy: isPluginOperationBusy,
   });
   const unsubscribeMeetingDelivery = meeting.subscribe(() =>
     meetingEntry?.controller.refreshDeliveryReadiness(),
@@ -1015,7 +1021,11 @@ export function apply(ctx) {
       };
     }, []);
     return controller ? (
-      <SettingsPanel controller={controller} pluginUpdate={pluginUpdate} />
+      <SettingsPanel
+        controller={controller}
+        pluginUpdate={pluginUpdate}
+        debuggerInstall={debuggerInstall}
+      />
     ) : null;
   }
   registerSettingsSlot(ctx, Settings, () => t('dsh-live-voice.commons.pluginName'));

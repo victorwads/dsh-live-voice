@@ -183,7 +183,8 @@ test('modular settings composes speech, recognition, and conversation tabs', asy
   assert.ok(footer.textContent.includes('Developer controls'));
   assert.equal(footer.closest('.dlv-settings-scroll'), null);
   await act(async () => removeDeveloper());
-  assert.equal(document.querySelector('.dlv-settings-footer'), null);
+  assert.ok(document.querySelector('.dlv-settings-footer .dlv-diagnostics-button'));
+  assert.match(document.querySelector('.dlv-settings-footer').textContent, /Diagnostics/);
   assert.equal(document.querySelectorAll('[role="tab"]').length, 3);
   assert.equal(document.querySelectorAll('[role="tabpanel"]')[2].hidden, false);
 });

@@ -72,6 +72,35 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.commons.version.link':
     'DSH Voix en direct v{version}. Ouvrir la liste des versions',
   'dsh-live-voice.commons.version.title': 'Informations de version',
+  'dsh-live-voice.debugger.applied':
+    'Le débogueur {version} est installé et DSH l’a appliqué. En attente de l’enregistrement des diagnostics sur cette page. S’ils restent indisponibles, consultez le gestionnaire de plugins DSH ; rien ne se recharge automatiquement.',
+  'dsh-live-voice.debugger.busy':
+    'Arrêtez la capture vocale, la transcription et la lecture avant l’installation.',
+  'dsh-live-voice.debugger.close': 'Fermer',
+  'dsh-live-voice.debugger.confirm':
+    'Installer dsh-live-voice-debugger {version} et l’activer dans ce profil DSH ? Le téléchargement depuis le registre de paquets nécessite un accès réseau. Redémarrez DSH uniquement si le gestionnaire le demande. Aucun redémarrage ni rechargement automatique. Ne modifiez pas cette dépendance depuis un autre gestionnaire ou CLI pendant l’installation.',
+  'dsh-live-voice.debugger.description':
+    'Les diagnostics et la gestion des sessions enregistrées nécessitent le plugin facultatif dsh-live-voice-debugger. Il permet d’inspecter l’état et les files, de parcourir les enregistrements, d’écouter l’audio, de consulter les transcriptions et erreurs, d’exporter les sessions et de supprimer les enregistrements terminés. Voix en direct et l’enregistrement fonctionnent sans lui.',
+  'dsh-live-voice.debugger.failed':
+    'L’installation a échoué ou a été annulée. Consultez le gestionnaire de plugins DSH avant de continuer ; aucune nouvelle tentative ne sera lancée ici.',
+  'dsh-live-voice.debugger.installNow': 'Installer maintenant',
+  'dsh-live-voice.debugger.installed':
+    'Le débogueur est déjà installé, mais indisponible sur cette page. Vérifiez son activation et les erreurs de chargement dans le gestionnaire de plugins DSH. Redémarrez DSH uniquement sur demande ; cette boîte de dialogue ne le réinstallera pas.',
+  'dsh-live-voice.debugger.installing': 'Vérification ou installation du débogueur…',
+  'dsh-live-voice.debugger.label': 'Diagnostics',
+  'dsh-live-voice.debugger.local':
+    'Une dépendance locale, Git ou personnalisée du débogueur existe déjà. Gérez-la avec sa méthode d’installation d’origine ; elle ne sera pas remplacée ici.',
+  'dsh-live-voice.debugger.ready':
+    'Les diagnostics sont prêts. Fermez cette boîte de dialogue et cliquez sur Diagnostics pour ouvrir le débogueur.',
+  'dsh-live-voice.debugger.restart':
+    'Le débogueur {version} est installé. Le gestionnaire DSH exige un redémarrage. Redémarrez DSH lorsque vous êtes prêt, puis rechargez cette page. Rien ne redémarre automatiquement.',
+  'dsh-live-voice.debugger.scripts':
+    'Les scripts du paquet nécessitent une approbation. Examinez-les dans le gestionnaire de plugins DSH ; aucun script n’a été approuvé et aucune nouvelle tentative ne sera lancée ici.',
+  'dsh-live-voice.debugger.title': 'Diagnostics et sessions enregistrées',
+  'dsh-live-voice.debugger.unavailable':
+    'L’installation est indisponible pour ce profil ou cette version de DSH. Utilisez le gestionnaire de plugins DSH.',
+  'dsh-live-voice.debugger.uncertain':
+    'Le résultat de l’installation est inconnu. Consultez le gestionnaire de plugins DSH avant de continuer ; aucune nouvelle tentative ne sera lancée ici.',
   'dsh-live-voice.meeting.browserLocalUnavailable':
     'La reconnaissance locale du navigateur est indisponible pour cette langue. Installez son pack linguistique ou désactivez explicitement le traitement uniquement local dans les paramètres pour autoriser le service du navigateur.',
   'dsh-live-voice.meeting.browserSharedUnsupported':
@@ -272,6 +301,8 @@ const fr: LiveVoiceTranslation = {
   'dsh-live-voice.recording.keepPrevious.help':
     'Conserve de 1 à 100 enregistrements ordinaires terminés par type de source : un groupe microphone et un groupe réunion/son partagé. Par défaut : 1 microphone + 1 réunion. Les enregistrements protégés ou favoris ne comptent pas. Les actifs restent jusqu’à leur clôture, puis comptent dans ce total, sans enregistrement précédent supplémentaire.',
   'dsh-live-voice.recording.keepPrevious.label': 'Enregistrements conservés par type de source',
+  'dsh-live-voice.recording.managementHelp':
+    'La gestion des sessions enregistrées — navigation, écoute, consultation des transcriptions, export et suppression — nécessite le plugin facultatif dsh-live-voice-debugger. Utilisez Diagnostics ci-dessous pour l’installer. L’enregistrement lui-même ne nécessite pas le débogueur.',
   'dsh-live-voice.recording.paddingHelp':
     'Inclut de 0 à 2 000 ms avant et après la parole détectée lors de la transcription d’une plage enregistrée.',
   'dsh-live-voice.recording.postRoll.label': 'Son après la parole (millisecondes)',

@@ -69,6 +69,35 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.commons.version.label': 'DSH Voz ao Vivo v{version}',
   'dsh-live-voice.commons.version.link': 'DSH Voz ao Vivo v{version}. Abrir versões',
   'dsh-live-voice.commons.version.title': 'Informações da versão',
+  'dsh-live-voice.debugger.applied':
+    'O depurador {version} foi instalado e aplicado pelo DSH. Aguardando o registro dos diagnósticos nesta página. Se continuarem indisponíveis, verifique o gerenciador de plugins do DSH; nada é recarregado automaticamente.',
+  'dsh-live-voice.debugger.busy':
+    'Pare a captura de voz, a transcrição e a reprodução antes de instalar.',
+  'dsh-live-voice.debugger.close': 'Fechar',
+  'dsh-live-voice.debugger.confirm':
+    'Instalar dsh-live-voice-debugger {version} e ativá-lo neste perfil do DSH? O download do registro de pacotes exige acesso à rede. Reinicie o DSH somente se o gerenciador solicitar. Nada reinicia ou recarrega automaticamente. Não altere esta dependência por outro gerenciador ou CLI durante a instalação.',
+  'dsh-live-voice.debugger.description':
+    'Os diagnósticos e o gerenciamento de sessões gravadas exigem o plugin opcional dsh-live-voice-debugger. Ele permite inspecionar o estado e as filas, navegar pelas gravações, ouvir o áudio, revisar transcrições e erros, exportar sessões e excluir gravações finalizadas. O Voz ao Vivo e a gravação funcionam sem ele.',
+  'dsh-live-voice.debugger.failed':
+    'A instalação falhou ou foi cancelada. Verifique o gerenciador de plugins do DSH antes de continuar; não haverá nova tentativa por aqui.',
+  'dsh-live-voice.debugger.installNow': 'Instalar agora',
+  'dsh-live-voice.debugger.installed':
+    'O depurador já está instalado, mas não está disponível nesta página. Verifique a ativação e os erros de carregamento no gerenciador de plugins do DSH. Reinicie o DSH somente se solicitado; este diálogo não o reinstalará.',
+  'dsh-live-voice.debugger.installing': 'Verificando ou instalando o depurador…',
+  'dsh-live-voice.debugger.label': 'Diagnósticos',
+  'dsh-live-voice.debugger.local':
+    'Já existe uma dependência local, Git ou personalizada do depurador. Gerencie-a pelo método original de instalação; ela não será substituída aqui.',
+  'dsh-live-voice.debugger.ready':
+    'Os diagnósticos estão prontos. Feche este diálogo e clique em Diagnósticos para abrir o depurador.',
+  'dsh-live-voice.debugger.restart':
+    'O depurador {version} foi instalado. O gerenciador do DSH exige uma reinicialização. Reinicie o DSH quando estiver pronto e recarregue esta página. Nada reinicia automaticamente.',
+  'dsh-live-voice.debugger.scripts':
+    'Os scripts do pacote precisam de aprovação. Revise-os no gerenciador de plugins do DSH; nenhum script foi aprovado e não haverá nova tentativa de instalação aqui.',
+  'dsh-live-voice.debugger.title': 'Diagnósticos e sessões gravadas',
+  'dsh-live-voice.debugger.unavailable':
+    'A instalação não está disponível para este perfil ou versão do DSH. Use o gerenciador de plugins do DSH.',
+  'dsh-live-voice.debugger.uncertain':
+    'O resultado da instalação é desconhecido. Verifique o gerenciador de plugins do DSH antes de continuar; não haverá nova tentativa por aqui.',
   'dsh-live-voice.meeting.browserLocalUnavailable':
     'O reconhecimento local do navegador está indisponível para este idioma. Instale o pacote de idioma ou desative explicitamente o processamento somente local nas Configurações para permitir o serviço do navegador.',
   'dsh-live-voice.meeting.browserSharedUnsupported':
@@ -258,6 +287,8 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.recording.keepPrevious.help':
     'Mantém de 1 a 100 gravações comuns concluídas por tipo de fonte: um grupo de microfone e outro de reunião/áudio compartilhado. Padrão: 1 de microfone + 1 de reunião. Protegidas/favoritas não contam. Gravações ativas permanecem até serem encerradas e então contam nesse total, sem uma gravação anterior extra.',
   'dsh-live-voice.recording.keepPrevious.label': 'Gravações mantidas por tipo de fonte',
+  'dsh-live-voice.recording.managementHelp':
+    'O gerenciamento das sessões salvas — navegação, reprodução, revisão de transcrições, exportação e exclusão — exige o plugin opcional dsh-live-voice-debugger. Use Diagnósticos abaixo para instalá-lo. A gravação em si não exige o depurador.',
   'dsh-live-voice.recording.paddingHelp':
     'Inclui de 0 a 2.000 ms antes e depois da fala detectada ao transcrever um intervalo de áudio salvo.',
   'dsh-live-voice.recording.postRoll.label': 'Áudio após a fala (milissegundos)',

@@ -68,6 +68,35 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.commons.version.label': 'DSH Live Voice v{version}',
   'dsh-live-voice.commons.version.link': 'DSH Live Voice v{version}. Open releases',
   'dsh-live-voice.commons.version.title': 'Version information',
+  'dsh-live-voice.debugger.applied':
+    'Debugger {version} installed and applied by DSH. Waiting for diagnostics to register in this page. If it remains unavailable, check the DSH plugin manager; nothing reloads automatically.',
+  'dsh-live-voice.debugger.busy':
+    'Stop voice capture, transcription and playback before installing.',
+  'dsh-live-voice.debugger.close': 'Close',
+  'dsh-live-voice.debugger.confirm':
+    'Install dsh-live-voice-debugger {version} and enable it in this DSH profile? This downloads from the package registry and requires network access. Restart DSH only if the manager requests it. Nothing restarts or reloads automatically. Do not change this dependency through another manager or CLI during installation.',
+  'dsh-live-voice.debugger.description':
+    'Diagnostics and recorded-session management require the optional dsh-live-voice-debugger plugin. It lets you inspect runtime state and queues, browse saved recordings, play audio, review transcription results and errors, export sessions and delete finished recordings. Live Voice and recording work without it.',
+  'dsh-live-voice.debugger.failed':
+    'Installation failed or was cancelled. Check the DSH plugin manager before continuing; installation will not be retried here.',
+  'dsh-live-voice.debugger.installNow': 'Install now',
+  'dsh-live-voice.debugger.installed':
+    'The debugger is already installed but is not available in this page. Check enablement and load errors in the DSH plugin manager. Restart DSH only if requested; this dialog will not reinstall it.',
+  'dsh-live-voice.debugger.installing': 'Checking or installing debugger…',
+  'dsh-live-voice.debugger.label': 'Diagnostics',
+  'dsh-live-voice.debugger.local':
+    'A local, Git or custom debugger dependency already exists. Manage it with its original installation method; it will not be replaced here.',
+  'dsh-live-voice.debugger.ready':
+    'Diagnostics are ready. Close this dialog and click Diagnostics to open the debugger.',
+  'dsh-live-voice.debugger.restart':
+    'Debugger {version} installed. The DSH manager requires a restart. Restart DSH when ready, then reload this page. Nothing restarts automatically.',
+  'dsh-live-voice.debugger.scripts':
+    'Package scripts need approval. Review them in the DSH plugin manager; no scripts were approved and installation will not be retried here.',
+  'dsh-live-voice.debugger.title': 'Diagnostics and recorded sessions',
+  'dsh-live-voice.debugger.unavailable':
+    'Installation is unavailable for this profile or DSH version. Use the DSH plugin manager.',
+  'dsh-live-voice.debugger.uncertain':
+    'The installation result is unknown. Check the DSH plugin manager before continuing; installation will not be retried here.',
   'dsh-live-voice.meeting.browserLocalUnavailable':
     'Local browser recognition is unavailable for this language. Install its language pack or explicitly turn off local-only processing in Settings to permit browser-service recognition.',
   'dsh-live-voice.meeting.browserSharedUnsupported':
@@ -251,6 +280,8 @@ const en: LiveVoiceTranslation = {
   'dsh-live-voice.recording.keepPrevious.help':
     'Keep 1–100 ordinary completed recordings per source type: microphone and meeting/shared audio as one group each. Default: 1 microphone + 1 meeting. Protected/starred recordings do not count. Active recordings remain until closed, then count toward this total—not an extra previous recording.',
   'dsh-live-voice.recording.keepPrevious.label': 'Retained recordings per source type',
+  'dsh-live-voice.recording.managementHelp':
+    'Managing saved sessions—browsing, playback, reviewing transcripts, export and deletion—requires the optional dsh-live-voice-debugger plugin. Use Diagnostics below to install it. Recording itself does not require the debugger.',
   'dsh-live-voice.recording.paddingHelp':
     'Include 0–2,000 ms before and after detected speech when transcribing a saved audio range.',
   'dsh-live-voice.recording.postRoll.label': 'Audio after speech (milliseconds)',

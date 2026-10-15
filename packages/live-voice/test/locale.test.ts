@@ -87,6 +87,7 @@ test('catalogs preserve placeholders and contain no unreviewed English copies', 
       'dsh-live-voice.speak.qwen.name',
     ]),
     fr: new Set([
+      'dsh-live-voice.debugger.label',
       'dsh-live-voice.recognition.microphone.label',
       'dsh-live-voice.settings.tabs.conversation',
       'dsh-live-voice.speak.qwen.name',

@@ -8,19 +8,18 @@ import {
   SpeakSettingsSection,
 } from '../sections/index.js';
 import { SettingsHeader } from './SettingsHeader.js';
-import {
-  readDeveloperExtension,
-  subscribeDeveloperExtension,
-} from '../../core/developerExtension.js';
+import { DebuggerLauncher } from './DebuggerLauncher.js';
 
 export function LiveVoiceSettings({
   controller,
   onClose,
   pluginUpdate,
+  debuggerInstall,
 }: {
   controller: any;
   onClose?(): void;
   pluginUpdate?: import('../services/pluginUpdate.js').PluginUpdate;
+  debuggerInstall?: import('../services/debuggerInstall.js').DebuggerInstall;
 }) {
   const { scoped: commons } = useLanguage((ctx) => ctx.commons);
   const { scoped: settingsLanguage } = useLanguage((ctx) => ctx.settings);
@@ -57,12 +56,6 @@ export function LiveVoiceSettings({
       window.removeEventListener('resize', resize);
     };
   }, []);
-  const developer = React.useSyncExternalStore(
-    subscribeDeveloperExtension,
-    readDeveloperExtension,
-    () => null,
-  );
-  const Developer = developer?.component;
   const selectedTab = activeTab;
   const tabs = [
     { id: 'speech', label: (settingsLanguage as any).tabs.speak(), icon: 'speaker' as const },
@@ -121,11 +114,9 @@ export function LiveVoiceSettings({
           </div>
         ))}
       </div>
-      {Developer && (
-        <footer className="dlv-settings-footer">
-          <Developer />
-        </footer>
-      )}
+      <footer className="dlv-settings-footer">
+        <DebuggerLauncher installer={debuggerInstall} />
+      </footer>
       <ErrorMessage
         error={error || state.error}
         dismissLabel={(commons as any).dismissError()}

@@ -14,6 +14,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 - Save recoverable audio sessions locally by default, retaining the latest microphone and meeting recording separately, with configurable retention, quality, detection sensitivity, and transcription margins.
 - Configure separate silence pauses for transcription chunks and new paragraphs, using presets or custom timings.
 - Customize keyboard shortcuts for Hold-to-Talk, microphone, meeting sharing, and automatic assistant speech in Conversation settings. Click to record or replace a shortcut, use modifiers alone or combined with another key, clear bindings, and detect duplicate assignments.
+- Keep Diagnostics available even without the debugger installed, with an explicit, confirmed installation through the DSH plugin manager and clear guidance that recorded-session management requires the optional debugger.
 
 #### Live Voice Debugger
 
