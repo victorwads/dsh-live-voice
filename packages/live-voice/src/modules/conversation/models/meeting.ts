@@ -51,6 +51,8 @@ export class MeetingController {
       if (Object.hasOwn(next, 'pending')) policy.pendingTranscriptions = next.pending;
       if (Object.hasOwn(next, 'transcribing'))
         policy.pendingTranscriptionRequests = next.transcribing;
+      if (Object.hasOwn(next, 'deliveryPending'))
+        policy.pendingDeliveryTranscriptions = next.deliveryPending;
       input?.patch(policy);
     }
     this.snapshot = {
@@ -235,12 +237,16 @@ export class MeetingController {
           this.onActivity?.(source, active);
           input.refreshDeliveryReadiness();
         },
-        onProcessingChange: ({ pending, transcribing }) => {
+        onProcessingChange: ({ pending, transcribing, deliveryPending }) => {
           if (!valid()) return;
           const requests =
             Number.isSafeInteger(transcribing) && transcribing >= 0 ? transcribing : pending;
-          this.patch(source, { pending, transcribing: requests });
-          if (pending) input.cancelAutoSend({ preserveIntent: true });
+          const delivery =
+            Number.isSafeInteger(deliveryPending) && deliveryPending >= 0
+              ? deliveryPending
+              : pending;
+          this.patch(source, { pending, transcribing: requests, deliveryPending: delivery });
+          if (delivery) input.cancelAutoSend({ preserveIntent: true });
           else if (!input.getSnapshot().muted) input.maybeScheduleAutoSend();
         },
         onError: (error) => {
@@ -292,11 +298,18 @@ export class MeetingController {
       recognizing: false,
       pendingTranscriptions: 0,
       pendingTranscriptionRequests: 0,
+      pendingDeliveryTranscriptions: 0,
     });
     this.onActivity?.(source, false);
     job?.abort.abort();
     this.transcript.setActive(source, false);
-    this.patch(source, { starting: false, listening: false, pending: 0, transcribing: 0 });
+    this.patch(source, {
+      starting: false,
+      listening: false,
+      pending: 0,
+      transcribing: 0,
+      deliveryPending: 0,
+    });
     await job?.engine?.stop();
     await job?.meter?.stop();
   }

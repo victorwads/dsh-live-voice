@@ -56,6 +56,7 @@ export class VoiceCoordinator {
       recognizing: false,
       pendingTranscriptions: 0,
       pendingTranscriptionRequests: undefined,
+      pendingDeliveryTranscriptions: undefined,
       muted: normalizeSettings(settings).microphoneEnabled === false,
       speaking: false,
       paused: false,
@@ -440,15 +441,24 @@ export class VoiceCoordinator {
           onResult: (result) => {
             if (valid()) this.onResult(result);
           },
-          onProcessingChange: ({ pending = 0, transcribing } = {}) => {
+          onProcessingChange: ({ pending = 0, transcribing, deliveryPending } = {}) => {
             if (!valid()) return;
             const count = Number.isSafeInteger(pending) && pending >= 0 ? pending : 0;
             const requests =
               Number.isSafeInteger(transcribing) && transcribing >= 0 ? transcribing : count;
-            this.patch({ pendingTranscriptions: count, pendingTranscriptionRequests: requests });
-            if (count > 0) this.cancelAutoSend({ preserveIntent: true });
-            else if (this.holdToTalkRelease) this._finishHoldToTalk();
-            else this.maybeScheduleAutoSend();
+            const delivery =
+              Number.isSafeInteger(deliveryPending) && deliveryPending >= 0
+                ? deliveryPending
+                : count;
+            this.patch({
+              pendingTranscriptions: count,
+              pendingTranscriptionRequests: requests,
+              pendingDeliveryTranscriptions: delivery,
+            });
+            if (delivery > 0) this.cancelAutoSend({ preserveIntent: true });
+            else if (this.holdToTalkRelease) {
+              if (count === 0) this._finishHoldToTalk();
+            } else this.maybeScheduleAutoSend();
             if (count === 0) this._drain();
           },
           onActivity: (active) => {
@@ -713,6 +723,9 @@ export class VoiceCoordinator {
     this._handleSpeechInterruption(this._speechActivity());
     this._drain();
   }
+  deliveryPending() {
+    return this.snapshot.pendingDeliveryTranscriptions ?? this.snapshot.pendingTranscriptions;
+  }
   maybeScheduleAutoSend(draft = this.autoSendIntent) {
     if (draft == null || draft !== this.composer.getDraft()) return;
     if (this.autoSendTimer !== null) return;
@@ -721,7 +734,7 @@ export class VoiceCoordinator {
       this.snapshot.muted ||
       this.composer.canAutoSend?.() === false ||
       this.snapshot.recognizing ||
-      this.snapshot.pendingTranscriptions > 0
+      this.deliveryPending() > 0
     )
       return;
     this.scheduleAutoSend(draft);
@@ -730,7 +743,7 @@ export class VoiceCoordinator {
     if (
       this.composer.canAutoSend?.() === false ||
       this.snapshot.recognizing ||
-      this.snapshot.pendingTranscriptions > 0
+      this.deliveryPending() > 0
     )
       this.cancelAutoSend({ preserveIntent: true });
     else this.maybeScheduleAutoSend();
@@ -806,6 +819,7 @@ export class VoiceCoordinator {
       recognizing: false,
       pendingTranscriptions: 0,
       pendingTranscriptionRequests: 0,
+      pendingDeliveryTranscriptions: 0,
       starting: false,
     });
     return this._input(async () => {

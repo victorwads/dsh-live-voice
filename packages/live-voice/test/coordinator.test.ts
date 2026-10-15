@@ -1564,3 +1564,37 @@ for (const voiceCommandsEnabled of [true, false]) {
     },
   );
 }
+
+test('silent recording writes preserve the auto-send deadline while speech work still cancels it', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
+  const f = fixture({ sendingMode: 'queue', autoSendDelaySeconds: 1 });
+  t.after(() => f.coordinator.dispose());
+  const sent = [];
+  f.coordinator.composer.submit = () => sent.push(f.draft());
+  await f.coordinator.startDictation();
+  const cb = f.sessions[0];
+  cb.onProcessingChange({ pending: 1, transcribing: 0, deliveryPending: 0 });
+  cb.onResult({ final: 'finished words' });
+  const deadline = f.coordinator.snapshot.autoSendAt;
+  assert.ok(deadline);
+  for (let i = 0; i < 10; i++) {
+    cb.onProcessingChange({ pending: i % 2, transcribing: 0, deliveryPending: 0 });
+    t.mock.timers.tick(100);
+  }
+  assert.deepEqual(sent, ['typed finished words']);
+  cb.onResult({ final: 'another turn' });
+  cb.onProcessingChange({ pending: 1, transcribing: 0, deliveryPending: 1 });
+  assert.equal(
+    f.coordinator.snapshot.autoSendAt,
+    null,
+    'speech boundary not queued yet blocks sending',
+  );
+  t.mock.timers.tick(2000);
+  assert.equal(sent.length, 1);
+  cb.onProcessingChange({ pending: 2, transcribing: 1, deliveryPending: 1 });
+  cb.onResult({ final: 'late result' });
+  assert.equal(f.coordinator.snapshot.autoSendAt, null);
+  cb.onProcessingChange({ pending: 1, transcribing: 0, deliveryPending: 0 });
+  t.mock.timers.tick(1000);
+  assert.equal(sent.length, 2);
+});

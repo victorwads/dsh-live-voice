@@ -6,7 +6,13 @@ import type {
 } from './types.js';
 import type { SileroVadOptions, SileroVadStream } from '../recognition/vad/SileroVadRuntime.js';
 type CaptureHandle = { finish(): Promise<void>; release(): void };
-type Processing = { queued: number; active: boolean; transcribing: number; pending: number };
+type Processing = {
+  queued: number;
+  active: boolean;
+  transcribing: number;
+  deliveryPending: number;
+  pending: number;
+};
 interface RecognitionCallbacks {
   signal?: AbortSignal;
   lang?: string;
@@ -75,6 +81,7 @@ interface RecognitionSession {
   onProcessingChange?: RecognitionCallbacks['onProcessingChange'];
   tail: Promise<void>;
   pendingWrites: number;
+  pendingSpeechWrites: number;
   lang: string;
   operation: string;
   capturedSamples: number;
@@ -151,6 +158,7 @@ export async function startRecordingRecognition(
     onProcessingChange,
     tail: Promise.resolve(),
     pendingWrites: 0,
+    pendingSpeechWrites: 0,
     lang,
     operation: uid(),
     capturedSamples: 0,
@@ -170,7 +178,13 @@ export async function startRecordingRecognition(
         active: !!session.activeRequest,
         // Only queued/running speech attempts belong in the visible transcription status.
         transcribing: session.transcriptionQueue.length + (session.activeRequest ? 1 : 0),
-        // Audio writes and final drain still block delivery/release, even in silence.
+        // Speech-boundary bookkeeping must settle before delivery, but silent PCM writes must not reset it.
+        deliveryPending:
+          session.transcriptionQueue.length +
+          (session.activeRequest ? 1 : 0) +
+          session.pendingSpeechWrites +
+          (session.finishing ? 1 : 0),
+        // All writes still protect release, playback admission and page leave.
         pending:
           session.transcriptionQueue.length +
           (session.activeRequest ? 1 : 0) +
@@ -184,14 +198,16 @@ export async function startRecordingRecognition(
     onError?.(new Error(engine.recordingErrorMessage(error)));
     void engine.stop();
   };
-  const serialize = (task: () => Promise<void>, preserve = false) => {
+  const serialize = (task: () => Promise<void>, preserve = false, speech = false) => {
     session.pendingWrites++;
+    if (speech) session.pendingSpeechWrites++;
     notify();
     const work = session.tail.then(async () => {
       if (preserve || valid()) await task();
     });
     session.tail = work.catch(failure).finally(() => {
       session.pendingWrites--;
+      if (speech) session.pendingSpeechWrites--;
       notify();
     });
     return work;
@@ -211,10 +227,14 @@ export async function startRecordingRecognition(
     if (through - Math.max(liveSpeechStart, lastSplitQueued) < max) return;
     const end = Math.max(liveSpeechStart, lastSplitQueued) + max;
     lastSplitQueued = end;
-    void serialize(async () => {
-      const speech = [...writer.session.pins].reverse().find((p) => p.kind === 'speech-start');
-      if (speech && valid()) await queueSpeech(speech, end);
-    }).catch(() => {});
+    void serialize(
+      async () => {
+        const speech = [...writer.session.pins].reverse().find((p) => p.kind === 'speech-start');
+        if (speech && valid()) await queueSpeech(speech, end);
+      },
+      false,
+      true,
+    ).catch(() => {});
   };
   const queueSpeech = async (pin: RecordingPin, end: number) => {
     for (let at = Math.max(pin.atSample, queuedThrough); at < end; at += max) {
@@ -260,19 +280,23 @@ export async function startRecordingRecognition(
       liveSpeechStart = startSample;
       lastSplitQueued = startSample;
     } else liveSpeechStart = null;
-    void serialize(async () => {
-      const previous = writer.session.pins.at(-1);
-      if (
-        kind === 'speech-start' &&
-        previous?.kind === 'silence-start' &&
-        previous.atSample > 0 &&
-        startSample - previous.atSample >= paragraphSamples
-      )
-        paragraphStarts.add(startSample);
-      await writer.pin(kind, startSample, confirmedSample);
-      if (valid() && kind === 'silence-start' && previous?.kind === 'speech-start')
-        await queueSpeech(previous, startSample);
-    }, true).catch(() => {});
+    void serialize(
+      async () => {
+        const previous = writer.session.pins.at(-1);
+        if (
+          kind === 'speech-start' &&
+          previous?.kind === 'silence-start' &&
+          previous.atSample > 0 &&
+          startSample - previous.atSample >= paragraphSamples
+        )
+          paragraphStarts.add(startSample);
+        await writer.pin(kind, startSample, confirmedSample);
+        if (valid() && kind === 'silence-start' && previous?.kind === 'speech-start')
+          await queueSpeech(previous, startSample);
+      },
+      true,
+      true,
+    ).catch(() => {});
   };
   const detector = new PinDetector({
     sampleRate: capture.silero ? 16000 : rate,

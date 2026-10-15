@@ -106,7 +106,7 @@ export function apply(ctx) {
       canAutoSend: () =>
         !!meetingEntry &&
         !meetingEntry.controller.getSnapshot().recognizing &&
-        !meetingEntry.controller.getSnapshot().pendingTranscriptions,
+        !meetingEntry.controller.deliveryPending(),
     },
     settings: () => preferences.getSnapshot(),
     savePreferences: (controller, next) => savePreferences(controller, next),
@@ -521,7 +521,7 @@ export function apply(ctx) {
       composer: {
         getDraft: () => entry.draft,
         canAutoSend: () =>
-          !meeting.getSnapshot().shared.pending && !meeting.input().getSnapshot().recognizing,
+          !meeting.input().deliveryPending() && !meeting.input().getSnapshot().recognizing,
         appendFinal: (text, startedAt, paragraphBefore) => {
           meeting.cancelDelivery();
           if (

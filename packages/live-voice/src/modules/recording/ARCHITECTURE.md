@@ -13,7 +13,7 @@ This browser-only module owns recording sessions, speech/silence pin markers, re
 
 ## Ownership and limits
 
-Processing notifications expose `transcribing` (queued plus active speech attempts) separately from aggregate `pending` (including serialized audio writes and capture finish). Only the former drives visible transcription status; the latter still gates delivery, Hold-to-Talk release, playback admission and page-leave protection. Continuous silent PCM persistence must not announce transcription.
+Processing notifications separate `transcribing` (queued plus active speech attempts), `deliveryPending` (those attempts plus unsettled speech-boundary writes and capture finish), and aggregate `pending` (all serialized writes). Only speech attempts drive visible transcription status. Automatic delivery waits for `deliveryPending`, not recurring silent PCM writes; Hold-to-Talk release, playback admission and page-leave protection still wait for aggregate work. Legacy engines without the delivery field conservatively use aggregate pending. Continuous silent PCM persistence must neither announce transcription nor reset the send countdown.
 
 Append, pin, attempt, read and finish operations are serialized per writer. Append owns a copy of its input and rejects more than eight seconds of queued PCM as backpressure rather than buffering indefinitely. Finish immediately seals further audio and pins, drains accepted appends, flushes the partial page, then releases ownership. Attempt upserts may still settle after audio is sealed, for already-running recognition requests. Dispose interrupts and drains active writers before closing storage.
 

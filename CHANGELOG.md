@@ -4,10 +4,11 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 [Product overview](README.md) · [Visão geral em português](README.pt.md) · [简体中文概览](README.zh-CN.md)
 
-## [0.6.x] - Next
+## [0.6.1] - 2026-10-15
 
 ### Fixes
 
+- Keep automatic sending from stalling when continuous silent audio is saved: background recording writes no longer reset the countdown, while unfinished speech and capture finalization still block premature delivery.
 - Avoid unused ONNX/protobuf install-script approvals that blocked updates: browser speech and VAD libraries are bundled with their runtime assets rather than installed as runtime dependencies in DSH profiles.
 - Explain update installation blockers for build-script approval, unavailable npm versions or release-age delays, and incompatible DSH versions without bypassing security policies.
 

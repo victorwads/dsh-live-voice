@@ -536,3 +536,20 @@ test('Browser meeting shared track end stops recognition and capture independent
   assert.equal(f.draft(), '');
   await f.meeting.dispose();
 });
+
+test('shared-input silent persistence does not repeatedly restart automatic delivery', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
+  const f = policyFixture(t);
+  await f.meeting.start('shared');
+  const input = f.meeting.input(),
+    cb = f.sources.shared.callbacks;
+  input.updateSettings({ sendingMode: 'queue', autoSendDelaySeconds: 1 });
+  cb.onProcessingChange({ pending: 1, transcribing: 0, deliveryPending: 0 });
+  cb.onResult({ final: 'send these words' });
+  assert.ok(input.getSnapshot().autoSendAt);
+  for (let i = 0; i < 10; i++) {
+    cb.onProcessingChange({ pending: i % 2, transcribing: 0, deliveryPending: 0 });
+    t.mock.timers.tick(100);
+  }
+  assert.deepEqual(f.submissions, ['queue']);
+});

@@ -93,9 +93,13 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
       for (let i = 0; i < 20; i++) frame(512, 0);
       assert.ok(
         changes.some((change) => change.pending > 0),
-        'writes remain a release/delivery barrier',
+        'writes remain a release and page-leave barrier',
       );
       assert.ok(changes.every((change) => change.transcribing === 0));
+      assert.ok(
+        changes.every((change) => change.deliveryPending === 0),
+        'silent writes must not block sending',
+      );
       assert.ok(statuses.every((status) => status === 'Waiting'));
       releaseWrite();
       await tick();
@@ -108,13 +112,19 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
         'speech storage alone is not HTTP work',
       );
       frame(6400, 0);
+      assert.ok(
+        changes.at(-1).deliveryPending > 0,
+        'speech pin serialization blocks delivery before the attempt is queued',
+      );
       await tick();
       assert.equal(typeof reply, 'function');
       assert.equal(changes.at(-1).transcribing, 1);
+      assert.ok(changes.at(-1).deliveryPending > 0);
       assert.equal(statuses.at(-1), 'Transcribing');
       for (let i = 0; i < 10; i++) frame(512, 0);
       await tick();
       assert.equal(changes.at(-1).transcribing, 1);
+      assert.ok(changes.at(-1).deliveryPending > 0);
       reply({ ok: true, json: async () => ({ ok: true, value: { text: 'words' } }) });
       await tick();
       assert.equal(changes.at(-1).transcribing, 0);
