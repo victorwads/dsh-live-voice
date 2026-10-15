@@ -47,6 +47,9 @@ export const recordingBitrateOptions = Object.freeze([24000, 32000, 48000, 64000
 export const defaultSettings = Object.freeze({
   engine: 'browser',
   recognitionEngine: 'browser',
+  browserWhisperModel: 'whisper-tiny',
+  browserQwenModel: 'qwen-0.6b',
+  browserAsrDevice: 'webgpu',
   recognitionProcessLocally: true,
   recognitionAutoInstall: true,
   voiceDetectionEngine: 'silero',
@@ -156,9 +159,26 @@ export function normalizeSettings(value) {
     engine: ['browser', 'say', 'qwen-http'].includes(source.engine)
       ? source.engine
       : defaultSettings.engine,
-    recognitionEngine: ['browser', 'whisper-http', 'qwen-http'].includes(source.recognitionEngine)
+    recognitionEngine: [
+      'browser',
+      'whisper-http',
+      'qwen-http',
+      'whisper-browser',
+      'qwen-browser',
+    ].includes(source.recognitionEngine)
       ? source.recognitionEngine
       : defaultSettings.recognitionEngine,
+    browserWhisperModel: [
+      'whisper-tiny',
+      'whisper-base',
+      'whisper-small',
+      'whisper-medium',
+      'whisper-large-v3-turbo',
+    ].includes(source.browserWhisperModel)
+      ? source.browserWhisperModel
+      : defaultSettings.browserWhisperModel,
+    browserQwenModel: 'qwen-0.6b',
+    browserAsrDevice: source.browserAsrDevice === 'wasm' ? 'wasm' : 'webgpu',
     recognitionProcessLocally:
       typeof source.recognitionProcessLocally === 'boolean'
         ? source.recognitionProcessLocally

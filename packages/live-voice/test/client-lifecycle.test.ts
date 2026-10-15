@@ -564,15 +564,19 @@ test('one keyboard handler across duplicate mounts; ambiguous sessions are ignor
     h(f.Buttons, { ...f.props('a'), key: 'one' }),
     h(f.Buttons, { ...f.props('b'), key: 'two' }),
   ]);
+  // Voice mode legitimately follows the new committed composer. Count only
+  // additional calls from the ambiguous keyboard event, not that resumption.
+  const resumed = f.calls.filter(([name]) => name === 'conversation').length;
+  assert.equal(resumed, 2);
   await act(async () => {
     key();
   });
-  assert.equal(f.calls.filter(([name]) => name === 'conversation').length, 1);
+  assert.equal(f.calls.filter(([name]) => name === 'conversation').length, resumed);
   f.close();
   await act(async () => {
     key();
   });
-  assert.equal(f.calls.filter(([name]) => name === 'conversation').length, 1);
+  assert.equal(f.calls.filter(([name]) => name === 'conversation').length, resumed);
   assert.equal(f.store('a').listeners.size, 0);
   assert.equal(f.store('b').listeners.size, 0);
 });

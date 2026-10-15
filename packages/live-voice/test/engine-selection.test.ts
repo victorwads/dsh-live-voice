@@ -19,7 +19,13 @@ for (const platform of ['darwin', 'linux', 'win32', undefined]) {
       mac ? ['say', 'browser', 'qwen-http'] : ['browser', 'qwen-http', 'say'],
     );
     assert.equal(defaultSpeakingEngine(platform), mac ? 'say' : 'browser');
-    assert.deepEqual(recognitionEngineOrder, ['browser', 'qwen-http', 'whisper-http']);
+    assert.deepEqual(recognitionEngineOrder, [
+      'browser',
+      'whisper-browser',
+      'qwen-browser',
+      'qwen-http',
+      'whisper-http',
+    ]);
     const dir = await mkdtemp(join(tmpdir(), 'voice-engine-order-'));
     t.after(() => rm(dir, { recursive: true, force: true }));
     const path = join(dir, 'preferences.json');

@@ -84,10 +84,7 @@ test('shared audio toggle starts directly and only renders its own active bar wi
   );
   assert.equal(document.querySelectorAll('[role="group"]').length, 1);
   assert.equal(document.querySelector('p'), null);
-  assert.equal(
-    document.querySelector('[role="status"]').textContent,
-    'Waiting',
-  );
+  assert.equal(document.querySelector('[role="status"]').textContent, 'Waiting');
   const clock = document.querySelector('[aria-label="Transcript timestamps"]');
   assert.equal(clock.getAttribute('data-toggle-active'), 'false');
   assert.equal(clock.textContent, 'Timestamp');
@@ -116,7 +113,11 @@ test('shared audio toggle starts directly and only renders its own active bar wi
     assert.equal(status.textContent, expected, JSON.stringify(patch));
     assert.doesNotMatch(status.textContent, /…|\.\.\./);
     assert.equal(status.getAttribute('aria-live'), 'polite');
-    assert.equal(snapshot.microphone.listening, true, 'shared status never changes microphone capture');
+    assert.equal(
+      snapshot.microphone.listening,
+      true,
+      'shared status never changes microphone capture',
+    );
   }
   input.cancelAutoSend();
 });

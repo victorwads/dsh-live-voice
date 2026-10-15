@@ -3,7 +3,10 @@ import { useLanguage } from '../../../../app/client/i18n/index.js';
 import { SettingsSection } from '../../../../shared/design-system/index.js';
 import { DraftField } from '../../../../shared/design-system/forms/DraftField.js';
 
-export function MeetingSourceSettings({ settings, updateSettings }: {
+export function MeetingSourceSettings({
+  settings,
+  updateSettings,
+}: {
   settings: any;
   updateSettings(value: any): void;
 }) {

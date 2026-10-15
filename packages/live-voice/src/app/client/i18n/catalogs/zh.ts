@@ -144,6 +144,61 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.language.options.chinese': '中文（普通话）',
   'dsh-live-voice.recognition.language.options.french': '法语',
   'dsh-live-voice.recognition.language.options.spanish': '西班牙语',
+  'dsh-live-voice.recognition.local.cancel': '取消',
+  'dsh-live-voice.recognition.local.confirm': '确认',
+  'dsh-live-voice.recognition.local.confirmDownload': '下载 {model}？将在此浏览器中存储约 {size}。',
+  'dsh-live-voice.recognition.local.confirmRemove': '从此浏览器中移除 {model}？录音将保留。',
+  'dsh-live-voice.recognition.local.confirmTitle': '确认模型存储变更',
+  'dsh-live-voice.recognition.local.device': '运行时',
+  'dsh-live-voice.recognition.local.deviceHelp':
+    'WebGPU 需要可用的 GPU 适配器。Whisper 提供需明确选择的较慢 WebAssembly CPU 选项；Qwen 必须使用 WebGPU。不会自动切换运行时，也不会自动改用 HTTP。',
+  'dsh-live-voice.recognition.local.download': '下载模型',
+  'dsh-live-voice.recognition.local.error.cancelled': '操作已取消。准备好后可下载或加载模型。',
+  'dsh-live-voice.recognition.local.error.download_failed':
+    '模型下载失败。请检查与 Hugging Face 的连接后重试。',
+  'dsh-live-voice.recognition.local.error.f16_unavailable':
+    '此模型需要支持 shader-f16 的 WebGPU。请选择其他 Whisper 模型或兼容的浏览器/设备。',
+  'dsh-live-voice.recognition.local.error.failed': '模型操作失败。请检查浏览器存储并重新加载模型。',
+  'dsh-live-voice.recognition.local.error.gpu_unavailable':
+    'WebGPU 不可用。请使用具有可用 GPU 适配器的浏览器，或明确选择 Whisper 的 WebAssembly CPU 选项。',
+  'dsh-live-voice.recognition.local.error.inference_failed':
+    '转写失败。请重新加载模型，然后使用较短的音频片段重试。',
+  'dsh-live-voice.recognition.local.error.invalid_audio':
+    '无法转写此音频。请录制新的音频片段后重试。',
+  'dsh-live-voice.recognition.local.error.invalid_model': '不支持此模型。请从列表中选择模型。',
+  'dsh-live-voice.recognition.local.error.model_busy': '模型正忙。请等待当前操作完成后重试。',
+  'dsh-live-voice.recognition.local.error.model_missing':
+    '模型文件缺失或已被缓存清理。请重新下载模型。',
+  'dsh-live-voice.recognition.local.error.runtime_outdated':
+    '浏览器加载的语音运行时比当前设置旧。请重新加载此页面以加载更新的 worker。若仍有问题，请在 DSH 中重新加载更新的实时语音后端；无需重新下载模型。',
+  'dsh-live-voice.recognition.local.error.runtime_unavailable':
+    '模型运行时不可用。请刷新页面、检查浏览器兼容性并重新加载模型。',
+  'dsh-live-voice.recognition.local.error.storage_full':
+    '浏览器存储空间已满。请释放空间或移除未使用的模型后重试。',
+  'dsh-live-voice.recognition.local.error.storage_unavailable':
+    '浏览器存储不可用。请在普通浏览器配置文件中允许此站点使用存储后重试。',
+  'dsh-live-voice.recognition.local.help': '关于浏览器模型',
+  'dsh-live-voice.recognition.local.load': '加载模型',
+  'dsh-live-voice.recognition.local.model': '模型',
+  'dsh-live-voice.recognition.local.modelCard': '模型详情',
+  'dsh-live-voice.recognition.local.phase.absent': '下载你的第一个模型，开始本地转写。',
+  'dsh-live-voice.recognition.local.phase.checking': '正在检查模型文件…',
+  'dsh-live-voice.recognition.local.phase.downloaded': '模型已下载。请加载模型以开始转写。',
+  'dsh-live-voice.recognition.local.phase.downloading': '正在下载模型…',
+  'dsh-live-voice.recognition.local.phase.error': '模型需要处理。请按照错误提示操作后重试。',
+  'dsh-live-voice.recognition.local.phase.loading': '正在加载模型…',
+  'dsh-live-voice.recognition.local.phase.ready': '模型已就绪，可进行本地转写。',
+  'dsh-live-voice.recognition.local.privacy':
+    '下载模型会连接 Hugging Face。语音在此浏览器中处理，不会发送至 HTTP 转写服务。此应用仍需要 DSH。',
+  'dsh-live-voice.recognition.local.progress': '模型下载进度',
+  'dsh-live-voice.recognition.local.qwenLabel': 'Qwen · 浏览器',
+  'dsh-live-voice.recognition.local.reload': '重新加载',
+  'dsh-live-voice.recognition.local.remove': '移除模型',
+  'dsh-live-voice.recognition.local.space': '浏览器可用存储空间：{size}',
+  'dsh-live-voice.recognition.local.storageHelp':
+    '模型存储在此浏览器配置文件中；缓存可能被清理。磁盘空间估算不包括运行时资源以及额外的 GPU/内存开销。移除操作仅影响模型文件，不影响已录制的会话。',
+  'dsh-live-voice.recognition.local.title': '浏览器模型',
+  'dsh-live-voice.recognition.local.whisperLabel': 'Whisper · 浏览器',
   'dsh-live-voice.recognition.manualSend.help':
     '识别出的文本会保留在消息输入框中，直到你使用 DSH 的常规发送按钮。',
   'dsh-live-voice.recognition.maxUtterance.help':

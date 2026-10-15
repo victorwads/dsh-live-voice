@@ -211,7 +211,13 @@ test('mounted voice UI exposes controls, distinct states, and capability failure
     );
     assert.deepEqual(
       [...recognitionSelect.options].map((option) => option.textContent),
-      ['Browser SpeechRecognition — Default option', 'Qwen3 ASR — HTTP API', 'Whisper — HTTP API'],
+      [
+        'Browser SpeechRecognition — Default option',
+        'Whisper · Browser',
+        'Qwen · Browser',
+        'Qwen3 ASR — HTTP API',
+        'Whisper — HTTP API',
+      ],
     );
     assert.equal(
       document.querySelector('[aria-label="Silence detection and paragraph settings"]'),

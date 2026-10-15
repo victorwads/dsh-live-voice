@@ -36,7 +36,9 @@ export function createPluginUpdate({
       return 'unavailable';
     if (
       typeof bundle.source !== 'string' ||
-      !/^dsh-live-voice@(?:\^|~)?v?\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(bundle.source)
+      !/^dsh-live-voice@(?:\^|~)?v?\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(
+        bundle.source,
+      )
     )
       return 'local';
     enabled = bundle.enabled;

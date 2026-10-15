@@ -14,6 +14,7 @@ import { SayEngine } from '../../modules/speak/engines/say/SaySpeakingEngine.js'
 import { createSettingsStore } from '../../modules/settings/models/settingsHost.js';
 import { registerSettingsRoute } from './registerRoutes.js';
 import { registerVadAssetRoutes } from './vadAssets.js';
+import { registerBrowserAsrAssets } from './browserAsrAssets.js';
 
 export const name = 'dsh-live-voice';
 export const inject = ['connection', 'systemPrompt'];
@@ -151,6 +152,7 @@ export function apply(
 ) {
   registerSettingsRoute(ctx, settingsStore);
   registerVadAssetRoutes(ctx);
+  registerBrowserAsrAssets(ctx);
   ctx.systemPrompt.variable('live_voice_context', (assemblyContext) =>
     voiceContextStore.get(String(assemblyContext.agent?.sessionId || '')),
   );

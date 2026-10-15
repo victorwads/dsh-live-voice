@@ -6,4 +6,6 @@ packages:
 allowBuilds:
   esbuild@0.25.12: true
   esbuild@0.28.2: true
+  # Browser ASR bundles onnxruntime-web; do not run native Node binary installation.
+  onnxruntime-node: false
   protobufjs: false

@@ -154,6 +154,70 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.language.options.chinese': 'चीनी (मंदारिन)',
   'dsh-live-voice.recognition.language.options.french': 'फ़्रेंच',
   'dsh-live-voice.recognition.language.options.spanish': 'स्पेनिश',
+  'dsh-live-voice.recognition.local.cancel': 'रद्द करें',
+  'dsh-live-voice.recognition.local.confirm': 'पुष्टि करें',
+  'dsh-live-voice.recognition.local.confirmDownload':
+    '{model} डाउनलोड करें? इस ब्राउज़र में लगभग {size} संग्रहित होगा।',
+  'dsh-live-voice.recognition.local.confirmRemove':
+    'इस ब्राउज़र से {model} हटाएँ? रिकॉर्डिंग सुरक्षित रहेंगी।',
+  'dsh-live-voice.recognition.local.confirmTitle': 'मॉडल के संग्रहण में बदलाव की पुष्टि करें',
+  'dsh-live-voice.recognition.local.device': 'रनटाइम',
+  'dsh-live-voice.recognition.local.deviceHelp':
+    'WebGPU के लिए काम करने वाला GPU अडैप्टर ज़रूरी है। Whisper में WebAssembly के साथ CPU पर चलने का स्पष्ट रूप से चुना जाने वाला धीमा विकल्प है; Qwen के लिए WebGPU ज़रूरी है। दूसरे रनटाइम या HTTP पर अपने आप नहीं बदला जाता।',
+  'dsh-live-voice.recognition.local.download': 'मॉडल डाउनलोड करें',
+  'dsh-live-voice.recognition.local.error.cancelled':
+    'कार्रवाई रद्द कर दी गई। जब तैयार हों, मॉडल डाउनलोड या लोड करें।',
+  'dsh-live-voice.recognition.local.error.download_failed':
+    'मॉडल डाउनलोड नहीं हो सका। Hugging Face से अपना कनेक्शन जाँचें और फिर कोशिश करें।',
+  'dsh-live-voice.recognition.local.error.f16_unavailable':
+    'इस मॉडल के लिए shader-f16 समर्थन वाला WebGPU आवश्यक है। दूसरा Whisper मॉडल या संगत ब्राउज़र/डिवाइस चुनें।',
+  'dsh-live-voice.recognition.local.error.failed':
+    'मॉडल की कार्रवाई विफल रही। ब्राउज़र का संग्रहण जाँचें और मॉडल फिर से लोड करें।',
+  'dsh-live-voice.recognition.local.error.gpu_unavailable':
+    'WebGPU उपलब्ध नहीं है। काम करने वाले GPU अडैप्टर वाला ब्राउज़र इस्तेमाल करें या स्पष्ट रूप से Whisper का WebAssembly CPU विकल्प चुनें।',
+  'dsh-live-voice.recognition.local.error.inference_failed':
+    'लिप्यंतरण विफल रहा। मॉडल फिर से लोड करें और छोटे ऑडियो अंश के साथ दोबारा कोशिश करें।',
+  'dsh-live-voice.recognition.local.error.invalid_audio':
+    'इस ऑडियो का लिप्यंतरण नहीं हो सकता। नया ऑडियो अंश रिकॉर्ड करें और फिर कोशिश करें।',
+  'dsh-live-voice.recognition.local.error.invalid_model':
+    'यह मॉडल समर्थित नहीं है। सूची से कोई मॉडल चुनें।',
+  'dsh-live-voice.recognition.local.error.model_busy':
+    'मॉडल व्यस्त है। मौजूदा कार्रवाई पूरी होने की प्रतीक्षा करें और फिर कोशिश करें।',
+  'dsh-live-voice.recognition.local.error.model_missing':
+    'मॉडल की फ़ाइलें गायब हैं या कैश से हटा दी गई हैं। मॉडल दोबारा डाउनलोड करें।',
+  'dsh-live-voice.recognition.local.error.runtime_outdated':
+    'ब्राउज़र ने इन सेटिंग्स से पुराना वॉइस रनटाइम लोड किया है। नया वर्कर लोड करने के लिए पेज रीलोड करें। समस्या बनी रहे तो DSH में अपडेट किया हुआ लाइव वॉइस बैकएंड रीलोड करें; मॉडल दोबारा डाउनलोड करने की ज़रूरत नहीं है।',
+  'dsh-live-voice.recognition.local.error.runtime_unavailable':
+    'मॉडल का रनटाइम उपलब्ध नहीं है। पेज रीफ़्रेश करें, ब्राउज़र का समर्थन जाँचें और मॉडल फिर से लोड करें।',
+  'dsh-live-voice.recognition.local.error.storage_full':
+    'ब्राउज़र का संग्रहण भर गया है। जगह खाली करें या बिना उपयोग वाले मॉडल हटाएँ और फिर कोशिश करें।',
+  'dsh-live-voice.recognition.local.error.storage_unavailable':
+    'ब्राउज़र का संग्रहण उपलब्ध नहीं है। ब्राउज़र की सामान्य प्रोफ़ाइल में साइट के संग्रहण की अनुमति दें और फिर कोशिश करें।',
+  'dsh-live-voice.recognition.local.help': 'ब्राउज़र मॉडल के बारे में',
+  'dsh-live-voice.recognition.local.load': 'मॉडल लोड करें',
+  'dsh-live-voice.recognition.local.model': 'मॉडल',
+  'dsh-live-voice.recognition.local.modelCard': 'मॉडल का विवरण',
+  'dsh-live-voice.recognition.local.phase.absent':
+    'स्थानीय लिप्यंतरण शुरू करने के लिए अपना पहला मॉडल डाउनलोड करें।',
+  'dsh-live-voice.recognition.local.phase.checking': 'मॉडल की फ़ाइलें जाँची जा रही हैं…',
+  'dsh-live-voice.recognition.local.phase.downloaded':
+    'मॉडल डाउनलोड हो गया। लिप्यंतरण शुरू करने के लिए इसे लोड करें।',
+  'dsh-live-voice.recognition.local.phase.downloading': 'मॉडल डाउनलोड हो रहा है…',
+  'dsh-live-voice.recognition.local.phase.error':
+    'मॉडल पर ध्यान देने की ज़रूरत है। त्रुटि के निर्देशों का पालन करें और फिर कोशिश करें।',
+  'dsh-live-voice.recognition.local.phase.loading': 'मॉडल लोड हो रहा है…',
+  'dsh-live-voice.recognition.local.phase.ready': 'मॉडल स्थानीय लिप्यंतरण के लिए तैयार है।',
+  'dsh-live-voice.recognition.local.privacy':
+    'मॉडल डाउनलोड करने पर Hugging Face से संपर्क होता है। वाणी इसी ब्राउज़र में संसाधित होती है, किसी HTTP लिप्यंतरण सेवा को नहीं भेजी जाती। ऐप को अब भी DSH की ज़रूरत है।',
+  'dsh-live-voice.recognition.local.progress': 'मॉडल डाउनलोड की प्रगति',
+  'dsh-live-voice.recognition.local.qwenLabel': 'Qwen · ब्राउज़र',
+  'dsh-live-voice.recognition.local.reload': 'फिर से लोड करें',
+  'dsh-live-voice.recognition.local.remove': 'मॉडल हटाएँ',
+  'dsh-live-voice.recognition.local.space': 'ब्राउज़र में उपलब्ध संग्रहण: {size}',
+  'dsh-live-voice.recognition.local.storageHelp':
+    'मॉडल इस ब्राउज़र प्रोफ़ाइल में संग्रहित होते हैं; कैश हटाया जा सकता है। डिस्क के अनुमान में रनटाइम की फ़ाइलें और GPU/RAM की अतिरिक्त ज़रूरत शामिल नहीं हैं। हटाने से मॉडल की फ़ाइलें हटती हैं, रिकॉर्ड किए गए सत्र नहीं।',
+  'dsh-live-voice.recognition.local.title': 'ब्राउज़र मॉडल',
+  'dsh-live-voice.recognition.local.whisperLabel': 'Whisper · ब्राउज़र',
   'dsh-live-voice.recognition.manualSend.help':
     'पहचाना गया पाठ संदेश बॉक्स में तब तक रहता है जब तक आप DSH के सामान्य भेजें बटन का उपयोग नहीं करते।',
   'dsh-live-voice.recognition.maxUtterance.help':

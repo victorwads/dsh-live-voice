@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../../../../app/client/i18n/index.js';
 import { QwenSettings } from '../../../core/qwen/QwenSettings.js';
 import { recognitionEngineOrder } from '../../../core/engineSelection.js';
+import { BrowserModelSettings } from '../../../recognition/local/BrowserModelSettings.js';
 import { WhisperSettings } from '../../../recognition/engines/whisper/WhisperSettings.js';
 import {
   CheckboxField,
@@ -36,6 +37,8 @@ export function RecognitionEngineSettings({
             browser: (recognition as any).browser.label(),
             'qwen-http': (recognition as any).qwen.label(),
             'whisper-http': (recognition as any).whisper.label(),
+            'whisper-browser': (recognition as any).local.whisperLabel(),
+            'qwen-browser': (recognition as any).local.qwenLabel(),
           }[value],
         }))}
         onChange={(event) => setEngine(event.target.value)}
@@ -86,6 +89,13 @@ export function RecognitionEngineSettings({
             <p role="status">{(recognition as any).browser.remoteServiceWarning()}</p>
           )}
         </>
+      )}
+      {['whisper-browser', 'qwen-browser'].includes(engine) && (
+        <BrowserModelSettings
+          controller={controller}
+          settings={settings}
+          updateSettings={updateSettings}
+        />
       )}
       {engine === 'whisper-http' && (
         <SettingsSubcard title={(commons as any).connection.title()} icon="link">

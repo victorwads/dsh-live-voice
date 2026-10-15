@@ -32,7 +32,11 @@ function checkDist() {
     const [packed] = JSON.parse(
       run(npm, ['pack', '--dry-run', '--json', '--ignore-scripts'], directory, true),
     );
-    assertPackageContents(metadata, packed.files, vadManifest);
+    const asrManifest =
+      name === 'live-voice'
+        ? JSON.parse(readFileSync(resolve(directory, 'lib/asr/manifest.json'), 'utf8'))
+        : undefined;
+    assertPackageContents(metadata, packed.files, vadManifest, asrManifest);
     console.log(
       metadata.name + ': compiled runtime entries and assets are included in the npm package.',
     );

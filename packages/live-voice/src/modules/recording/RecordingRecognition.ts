@@ -25,6 +25,12 @@ interface RecordingEngine {
   g: { fetch: typeof fetch };
   recordings: RecordingRepository;
   route: string;
+  transcribePcm?(
+    pcm: Float32Array,
+    sampleRate: number,
+    language: string,
+    signal?: AbortSignal,
+  ): Promise<string>;
   lang: string;
   startGeneration: number;
   session: RecognitionSession | null;
@@ -224,7 +230,13 @@ export async function startRecordingRecognition(
         endSample: Math.floor(requestedEnd),
         paragraphBefore: at === pin.atSample && paragraphStarts.has(pin.atSample),
         speechStartSample: at,
-        engine: engine.route.includes('qwen') ? 'qwen-http' : 'whisper-http',
+        engine: engine.transcribePcm
+          ? engine.route.includes('qwen')
+            ? 'qwen-browser'
+            : 'whisper-browser'
+          : engine.route.includes('qwen')
+            ? 'qwen-http'
+            : 'whisper-http',
         createdAt: new Date().toISOString(),
         status: 'pending',
       };
@@ -290,30 +302,36 @@ export async function startRecordingRecognition(
         try {
           const pcm = await writer.read(attempt.startSample, attempt.endSample);
           if (!valid()) throw Object.assign(new Error('Cancelled'), { name: 'AbortError' });
-          const response = await engine.g.fetch(engine.route + '/transcribe', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-              'content-type': 'audio/wav',
-              'x-dlv-client-id': session.operation,
-              'x-dlv-operation-id': attempt.id,
-              'x-dlv-language': lang,
-            },
-            body: capture.encode(pcm, rate),
-            signal: request.signal,
-          });
-          const json = await response.json();
-          if (!response.ok || !json?.ok)
-            throw new Error(json?.error?.message || 'HTTP transcription failed.');
+          let text: string;
+          if (engine.transcribePcm) {
+            text = await engine.transcribePcm(pcm, rate, lang || engine.lang, request.signal);
+          } else {
+            const response = await engine.g.fetch(engine.route + '/transcribe', {
+              method: 'POST',
+              headers: {
+                'content-type': 'audio/wav',
+                'x-dlv-client-id': session.operation,
+                'x-dlv-operation-id': attempt.id,
+                'x-dlv-language': lang,
+              },
+              credentials: 'same-origin',
+              body: capture.encode(pcm, rate),
+              signal: request.signal,
+            });
+            const json = await response.json();
+            if (!response.ok || !json?.ok)
+              throw new Error(json?.error?.message || 'Recognition request failed.');
+            text = String(json.value?.text ?? '').trim();
+          }
           await writer.attempt({
             ...attempt,
             status: 'success',
-            text: json.value.text || '',
+            text,
             finishedAt: new Date().toISOString(),
           });
-          if (valid() && json.value.text)
+          if (valid() && text)
             onResult?.({
-              final: json.value.text,
+              final: text,
               interim: '',
               startedAt:
                 Date.parse(writer.session.startedAt) +

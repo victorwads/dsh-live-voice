@@ -94,17 +94,18 @@ export function DebuggerLauncher({ installer }: { installer?: DebuggerInstall })
             {state.phase === 'confirm' && (
               <p id={confirmationId}>{text.confirm({ version: state.version })}</p>
             )}
-            {open && (busy || state.problem || state.phase === 'restart' || state.phase === 'applied') && (
-              <p role={state.problem ? 'alert' : 'status'}>
-                {state.problem
-                  ? text[state.problem]()
-                  : busy
-                    ? text.installing()
-                    : state.phase === 'restart'
-                      ? text.restart({ version: state.version })
-                      : text.applied({ version: state.version })}
-              </p>
-            )}
+            {open &&
+              (busy || state.problem || state.phase === 'restart' || state.phase === 'applied') && (
+                <p role={state.problem ? 'alert' : 'status'}>
+                  {state.problem
+                    ? text[state.problem]()
+                    : busy
+                      ? text.installing()
+                      : state.phase === 'restart'
+                        ? text.restart({ version: state.version })
+                        : text.applied({ version: state.version })}
+                </p>
+              )}
           </>
         )}
         <div className="dlv-settings-actions">

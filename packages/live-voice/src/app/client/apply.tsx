@@ -43,6 +43,8 @@ import { registerConversationSlots, registerSettingsSlot } from './registerSlots
 import { styles } from '../../styles/index.js';
 import { createPluginUpdate } from '../../modules/settings/services/pluginUpdate.js';
 import { createDebuggerInstall } from '../../modules/settings/services/debuggerInstall.js';
+import { LocalModelManager } from '../../modules/recognition/local/LocalModelManager.js';
+import { BrowserLocalRecognitionEngine } from '../../modules/recognition/local/BrowserLocalRecognitionEngine.js';
 import { createSettingsClient } from '../../modules/settings/models/settingsStorage.js';
 import {
   publishDiagnosticSource,
@@ -68,6 +70,8 @@ export function apply(ctx) {
   const settingsControllers = new Set();
   let disposed = false;
   const recordings = createRecordingRepository();
+  const localModels = new LocalModelManager();
+  void localModels.refresh();
   const leaveGuard = createTranscriptionLeaveGuard(window);
   // Voice conversation mode belongs to the plugin, not to a mounted composer.
   // A route change may replace every conversation slot, but the next committed
@@ -254,6 +258,9 @@ export function apply(ctx) {
   const ownership = new VoiceOwnership();
   const recognitionSettingKeys = new Set([
     'recognitionEngine',
+    'browserWhisperModel',
+    'browserQwenModel',
+    'browserAsrDevice',
     'recognitionLang',
     'inputDeviceId',
     'recognitionProcessLocally',
@@ -289,26 +296,28 @@ export function apply(ctx) {
     recordingErrorMessage: () => t('dsh-live-voice.recording.error.failed'),
   });
   const recognitionFor = (settings, meter, inputSource = 'microphone') =>
-    settings.recognitionEngine === 'qwen-http'
-      ? new QwenHttpRecognitionEngine({
+    ['whisper-browser', 'qwen-browser'].includes(settings.recognitionEngine)
+      ? new BrowserLocalRecognitionEngine({
           ...recordingOptions(settings, inputSource),
           meter,
-          vadErrorMessage: (error) =>
-            t(
-              'dsh-live-voice.recognition.silero.error.' +
-                (error?.code === 'unavailable'
-                  ? 'unavailable'
-                  : error?.code === 'overloaded'
-                    ? 'overloaded'
-                    : 'failed'),
-            ),
+          manager: localModels,
+          modelKey:
+            settings.recognitionEngine === 'qwen-browser'
+              ? settings.browserQwenModel
+              : settings.browserWhisperModel,
+          device:
+            settings.recognitionEngine === 'qwen-browser' ? 'webgpu' : settings.browserAsrDevice,
           voiceDetectionEngine: settings.voiceDetectionEngine,
           voiceDetectionPreset: settings.voiceDetectionPreset,
           voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
+          voiceDetectionCustomParagraphMs: settings.voiceDetectionCustomParagraphMs,
           maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds,
+          message: (code) =>
+            t('dsh-live-voice.recognition.local.error.' + code.replaceAll('-', '_')),
+          vadErrorMessage: () => t('dsh-live-voice.recognition.silero.error.failed'),
         })
-      : settings.recognitionEngine === 'whisper-http'
-        ? new WhisperHttpRecognitionEngine({
+      : settings.recognitionEngine === 'qwen-http'
+        ? new QwenHttpRecognitionEngine({
             ...recordingOptions(settings, inputSource),
             meter,
             vadErrorMessage: (error) =>
@@ -325,11 +334,29 @@ export function apply(ctx) {
             voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
             maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds,
           })
-        : new BrowserRecognitionEngine({
-            ...(inputSource === 'shared' ? { meter, inputSource } : {}),
-            processLocally: settings.recognitionProcessLocally,
-            autoInstallLocalPack: settings.recognitionAutoInstall,
-          });
+        : settings.recognitionEngine === 'whisper-http'
+          ? new WhisperHttpRecognitionEngine({
+              ...recordingOptions(settings, inputSource),
+              meter,
+              vadErrorMessage: (error) =>
+                t(
+                  'dsh-live-voice.recognition.silero.error.' +
+                    (error?.code === 'unavailable'
+                      ? 'unavailable'
+                      : error?.code === 'overloaded'
+                        ? 'overloaded'
+                        : 'failed'),
+                ),
+              voiceDetectionEngine: settings.voiceDetectionEngine,
+              voiceDetectionPreset: settings.voiceDetectionPreset,
+              voiceDetectionCustomSilenceMs: settings.voiceDetectionCustomSilenceMs,
+              maxUtteranceSeconds: settings.recognitionMaxUtteranceSeconds,
+            })
+          : new BrowserRecognitionEngine({
+              ...(inputSource === 'shared' ? { meter, inputSource } : {}),
+              processLocally: settings.recognitionProcessLocally,
+              autoInstallLocalPack: settings.recognitionAutoInstall,
+            });
   const run = (controller, promise) =>
     Promise.resolve(promise).catch((error) => {
       if (!disposed && !controller.disposed)
@@ -984,6 +1011,7 @@ export function apply(ctx) {
         );
       const update = c.updateSettings.bind(c);
       c.applySavedSettings = update;
+      c.localModels = localModels;
       settingsControllers.add(c);
       const unsubscribeLeaveGuard = leaveGuard.watch(() => [c.getSnapshot()], c.subscribe);
       const unsubscribeDiagnostics = c.subscribe(notifyDiagnostics);
@@ -1212,6 +1240,7 @@ export function apply(ctx) {
     return () => {
       disposed = true;
       leaveGuard.dispose();
+      localModels.dispose();
       if (window[RECORDING_KEY] === recordings) {
         delete window[RECORDING_KEY];
         window.dispatchEvent(new window.Event(RECORDING_CHANGED));

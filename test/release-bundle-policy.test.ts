@@ -18,6 +18,13 @@ test('npm package-content checks run only for publication, not regular CI or pus
   assert.ok(hook.includes('npm run typecheck'));
 });
 
+test('frozen CI installs explicitly decline the unused native ONNX postinstall', () => {
+  const policy = readFileSync('pnpm-workspace.yaml', 'utf8');
+  assert.match(policy, /^  onnxruntime-node: false$/m);
+  assert.match(policy, /^  protobufjs: false$/m);
+  assert.match(policy, /^  esbuild@0[.]28[.]2: true$/m);
+});
+
 test('generated library directories are ignored and have no tracked files', () => {
   const tracked = spawnSync('git', ['ls-files', '--', 'packages/*/lib/**', 'packages/*/libs/**'], {
     encoding: 'utf8',
@@ -36,6 +43,46 @@ test('generated library directories are ignored and have no tracked files', () =
   );
   assert.equal(ignored.status, 0, ignored.stderr);
   assert.equal(ignored.stdout.trim().split('\n').length, 3);
+});
+
+test('ASR publication validates worker and matching runtime assets', () => {
+  const metadata = JSON.parse(readFileSync('packages/live-voice/package.json', 'utf8'));
+  const base = ['package.json', 'cordis.patch.yml', 'lib/server.js', 'lib/client.js'].map(
+    (path) => ({ path, size: 1 }),
+  );
+  const asr = {
+    version: metadata.version,
+    assets: [
+      'asr.worker.js',
+      'ort-wasm-simd-threaded.jsep.wasm',
+      'ort-wasm-simd-threaded.asyncify.wasm',
+    ],
+  };
+  const files = [
+    ...base,
+    { path: 'lib/asr/manifest.json', size: 1 },
+    ...asr.assets.map((name) => ({ path: 'lib/asr/' + name, size: 1 })),
+  ];
+  assert.doesNotThrow(() => assertPackageContents(metadata, files, undefined, asr));
+  for (const file of files.filter((f) => f.path.startsWith('lib/asr/')))
+    assert.throws(
+      () =>
+        assertPackageContents(
+          metadata,
+          files.filter((f) => f !== file),
+          undefined,
+          asr,
+        ),
+      /missing or empty/,
+    );
+  assert.throws(
+    () => assertPackageContents(metadata, files, undefined, { ...asr, version: '0.0.0' }),
+    /ASR asset version mismatch/,
+  );
+  assert.throws(
+    () => assertPackageContents(metadata, files, undefined, { ...asr, assets: ['asr.worker.js'] }),
+    /manifest incomplete/,
+  );
 });
 
 test('both npm packages build before packing and include compiled runtime entries', () => {

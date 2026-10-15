@@ -41,7 +41,9 @@ test('checks GitHub at most once in 3 hours and refreshes after expiry', async (
   };
   const first = await checkLatestRelease({ fetchImpl, storage, now: 1_000 });
   const cached = await checkLatestRelease({
-    fetchImpl, storage, now: 1_000 + RELEASE_CHECK_INTERVAL_MS - 1,
+    fetchImpl,
+    storage,
+    now: 1_000 + RELEASE_CHECK_INTERVAL_MS - 1,
   });
   const refreshed = await checkLatestRelease({
     fetchImpl,
@@ -71,7 +73,9 @@ test('caches a failed attempt for 3 hours and does not expose unsafe release URL
   await checkLatestRelease({ fetchImpl: failingFetch, storage: failedStorage, now: 6_000 });
   assert.equal(failures, 1);
   await checkLatestRelease({
-    fetchImpl: failingFetch, storage: failedStorage, now: 5_000 + RELEASE_CHECK_INTERVAL_MS,
+    fetchImpl: failingFetch,
+    storage: failedStorage,
+    now: 5_000 + RELEASE_CHECK_INTERVAL_MS,
   });
   assert.equal(failures, 2);
 

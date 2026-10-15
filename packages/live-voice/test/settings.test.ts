@@ -47,6 +47,48 @@ test('malformed persisted preferences cannot select remote engines or invalid op
   ])
     assert.deepEqual(normalizeSettings(input), defaultSettings);
 });
+test('browser-local model and explicit runtime choices are allowlisted and survive preferences roundtrip', () => {
+  for (const recognitionEngine of ['whisper-browser', 'qwen-browser']) {
+    const settings = normalizeSettings({
+      recognitionEngine,
+      browserWhisperModel: 'whisper-small',
+      browserAsrDevice: 'wasm',
+    });
+    assert.equal(settings.recognitionEngine, recognitionEngine);
+    assert.equal(settings.browserWhisperModel, 'whisper-small');
+    assert.equal(settings.browserAsrDevice, 'wasm');
+    assert.equal(
+      normalizeSettings(JSON.parse(JSON.stringify(settings))).recognitionEngine,
+      recognitionEngine,
+    );
+  }
+  const invalid = normalizeSettings({
+    browserWhisperModel: '../../custom',
+    browserQwenModel: 'fake/qwen',
+    browserAsrDevice: 'http',
+  });
+  assert.equal(invalid.browserWhisperModel, 'whisper-tiny');
+  assert.equal(invalid.browserQwenModel, 'qwen-0.6b');
+  assert.equal(invalid.browserAsrDevice, 'webgpu');
+});
+
+test('multilingual medium and Large v3 Turbo are allowlisted browser models', () => {
+  assert.equal(
+    normalizeSettings({
+      recognitionEngine: 'whisper-browser',
+      browserWhisperModel: 'whisper-medium',
+    }).browserWhisperModel,
+    'whisper-medium',
+  );
+  assert.equal(
+    normalizeSettings({
+      recognitionEngine: 'whisper-browser',
+      browserWhisperModel: 'whisper-large-v3-turbo',
+    }).browserWhisperModel,
+    'whisper-large-v3-turbo',
+  );
+});
+
 test('Whisper HTTP recognition and simple voice detection presets survive normalization', () => {
   const settings = normalizeSettings({
     recognitionEngine: 'whisper-http',
@@ -170,6 +212,9 @@ test('valid local options survive normalization', () => {
   const options = {
     engine: 'say',
     recognitionEngine: 'browser',
+    browserWhisperModel: 'whisper-tiny',
+    browserQwenModel: 'qwen-0.6b',
+    browserAsrDevice: 'webgpu',
     recognitionProcessLocally: false,
     recognitionAutoInstall: false,
     voiceDetectionEngine: 'energy',

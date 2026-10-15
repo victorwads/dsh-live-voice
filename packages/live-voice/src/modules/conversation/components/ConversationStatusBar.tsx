@@ -39,7 +39,8 @@ export function ConversationStatusBar({
     const timer = setInterval(() => setNow(Date.now()), 200);
     return () => clearInterval(timer);
   }, [state.autoSendAt]);
-  const capture = state.starting || state.listening || state.recognizing || state.pendingTranscriptions > 0;
+  const capture =
+    state.starting || state.listening || state.recognizing || state.pendingTranscriptions > 0;
   if (questionOnly && !state.answeringQuestion) return null;
   if (
     !state.conversation &&
@@ -114,9 +115,15 @@ export function ConversationStatusBar({
           <ToggleButton
             icon="filter"
             label={(recognition as any).commands.enabled()}
-            visibleLabel={state.settings.voiceCommandsEnabled ? (commons as any).on() : (commons as any).off()}
+            visibleLabel={
+              state.settings.voiceCommandsEnabled ? (commons as any).on() : (commons as any).off()
+            }
             pressed={Boolean(state.settings.voiceCommandsEnabled)}
-            onClick={() => invoke('updateSettings', { voiceCommandsEnabled: !state.settings.voiceCommandsEnabled })}
+            onClick={() =>
+              invoke('updateSettings', {
+                voiceCommandsEnabled: !state.settings.voiceCommandsEnabled,
+              })
+            }
           />
           <ToggleButton
             className="dlv-timestamp-toggle"

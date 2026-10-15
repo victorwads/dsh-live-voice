@@ -4,13 +4,18 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 [Product overview](README.md) · [Visão geral em português](README.pt.md) · [简体中文概览](README.zh-CN.md)
 
-## [0.6.0] - Next
+## [0.6.x] - Next
+
+TODO...
+
+## [0.6.0] - 2026-10-15
 
 ### Features
 
 #### Live Voice
 
-- Introduce a new voice pipeline with recording-based chunking, VAD speech/silence markers, and independent segmentation for microphone and shared audio.
+- ⭐⭐ **Release highlights:** Transcribe directly in the browser with downloadable multilingual Whisper models—including Small q4 (302 MB), Medium q4 (684 MB), and Large v3 Turbo q4 (762 MB), without requiring f16—or Qwen3-ASR via WebGPU, preserving the original spoken language instead of translating to English, with explicit model installation, progress, cancellation, storage management, and a selectable Whisper CPU fallback.
+- ⭐ Introduce a new voice pipeline with recording-based chunking, VAD speech/silence markers, and independent segmentation for microphone and shared audio.
 - Save recoverable audio sessions locally by default, retaining the latest microphone and meeting recording separately, with configurable retention, quality, detection sensitivity, and transcription margins.
 - Configure separate silence pauses for transcription chunks and new paragraphs, using presets or custom timings.
 - Customize keyboard shortcuts for Hold-to-Talk, microphone, meeting sharing, and automatic assistant speech in Conversation settings. Click to record or replace a shortcut, use modifiers alone or combined with another key, clear bindings, and detect duplicate assignments.

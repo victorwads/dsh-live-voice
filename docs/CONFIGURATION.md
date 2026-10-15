@@ -20,6 +20,10 @@ While microphone or meeting transcription is acquiring, listening, or awaiting t
 
 ---
 
+## Browser-local models
+
+**Whisper · Browser** and **Qwen · Browser** replace HTTP connection controls with model management. Confirm a download, monitor byte progress, cancel or retry, and load or remove the cached model. Preferences are host-shared, but models and runtime capabilities belong to the browser device/profile. Whisper supports explicitly selected WebGPU or WASM; Qwen requires WebGPU. No HTTP fallback or hidden model download occurs. See [Browser ASR](BROWSER-ASR.md) for model sizes, privacy, storage and compatibility. The new versioned runtime-asset routes require the updated backend to be loaded; generic preferences alone cannot provide those assets.
+
 ## Append-only dictation
 
 Live Voice appends final recognized chunks to the end of the current message draft. Manual edits and existing composer text are preserved; caret position does not move dictation into an earlier part of the draft. Provisional recognition results no longer appear inside the composer or replace earlier text. A final chunk becomes visible when recognition completes. Cancelling or muting recognition leaves committed text intact. Only an explicit Clear command or normal message submission may intentionally clear the composer.

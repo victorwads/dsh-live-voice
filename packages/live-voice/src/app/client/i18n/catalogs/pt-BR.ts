@@ -158,6 +158,71 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.language.options.chinese': 'Chinês (mandarim)',
   'dsh-live-voice.recognition.language.options.french': 'Francês',
   'dsh-live-voice.recognition.language.options.spanish': 'Espanhol',
+  'dsh-live-voice.recognition.local.cancel': 'Cancelar',
+  'dsh-live-voice.recognition.local.confirm': 'Confirmar',
+  'dsh-live-voice.recognition.local.confirmDownload':
+    'Baixar {model}? Aproximadamente {size} serão armazenados neste navegador.',
+  'dsh-live-voice.recognition.local.confirmRemove':
+    'Remover {model} deste navegador? As gravações serão preservadas.',
+  'dsh-live-voice.recognition.local.confirmTitle':
+    'Confirmar alteração no armazenamento de modelos',
+  'dsh-live-voice.recognition.local.device': 'Ambiente de execução',
+  'dsh-live-voice.recognition.local.deviceHelp':
+    'WebGPU exige um adaptador de GPU funcional. O Whisper oferece uma opção explícita de CPU com WebAssembly, mais lenta; o Qwen exige WebGPU. Não há troca automática de ambiente de execução nem alternativa automática por HTTP.',
+  'dsh-live-voice.recognition.local.download': 'Baixar modelo',
+  'dsh-live-voice.recognition.local.error.cancelled':
+    'Operação cancelada. Baixe ou carregue o modelo quando quiser continuar.',
+  'dsh-live-voice.recognition.local.error.download_failed':
+    'Não foi possível baixar o modelo. Verifique sua conexão com o Hugging Face e tente novamente.',
+  'dsh-live-voice.recognition.local.error.f16_unavailable':
+    'Este modelo exige WebGPU com suporte a shader-f16. Escolha outro modelo Whisper ou um navegador/dispositivo compatível.',
+  'dsh-live-voice.recognition.local.error.failed':
+    'A operação do modelo falhou. Verifique o armazenamento do navegador e carregue o modelo novamente.',
+  'dsh-live-voice.recognition.local.error.gpu_unavailable':
+    'WebGPU indisponível. Use um navegador com adaptador de GPU funcional ou selecione explicitamente o Whisper com CPU WebAssembly.',
+  'dsh-live-voice.recognition.local.error.inference_failed':
+    'A transcrição falhou. Carregue o modelo novamente e tente com um trecho de áudio mais curto.',
+  'dsh-live-voice.recognition.local.error.invalid_audio':
+    'Não é possível transcrever este áudio. Grave um novo trecho e tente novamente.',
+  'dsh-live-voice.recognition.local.error.invalid_model':
+    'Este modelo não é compatível. Selecione um modelo da lista.',
+  'dsh-live-voice.recognition.local.error.model_busy':
+    'O modelo está ocupado. Aguarde a operação atual terminar e tente novamente.',
+  'dsh-live-voice.recognition.local.error.model_missing':
+    'Arquivos do modelo estão ausentes ou foram removidos do cache. Baixe o modelo novamente.',
+  'dsh-live-voice.recognition.local.error.runtime_outdated':
+    'O navegador carregou um runtime de voz mais antigo que estas configurações. Recarregue esta página para carregar o worker atualizado. Se persistir, recarregue o backend atualizado do Voz ao Vivo no DSH; não é necessário baixar o modelo novamente.',
+  'dsh-live-voice.recognition.local.error.runtime_unavailable':
+    'O ambiente de execução do modelo está indisponível. Atualize a página, verifique a compatibilidade do navegador e carregue o modelo novamente.',
+  'dsh-live-voice.recognition.local.error.storage_full':
+    'O armazenamento do navegador está cheio. Libere espaço ou remova modelos sem uso e tente novamente.',
+  'dsh-live-voice.recognition.local.error.storage_unavailable':
+    'O armazenamento do navegador está indisponível. Permita o armazenamento do site em um perfil normal do navegador e tente novamente.',
+  'dsh-live-voice.recognition.local.help': 'Sobre os modelos do navegador',
+  'dsh-live-voice.recognition.local.load': 'Carregar modelo',
+  'dsh-live-voice.recognition.local.model': 'Modelo',
+  'dsh-live-voice.recognition.local.modelCard': 'Detalhes do modelo',
+  'dsh-live-voice.recognition.local.phase.absent':
+    'Baixe seu primeiro modelo para começar a transcrição local.',
+  'dsh-live-voice.recognition.local.phase.checking': 'Verificando arquivos do modelo…',
+  'dsh-live-voice.recognition.local.phase.downloaded':
+    'Modelo baixado. Carregue-o para começar a transcrever.',
+  'dsh-live-voice.recognition.local.phase.downloading': 'Baixando modelo…',
+  'dsh-live-voice.recognition.local.phase.error':
+    'O modelo precisa de atenção. Siga as orientações do erro e tente novamente.',
+  'dsh-live-voice.recognition.local.phase.loading': 'Carregando modelo…',
+  'dsh-live-voice.recognition.local.phase.ready': 'Modelo pronto para transcrição local.',
+  'dsh-live-voice.recognition.local.privacy':
+    'Os downloads de modelos se conectam ao Hugging Face. A fala é processada neste navegador, sem envio a um serviço de transcrição HTTP. O aplicativo ainda exige o DSH.',
+  'dsh-live-voice.recognition.local.progress': 'Progresso do download do modelo',
+  'dsh-live-voice.recognition.local.qwenLabel': 'Qwen · Navegador',
+  'dsh-live-voice.recognition.local.reload': 'Carregar novamente',
+  'dsh-live-voice.recognition.local.remove': 'Remover modelo',
+  'dsh-live-voice.recognition.local.space': 'Armazenamento disponível no navegador: {size}',
+  'dsh-live-voice.recognition.local.storageHelp':
+    'Os modelos são armazenados neste perfil do navegador; os caches podem ser removidos. As estimativas de disco não incluem os arquivos do ambiente de execução nem o uso adicional de GPU/RAM. Remover afeta os arquivos do modelo, não as sessões gravadas.',
+  'dsh-live-voice.recognition.local.title': 'Modelos do navegador',
+  'dsh-live-voice.recognition.local.whisperLabel': 'Whisper · Navegador',
   'dsh-live-voice.recognition.manualSend.help':
     'O texto reconhecido permanece no editor até que você use o botão normal de envio do DSH.',
   'dsh-live-voice.recognition.maxUtterance.help':
