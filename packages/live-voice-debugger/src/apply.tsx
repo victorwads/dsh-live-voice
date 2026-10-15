@@ -2,7 +2,12 @@ import React from 'react';
 import { Hint, Icon } from '../../live-voice/src/shared/design-system/index.js';
 import { createRoot, type Root } from 'react-dom/client';
 import { DebuggerPanel } from './DebuggerPanel.js';
-import { dictionaries, namespace, type DebuggerCopy } from './locales.js';
+import {
+  namespace,
+  registerDshLocales,
+  useDebuggerLanguage,
+  withDebuggerLanguage,
+} from './i18n/index.js';
 import { styles } from './styles.js';
 import { syncDebuggerTheme } from './theme.js';
 import { publishDeveloperExtension } from '../../live-voice/src/modules/core/developerExtension.js';
@@ -23,14 +28,7 @@ export function apply(ctx: any) {
   const notify = () => {
     for (const listener of listeners) listener();
   };
-  for (const [locale, dictionary] of Object.entries(dictionaries)) {
-    ctx.effect(() => ctx.locale.register(namespace, locale, dictionary), namespace + ': ' + locale);
-  }
-  const t = ctx.locale.bind(namespace);
-  const copy = (): DebuggerCopy =>
-    Object.fromEntries(Object.keys(dictionaries.en).map((key) => [key, t(key)])) as DebuggerCopy;
-  const localeSubscribe = (listener: () => void) => ctx.locale.subscribe(listener);
-  const localeSnapshot = () => ctx.locale.getSnapshot();
+  const t = registerDshLocales(ctx);
   const close = () => {
     if (closedTimer !== null) clearInterval(closedTimer);
     closedTimer = null;
@@ -44,11 +42,10 @@ export function apply(ctx: any) {
     notify();
   };
   function Host() {
-    React.useSyncExternalStore(localeSubscribe, localeSnapshot);
-    const labels = copy();
+    const { scoped: labels } = useDebuggerLanguage();
     React.useEffect(() => {
-      if (popup && !popup.closed) popup.document.title = labels.title;
-    }, [labels.title]);
+      if (popup && !popup.closed) popup.document.title = labels.commons.title;
+    }, [labels.commons.title]);
     return <DebuggerPanel copy={labels} target={window} onClose={() => queueMicrotask(close)} />;
   }
   // Open synchronously inside the user's click so browsers preserve popup permission.
@@ -73,7 +70,7 @@ export function apply(ctx: any) {
       }
       popup = candidate;
       const doc = candidate.document;
-      doc.title = copy().title;
+      doc.title = t('commons.title');
       doc.body.replaceChildren();
       doc.body.className = 'dlvd-window';
       syncDebuggerTheme(window, doc);
@@ -84,7 +81,7 @@ export function apply(ctx: any) {
       container.dataset.plugin = namespace;
       doc.body.appendChild(container);
       root = createRoot(container);
-      root.render(<Host />);
+      root.render(<LocalizedHost />);
       enabled = true;
       closedTimer = setInterval(() => {
         if (popup?.closed) close();
@@ -100,25 +97,26 @@ export function apply(ctx: any) {
   };
   function Settings() {
     const failed = React.useSyncExternalStore(subscribe, () => blocked);
-    React.useSyncExternalStore(localeSubscribe, localeSnapshot);
-    const labels = copy();
+    const { scoped: labels } = useDebuggerLanguage();
     return (
       <div className="dlv-diagnostics-launcher">
         <button type="button" className="dlv-diagnostics-button" onClick={open}>
           <Icon name="bug" />
-          {labels.diagnostics}
+          {labels.commons.diagnostics}
         </button>
-        <Hint label={labels.diagnostics}>{labels.activate}</Hint>
-        {failed && <p role="alert">{labels.popupBlocked}</p>}
+        <Hint label={labels.commons.diagnostics}>{labels.commons.activate}</Hint>
+        {failed && <p role="alert">{labels.commons.popupBlocked}</p>}
       </div>
     );
   }
+  const LocalizedHost = withDebuggerLanguage(Host, ctx.locale);
+  const LocalizedSettings = withDebuggerLanguage(Settings, ctx.locale);
   ctx.effect(
     () =>
       publishDeveloperExtension(window, {
         version: 1,
-        label: () => t('developer'),
-        component: Settings,
+        label: () => t('commons.developer'),
+        component: LocalizedSettings,
       }),
     namespace + ': Developer tab',
   );

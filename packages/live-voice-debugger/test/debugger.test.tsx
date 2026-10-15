@@ -14,7 +14,7 @@ import {
 } from '../../live-voice/src/modules/core/diagnostics.ts';
 import { createInspector } from '../src/inspector.ts';
 import { DebuggerPanel } from '../src/DebuggerPanel.tsx';
-import { copyFor, dictionaries } from '../src/locales.ts';
+import { copyFor, dictionaries } from '../src/i18n/index.ts';
 import { apply } from '../src/apply.tsx';
 import { readDeveloperExtension } from '../../live-voice/src/modules/core/developerExtension.ts';
 
@@ -26,9 +26,11 @@ test('localizes plugin references in debugger copy', () => {
     hi: 'लाइव वॉइस',
     zh: '实时语音',
   })) {
-    assert.ok(dictionaries[locale].title.includes(name), locale);
-    assert.ok(dictionaries[locale].waiting.includes(name), locale);
-    for (const value of Object.values(dictionaries[locale]))
+    assert.ok(dictionaries[locale].commons.title.includes(name), locale);
+    assert.ok(dictionaries[locale].commons.waiting.includes(name), locale);
+    for (const value of Object.values(dictionaries[locale]).flatMap((group) =>
+      Object.values(group),
+    ))
       assert.ok(!value.includes('Live Voice'), locale);
   }
 });
@@ -178,11 +180,17 @@ test('diagnostic bridge tolerates replacement and old disposer cannot remove new
 });
 
 test('debugger catalogs have complete sorted keys and match DSH locales', () => {
-  const keys = Object.keys(dictionaries.en);
-  assert.deepEqual(keys, [...keys].sort());
-  for (const locale of ['en', 'pt-BR', 'es', 'fr', 'hi', 'zh'])
-    assert.deepEqual(Object.keys(dictionaries[locale]), keys);
-  assert.equal(copyFor('pt-BR').activate, 'Abrir debugger em janela separada');
+  const groups = Object.keys(dictionaries.en);
+  assert.deepEqual(groups, [...groups].sort());
+  for (const locale of ['en', 'pt-BR', 'es', 'fr', 'hi', 'zh']) {
+    assert.deepEqual(Object.keys(dictionaries[locale]), groups);
+    for (const group of groups) {
+      const keys = Object.keys(dictionaries.en[group]);
+      assert.deepEqual(keys, [...keys].sort());
+      assert.deepEqual(Object.keys(dictionaries[locale][group]), keys);
+    }
+  }
+  assert.equal(copyFor('pt-BR').commons.activate, 'Abrir debugger em janela separada');
 });
 
 function runtimeFixture() {
@@ -277,7 +285,9 @@ test('runtime tab is conditional, translated, keyboard accessible and honest abo
     runtimes = { models: [], events: [] };
     await act(async () => root.render(<DebuggerPanel copy={copy} onClose={() => {}} />));
     assert.equal(
-      [...document.querySelectorAll('[role=tab]')].some((e) => e.textContent === copy.runtimeTitle),
+      [...document.querySelectorAll('[role=tab]')].some(
+        (e) => e.textContent === copy.runtimes.title,
+      ),
       false,
     );
     runtimes = {
@@ -317,7 +327,7 @@ test('runtime tab is conditional, translated, keyboard accessible and honest abo
     });
     const tabs = [...document.querySelectorAll('[role=tab]')];
     assert.equal(tabs.length, 3);
-    const rt = tabs.find((e) => e.textContent === copy.runtimeTitle);
+    const rt = tabs.find((e) => e.textContent === copy.runtimes.title);
     assert.ok(rt);
     await act(async () =>
       tabs[0].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'End', bubbles: true })),
@@ -327,8 +337,8 @@ test('runtime tab is conditional, translated, keyboard accessible and honest abo
     assert.equal(panel.hidden, false);
     assert.ok(panel.textContent.includes('Whisper small (q4)'));
     assert.ok(panel.textContent.includes('0.281 GiB'));
-    assert.ok(panel.textContent.includes(copy.runtimeUnavailable));
-    assert.ok(panel.textContent.includes(copy.runtimeRam));
+    assert.ok(panel.textContent.includes(copy.runtimes.unavailable));
+    assert.ok(panel.textContent.includes(copy.runtimes.ram));
     assert.ok(!panel.textContent.includes('undefined'));
     runtimes = { models: [], events: [] };
     await act(async () => {
@@ -336,7 +346,9 @@ test('runtime tab is conditional, translated, keyboard accessible and honest abo
       await new Promise((r) => setTimeout(r, 110));
     });
     assert.equal(
-      [...document.querySelectorAll('[role=tab]')].some((e) => e.textContent === copy.runtimeTitle),
+      [...document.querySelectorAll('[role=tab]')].some(
+        (e) => e.textContent === copy.runtimes.title,
+      ),
       false,
     );
   }
@@ -517,8 +529,9 @@ test('optional plugin opens a separate window and keeps it after Settings unmoun
   const localeState = { active: 'en' };
   const ctx = {
     locale: {
+      addLanguage: () => () => {},
       register: () => () => {},
-      bind: () => (key) => copyFor()[key],
+      bind: () => (key) => key.split('.').reduce((value, part) => value[part], copyFor()),
       subscribe: () => () => {},
       getSnapshot: () => localeState,
     },

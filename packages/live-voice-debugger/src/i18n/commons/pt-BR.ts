@@ -1,0 +1,27 @@
+import type { CommonsTranslation } from './base.js';
+const translation = {
+  activate: 'Abrir debugger em janela separada',
+  all: 'Todos os módulos',
+  close: 'Fechar debugger',
+  content: 'Inspecionar conteúdo de texto (sensível)',
+  developer: 'Desenvolvedor',
+  diagnostics: 'Diagnóstico',
+  empty: 'Nenhuma transição registrada ainda.',
+  error: 'A fonte de diagnóstico falhou.',
+  eventsClear: 'Limpar eventos',
+  eventsPause: 'Pausar eventos',
+  eventsResume: 'Retomar eventos',
+  filter: 'Filtrar módulos',
+  freeze: 'Congelar visualização',
+  help: 'Árvore de estados somente leitura atualizada a 10 Hz. Texto oculto por padrão. Este painel não controla a voz.',
+  omitted: 'Itens adicionais omitidos',
+  popupBlocked:
+    'O navegador bloqueou a janela do debugger. Permita pop-ups neste site e tente novamente.',
+  refreshRate: 'Frequência de atualização',
+  resume: 'Retomar atualizações',
+  states: 'Estados atuais',
+  title: 'Depurador da Voz ao Vivo',
+  transitions: 'Transições de estado recentes',
+  waiting: 'Aguardando um runtime da Voz ao Vivo compatível.',
+} satisfies CommonsTranslation;
+export default Object.freeze(translation);

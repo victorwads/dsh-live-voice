@@ -69,7 +69,14 @@ importers:
         specifier: 1.22.0
         version: 1.22.0
 
-  packages/live-voice-debugger: {}
+  packages/live-voice-debugger:
+    dependencies:
+      '@wads.dev/i18n-react':
+        specifier: ^0.0.1-alpha.0
+        version: 0.0.1-alpha.0(react@19.3.0)(typescript@7.0.2)
+      '@wads.dev/i18n-ts':
+        specifier: 0.0.1-alpha.0
+        version: 0.0.1-alpha.0(typescript@7.0.2)
 
 packages:
 

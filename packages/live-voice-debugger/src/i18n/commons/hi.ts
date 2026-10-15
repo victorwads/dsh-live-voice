@@ -1,0 +1,27 @@
+import type { CommonsTranslation } from './base.js';
+const translation = {
+  activate: 'डीबगर अलग विंडो में खोलें',
+  all: 'सभी मॉड्यूल',
+  close: 'डीबगर बंद करें',
+  content: 'टेक्स्ट सामग्री देखें (संवेदनशील)',
+  developer: 'डेवलपर',
+  diagnostics: 'निदान',
+  empty: 'अभी कोई ट्रांज़िशन दर्ज नहीं है।',
+  error: 'डायग्नोस्टिक स्रोत विफल हुआ।',
+  eventsClear: 'इवेंट साफ़ करें',
+  eventsPause: 'इवेंट रोकें',
+  eventsResume: 'इवेंट फिर शुरू करें',
+  filter: 'मॉड्यूल फ़िल्टर करें',
+  freeze: 'दृश्य रोकें',
+  help: 'केवल पढ़ने वाला स्टेट ट्री 10 Hz पर अपडेट होता है। टेक्स्ट डिफ़ॉल्ट रूप से छिपा है। यह पैनल वॉइस को नियंत्रित नहीं करता।',
+  omitted: 'अतिरिक्त आइटम छिपाए गए',
+  popupBlocked:
+    'ब्राउज़र ने डीबगर विंडो ब्लॉक कर दी। इस साइट के लिए पॉप-अप की अनुमति दें और फिर कोशिश करें।',
+  refreshRate: 'अपडेट आवृत्ति',
+  resume: 'अपडेट फिर शुरू करें',
+  states: 'वर्तमान स्थितियाँ',
+  title: 'लाइव वॉइस डीबगर',
+  transitions: 'हाल के स्टेट ट्रांज़िशन',
+  waiting: 'संगत लाइव वॉइस रनटाइम की प्रतीक्षा है।',
+} satisfies CommonsTranslation;
+export default Object.freeze(translation);

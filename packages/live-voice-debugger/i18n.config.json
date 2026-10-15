@@ -1,0 +1,24 @@
+{
+  "format": "wads-i18n-project-config",
+  "version": 1,
+  "levelCount": 1,
+  "levelNames": "module",
+  "levelImports": [
+    {
+      "path": "src/i18n",
+      "valueReplacer": {},
+      "fullReplacer": {}
+    },
+    {
+      "path": "{value}",
+      "valueReplacer": {},
+      "fullReplacer": {}
+    }
+  ],
+  "importAliases": {
+    "@/": "src/"
+  },
+  "translationsDirectory": ".",
+  "languageFileTemplate": "{language}.ts",
+  "languageReplacer": {}
+}

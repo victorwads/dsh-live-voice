@@ -1,0 +1,24 @@
+export type CommonsTranslation = {
+  activate: string;
+  all: string;
+  close: string;
+  content: string;
+  developer: string;
+  diagnostics: string;
+  empty: string;
+  error: string;
+  eventsClear: string;
+  eventsPause: string;
+  eventsResume: string;
+  filter: string;
+  freeze: string;
+  help: string;
+  omitted: string;
+  popupBlocked: string;
+  refreshRate: string;
+  resume: string;
+  states: string;
+  title: string;
+  transitions: string;
+  waiting: string;
+};

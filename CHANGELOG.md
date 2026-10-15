@@ -6,7 +6,9 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ## [0.6.x] - Next
 
-TODO...
+### Developer notes
+
+- Debugger translations now use typed per-module, per-locale catalogs and the Wads React translation runtime. Use the debugger’s `i18n.config.json` and `src/i18n` contracts when adding copy; the former monolithic catalog has been removed.
 
 ## [0.6.0] - 2026-10-15
 

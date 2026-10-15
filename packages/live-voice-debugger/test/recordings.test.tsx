@@ -11,7 +11,7 @@ import {
 } from '../../live-voice/src/modules/recording/types.ts';
 import { createRecordingInspector } from '../src/recordingInspector.ts';
 import { DebuggerPanel } from '../src/DebuggerPanel.tsx';
-import { copyFor, dictionaries } from '../src/locales.ts';
+import { copyFor, dictionaries } from '../src/i18n/index.ts';
 
 const flush = async () => {
   for (let i = 0; i < 8; i++) await Promise.resolve();
@@ -231,7 +231,7 @@ test('integrated primary recordings tab separates sources, plays silence, export
   });
   assert.equal(
     document.querySelector('[role=tab][aria-selected=true]').textContent,
-    copy.recordingTitle,
+    copy.recordings.title,
   );
   const select = document.querySelector('.dlvd-recordings select');
   assert.equal(select.options.length, 4);
@@ -239,27 +239,27 @@ test('integrated primary recordings tab separates sources, plays silence, export
   const button = (label) =>
     [...document.querySelectorAll('.dlvd-recordings button')].find((b) => b.textContent === label);
   await act(async () => {
-    button(copy.recordingPlay).click();
+    button(copy.recordings.play).click();
     await flush();
   });
   assert.deepEqual(audioCalls[0], ['mic', 0, 200]);
   await act(async () => {
-    button(copy.recordingPlaySession).click();
+    button(copy.recordings.playSession).click();
     await flush();
   });
   assert.deepEqual(audioCalls[1], ['mic', undefined, undefined]);
   assert.deepEqual(revoked, [urls[0]]);
   await act(async () => {
-    button(copy.recordingExport).click();
+    button(copy.recordings.export).click();
     await flush();
   });
   assert.deepEqual(exports, ['mic']);
   assert.equal(downloaded, 'recording-mic.json');
-  await act(async () => button(copy.recordingDelete).click());
+  await act(async () => button(copy.recordings.delete).click());
   assert.deepEqual(removed, []);
-  await act(async () => button(copy.recordingCancel).click());
+  await act(async () => button(copy.recordings.cancel).click());
   assert.deepEqual(removed, []);
-  await act(async () => button(copy.recordingDelete).click());
+  await act(async () => button(copy.recordings.delete).click());
   await act(async () => {
     document.querySelector('.dlvd-delete-confirm button').click();
     await flush();
@@ -278,7 +278,7 @@ test('integrated primary recordings tab separates sources, plays silence, export
     target.window.dispatchEvent(new target.window.Event(RECORDING_CHANGED));
   });
   assert.ok(
-    document.querySelector('.dlvd-recordings').textContent.includes(copy.recordingUnavailable),
+    document.querySelector('.dlvd-recordings').textContent.includes(copy.recordings.unavailable),
   );
   assert.equal(current.listeners.size, 0);
 });
@@ -327,15 +327,17 @@ test('recording actions localize errors and reject late playback after selection
     throw new Error('private failure');
   };
   await act(async () => {
-    button(copy.recordingPlay).click();
+    button(copy.recordings.play).click();
     await flush();
   });
-  assert.ok(document.querySelector('[role=alert]').textContent.includes(copy.recordingAudioError));
+  assert.ok(
+    document.querySelector('[role=alert]').textContent.includes(copy.recordings.audioError),
+  );
   assert.ok(!document.body.textContent.includes('private failure'));
   const obsolete = deferred();
   current.audio = () => obsolete.promise;
   await act(async () => {
-    button(copy.recordingPlay).click();
+    button(copy.recordings.play).click();
   });
   await act(async () => document.querySelector('.dlvd-timeline button').click());
   await act(async () => {
@@ -345,14 +347,14 @@ test('recording actions localize errors and reject late playback after selection
   assert.equal(urls.length, 0);
   current.audio = async () => new Blob(['audio']);
   await act(async () => {
-    button(copy.recordingPlaySession).click();
+    button(copy.recordings.playSession).click();
     await flush();
   });
   assert.equal(urls.length, 1);
   const late = deferred();
   current.audio = () => late.promise;
   await act(async () => {
-    button(copy.recordingPlay).click();
+    button(copy.recordings.play).click();
   });
   assert.equal(pauses, 1);
   assert.deepEqual(revoked, urls);
@@ -400,12 +402,12 @@ test('recording protection toggles, persists on reload, and leaves storage and m
   assert.equal(star().textContent, '☆');
   assert.equal(star().getAttribute('aria-label'), 'Keep indefinitely');
   assert.equal(star().getAttribute('aria-pressed'), 'false');
-  assert.equal(star().title, copy.recordingStarHelp);
+  assert.equal(star().title, copy.recordings.starHelp);
   assert.ok(
-    document.querySelector('.dlvd-session-list').textContent.includes(copy.recordingPersistent),
+    document.querySelector('.dlvd-session-list').textContent.includes(copy.recordings.persistent),
   );
   assert.ok(
-    !document.querySelector('.dlvd-session-list').textContent.includes(copy.recordingMemory),
+    !document.querySelector('.dlvd-session-list').textContent.includes(copy.recordings.memory),
   );
 
   const pending = deferred();
@@ -418,7 +420,7 @@ test('recording protection toggles, persists on reload, and leaves storage and m
   };
   await act(async () => star().click());
   assert.equal(star().disabled, true);
-  assert.equal(button(copy.recordingDelete).disabled, true);
+  assert.equal(button(copy.recordings.delete).disabled, true);
   assert.equal(star().getAttribute('aria-pressed'), 'false');
   await act(async () => star().click());
   assert.equal(calls, 1);
@@ -432,13 +434,13 @@ test('recording protection toggles, persists on reload, and leaves storage and m
   assert.equal(star().textContent, '★');
   assert.equal(star().getAttribute('aria-label'), 'Remove protection');
   assert.equal(star().getAttribute('aria-pressed'), 'true');
-  assert.equal(star().title, copy.recordingUnstarHelp);
+  assert.equal(star().title, copy.recordings.unstarHelp);
   assert.equal(
-    document.querySelector('.dlvd-session-list [aria-label="' + copy.recordingStarred + '"]')
+    document.querySelector('.dlvd-session-list [aria-label="' + copy.recordings.starred + '"]')
       .textContent,
     '★',
   );
-  assert.equal(button(copy.recordingDelete).disabled, false);
+  assert.equal(button(copy.recordings.delete).disabled, false);
 
   await act(async () => root.render(null));
   await render();
@@ -450,7 +452,7 @@ test('recording protection toggles, persists on reload, and leaves storage and m
     star().click();
     await flush();
   });
-  assert.equal(document.querySelector('[role=alert]').textContent, copy.recordingStarError);
+  assert.equal(document.querySelector('[role=alert]').textContent, copy.recordings.starError);
   assert.ok(!document.body.textContent.includes('private protection failure'));
   assert.equal(star().getAttribute('aria-pressed'), 'true');
   assert.equal(star().disabled, false);
@@ -463,7 +465,7 @@ test('recording protection toggles, persists on reload, and leaves storage and m
   assert.equal(records[0].persistent, false);
   assert.equal(star().textContent, '☆');
   assert.equal(
-    document.querySelector('.dlvd-session-list [aria-label="' + copy.recordingStarred + '"]'),
+    document.querySelector('.dlvd-session-list [aria-label="' + copy.recordings.starred + '"]'),
     null,
   );
   assert.equal(document.querySelector('[role=alert]'), null);
@@ -472,7 +474,7 @@ test('recording protection toggles, persists on reload, and leaves storage and m
     star().click();
     await flush();
   });
-  await act(async () => button(copy.recordingDelete).click());
+  await act(async () => button(copy.recordings.delete).click());
   await act(async () => {
     document.querySelector('.dlvd-delete-confirm button').click();
     await flush();
@@ -574,13 +576,10 @@ test('protection actions ignore late results after selection, service replacemen
 });
 
 test('all six recording catalogs contain the same nonempty localized keys', () => {
-  const keys = Object.keys(dictionaries.en).filter((k) => k.startsWith('recording'));
+  const keys = Object.keys(dictionaries.en.recordings);
   for (const copy of Object.values(dictionaries)) {
     assert.deepEqual(Object.keys(copy), Object.keys(copy).sort(), 'Catalog keys must be sorted');
-    assert.deepEqual(
-      Object.keys(copy).filter((k) => k.startsWith('recording')),
-      keys,
-    );
-    for (const key of keys) assert.ok(copy[key].trim());
+    assert.deepEqual(Object.keys(copy.recordings), keys);
+    for (const key of keys) assert.ok(copy.recordings[key].trim());
   }
 });

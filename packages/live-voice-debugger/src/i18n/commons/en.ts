@@ -1,0 +1,27 @@
+import type { CommonsTranslation } from './base.js';
+const translation = {
+  activate: 'Open debugger in a separate window',
+  all: 'All modules',
+  close: 'Close debugger',
+  content: 'Inspect text content (sensitive)',
+  developer: 'Developer',
+  diagnostics: 'Diagnostics',
+  empty: 'No transitions recorded yet.',
+  error: 'Diagnostic source failed.',
+  eventsClear: 'Clear events',
+  eventsPause: 'Pause events',
+  eventsResume: 'Resume events',
+  filter: 'Filter modules',
+  freeze: 'Freeze view',
+  help: 'Read-only state tree updated at 10 Hz. Text is hidden by default. This panel does not control voice.',
+  omitted: 'Additional items omitted',
+  popupBlocked:
+    'The browser blocked the debugger window. Allow popups for this site and try again.',
+  refreshRate: 'Refresh rate',
+  resume: 'Resume updates',
+  states: 'Current states',
+  title: 'Live Voice Debugger',
+  transitions: 'Recent state transitions',
+  waiting: 'Waiting for a compatible Live Voice runtime.',
+} satisfies CommonsTranslation;
+export default Object.freeze(translation);

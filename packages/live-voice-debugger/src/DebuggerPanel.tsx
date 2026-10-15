@@ -5,7 +5,7 @@ import {
   type DiagnosticSource,
 } from '../../live-voice/src/modules/core/diagnostics.js';
 import { createInspector } from './inspector.js';
-import type { DebuggerCopy } from './locales.js';
+import type { DebuggerTranslation } from './i18n/index.js';
 import { StateTree } from './StateTree.js';
 import { RecordingPanel } from './RecordingPanel.js';
 import { RuntimePanel } from './RuntimePanel.js';
@@ -14,7 +14,7 @@ export function DebuggerPanel({
   onClose,
   target = window,
 }: {
-  copy: DebuggerCopy;
+  copy: DebuggerTranslation;
   onClose(): void;
   target?: any;
 }) {
@@ -80,15 +80,15 @@ export function DebuggerPanel({
     if (tab === 'runtimes' && !hasRuntimes) setTab('states');
   }, [tab, hasRuntimes]);
   return (
-    <aside className="dlvd-panel" aria-label={copy.title}>
+    <aside className="dlvd-panel" aria-label={copy.commons.title}>
       <header>
-        <strong>{copy.title}</strong>
+        <strong>{copy.commons.title}</strong>
         <span>{refreshHz} Hz</span>
-        <button type="button" onClick={onClose} aria-label={copy.close}>
+        <button type="button" onClick={onClose} aria-label={copy.commons.close}>
           ×
         </button>
       </header>
-      <div className="dlvd-tabs" role="tablist" aria-label={copy.title}>
+      <div className="dlvd-tabs" role="tablist" aria-label={copy.commons.title}>
         {tabs.map((name) => (
           <button
             type="button"
@@ -119,10 +119,10 @@ export function DebuggerPanel({
             }}
           >
             {name === 'recordings'
-              ? copy.recordingTitle
+              ? copy.recordings.title
               : name === 'runtimes'
-                ? copy.runtimeTitle
-                : copy.states}
+                ? copy.runtimes.title
+                : copy.commons.states}
           </button>
         ))}
       </div>
@@ -153,10 +153,10 @@ export function DebuggerPanel({
         aria-labelledby={tabsId + '-states-tab'}
         hidden={tab !== 'states'}
       >
-        <p>{copy.help}</p>
+        <p>{copy.commons.help}</p>
         <div className="dlvd-toolbar">
           <label>
-            {copy.refreshRate}
+            {copy.commons.refreshRate}
             <select
               value={refreshHz}
               onChange={(event) => setRefreshHz(Number(event.target.value))}
@@ -169,7 +169,7 @@ export function DebuggerPanel({
             </select>
           </label>
           <button type="button" onClick={() => setFrozen(!frozen)}>
-            {frozen ? copy.resume : copy.freeze}
+            {frozen ? copy.commons.resume : copy.commons.freeze}
           </button>
           <label>
             <input
@@ -181,23 +181,23 @@ export function DebuggerPanel({
                 setContent(event.target.checked);
               }}
             />
-            {copy.content}
+            {copy.commons.content}
           </label>
         </div>
         {failed ? (
-          <p role="alert">{copy.error}</p>
+          <p role="alert">{copy.commons.error}</p>
         ) : !view ? (
-          <p role="status">{copy.waiting}</p>
+          <p role="status">{copy.commons.waiting}</p>
         ) : (
           <div className="dlvd-columns">
-            <section className="dlvd-state-pane" aria-label={copy.states}>
-              <h3>{copy.states}</h3>
+            <section className="dlvd-state-pane" aria-label={copy.commons.states}>
+              <h3>{copy.commons.states}</h3>
               <div className="dlvd-scroll" tabIndex={0}>
-                <StateTree name="context" value={view.state} omitted={copy.omitted} />
+                <StateTree name="context" value={view.state} omitted={copy.commons.omitted} />
               </div>
             </section>
-            <section className="dlvd-event-pane" aria-label={copy.transitions}>
-              <h3>{copy.transitions}</h3>
+            <section className="dlvd-event-pane" aria-label={copy.commons.transitions}>
+              <h3>{copy.commons.transitions}</h3>
               <div className="dlvd-toolbar">
                 <button
                   type="button"
@@ -209,7 +209,7 @@ export function DebuggerPanel({
                     setEventsPaused(paused);
                   }}
                 >
-                  {eventsPaused ? copy.eventsResume : copy.eventsPause}
+                  {eventsPaused ? copy.commons.eventsResume : copy.commons.eventsPause}
                 </button>
                 <button
                   type="button"
@@ -218,13 +218,13 @@ export function DebuggerPanel({
                     setView((current) => (current ? { ...current, transitions: [] } : current));
                   }}
                 >
-                  {copy.eventsClear}
+                  {copy.commons.eventsClear}
                 </button>
               </div>
               <label>
-                {copy.filter}
+                {copy.commons.filter}
                 <select value={module} onChange={(event) => setModule(event.target.value)}>
-                  <option value="">{copy.all}</option>
+                  <option value="">{copy.commons.all}</option>
                   {modules.map((name) => (
                     <option key={name}>{name}</option>
                   ))}
@@ -243,11 +243,15 @@ export function DebuggerPanel({
                           {entry.sessionId} / {entry.module}
                         </code>
                       </summary>
-                      <StateTree name="before" value={entry.before} omitted={copy.omitted} />
-                      <StateTree name="after" value={entry.after} omitted={copy.omitted} />
+                      <StateTree
+                        name="before"
+                        value={entry.before}
+                        omitted={copy.commons.omitted}
+                      />
+                      <StateTree name="after" value={entry.after} omitted={copy.commons.omitted} />
                     </details>
                   ))}
-                {!view.transitions.length && <p>{copy.empty}</p>}
+                {!view.transitions.length && <p>{copy.commons.empty}</p>}
               </div>
             </section>
           </div>

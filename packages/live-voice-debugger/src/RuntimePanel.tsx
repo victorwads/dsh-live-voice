@@ -1,8 +1,8 @@
 import React from 'react';
-import type { DebuggerCopy } from './locales.js';
+import type { DebuggerTranslation } from './i18n/index.js';
 import { Hint } from '../../live-voice/src/shared/design-system/feedback/Hint.js';
-export function RuntimePanel({ data, copy }: { data: any; copy: DebuggerCopy }) {
-  const unknown = copy.runtimeUnavailable;
+export function RuntimePanel({ data, copy }: { data: any; copy: DebuggerTranslation }) {
+  const unknown = copy.runtimes.unavailable;
   const bytes = (n: any) =>
     typeof n === 'number' && Number.isFinite(n)
       ? (n / 1073741824).toFixed(3) + ' GiB (' + Math.round(n).toLocaleString() + ' B)'
@@ -11,15 +11,15 @@ export function RuntimePanel({ data, copy }: { data: any; copy: DebuggerCopy }) 
     typeof n === 'number' && Number.isFinite(n) ? Math.round(n).toLocaleString() + ' ms' : unknown;
   const status = (v: string) =>
     ({
-      loading: copy.recordingLoading,
-      ready: copy.runtimeReady,
-      error: copy.recordingError,
-      downloaded: copy.runtimeReleased,
-      absent: copy.runtimeReleased,
-      started: copy.runtimeStarted,
-      success: copy.runtimeSuccess,
-      released: copy.runtimeReleased,
-      cancelled: copy.runtimeCancelled,
+      loading: copy.recordings.loading,
+      ready: copy.runtimes.ready,
+      error: copy.recordings.error,
+      downloaded: copy.runtimes.released,
+      absent: copy.runtimes.released,
+      started: copy.runtimes.started,
+      success: copy.runtimes.success,
+      released: copy.runtimes.released,
+      cancelled: copy.runtimes.cancelled,
     })[v] ?? unknown;
   const row = (label: string, value: any) => (
     <React.Fragment key={label}>
@@ -28,81 +28,81 @@ export function RuntimePanel({ data, copy }: { data: any; copy: DebuggerCopy }) 
     </React.Fragment>
   );
   return (
-    <section className="dlvd-runtimes dlvd-scroll" tabIndex={0} aria-label={copy.runtimeTitle}>
+    <section className="dlvd-runtimes dlvd-scroll" tabIndex={0} aria-label={copy.runtimes.title}>
       <h3>
-        {copy.runtimeTitle} <Hint label={copy.runtimeTitle}>{copy.runtimeHelp}</Hint>
+        {copy.runtimes.title} <Hint label={copy.runtimes.title}>{copy.runtimes.help}</Hint>
       </h3>
       <dl className="dlvd-recording-meta">
         {row(
-          copy.runtimeVersions,
+          copy.runtimes.versions,
           (data.versions?.onnx ?? unknown) + ' / ' + (data.versions?.transformers ?? unknown),
         )}
-        {row(copy.runtimeId, data.runtimeId ?? unknown)}
+        {row(copy.runtimes.id, data.runtimeId ?? unknown)}
         {row(
-          copy.runtimeGpu,
+          copy.runtimes.gpu,
           data.gpu === 'available'
-            ? copy.runtimeYes
+            ? copy.runtimes.yes
             : data.gpu === 'unavailable'
-              ? copy.runtimeNo
+              ? copy.runtimes.no
               : unknown,
         )}
-        {row(copy.runtimeStorage, bytes(data.storageAvailableBytes))}
-        {row(copy.runtimeHeap, bytes(data.pageJsHeapBytes))}
-        {row(copy.runtimeRam, unknown)}
-        {row(copy.runtimeVram, unknown)}
+        {row(copy.runtimes.storage, bytes(data.storageAvailableBytes))}
+        {row(copy.runtimes.heap, bytes(data.pageJsHeapBytes))}
+        {row(copy.runtimes.ram, unknown)}
+        {row(copy.runtimes.vram, unknown)}
       </dl>
       {(data.models ?? []).map((model: any) => (
         <article className="dlvd-runtime-card" key={model.key}>
           <h3>{model.name}</h3>
           <dl className="dlvd-recording-meta">
-            {row(copy.runtimeStatus, status(model.phase))}
+            {row(copy.runtimes.status, status(model.phase))}
             {row(
-              copy.runtimeDevice,
+              copy.runtimes.device,
               model.device === 'webgpu'
                 ? 'WebGPU'
                 : model.device === 'wasm'
                   ? 'WebAssembly CPU'
                   : unknown,
             )}
-            {row(copy.runtimeWorker, model.workerActive ? copy.runtimeYes : copy.runtimeNo)}
-            {row(copy.runtimeRevision, model.repository + ' @ ' + model.revision)}
-            {row(copy.runtimeQuantization, model.encoderDtype + ' / ' + model.decoderDtype)}
-            {row(copy.runtimeModelBytes, bytes(model.modelBytes))}
-            {row(copy.runtimeCache, bytes(model.cachedBytes))}
-            {row(copy.runtimePcm, bytes(model.pcmBytes))}
-            {row(copy.runtimeLoad, ms(model.loadMs) + ' / ' + ms(model.workerLoadMs))}
-            {row(copy.runtimeInference, ms(model.workerInferenceMs))}
-            {row(copy.runtimeAudio, ms(model.audioMs))}
+            {row(copy.runtimes.worker, model.workerActive ? copy.runtimes.yes : copy.runtimes.no)}
+            {row(copy.runtimes.revision, model.repository + ' @ ' + model.revision)}
+            {row(copy.runtimes.quantization, model.encoderDtype + ' / ' + model.decoderDtype)}
+            {row(copy.runtimes.modelBytes, bytes(model.modelBytes))}
+            {row(copy.runtimes.cache, bytes(model.cachedBytes))}
+            {row(copy.runtimes.pcm, bytes(model.pcmBytes))}
+            {row(copy.runtimes.load, ms(model.loadMs) + ' / ' + ms(model.workerLoadMs))}
+            {row(copy.runtimes.inference, ms(model.workerInferenceMs))}
+            {row(copy.runtimes.audio, ms(model.audioMs))}
             {row(
-              copy.runtimeRatio,
+              copy.runtimes.ratio,
               model.workerInferenceMs != null && model.audioMs > 0
                 ? (model.workerInferenceMs / model.audioMs).toFixed(2) + '×'
                 : unknown,
             )}
-            {row(copy.runtimeQueue, model.queued)}
-            {row(copy.runtimeActive, model.active)}
-            {row(copy.runtimePending, model.pendingRequests)}
-            {row(copy.runtimeCompleted, model.completed)}
-            {row(copy.runtimeFailed, model.failed)}
+            {row(copy.runtimes.queue, model.queued)}
+            {row(copy.runtimes.active, model.active)}
+            {row(copy.runtimes.pending, model.pendingRequests)}
+            {row(copy.runtimes.completed, model.completed)}
+            {row(copy.runtimes.failed, model.failed)}
           </dl>
           {model.error && (
             <p role="alert">
-              {copy.runtimeError}: <code>{model.error}</code>
+              {copy.runtimes.error}: <code>{model.error}</code>
             </p>
           )}
         </article>
       ))}
-      <h3>{copy.runtimeEvents}</h3>
+      <h3>{copy.runtimes.events}</h3>
       <div className="dlvd-history">
-        {!data.events?.length && <p>{copy.empty}</p>}
+        {!data.events?.length && <p>{copy.commons.empty}</p>}
         {[...(data.events ?? [])].reverse().map((event: any) => (
           <div key={event.sequence} data-level={event.status === 'error' ? 'error' : 'debug'}>
             <time>{new Date(event.timeMs).toLocaleTimeString()}</time> · {event.model} ·{' '}
             {event.operation === 'load'
-              ? copy.runtimeLoad
+              ? copy.runtimes.load
               : event.operation === 'worker'
-                ? copy.runtimeWorker
-                : copy.runtimeInference}{' '}
+                ? copy.runtimes.worker
+                : copy.runtimes.inference}{' '}
             · {status(event.status)}
             {event.durationMs != null ? ' · ' + ms(event.durationMs) : ''}
             {event.code && (

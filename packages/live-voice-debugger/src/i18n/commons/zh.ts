@@ -1,0 +1,26 @@
+import type { CommonsTranslation } from './base.js';
+const translation = {
+  activate: '在独立窗口中打开调试器',
+  all: '所有模块',
+  close: '关闭调试器',
+  content: '查看文本内容（敏感）',
+  developer: '开发者',
+  diagnostics: '诊断',
+  empty: '尚未记录状态转换。',
+  error: '诊断数据源失败。',
+  eventsClear: '清除事件',
+  eventsPause: '暂停事件',
+  eventsResume: '恢复事件',
+  filter: '筛选模块',
+  freeze: '冻结视图',
+  help: '只读状态树以 10 Hz 更新。默认隐藏文本。此面板不控制语音。',
+  omitted: '已省略其他项目',
+  popupBlocked: '浏览器阻止了调试器窗口。请允许此网站的弹出窗口，然后重试。',
+  refreshRate: '更新频率',
+  resume: '恢复更新',
+  states: '当前状态',
+  title: '实时语音调试器',
+  transitions: '最近的状态转换',
+  waiting: '正在等待兼容的实时语音运行时。',
+} satisfies CommonsTranslation;
+export default Object.freeze(translation);

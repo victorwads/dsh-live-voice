@@ -5,7 +5,7 @@ import {
   type RecordingService,
   type RecordingSegment,
 } from '../../live-voice/src/modules/recording/types.js';
-import type { DebuggerCopy } from './locales.js';
+import type { DebuggerTranslation } from './i18n/index.js';
 import { createRecordingInspector, type RecordingView } from './recordingInspector.js';
 
 function duration(samples: number, rate: number) {
@@ -20,22 +20,22 @@ function duration(samples: number, rate: number) {
   );
 }
 const sourceKey = (session: RecordingSession) => JSON.stringify([session.kind, session.sourceId]);
-const sourceName = (session: RecordingSession, copy: DebuggerCopy) =>
-  (session.kind === 'microphone' ? copy.recordingMicrophone : copy.recordingShared) +
+const sourceName = (session: RecordingSession, copy: DebuggerTranslation) =>
+  (session.kind === 'microphone' ? copy.recordings.microphone : copy.recordings.shared) +
   ' · ' +
   (session.label || session.sourceId) +
   ' · ' +
   session.sourceId;
-function stateName(session: RecordingSession, copy: DebuggerCopy) {
+function stateName(session: RecordingSession, copy: DebuggerTranslation) {
   return {
-    recording: copy.recordingActive,
-    completed: copy.recordingCompleted,
-    interrupted: copy.recordingInterrupted,
-    failed: copy.recordingFailed,
+    recording: copy.recordings.active,
+    completed: copy.recordings.completed,
+    interrupted: copy.recordings.interrupted,
+    failed: copy.recordings.failed,
   }[session.state];
 }
 
-export function RecordingPanel({ copy, target }: { copy: DebuggerCopy; target: any }) {
+export function RecordingPanel({ copy, target }: { copy: DebuggerTranslation; target: any }) {
   const [view, setView] = React.useState<RecordingView>({
     service: null,
     sessions: [],
@@ -79,13 +79,13 @@ export function RecordingPanel({ copy, target }: { copy: DebuggerCopy; target: a
   const selected =
     view.selected && visible.some((s) => s.id === view.selected?.id) ? view.selected : null;
   return (
-    <section className="dlvd-recordings" aria-label={copy.recordingTitle}>
-      <p>{copy.recordingHelp}</p>
+    <section className="dlvd-recordings" aria-label={copy.recordings.title}>
+      <p>{copy.recordings.help}</p>
       <div className="dlvd-toolbar">
         <label>
-          {copy.recordingSourceFilter}{' '}
+          {copy.recordings.sourceFilter}{' '}
           <select value={filter} onChange={(event) => setFilter(event.target.value)}>
-            <option value="">{copy.recordingAllSources}</option>
+            <option value="">{copy.recordings.allSources}</option>
             {sources.map((session) => (
               <option key={sourceKey(session)} value={sourceKey(session)}>
                 {sourceName(session, copy)}
@@ -100,22 +100,22 @@ export function RecordingPanel({ copy, target }: { copy: DebuggerCopy; target: a
             inspector.current?.refresh();
           }}
         >
-          {copy.recordingRefresh}
+          {copy.recordings.refresh}
         </button>
       </div>
-      {view.failed && <p role="alert">{copy.recordingLoadError}</p>}
+      {view.failed && <p role="alert">{copy.recordings.loadError}</p>}
       {!view.service ? (
-        <p role="status">{copy.recordingUnavailable}</p>
+        <p role="status">{copy.recordings.unavailable}</p>
       ) : (
         <>
-          {view.loading && <p role="status">{copy.recordingLoading}</p>}
+          {view.loading && <p role="status">{copy.recordings.loading}</p>}
           <div className="dlvd-recording-columns">
             <div
               className="dlvd-session-list dlvd-scroll"
               tabIndex={0}
-              aria-label={copy.recordingTitle}
+              aria-label={copy.recordings.title}
             >
-              {!visible.length && !view.loading && <p>{copy.recordingEmpty}</p>}
+              {!visible.length && !view.loading && <p>{copy.recordings.empty}</p>}
               {sources
                 .filter((source) => !filter || sourceKey(source) === filter)
                 .map((source) => (
@@ -124,10 +124,10 @@ export function RecordingPanel({ copy, target }: { copy: DebuggerCopy; target: a
                     <table>
                       <thead>
                         <tr>
-                          <th scope="col">{copy.recordingDate}</th>
-                          <th scope="col">{copy.recordingState}</th>
-                          <th scope="col">{copy.recordingDuration}</th>
-                          <th scope="col">{copy.recordingSaved}</th>
+                          <th scope="col">{copy.recordings.date}</th>
+                          <th scope="col">{copy.recordings.state}</th>
+                          <th scope="col">{copy.recordings.duration}</th>
+                          <th scope="col">{copy.recordings.saved}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -144,8 +144,8 @@ export function RecordingPanel({ copy, target }: { copy: DebuggerCopy; target: a
                                   {session.starred && (
                                     <span
                                       role="img"
-                                      aria-label={copy.recordingStarred}
-                                      title={copy.recordingStarHelp}
+                                      aria-label={copy.recordings.starred}
+                                      title={copy.recordings.starHelp}
                                     >
                                       ★
                                     </span>
@@ -161,8 +161,8 @@ export function RecordingPanel({ copy, target }: { copy: DebuggerCopy; target: a
                                 {duration(session.savedSamples, session.sampleRate)}
                                 <br />
                                 {session.storage === 'indexeddb' || session.persistent
-                                  ? copy.recordingPersistent
-                                  : copy.recordingMemory}
+                                  ? copy.recordings.persistent
+                                  : copy.recordings.memory}
                               </td>
                             </tr>
                           ))}
@@ -182,7 +182,7 @@ export function RecordingPanel({ copy, target }: { copy: DebuggerCopy; target: a
                   refresh={() => inspector.current?.refresh()}
                 />
               ) : (
-                <p>{copy.recordingSelectSession}</p>
+                <p>{copy.recordings.selectSession}</p>
               )}
             </div>
           </div>
@@ -199,7 +199,7 @@ function RecordingDetail({
   segments,
   refresh,
 }: {
-  copy: DebuggerCopy;
+  copy: DebuggerTranslation;
   session: RecordingSession;
   service: RecordingService;
   segments: RecordingSegment[];
@@ -211,7 +211,7 @@ function RecordingDetail({
   const download = React.useRef<{ url: string; api: typeof URL } | null>(null);
   const generation = React.useRef(0);
   const playGeneration = React.useRef(0);
-  const [error, setError] = React.useState<keyof DebuggerCopy | null>(null);
+  const [error, setError] = React.useState<keyof DebuggerTranslation['recordings'] | null>(null);
   const [playing, setPlaying] = React.useState(false);
   const [exporting, setExporting] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
@@ -267,7 +267,7 @@ function RecordingDetail({
     } catch {
       if (token === generation.current && request === playGeneration.current) {
         clearPlayback();
-        setError('recordingAudioError');
+        setError('audioError');
         setPlaying(false);
       }
     } finally {
@@ -299,7 +299,7 @@ function RecordingDetail({
     } catch {
       if (token === generation.current) {
         clearDownload();
-        setError('recordingExportError');
+        setError('exportError');
       }
     } finally {
       if (token === generation.current) setExporting(false);
@@ -313,7 +313,7 @@ function RecordingDetail({
       await service.setStarred(session.id, !session.starred);
       if (token === generation.current) refresh();
     } catch {
-      if (token === generation.current) setError('recordingStarError');
+      if (token === generation.current) setError('starError');
     } finally {
       if (token === generation.current) setStarring(false);
     }
@@ -333,14 +333,14 @@ function RecordingDetail({
         refresh();
       }
     } catch {
-      if (token === generation.current) setError('recordingDeleteError');
+      if (token === generation.current) setError('deleteError');
     } finally {
       if (token === generation.current) setDeleting(false);
     }
   };
   const length = Math.max(1, session.savedSamples);
   const segmentName = (segment: RecordingSegment) =>
-    (segment.kind === 'speech' ? copy.recordingSpeech : copy.recordingSilence) +
+    (segment.kind === 'speech' ? copy.recordings.speech : copy.recordings.silence) +
     ' · ' +
     duration(segment.startSample, session.sampleRate) +
     ' — ' +
@@ -349,37 +349,37 @@ function RecordingDetail({
     <section ref={container} aria-label={sourceName(session, copy)}>
       <h3>{sourceName(session, copy)}</h3>
       <dl className="dlvd-recording-meta">
-        <dt>{copy.recordingDate}</dt>
+        <dt>{copy.recordings.date}</dt>
         <dd>{new Date(session.startedAt).toLocaleString()}</dd>
-        <dt>{copy.recordingState}</dt>
+        <dt>{copy.recordings.state}</dt>
         <dd>{stateName(session, copy)}</dd>
-        <dt>{copy.recordingCaptured}</dt>
+        <dt>{copy.recordings.captured}</dt>
         <dd>{duration(session.capturedSamples, session.sampleRate)}</dd>
-        <dt>{copy.recordingSaved}</dt>
+        <dt>{copy.recordings.saved}</dt>
         <dd>
           {duration(session.savedSamples, session.sampleRate)} ·
           {session.storage === 'indexeddb' || session.persistent
-            ? copy.recordingPersistent
-            : copy.recordingMemory}
+            ? copy.recordings.persistent
+            : copy.recordings.memory}
         </dd>
         {session.endedAt && (
           <>
-            <dt>{copy.recordingEnd}</dt>
+            <dt>{copy.recordings.end}</dt>
             <dd>{new Date(session.endedAt).toLocaleString()}</dd>
           </>
         )}
       </dl>
       {session.error && (
         <p role="alert">
-          {copy.recordingError}: {session.error}
+          {copy.recordings.error}: {session.error}
         </p>
       )}
       <div className="dlvd-toolbar">
         <button
           type="button"
-          aria-label={session.starred ? copy.recordingUnstar : copy.recordingStar}
+          aria-label={session.starred ? copy.recordings.unstar : copy.recordings.star}
           aria-pressed={!!session.starred}
-          title={session.starred ? copy.recordingUnstarHelp : copy.recordingStarHelp}
+          title={session.starred ? copy.recordings.unstarHelp : copy.recordings.starHelp}
           disabled={starring || deleting}
           onClick={() => void toggleStarred()}
         >
@@ -390,47 +390,51 @@ function RecordingDetail({
           disabled={playing || deleting || !session.savedSamples}
           onClick={() => void play()}
         >
-          {copy.recordingPlaySession}
+          {copy.recordings.playSession}
         </button>
         <button type="button" disabled={exporting || deleting} onClick={() => void exportSession()}>
-          {copy.recordingExport}
+          {copy.recordings.export}
         </button>
         <button
           type="button"
           disabled={deleting || starring}
           onClick={() => setConfirmDelete(true)}
         >
-          {copy.recordingDelete}
+          {copy.recordings.delete}
         </button>
       </div>
       {confirmDelete && (
-        <div className="dlvd-delete-confirm" role="group" aria-label={copy.recordingConfirmDelete}>
-          <p>{copy.recordingConfirmDelete}</p>
+        <div
+          className="dlvd-delete-confirm"
+          role="group"
+          aria-label={copy.recordings.confirmDelete}
+        >
+          <p>{copy.recordings.confirmDelete}</p>
           <button
             type="button"
             disabled={deleting || starring}
             onClick={() => void removeSession()}
           >
-            {copy.recordingDelete}
+            {copy.recordings.delete}
           </button>{' '}
           <button type="button" disabled={deleting} onClick={() => setConfirmDelete(false)}>
-            {copy.recordingCancel}
+            {copy.recordings.cancel}
           </button>
         </div>
       )}
-      {error && <p role="alert">{copy[error]}</p>}
+      {error && <p role="alert">{copy.recordings[error]}</p>}
       <audio
         ref={audio}
         controls
         preload="none"
-        aria-label={copy.recordingAudio}
+        aria-label={copy.recordings.audio}
         onError={() => {
           clearPlayback();
-          setError('recordingAudioError');
+          setError('audioError');
         }}
       />
-      <h4>{copy.recordingTimeline}</h4>
-      <div className="dlvd-timeline" role="group" aria-label={copy.recordingTimeline}>
+      <h4>{copy.recordings.timeline}</h4>
+      <div className="dlvd-timeline" role="group" aria-label={copy.recordings.timeline}>
         {segments.map((segment) => (
           <button
             key={segment.id}
@@ -457,7 +461,7 @@ function RecordingDetail({
             aria-hidden="true"
             style={{ left: (Math.min(length, pin.atSample) / length) * 100 + '%' }}
             title={
-              (pin.kind === 'speech-start' ? copy.recordingSpeech : copy.recordingSilence) +
+              (pin.kind === 'speech-start' ? copy.recordings.speech : copy.recordings.silence) +
               ' · ' +
               duration(pin.atSample, session.sampleRate)
             }
@@ -465,21 +469,21 @@ function RecordingDetail({
         ))}
       </div>
       <div className="dlvd-timeline-legend">
-        <span data-kind="speech">{copy.recordingSpeech}</span>
+        <span data-kind="speech">{copy.recordings.speech}</span>
         {' · '}
-        <span data-kind="silence">{copy.recordingSilence}</span>
+        <span data-kind="silence">{copy.recordings.silence}</span>
         {' · '}
         {duration(session.savedSamples, session.sampleRate)}
       </div>
-      <h4>{copy.recordingSegments}</h4>
+      <h4>{copy.recordings.segments}</h4>
       <table className="dlvd-segments">
         <thead>
           <tr>
-            <th scope="col">{copy.recordingState}</th>
-            <th scope="col">{copy.recordingStart}</th>
-            <th scope="col">{copy.recordingEnd}</th>
-            <th scope="col">{copy.recordingDuration}</th>
-            <th scope="col">{copy.recordingAudio}</th>
+            <th scope="col">{copy.recordings.state}</th>
+            <th scope="col">{copy.recordings.start}</th>
+            <th scope="col">{copy.recordings.end}</th>
+            <th scope="col">{copy.recordings.duration}</th>
+            <th scope="col">{copy.recordings.audio}</th>
           </tr>
         </thead>
         <tbody>
@@ -487,8 +491,8 @@ function RecordingDetail({
             <React.Fragment key={segment.id}>
               <tr data-selected={selectedSegment === segment.id}>
                 <td>
-                  {segment.kind === 'speech' ? copy.recordingSpeech : copy.recordingSilence}
-                  {segment.open && <small>{copy.recordingOpen}</small>}
+                  {segment.kind === 'speech' ? copy.recordings.speech : copy.recordings.silence}
+                  {segment.open && <small>{copy.recordings.open}</small>}
                 </td>
                 <td>{duration(segment.startSample, session.sampleRate)}</td>
                 <td>{duration(segment.endSample, session.sampleRate)}</td>
@@ -497,10 +501,10 @@ function RecordingDetail({
                   <button
                     type="button"
                     disabled={deleting || segment.endSample <= segment.startSample}
-                    aria-label={copy.recordingPlay + ' · ' + segmentName(segment)}
+                    aria-label={copy.recordings.play + ' · ' + segmentName(segment)}
                     onClick={() => void play(segment)}
                   >
-                    {copy.recordingPlay}
+                    {copy.recordings.play}
                   </button>
                 </td>
               </tr>
@@ -509,18 +513,18 @@ function RecordingDetail({
                   <td colSpan={5}>
                     <details open={selectedSegment === segment.id || undefined}>
                       <summary>
-                        {copy.recordingAttempts} · {segment.attempts.length}
+                        {copy.recordings.attempts} · {segment.attempts.length}
                       </summary>
-                      {!segment.attempts.length && <p>{copy.recordingNoAttempts}</p>}
+                      {!segment.attempts.length && <p>{copy.recordings.noAttempts}</p>}
                       {segment.attempts.map((attempt) => (
                         <article className="dlvd-attempt" key={attempt.id}>
                           <div>
-                            {copy.recordingEngine}: {attempt.engine} ·
+                            {copy.recordings.engine}: {attempt.engine} ·
                             {
                               {
-                                pending: copy.recordingPending,
-                                success: copy.recordingSuccess,
-                                error: copy.recordingError,
+                                pending: copy.recordings.pending,
+                                success: copy.recordings.success,
+                                error: copy.recordings.error,
                               }[attempt.status]
                             }
                           </div>
@@ -545,7 +549,7 @@ function RecordingDetail({
                           )}
                           {attempt.error && (
                             <p className="dlvd-attempt-error">
-                              {copy.recordingError}: {attempt.error}
+                              {copy.recordings.error}: {attempt.error}
                             </p>
                           )}
                         </article>
@@ -560,22 +564,22 @@ function RecordingDetail({
       </table>
       <details>
         <summary>
-          {copy.recordingPins} · {session.pins.length}
+          {copy.recordings.pins} · {session.pins.length}
         </summary>
         <table>
           <thead>
             <tr>
-              <th scope="col">{copy.recordingState}</th>
-              <th scope="col">{copy.recordingStart}</th>
-              <th scope="col">{copy.recordingPinConfirmed}</th>
-              <th scope="col">{copy.recordingPinDelay}</th>
+              <th scope="col">{copy.recordings.state}</th>
+              <th scope="col">{copy.recordings.start}</th>
+              <th scope="col">{copy.recordings.pinConfirmed}</th>
+              <th scope="col">{copy.recordings.pinDelay}</th>
             </tr>
           </thead>
           <tbody>
             {session.pins.map((pin) => (
               <tr key={pin.id}>
                 <td>
-                  {pin.kind === 'speech-start' ? copy.recordingSpeech : copy.recordingSilence}
+                  {pin.kind === 'speech-start' ? copy.recordings.speech : copy.recordings.silence}
                 </td>
                 <td>{duration(pin.atSample, session.sampleRate)}</td>
                 <td>{duration(pin.confirmedAtSample, session.sampleRate)}</td>
