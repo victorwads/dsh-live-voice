@@ -1,6 +1,6 @@
 # Browser-local speech recognition
 
-Select **Whisper · Browser** or **Qwen · Browser** in Speech recognition. Select a model, confirm its download, then load it. Selection never downloads weights automatically. Download progress includes all pinned files; cancelling preserves completed files for retry. Remove affects only this plugin's model cache, never recordings.
+Select **Whisper · Browser** or **Qwen · Browser** in Speech recognition. Whisper · Browser and Whisper small q4 are marked recommended; small is the model default for new or missing model preferences. Browser SpeechRecognition remains the default engine, and valid saved engine/model choices are preserved. Select a model, confirm its download, then load it. Selection never downloads weights automatically. Download progress includes all pinned files; cancelling preserves completed files for retry. Remove affects only this plugin's model cache, never recordings.
 
 Speech PCM is processed in a dedicated worker on the browser device. It is not uploaded to an HTTP transcription service. Initial downloads contact Hugging Face and disclose ordinary network metadata; DSH and its AI provider retain their own connectivity requirements. The browser runtime is packaged with the plugin and served through authenticated, versioned, same-origin routes.
 

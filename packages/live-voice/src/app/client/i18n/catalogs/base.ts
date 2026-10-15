@@ -159,6 +159,7 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.recognition.local.privacy': string;
   'dsh-live-voice.recognition.local.progress': string;
   'dsh-live-voice.recognition.local.qwenLabel': string;
+  'dsh-live-voice.recognition.local.recommended': string;
   'dsh-live-voice.recognition.local.reload': string;
   'dsh-live-voice.recognition.local.remove': string;
   'dsh-live-voice.recognition.local.space': string;

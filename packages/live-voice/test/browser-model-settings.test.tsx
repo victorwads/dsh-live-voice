@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
 import { withAppLanguage, liveVoiceDictionaries } from '../src/app/client/i18n/index.ts';
 import { BrowserModelSettings } from '../src/modules/recognition/local/BrowserModelSettings.tsx';
+import { RecognitionEngineSettings } from '../src/modules/settings/sections/recognition/RecognitionEngineSettings.tsx';
 import { defaultSettings } from '../src/modules/core/settings.ts';
 test('local model settings translate all six locales and require download consent; selecting models never downloads', async (t) => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'https://dsh.local/' });
@@ -37,7 +38,7 @@ test('local model settings translate all six locales and require download consen
       remove: async (key) => calls.push(['remove', key]),
     };
     const localeSnapshot = { active: locale, revision: 0 };
-    const Local = withAppLanguage(BrowserModelSettings, {
+    const Local = withAppLanguage(RecognitionEngineSettings, {
       subscribe: () => () => {},
       getSnapshot: () => localeSnapshot,
     });
@@ -54,6 +55,31 @@ test('local model settings translate all six locales and require download consen
     const strings = liveVoiceDictionaries[locale],
       key = 'dsh-live-voice.recognition.local.';
     assert.ok(document.body.textContent.includes(strings[key + 'title']));
+    const modelSelector =
+      document.querySelector('select[aria-label="' + strings[key + 'model'] + '"]') ??
+      [...document.querySelectorAll('select')].find((select) => select.value === 'whisper-small');
+    assert.equal(modelSelector.value, 'whisper-small');
+    assert.ok(
+      [...modelSelector.options]
+        .find((o) => o.value === 'whisper-small')
+        .textContent.includes('(' + strings[key + 'recommended'] + ')'),
+    );
+    const engineSelect = [...document.querySelectorAll('select')].find(
+      (select) => select.value === 'whisper-browser',
+    );
+    assert.equal(
+      [...engineSelect.options].find((o) => o.value === 'whisper-browser').textContent,
+      strings[key + 'whisperLabel'],
+    );
+    assert.ok(strings[key + 'whisperLabel'].includes('(' + strings[key + 'recommended'] + ')'));
+    for (const option of engineSelect.options) {
+      assert.ok(option.textContent.includes(' · '));
+      assert.ok(!option.textContent.includes('—'));
+    }
+    for (const suffix of ['speak.browser.label', 'speak.macos.label', 'speak.qwen.label']) {
+      assert.ok(strings['dsh-live-voice.' + suffix].includes(' · '));
+      assert.ok(!strings['dsh-live-voice.' + suffix].includes('—'));
+    }
     assert.ok(document.body.textContent.includes(strings[key + 'phase.absent']));
     assert.equal(document.querySelector('[role=alert]'), null);
     const download = [...document.querySelectorAll('button')].find(
@@ -69,7 +95,7 @@ test('local model settings translate all six locales and require download consen
       (button) => button.textContent === strings[key + 'confirm'],
     );
     await act(async () => confirm.click());
-    assert.deepEqual(calls.at(-1), ['download', 'whisper-tiny']);
+    assert.deepEqual(calls.at(-1), ['download', 'whisper-small']);
     await act(async () =>
       root.render(
         <Local
@@ -89,8 +115,15 @@ test('local model settings translate all six locales and require download consen
     assert.ok(document.body.textContent.includes('Whisper large v3 turbo (q4)'));
     assert.ok(document.body.textContent.includes('Whisper medium (q4)'));
     assert.ok(document.body.textContent.includes('762 MB'));
-    assert.equal(document.querySelectorAll('select')[1].value, 'wasm');
-    assert.equal(document.querySelectorAll('select')[1].options.length, 2);
+    const runtimeSelector = [...document.querySelectorAll('select')].find(
+      (select) => select.value === 'wasm',
+    );
+    assert.equal(runtimeSelector.value, 'wasm');
+    assert.equal(runtimeSelector.options.length, 2);
+    const turboSelector = [...document.querySelectorAll('select')].find(
+      (select) => select.value === 'whisper-large-v3-turbo',
+    );
+    assert.equal(turboSelector.value, 'whisper-large-v3-turbo');
     const turboDownload = [...document.querySelectorAll('button')].find(
       (button) => button.textContent === strings[key + 'download'],
     );

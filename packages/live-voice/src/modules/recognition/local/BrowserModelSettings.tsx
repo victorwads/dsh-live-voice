@@ -7,6 +7,7 @@ import {
   StatusMessage,
 } from '../../../shared/design-system/index.js';
 import { browserAsrModels } from './modelCatalog.js';
+import { defaultSettings } from '../../core/settings.js';
 import type { LocalModelManager, LocalModelSnapshot } from './LocalModelManager.js';
 const size = (bytes: number) =>
   bytes >= 1e9 ? (bytes / 1e9).toFixed(2) + ' GB' : (bytes / 1e6).toFixed(0) + ' MB';
@@ -27,7 +28,10 @@ export function BrowserModelSettings({ controller, settings, updateSettings }: a
   const family = settings.recognitionEngine === 'qwen-browser' ? 'qwen' : 'whisper';
   const models = browserAsrModels.filter((model) => model.family === family);
   const setting = family === 'qwen' ? 'browserQwenModel' : 'browserWhisperModel';
-  const selected = models.find((model) => model.key === settings[setting]) ?? models[0];
+  const selected =
+    models.find((model) => model.key === (settings[setting] ?? defaultSettings[setting])) ??
+    models.find((model) => model.key === defaultSettings[setting]) ??
+    models[0];
   const modelState = (state.models as any)[selected.key] ?? {
     phase: 'absent',
     loaded: 0,
@@ -70,7 +74,11 @@ export function BrowserModelSettings({ controller, settings, updateSettings }: a
         value={selected.key}
         options={models.map((model) => ({
           value: model.key,
-          label: model.name + ' · ' + size(model.bytes),
+          label:
+            model.name +
+            (model.key === 'whisper-small' ? ' (' + copy.recommended() + ')' : '') +
+            ' · ' +
+            size(model.bytes),
         }))}
         disabled={downloading || loading || state.busy}
         onChange={(event) => updateSettings({ [setting]: event.target.value })}

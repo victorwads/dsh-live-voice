@@ -127,7 +127,7 @@ const ptBR: LiveVoiceTranslation = {
     'Instalar automaticamente este pacote de idioma do navegador quando necessário',
   'dsh-live-voice.recognition.browser.help':
     'Usa a API SpeechRecognition do navegador. Esta é a opção padrão.',
-  'dsh-live-voice.recognition.browser.label': 'SpeechRecognition do navegador — Opção padrão',
+  'dsh-live-voice.recognition.browser.label': 'SpeechRecognition do navegador · Opção padrão',
   'dsh-live-voice.recognition.browser.localProcessing':
     'Processar reconhecimento localmente neste dispositivo',
   'dsh-live-voice.recognition.browser.microphoneHelp':
@@ -216,13 +216,14 @@ const ptBR: LiveVoiceTranslation = {
     'Os downloads de modelos se conectam ao Hugging Face. A fala é processada neste navegador, sem envio a um serviço de transcrição HTTP. O aplicativo ainda exige o DSH.',
   'dsh-live-voice.recognition.local.progress': 'Progresso do download do modelo',
   'dsh-live-voice.recognition.local.qwenLabel': 'Qwen · Navegador',
+  'dsh-live-voice.recognition.local.recommended': 'recomendado',
   'dsh-live-voice.recognition.local.reload': 'Carregar novamente',
   'dsh-live-voice.recognition.local.remove': 'Remover modelo',
   'dsh-live-voice.recognition.local.space': 'Armazenamento disponível no navegador: {size}',
   'dsh-live-voice.recognition.local.storageHelp':
     'Os modelos são armazenados neste perfil do navegador; os caches podem ser removidos. As estimativas de disco não incluem os arquivos do ambiente de execução nem o uso adicional de GPU/RAM. Remover afeta os arquivos do modelo, não as sessões gravadas.',
   'dsh-live-voice.recognition.local.title': 'Modelos do navegador',
-  'dsh-live-voice.recognition.local.whisperLabel': 'Whisper · Navegador',
+  'dsh-live-voice.recognition.local.whisperLabel': 'Whisper · Navegador (recomendado)',
   'dsh-live-voice.recognition.manualSend.help':
     'O texto reconhecido permanece no editor até que você use o botão normal de envio do DSH.',
   'dsh-live-voice.recognition.maxUtterance.help':
@@ -271,7 +272,7 @@ const ptBR: LiveVoiceTranslation = {
     'API HTTP na URL configurada do host DSH (padrão: http://127.0.0.1:8080/inference). O áudio usa a rota de transcrição autenticada do host DSH.',
   'dsh-live-voice.recognition.qwen.hostHelp':
     'Configurações de todo o host para o servidor Qwen3 ASR + TTS. Insira qualquer URL base HTTP ou HTTPS acessível a partir do host DSH. O navegador acessa através de rotas autenticadas do DSH.',
-  'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR — API HTTP',
+  'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR · API HTTP',
   'dsh-live-voice.recognition.silenceDetection.chunkPause':
     'Antes de transcrever: {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.customHelp':
@@ -326,7 +327,7 @@ const ptBR: LiveVoiceTranslation = {
     'API HTTP na URL base configurada (padrão: http://127.0.0.1:8080/). Compatível com POST /v1/audio/transcriptions.',
   'dsh-live-voice.recognition.whisper.healthFailed':
     'Falha na verificação de integridade do Whisper.',
-  'dsh-live-voice.recognition.whisper.label': 'Whisper — API HTTP',
+  'dsh-live-voice.recognition.whisper.label': 'Whisper · API HTTP',
   'dsh-live-voice.recognition.whisper.requestFailed':
     'Falha na requisição de configurações do Whisper.',
   'dsh-live-voice.recognition.whisper.restartRequired':
@@ -438,7 +439,7 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.speak.autoPlayback.status': 'Fala automática do assistente: {state}',
   'dsh-live-voice.speak.browser.automaticVoice': 'Voz local automática',
   'dsh-live-voice.speak.browser.defaultVoice': 'padrão',
-  'dsh-live-voice.speak.browser.label': 'Fala do navegador — áudio neste dispositivo',
+  'dsh-live-voice.speak.browser.label': 'Fala do navegador · áudio neste dispositivo',
   'dsh-live-voice.speak.browser.name': 'Fala do navegador',
   'dsh-live-voice.speak.browser.outputHelp':
     'A síntese de fala do navegador pode ignorar o dispositivo de saída selecionado; esta API normalmente segue o padrão do sistema.',
@@ -462,7 +463,7 @@ const ptBR: LiveVoiceTranslation = {
     'Parar fala do assistente quando eu enviar uma mensagem',
   'dsh-live-voice.speak.interruption.enabledHelp':
     'Enviar ou direcionar uma nova mensagem interrompe a fala atual ou pausada do assistente.',
-  'dsh-live-voice.speak.macos.label': 'macOS say — áudio no host',
+  'dsh-live-voice.speak.macos.label': 'macOS say · áudio no host',
   'dsh-live-voice.speak.macos.name': 'macOS say',
   'dsh-live-voice.speak.macos.outputHelp': 'O macOS say usa a saída selecionada no host DSH.',
   'dsh-live-voice.speak.macos.voice': 'Voz do macOS say',
@@ -486,7 +487,7 @@ const ptBR: LiveVoiceTranslation = {
   'dsh-live-voice.speak.qwen.connection': 'Conexão com servidor Qwen',
   'dsh-live-voice.speak.qwen.endpoint': 'URL base da API Qwen',
   'dsh-live-voice.speak.qwen.healthFailed': 'Falha na verificação de integridade do Qwen.',
-  'dsh-live-voice.speak.qwen.label': 'Qwen3 TTS — servidor MLX local',
+  'dsh-live-voice.speak.qwen.label': 'Qwen3 TTS · servidor MLX local',
   'dsh-live-voice.speak.qwen.name': 'Qwen3 local',
   'dsh-live-voice.speak.qwen.requestFailed': 'Falha na requisição de configurações do Qwen.',
   'dsh-live-voice.speak.qwen.restartRequired':

@@ -114,7 +114,7 @@ const zh: LiveVoiceTranslation = {
     '识别出最终语句后开始倒计时。再次说话或编辑文本会取消倒计时。',
   'dsh-live-voice.recognition.browser.autoInstallPack': '需要时自动安装此浏览器语言包',
   'dsh-live-voice.recognition.browser.help': '使用浏览器的 SpeechRecognition API。这是默认选项。',
-  'dsh-live-voice.recognition.browser.label': '浏览器 SpeechRecognition — 默认选项',
+  'dsh-live-voice.recognition.browser.label': '浏览器 SpeechRecognition · 默认选项',
   'dsh-live-voice.recognition.browser.localProcessing': '在此设备上本地处理语音识别',
   'dsh-live-voice.recognition.browser.microphoneHelp':
     '浏览器 SpeechRecognition 可能使用浏览器或系统默认麦克风，而非此处选择的设备。',
@@ -192,13 +192,14 @@ const zh: LiveVoiceTranslation = {
     '下载模型会连接 Hugging Face。语音在此浏览器中处理，不会发送至 HTTP 转写服务。此应用仍需要 DSH。',
   'dsh-live-voice.recognition.local.progress': '模型下载进度',
   'dsh-live-voice.recognition.local.qwenLabel': 'Qwen · 浏览器',
+  'dsh-live-voice.recognition.local.recommended': '推荐',
   'dsh-live-voice.recognition.local.reload': '重新加载',
   'dsh-live-voice.recognition.local.remove': '移除模型',
   'dsh-live-voice.recognition.local.space': '浏览器可用存储空间：{size}',
   'dsh-live-voice.recognition.local.storageHelp':
     '模型存储在此浏览器配置文件中；缓存可能被清理。磁盘空间估算不包括运行时资源以及额外的 GPU/内存开销。移除操作仅影响模型文件，不影响已录制的会话。',
   'dsh-live-voice.recognition.local.title': '浏览器模型',
-  'dsh-live-voice.recognition.local.whisperLabel': 'Whisper · 浏览器',
+  'dsh-live-voice.recognition.local.whisperLabel': 'Whisper · 浏览器 (推荐)',
   'dsh-live-voice.recognition.manualSend.help':
     '识别出的文本会保留在消息输入框中，直到你使用 DSH 的常规发送按钮。',
   'dsh-live-voice.recognition.maxUtterance.help':
@@ -243,7 +244,7 @@ const zh: LiveVoiceTranslation = {
     'HTTP API 位于配置的 DSH 主机 URL（默认：http://127.0.0.1:8080/inference）。音频通过需要身份验证的 DSH 主机转写路由发送。',
   'dsh-live-voice.recognition.qwen.hostHelp':
     'Qwen3 ASR + TTS 服务器的主机级设置。请输入 DSH 主机可访问的任意 HTTP 或 HTTPS 基础 URL。浏览器通过需要身份验证的 DSH 路由访问该服务器。',
-  'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR — HTTP API',
+  'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR · HTTP API',
   'dsh-live-voice.recognition.silenceDetection.chunkPause': '转写前停顿：{milliseconds} 毫秒',
   'dsh-live-voice.recognition.silenceDetection.customHelp':
     '请输入 100 至 10,000 ms 的整数。离开输入框时保存。短停顿可能切分语音；识别还需要额外时间。',
@@ -294,7 +295,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.whisper.endpointHelp':
     'HTTP API 位于配置的基础 URL（默认：http://127.0.0.1:8080/）。兼容 POST /v1/audio/transcriptions。',
   'dsh-live-voice.recognition.whisper.healthFailed': 'Whisper 健康检查失败。',
-  'dsh-live-voice.recognition.whisper.label': 'Whisper — HTTP API',
+  'dsh-live-voice.recognition.whisper.label': 'Whisper · HTTP API',
   'dsh-live-voice.recognition.whisper.requestFailed': 'Whisper 设置请求失败。',
   'dsh-live-voice.recognition.whisper.restartRequired':
     'Whisper 设置路由尚未加载。需要正常重启 DSH 服务器才能加载更新后的插件路由；仅刷新此页面是不够的。',
@@ -394,7 +395,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.speak.autoPlayback.status': '助手自动朗读：{state}',
   'dsh-live-voice.speak.browser.automaticVoice': '自动选择本地语音',
   'dsh-live-voice.speak.browser.defaultVoice': '默认',
-  'dsh-live-voice.speak.browser.label': '浏览器语音合成 — 在此设备播放',
+  'dsh-live-voice.speak.browser.label': '浏览器语音合成 · 在此设备播放',
   'dsh-live-voice.speak.browser.name': '浏览器语音合成',
   'dsh-live-voice.speak.browser.outputHelp':
     '浏览器语音合成可能忽略所选输出设备；此浏览器 API 通常使用系统默认设备。',
@@ -415,7 +416,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.speak.interruption.enabled': '发送消息时停止助手朗读',
   'dsh-live-voice.speak.interruption.enabledHelp':
     '发送新的用户消息或用新消息引导智能体时，会停止当前正在播放或已暂停的助手语音。',
-  'dsh-live-voice.speak.macos.label': 'macOS say — 在主机播放',
+  'dsh-live-voice.speak.macos.label': 'macOS say · 在主机播放',
   'dsh-live-voice.speak.macos.name': 'macOS say',
   'dsh-live-voice.speak.macos.outputHelp': 'macOS say 使用 DSH 主机上选定的输出设备。',
   'dsh-live-voice.speak.macos.voice': 'macOS say 音色',
@@ -438,7 +439,7 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.speak.qwen.connection': 'Qwen 服务器连接',
   'dsh-live-voice.speak.qwen.endpoint': 'Qwen API 基础 URL',
   'dsh-live-voice.speak.qwen.healthFailed': 'Qwen 健康检查失败。',
-  'dsh-live-voice.speak.qwen.label': 'Qwen3 TTS — 本地 MLX 服务器',
+  'dsh-live-voice.speak.qwen.label': 'Qwen3 TTS · 本地 MLX 服务器',
   'dsh-live-voice.speak.qwen.name': '本地 Qwen3',
   'dsh-live-voice.speak.qwen.requestFailed': 'Qwen 设置请求失败。',
   'dsh-live-voice.speak.qwen.restartRequired':

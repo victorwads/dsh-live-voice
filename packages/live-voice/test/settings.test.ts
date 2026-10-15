@@ -47,6 +47,20 @@ test('malformed persisted preferences cannot select remote engines or invalid op
   ])
     assert.deepEqual(normalizeSettings(input), defaultSettings);
 });
+test('small is the new Whisper default without migrating saved models or changing the default engine', () => {
+  assert.equal(defaultSettings.recognitionEngine, 'browser');
+  assert.equal(defaultSettings.browserWhisperModel, 'whisper-small');
+  assert.equal(normalizeSettings({}).browserWhisperModel, 'whisper-small');
+  for (const key of [
+    'whisper-tiny',
+    'whisper-base',
+    'whisper-small',
+    'whisper-medium',
+    'whisper-large-v3-turbo',
+  ])
+    assert.equal(normalizeSettings({ browserWhisperModel: key }).browserWhisperModel, key);
+});
+
 test('browser-local model and explicit runtime choices are allowlisted and survive preferences roundtrip', () => {
   for (const recognitionEngine of ['whisper-browser', 'qwen-browser']) {
     const settings = normalizeSettings({
@@ -67,7 +81,7 @@ test('browser-local model and explicit runtime choices are allowlisted and survi
     browserQwenModel: 'fake/qwen',
     browserAsrDevice: 'http',
   });
-  assert.equal(invalid.browserWhisperModel, 'whisper-tiny');
+  assert.equal(invalid.browserWhisperModel, 'whisper-small');
   assert.equal(invalid.browserQwenModel, 'qwen-0.6b');
   assert.equal(invalid.browserAsrDevice, 'webgpu');
 });

@@ -123,7 +123,7 @@ const hi: LiveVoiceTranslation = {
     'ज़रूरत पड़ने पर ब्राउज़र का यह भाषा पैक अपने आप इंस्टॉल करें',
   'dsh-live-voice.recognition.browser.help':
     'ब्राउज़र के SpeechRecognition API का उपयोग करता है। यह डिफ़ॉल्ट विकल्प है।',
-  'dsh-live-voice.recognition.browser.label': 'ब्राउज़र SpeechRecognition — डिफ़ॉल्ट विकल्प',
+  'dsh-live-voice.recognition.browser.label': 'ब्राउज़र SpeechRecognition · डिफ़ॉल्ट विकल्प',
   'dsh-live-voice.recognition.browser.localProcessing':
     'वाक् पहचान की प्रोसेसिंग इसी डिवाइस पर स्थानीय रूप से करें',
   'dsh-live-voice.recognition.browser.microphoneHelp':
@@ -211,13 +211,14 @@ const hi: LiveVoiceTranslation = {
     'मॉडल डाउनलोड करने पर Hugging Face से संपर्क होता है। वाणी इसी ब्राउज़र में संसाधित होती है, किसी HTTP लिप्यंतरण सेवा को नहीं भेजी जाती। ऐप को अब भी DSH की ज़रूरत है।',
   'dsh-live-voice.recognition.local.progress': 'मॉडल डाउनलोड की प्रगति',
   'dsh-live-voice.recognition.local.qwenLabel': 'Qwen · ब्राउज़र',
+  'dsh-live-voice.recognition.local.recommended': 'अनुशंसित',
   'dsh-live-voice.recognition.local.reload': 'फिर से लोड करें',
   'dsh-live-voice.recognition.local.remove': 'मॉडल हटाएँ',
   'dsh-live-voice.recognition.local.space': 'ब्राउज़र में उपलब्ध संग्रहण: {size}',
   'dsh-live-voice.recognition.local.storageHelp':
     'मॉडल इस ब्राउज़र प्रोफ़ाइल में संग्रहित होते हैं; कैश हटाया जा सकता है। डिस्क के अनुमान में रनटाइम की फ़ाइलें और GPU/RAM की अतिरिक्त ज़रूरत शामिल नहीं हैं। हटाने से मॉडल की फ़ाइलें हटती हैं, रिकॉर्ड किए गए सत्र नहीं।',
   'dsh-live-voice.recognition.local.title': 'ब्राउज़र मॉडल',
-  'dsh-live-voice.recognition.local.whisperLabel': 'Whisper · ब्राउज़र',
+  'dsh-live-voice.recognition.local.whisperLabel': 'Whisper · ब्राउज़र (अनुशंसित)',
   'dsh-live-voice.recognition.manualSend.help':
     'पहचाना गया पाठ संदेश बॉक्स में तब तक रहता है जब तक आप DSH के सामान्य भेजें बटन का उपयोग नहीं करते।',
   'dsh-live-voice.recognition.maxUtterance.help':
@@ -267,7 +268,7 @@ const hi: LiveVoiceTranslation = {
     'HTTP API, कॉन्फ़िगर किए गए DSH होस्ट URL पर है (डिफ़ॉल्ट: http://127.0.0.1:8080/inference)। ऑडियो के लिए प्रमाणीकरण वाले DSH होस्ट ट्रांसक्रिप्शन रूट का उपयोग होता है।',
   'dsh-live-voice.recognition.qwen.hostHelp':
     'Qwen3 ASR + TTS सर्वर की पूरे होस्ट पर लागू होने वाली सेटिंग्स। कोई भी HTTP या HTTPS बेस URL दर्ज करें जिस तक DSH होस्ट पहुँच सके। ब्राउज़र प्रमाणीकरण वाले DSH रूटों के ज़रिए इसे एक्सेस करता है।',
-  'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR — HTTP API',
+  'dsh-live-voice.recognition.qwen.label': 'Qwen3 ASR · HTTP API',
   'dsh-live-voice.recognition.silenceDetection.chunkPause':
     'ट्रांसक्रिप्शन से पहले: {milliseconds} ms',
   'dsh-live-voice.recognition.silenceDetection.customHelp':
@@ -320,7 +321,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.recognition.whisper.endpointHelp':
     'HTTP API, कॉन्फ़िगर किए गए बेस URL पर है (डिफ़ॉल्ट: http://127.0.0.1:8080/)। POST /v1/audio/transcriptions के साथ संगत है।',
   'dsh-live-voice.recognition.whisper.healthFailed': 'Whisper की स्वास्थ्य जाँच विफल रही।',
-  'dsh-live-voice.recognition.whisper.label': 'Whisper — HTTP API',
+  'dsh-live-voice.recognition.whisper.label': 'Whisper · HTTP API',
   'dsh-live-voice.recognition.whisper.requestFailed': 'Whisper सेटिंग्स का अनुरोध विफल रहा।',
   'dsh-live-voice.recognition.whisper.restartRequired':
     'Whisper सेटिंग्स के रूट लोड नहीं हैं। अपडेट किए गए प्लगइन रूट लोड करने के लिए DSH सर्वर को सामान्य रूप से पुनः शुरू करना होगा; केवल यह पेज रीफ़्रेश करना पर्याप्त नहीं है।',
@@ -429,7 +430,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.speak.autoPlayback.status': 'सहायक का स्वचालित वाचन: {state}',
   'dsh-live-voice.speak.browser.automaticVoice': 'स्थानीय आवाज़ का स्वचालित चयन',
   'dsh-live-voice.speak.browser.defaultVoice': 'डिफ़ॉल्ट',
-  'dsh-live-voice.speak.browser.label': 'ब्राउज़र वाचन — इस डिवाइस पर ऑडियो',
+  'dsh-live-voice.speak.browser.label': 'ब्राउज़र वाचन · इस डिवाइस पर ऑडियो',
   'dsh-live-voice.speak.browser.name': 'ब्राउज़र वाचन',
   'dsh-live-voice.speak.browser.outputHelp':
     'ब्राउज़र का वाक् संश्लेषण चुने गए आउटपुट डिवाइस को अनदेखा कर सकता है; यह ब्राउज़र API सामान्यतः सिस्टम के डिफ़ॉल्ट का उपयोग करता है।',
@@ -452,7 +453,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.speak.interruption.enabled': 'मेरे संदेश भेजने पर सहायक का वाचन बंद करें',
   'dsh-live-voice.speak.interruption.enabledHelp':
     'नया उपयोगकर्ता संदेश भेजने या उससे चल रहे एजेंट को दिशा देने पर सहायक का चालू या ठहरा हुआ वाचन बंद हो जाता है।',
-  'dsh-live-voice.speak.macos.label': 'macOS say — होस्ट पर ऑडियो',
+  'dsh-live-voice.speak.macos.label': 'macOS say · होस्ट पर ऑडियो',
   'dsh-live-voice.speak.macos.name': 'macOS say',
   'dsh-live-voice.speak.macos.outputHelp':
     'macOS say, DSH होस्ट पर चुने गए आउटपुट का उपयोग करता है।',
@@ -476,7 +477,7 @@ const hi: LiveVoiceTranslation = {
   'dsh-live-voice.speak.qwen.connection': 'Qwen सर्वर कनेक्शन',
   'dsh-live-voice.speak.qwen.endpoint': 'Qwen API का बेस URL',
   'dsh-live-voice.speak.qwen.healthFailed': 'Qwen की स्वास्थ्य जाँच विफल रही।',
-  'dsh-live-voice.speak.qwen.label': 'Qwen3 TTS — स्थानीय MLX सर्वर',
+  'dsh-live-voice.speak.qwen.label': 'Qwen3 TTS · स्थानीय MLX सर्वर',
   'dsh-live-voice.speak.qwen.name': 'स्थानीय Qwen3',
   'dsh-live-voice.speak.qwen.requestFailed': 'Qwen सेटिंग्स का अनुरोध विफल रहा।',
   'dsh-live-voice.speak.qwen.restartRequired':

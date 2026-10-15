@@ -47,7 +47,7 @@ export const recordingBitrateOptions = Object.freeze([24000, 32000, 48000, 64000
 export const defaultSettings = Object.freeze({
   engine: 'browser',
   recognitionEngine: 'browser',
-  browserWhisperModel: 'whisper-tiny',
+  browserWhisperModel: 'whisper-small',
   browserQwenModel: 'qwen-0.6b',
   browserAsrDevice: 'webgpu',
   recognitionProcessLocally: true,
