@@ -84,6 +84,7 @@ test('DSH dictionary registration uses scoped keys, six languages and disposable
     locale: {
       getSnapshot: () => ({ locales: [{ id: 'en' }] }),
       addLanguage: (l) => {
+        assert.equal(l.fallback, 'en', 'DSH requires a registered fallback language');
         added.push(l);
         return () => disposed.push(l.id);
       },

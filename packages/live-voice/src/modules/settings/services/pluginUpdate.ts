@@ -92,7 +92,16 @@ export function createPluginUpdate({
         if (!result?.ok) return patch({ ...state, phase: 'uncertain', problem: 'uncertain' });
         const value = result.value;
         if (value.application === 'failed' || value.application === 'cancelled')
-          return fail(value.pendingBuilds?.length ? 'scripts' : 'failed');
+          return fail(
+            value.error?.code === 'incompatible-version' ||
+              value.packageResult?.incompatible?.length
+              ? 'incompatible'
+              : value.pendingBuilds?.length || value.packageResult?.kind === 'build-blocked'
+                ? 'scripts'
+                : ['not-found', 'no-matching-version'].includes(value.packageResult?.kind)
+                  ? 'delayed'
+                  : 'failed',
+          );
         if (
           value.bundle !== 'dsh-live-voice' ||
           value.version !== state.version ||

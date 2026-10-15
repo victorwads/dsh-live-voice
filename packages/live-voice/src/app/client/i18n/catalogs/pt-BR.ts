@@ -44,10 +44,14 @@ const ptBR: LiveVoiceTranslation = {
     'Instalar Voz ao Vivo {version} neste perfil do DSH? O download precisa de rede. Reinicie o DSH depois, se solicitado; nada reinicia automaticamente.',
   'dsh-live-voice.commons.update.current':
     'Esta versão já está instalada. Reinicie o DSH para utilizá-la.',
+  'dsh-live-voice.commons.update.delayed':
+    'A versão solicitada ainda não está disponível para este perfil. A publicação pode estar em andamento ou aguardando o minimumReleaseAge do pnpm. Aguarde e consulte o gerenciador de plugins do DSH; nenhuma política de segurança foi ignorada.',
   'dsh-live-voice.commons.update.done':
     'Voz ao Vivo {version} instalado. Recarregue a página quando quiser.',
   'dsh-live-voice.commons.update.failed':
     'Falha na atualização. A versão pode ainda não estar no npm. Verifique o gerenciador de plugins do DSH.',
+  'dsh-live-voice.commons.update.incompatible':
+    'Esta versão é incompatível com o DSH em execução. Consulte o gerenciador de plugins e use versões compatíveis do DSH e do plugin; nenhuma exceção de compatibilidade foi concedida.',
   'dsh-live-voice.commons.update.installing': 'Atualizando…',
   'dsh-live-voice.commons.update.label': 'Atualização disponível',
   'dsh-live-voice.commons.update.link': 'Atualização disponível: {version}. Abrir lançamento',

@@ -10,7 +10,7 @@ export function registerDshLocales(ctx: any) {
   for (const [id, language] of Object.entries(Langs)) {
     if (!registered.has(id.toLowerCase())) {
       ctx.effect(
-        () => ctx.locale.addLanguage({ id, label: language.name, shortLabel: language.short }),
+        () => ctx.locale.addLanguage({ id, label: language.name, fallback: 'en' }),
         namespace + ': ' + id + ' language',
       );
       registered.add(id.toLowerCase());

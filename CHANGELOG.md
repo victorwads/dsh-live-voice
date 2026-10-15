@@ -6,6 +6,11 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 ## [0.6.x] - Next
 
+### Fixes
+
+- Avoid unused ONNX/protobuf install-script approvals that blocked updates: browser speech and VAD libraries are bundled with their runtime assets rather than installed as runtime dependencies in DSH profiles.
+- Explain update installation blockers for build-script approval, unavailable npm versions or release-age delays, and incompatible DSH versions without bypassing security policies.
+
 ### Developer notes
 
 - Debugger translations now use typed per-module, per-locale catalogs and the Wads React translation runtime. Use the debugger’s `i18n.config.json` and `src/i18n` contracts when adding copy; the former monolithic catalog has been removed.

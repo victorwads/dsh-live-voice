@@ -42,9 +42,13 @@ const zh: LiveVoiceTranslation = {
   'dsh-live-voice.commons.update.confirm':
     '在此 DSH 配置中安装 实时语音 {version}？下载需要网络。若提示，请之后重启 DSH；不会自动重启。',
   'dsh-live-voice.commons.update.current': '此版本已安装。请重启 DSH 后使用。',
+  'dsh-live-voice.commons.update.delayed':
+    '此配置暂时无法获取所请求的版本。它可能仍在发布，或受 pnpm minimumReleaseAge 限制。请稍后检查 DSH 插件管理器；未绕过任何安全策略。',
   'dsh-live-voice.commons.update.done': '实时语音 {version} 已安装。准备好后请刷新页面。',
   'dsh-live-voice.commons.update.failed':
     '更新失败。该版本可能尚未发布到 npm。请查看 DSH 插件管理器。',
+  'dsh-live-voice.commons.update.incompatible':
+    '此版本与正在运行的 DSH 不兼容。请检查 DSH 插件管理器并使用兼容的 DSH 和插件版本；未授予兼容性豁免。',
   'dsh-live-voice.commons.update.installing': '正在更新…',
   'dsh-live-voice.commons.update.label': '有可用更新',
   'dsh-live-voice.commons.update.link': '有可用更新：{version}。打开发布页面',

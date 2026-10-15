@@ -110,3 +110,22 @@ test('lost replies and mismatched results stay uncertain without retry', async (
   assert.equal(f.updater.getSnapshot().phase, 'uncertain');
   assert.equal(f.calls.length, 1);
 });
+
+test('alpha3 installer failure kinds produce actionable blockers without approval or retry', async () => {
+  for (const [details, problem] of [
+    [{ packageResult: { kind: 'build-blocked' } }, 'scripts'],
+    [{ packageResult: { kind: 'no-matching-version' } }, 'delayed'],
+    [{ packageResult: { kind: 'not-found' } }, 'delayed'],
+    [{ error: { code: 'incompatible-version' } }, 'incompatible'],
+    [{ packageResult: { incompatible: [{ name: 'plugin' }] } }, 'incompatible'],
+    [{ packageResult: { kind: 'network' } }, 'failed'],
+  ]) {
+    const f = fixture({}, { application: 'failed', ...details });
+    await f.updater.prepare('v9.0.0');
+    await f.updater.confirm();
+    assert.equal(f.updater.getSnapshot().problem, problem);
+    assert.equal(f.updater.getSnapshot().phase, 'failed');
+    assert.equal(f.calls.length, 1);
+    assert.deepEqual(f.calls[0][1], { enabled: true, saveExact: true });
+  }
+});

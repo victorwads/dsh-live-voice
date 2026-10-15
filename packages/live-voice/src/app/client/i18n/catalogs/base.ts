@@ -41,8 +41,10 @@ export interface LiveVoiceTranslation extends Translation {
   'dsh-live-voice.commons.update.cancel': string;
   'dsh-live-voice.commons.update.confirm': string;
   'dsh-live-voice.commons.update.current': string;
+  'dsh-live-voice.commons.update.delayed': string;
   'dsh-live-voice.commons.update.done': string;
   'dsh-live-voice.commons.update.failed': string;
+  'dsh-live-voice.commons.update.incompatible': string;
   'dsh-live-voice.commons.update.installing': string;
   'dsh-live-voice.commons.update.label': string;
   'dsh-live-voice.commons.update.link': string;

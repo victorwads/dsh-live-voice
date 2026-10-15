@@ -43,10 +43,14 @@ const en: LiveVoiceTranslation = {
     'Install Live Voice {version} in this DSH profile? Download requires network access. Restart DSH afterward when requested; nothing restarts automatically.',
   'dsh-live-voice.commons.update.current':
     'This version is already installed. Restart DSH to use it.',
+  'dsh-live-voice.commons.update.delayed':
+    'The requested version is not available to this profile yet. It may still be publishing or be delayed by pnpm minimumReleaseAge. Wait, then check the DSH plugin manager; no security policy was bypassed.',
   'dsh-live-voice.commons.update.done':
     'Live Voice {version} installed. Reload the page when ready.',
   'dsh-live-voice.commons.update.failed':
     'Update failed. The release may not be published on npm yet. Check the DSH plugin manager.',
+  'dsh-live-voice.commons.update.incompatible':
+    'This release is incompatible with the running DSH version. Check the DSH plugin manager and use a compatible DSH/plugin version; no compatibility exemption was granted.',
   'dsh-live-voice.commons.update.installing': 'Updating…',
   'dsh-live-voice.commons.update.label': 'Update available',
   'dsh-live-voice.commons.update.link': 'Update available: {version}. Open release',

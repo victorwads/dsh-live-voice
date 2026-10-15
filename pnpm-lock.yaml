@@ -47,15 +47,6 @@ importers:
 
   packages/live-voice:
     dependencies:
-      '@dlv/ort-local':
-        specifier: npm:onnxruntime-web@1.31.0-dev.20260914-8d85527a0
-        version: onnxruntime-web@1.31.0-dev.20260914-8d85527a0
-      '@huggingface/transformers':
-        specifier: 4.3.1
-        version: 4.3.1(@types/node@26.6.2)
-      '@ricky0123/vad-web':
-        specifier: 0.0.31
-        version: 0.0.31
       '@wads.dev/i18n-react':
         specifier: ^0.0.1-alpha.0
         version: 0.0.1-alpha.0(react@19.3.0)(typescript@7.0.2)
@@ -65,6 +56,16 @@ importers:
       marked:
         specifier: ^18.1.0
         version: 18.1.0
+    devDependencies:
+      '@dlv/ort-local':
+        specifier: npm:onnxruntime-web@1.31.0-dev.20260914-8d85527a0
+        version: onnxruntime-web@1.31.0-dev.20260914-8d85527a0
+      '@huggingface/transformers':
+        specifier: 4.3.1
+        version: 4.3.1(@types/node@26.6.2)
+      '@ricky0123/vad-web':
+        specifier: 0.0.31
+        version: 0.0.31
       onnxruntime-web:
         specifier: 1.22.0
         version: 1.22.0

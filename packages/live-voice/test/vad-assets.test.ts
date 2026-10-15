@@ -154,8 +154,8 @@ test('Invalid asset versions cannot add routes', () => {
 test('Published lib VAD assets contain only matched WASM EP builds, model, licenses and complete hashes', async () => {
   const packageRoot = fileURLToPath(new URL('../', import.meta.url));
   const metadata = JSON.parse(await readFile(join(packageRoot, 'package.json'), 'utf8'));
-  assert.equal(metadata.dependencies['@ricky0123/vad-web'], '0.0.31');
-  assert.equal(metadata.dependencies['onnxruntime-web'], '1.22.0');
+  assert.equal(metadata.devDependencies['@ricky0123/vad-web'], '0.0.31');
+  assert.equal(metadata.devDependencies['onnxruntime-web'], '1.22.0');
   assert.ok(metadata.files.includes('lib/'));
   const worker = await readFile(join(packageRoot, 'lib/vad/vad.worker.js'), 'utf8');
   assert.ok(

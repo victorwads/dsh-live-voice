@@ -129,3 +129,14 @@ test('both npm packages build before packing and include compiled runtime entrie
     );
   }
 });
+
+test('browser ASR build dependency does not install unused native ONNX in consumer profiles', () => {
+  const metadata = JSON.parse(readFileSync('packages/live-voice/package.json', 'utf8'));
+  assert.equal(metadata.dependencies?.['@huggingface/transformers'], undefined);
+  assert.equal(metadata.dependencies?.['onnxruntime-node'], undefined);
+  for (const name of ['@dlv/ort-local', '@ricky0123/vad-web', 'onnxruntime-web']) {
+    assert.equal(metadata.dependencies?.[name], undefined);
+    assert.ok(metadata.devDependencies[name]);
+  }
+  assert.equal(metadata.devDependencies['@huggingface/transformers'], '4.3.1');
+});

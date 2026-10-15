@@ -43,10 +43,14 @@ const hi: LiveVoiceTranslation = {
     'इस DSH प्रोफ़ाइल में लाइव वॉइस {version} इंस्टॉल करें? डाउनलोड के लिए नेटवर्क चाहिए। अनुरोध होने पर बाद में DSH पुनः शुरू करें; कुछ भी अपने आप पुनः शुरू नहीं होगा।',
   'dsh-live-voice.commons.update.current':
     'यह संस्करण पहले से इंस्टॉल है। उपयोग के लिए DSH पुनः शुरू करें।',
+  'dsh-live-voice.commons.update.delayed':
+    'माँगा गया संस्करण अभी इस प्रोफ़ाइल के लिए उपलब्ध नहीं है। प्रकाशन जारी हो सकता है या pnpm का minimumReleaseAge विलंब कर सकता है। प्रतीक्षा करें, फिर DSH प्लगइन प्रबंधक देखें; कोई सुरक्षा नीति नहीं बदली गई।',
   'dsh-live-voice.commons.update.done':
     'लाइव वॉइस {version} इंस्टॉल हो गया। तैयार होने पर पेज रीलोड करें।',
   'dsh-live-voice.commons.update.failed':
     'अपडेट विफल। रिलीज़ अभी npm पर उपलब्ध नहीं हो सकती। DSH प्लगइन प्रबंधक देखें।',
+  'dsh-live-voice.commons.update.incompatible':
+    'यह रिलीज़ चल रहे DSH संस्करण के साथ संगत नहीं है। DSH प्लगइन प्रबंधक देखें और संगत DSH तथा प्लगइन संस्करण उपयोग करें; कोई संगतता छूट नहीं दी गई।',
   'dsh-live-voice.commons.update.installing': 'अपडेट हो रहा है…',
   'dsh-live-voice.commons.update.label': 'अपडेट उपलब्ध है',
   'dsh-live-voice.commons.update.link': 'अपडेट उपलब्ध है: {version}। रिलीज़ खोलें',
