@@ -186,10 +186,12 @@ export function apply(ctx) {
   ctx.effect(() => {
     window[RECORDING_KEY] = recordings;
     window.dispatchEvent(new window.Event(RECORDING_CHANGED));
+    const unsubscribeModels = localModels.subscribe(notifyDiagnostics);
     const unpublish = publishDiagnosticSource(window, {
       version: 1,
       read: ({ includeContent = false } = {}) => ({
         application: { disposed, voiceModeActive, retiring: retiring.size },
+        runtimes: localModels.readDiagnostics(),
         audioSources: {
           vad: { status: readSileroVadDiagnostics().status, ...assetDiagnostics() },
           microphone: meetingEntry
@@ -229,6 +231,7 @@ export function apply(ctx) {
     });
     return () => {
       unpublish();
+      unsubscribeModels();
       diagnosticListeners.clear();
     };
   }, 'dsh-live-voice: diagnostic bridge');

@@ -21,6 +21,12 @@ All Whisper selections are multilingual models, not `.en` variants. Automatic la
 
 Microphone and meeting audio reuse the existing recording-owned capture, VAD pins, range queue, transcript audit, and stop/cancellation lifecycle. Inference is serialized across sources and segments are bounded below 30 seconds. Stop terminates cancelled worker work; no partial late transcript is inserted. Word-aligned timestamps are not claimed.
 
+## Runtime diagnostics
+
+The optional debugger adds a **Runtimes** tab once a model load has been attempted, including loading, failed and released models. It displays the pinned model/revision, encoder/decoder precision, requested WebGPU/WASM provider, worker liveness, runtime versions and identity, load round-trip/worker timings, last inference duration, audio duration and processing/audio ratio, queues, completed/failed counts, and the last 100 content-free lifecycle events. WebGPU initialization is not per-operator GPU profiling.
+
+Memory values are deliberately scoped: complete download and cached-file byte counts are storage, not RAM; accounted PCM covers only queued/active input buffers, not internal tensors or all copies. Optional page JavaScript heap is non-standard/page-wide and excludes full workers/WASM/GPU memory. Actual model RAM and VRAM remain unavailable, rather than being guessed from download size. Reading diagnostics never downloads models or initializes workers. No audio, transcript or free-form exception is retained in runtime events.
+
 ## Updating browser runtimes
 
 The worker URL includes a runtime identity derived from the protocol and pinned model catalog. Every worker reply must match that identity. Old workers now report an outdated runtime rather than claiming a supported model is incompatible. Packaged worker/runtime responses use `private, no-store` because development builds can change under the same package version. Model downloads remain separately cached and do not need to be repeated to fix a worker mismatch. If the updated frontend detects an outdated worker, refresh the page; if the server still serves old assets, load the updated Live Voice backend in DSH before retrying. Never disable authentication or delete all browser data as a workaround.

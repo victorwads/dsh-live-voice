@@ -141,6 +141,7 @@ let queue = Promise.resolve();
 scope.onmessage = (event) => {
   const { id, type, key, device, pcm, language } = event.data;
   queue = queue.then(async () => {
+    const started = performance.now();
     try {
       if (type === 'load') await load(key, device);
       else if (type === 'transcribe') {
@@ -148,14 +149,25 @@ scope.onmessage = (event) => {
         if (!(pcm instanceof Float32Array) || pcm.length > 16000 * 30)
           throw new BrowserAsrError('invalid-audio');
         const text = await runtime.transcribe(pcm, language);
-        scope.postMessage({ id, runtimeId: browserAsrRuntimeId, ok: true, text });
+        scope.postMessage({
+          id,
+          runtimeId: browserAsrRuntimeId,
+          elapsedMs: performance.now() - started,
+          ok: true,
+          text,
+        });
         return;
       } else if (type === 'dispose') {
         await runtime?.dispose();
         runtime = null;
         loadedKey = '';
       } else throw new BrowserAsrError('invalid-command');
-      scope.postMessage({ id, runtimeId: browserAsrRuntimeId, ok: true });
+      scope.postMessage({
+        id,
+        runtimeId: browserAsrRuntimeId,
+        elapsedMs: performance.now() - started,
+        ok: true,
+      });
     } catch (error) {
       scope.postMessage({
         id,

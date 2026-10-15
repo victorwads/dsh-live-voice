@@ -23,6 +23,7 @@ TODO...
 
 #### Live Voice Debugger
 
+- Inspect browser ASR models in a conditional Runtimes tab, with pinned model/runtime versions, execution provider, loading and transcription timings, bounded lifecycle events, and clearly scoped cache/buffer/page-heap figures without claiming model RAM or VRAM measurements.
 - Browse recorded sessions, play speech or silence, and inspect their markers, transcriptions, and errors.
 - Export a complete session for analysis or delete its audio and history.
 - Star important recordings to protect them from automatic cleanup without counting against retention.

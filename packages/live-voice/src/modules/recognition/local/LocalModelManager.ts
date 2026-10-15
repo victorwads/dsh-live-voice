@@ -7,7 +7,8 @@ import {
   removeBrowserModel,
 } from './modelCache.js';
 import { browserAsrAssetBase } from './assets.js';
-import { browserAsrRuntimeId } from './runtimeIdentity.js';
+import { browserAsrRuntimeId, browserAsrVersions } from './runtimeIdentity.js';
+import { RuntimeDiagnostics } from './RuntimeDiagnostics.js';
 export type LocalModelState = {
   phase: 'absent' | 'checking' | 'downloading' | 'loading' | 'ready' | 'downloaded' | 'error';
   loaded: number;
@@ -34,6 +35,48 @@ export class LocalModelManager {
     gpu: 'checking',
     storage: typeof caches !== 'undefined',
     busy: false,
+  };
+  private telemetry = new RuntimeDiagnostics();
+  /** Passive projection: never probes adapters, reads weights, loads a worker or exposes content. */
+  readDiagnostics = () => {
+    const snapshot = this.telemetry.read();
+    const memory = this.globals.performance?.memory;
+    const used = memory?.usedJSHeapSize;
+    return {
+      runtimeId: browserAsrRuntimeId,
+      versions: { ...browserAsrVersions },
+      gpu: this.state.gpu,
+      shaderF16: this.state.shaderF16 ?? null,
+      storageAvailableBytes: this.state.availableBytes ?? null,
+      pageJsHeapBytes: typeof used === 'number' && Number.isFinite(used) && used >= 0 ? used : null,
+      modelRamBytes: null,
+      modelVramBytes: null,
+      models: browserAsrModels
+        .filter((model) => snapshot.models[model.key]?.loadAttempted)
+        .map((model) => {
+          const state = this.state.models[model.key];
+          const metrics = snapshot.models[model.key];
+          return {
+            key: model.key,
+            name: model.name,
+            repository: model.repository,
+            revision: model.revision,
+            family: model.family,
+            encoderDtype: 'encoderDtype' in model ? model.encoderDtype : 'fp32',
+            decoderDtype: 'decoderDtype' in model ? model.decoderDtype : 'q4',
+            modelBytes: model.bytes,
+            cachedBytes: state.loaded,
+            cached: !!state.cached,
+            phase: state.phase,
+            device: state.device ?? null,
+            workerActive: this.workers.has(model.key),
+            leases: this.leases.get(model.key) ?? 0,
+            pendingRequests: this.workers.get(model.key)?.pending.size ?? 0,
+            ...metrics,
+          };
+        }),
+      events: snapshot.events,
+    };
   };
   private listeners = new Set<() => void>();
   private workers = new Map<
@@ -186,6 +229,9 @@ export class LocalModelManager {
     const item = this.workers.get(key);
     if (!item) return;
     this.workers.delete(key);
+    if (code !== 'cancelled') this.telemetry.get(key).error = this.telemetry.code({ code });
+    if (this.state.models[key]?.phase === 'ready') this.patch(key, { phase: 'downloaded' });
+    this.telemetry.event(key, 'worker', 'released', null, code === 'cancelled' ? null : code);
     item.worker.terminate();
     for (const pending of item.pending.values()) pending.reject(new BrowserAsrError(code));
     item.pending.clear();
@@ -271,11 +317,30 @@ export class LocalModelManager {
         this.retire(active);
         this.patch(active, { phase: 'downloaded' });
       }
-    this.patch(key, { phase: 'loading', cached: true, error: undefined });
+    const metrics = this.telemetry.get(key);
+    metrics.loadAttempted = true;
+    metrics.error = null;
+    metrics.loadMs = null;
+    metrics.workerLoadMs = null;
+    const started = this.telemetry.clock();
+    this.telemetry.event(key, 'load', 'started');
+    this.patch(key, { phase: 'loading', device, cached: true, error: undefined });
     try {
-      await this.request(key, { type: 'load', key, device }, signal);
+      const result = await this.request(key, { type: 'load', key, device }, signal);
+      metrics.loadMs = this.telemetry.clock() - started;
+      metrics.workerLoadMs = this.telemetry.duration(result.elapsedMs);
+      this.telemetry.event(key, 'load', 'success', metrics.loadMs);
       this.patch(key, { phase: 'ready', device });
     } catch (error) {
+      metrics.error = this.telemetry.code(error);
+      metrics.loadMs = this.telemetry.clock() - started;
+      this.telemetry.event(
+        key,
+        'load',
+        metrics.error === 'cancelled' ? 'cancelled' : 'error',
+        metrics.loadMs,
+        metrics.error,
+      );
       this.retire(key);
       if (!this.disposed)
         this.patch(key, {
@@ -307,12 +372,48 @@ export class LocalModelManager {
     signal?: AbortSignal,
   ): Promise<string> {
     // One bounded inference at a time across independent microphone and meeting capture.
+    const metrics = this.telemetry.get(key),
+      bytes = pcm.byteLength,
+      audioMs = pcm.length / 16;
+    metrics.queued++;
+    metrics.pcmBytes += bytes;
+    this.publish();
     const work = this.tail.then(async () => {
-      if (signal?.aborted) throw new BrowserAsrError('cancelled');
-      if (this.state.models[key]?.phase !== 'ready')
-        await this.prepare(key, this.state.models[key]?.device ?? 'webgpu', signal);
-      const result = await this.request(key, { type: 'transcribe', pcm, language }, signal);
-      return result.text as string;
+      metrics.queued--;
+      metrics.active++;
+      metrics.audioMs = audioMs;
+      metrics.error = null;
+      metrics.workerInferenceMs = null;
+      metrics.lastMs = null;
+      this.publish();
+      const started = this.telemetry.clock();
+      this.telemetry.event(key, 'transcribe', 'started');
+      try {
+        if (signal?.aborted) throw new BrowserAsrError('cancelled');
+        if (this.state.models[key]?.phase !== 'ready')
+          await this.prepare(key, this.state.models[key]?.device ?? 'webgpu', signal);
+        const result = await this.request(key, { type: 'transcribe', pcm, language }, signal);
+        metrics.lastMs = this.telemetry.clock() - started;
+        metrics.workerInferenceMs = this.telemetry.duration(result.elapsedMs);
+        metrics.completed++;
+        this.telemetry.event(key, 'transcribe', 'success', metrics.lastMs);
+        return result.text as string;
+      } catch (error) {
+        metrics.failed++;
+        metrics.error = this.telemetry.code(error);
+        this.telemetry.event(
+          key,
+          'transcribe',
+          metrics.error === 'cancelled' ? 'cancelled' : 'error',
+          this.telemetry.clock() - started,
+          metrics.error,
+        );
+        throw error;
+      } finally {
+        metrics.active--;
+        metrics.pcmBytes -= bytes;
+        this.publish();
+      }
     });
     this.tail = work.then(
       () => {},

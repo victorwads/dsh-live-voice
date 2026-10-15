@@ -260,6 +260,89 @@ test('root runtime/source events ignore frame metrics and preserve semantic tran
   assert.equal(inspector.read().transitions.length, 0);
   inspector.dispose();
 });
+test('runtime tab is conditional, translated, keyboard accessible and honest about memory', async (t) => {
+  await domFixture(t);
+  const root = createRoot(document.getElementById('root'));
+  let runtimes = { models: [], events: [] };
+  let notify = () => {};
+  window[DIAGNOSTIC_KEY] = {
+    version: 1,
+    read: () => ({ runtimes, sessions: {} }),
+    subscribe: (fn) => {
+      notify = fn;
+      return () => {};
+    },
+  };
+  for (const copy of Object.values(dictionaries)) {
+    runtimes = { models: [], events: [] };
+    await act(async () => root.render(<DebuggerPanel copy={copy} onClose={() => {}} />));
+    assert.equal(
+      [...document.querySelectorAll('[role=tab]')].some((e) => e.textContent === copy.runtimeTitle),
+      false,
+    );
+    runtimes = {
+      runtimeId: 'worker-v3',
+      versions: { onnx: '1.31', transformers: '4.3' },
+      pageJsHeapBytes: null,
+      models: [
+        {
+          key: 'whisper-small',
+          name: 'Whisper small (q4)',
+          phase: 'ready',
+          device: 'webgpu',
+          workerActive: true,
+          repository: 'onnx-community/whisper-small',
+          revision: 'sha',
+          encoderDtype: 'q4',
+          decoderDtype: 'q4',
+          modelBytes: 302101039,
+          cachedBytes: 302101039,
+          pcmBytes: 0,
+          workerLoadMs: 100,
+          loadMs: 150,
+          workerInferenceMs: 50,
+          audioMs: 100,
+          queued: 0,
+          active: 0,
+          pendingRequests: 0,
+          completed: 1,
+          failed: 0,
+        },
+      ],
+      events: [],
+    };
+    await act(async () => {
+      notify();
+      await new Promise((r) => setTimeout(r, 110));
+    });
+    const tabs = [...document.querySelectorAll('[role=tab]')];
+    assert.equal(tabs.length, 3);
+    const rt = tabs.find((e) => e.textContent === copy.runtimeTitle);
+    assert.ok(rt);
+    await act(async () =>
+      tabs[0].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'End', bubbles: true })),
+    );
+    assert.equal(rt.getAttribute('aria-selected'), 'true');
+    const panel = document.getElementById(rt.getAttribute('aria-controls'));
+    assert.equal(panel.hidden, false);
+    assert.ok(panel.textContent.includes('Whisper small (q4)'));
+    assert.ok(panel.textContent.includes('0.281 GiB'));
+    assert.ok(panel.textContent.includes(copy.runtimeUnavailable));
+    assert.ok(panel.textContent.includes(copy.runtimeRam));
+    assert.ok(!panel.textContent.includes('undefined'));
+    runtimes = { models: [], events: [] };
+    await act(async () => {
+      notify();
+      await new Promise((r) => setTimeout(r, 110));
+    });
+    assert.equal(
+      [...document.querySelectorAll('[role=tab]')].some((e) => e.textContent === copy.runtimeTitle),
+      false,
+    );
+  }
+  await act(async () => root.unmount());
+});
+
 test('VAD status and asset sizes use only the expandable audioSources state tree in every locale', async (t) => {
   await domFixture(t);
   const root = createRoot(document.getElementById('root'));

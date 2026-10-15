@@ -350,6 +350,99 @@ test('medium and Turbo q4 accept WebGPU without shader-f16 and explicit WASM', a
   }
 });
 
+test('runtime diagnostics are passive, bounded and expose timings without content or fabricated RAM', async () => {
+  const h = harness();
+  try {
+    assert.equal(h.manager.readDiagnostics().models.length, 0);
+    assert.equal(h.workers.length, 0);
+    assert.equal(h.requests.length, 0);
+    await seed(h.storage);
+    await h.manager.refresh();
+    const load = h.manager.prepare(model.key, 'webgpu');
+    await tick();
+    let d = h.manager.readDiagnostics();
+    assert.equal(d.models[0].phase, 'loading');
+    assert.equal(d.models[0].workerActive, true);
+    h.workers[0].reply(0, { elapsedMs: 123 });
+    await load;
+    const job = h.manager.transcribe(model.key, new Float32Array(1600), 'pt-BR');
+    await tick();
+    d = h.manager.readDiagnostics();
+    assert.equal(d.models[0].active, 1);
+    assert.equal(d.models[0].pcmBytes, 6400);
+    h.workers[0].reply(1, { elapsedMs: 50, text: 'PRIVATE TRANSCRIPT' });
+    assert.equal(await job, 'PRIVATE TRANSCRIPT');
+    d = h.manager.readDiagnostics();
+    assert.equal(d.models[0].workerLoadMs, 123);
+    assert.equal(d.models[0].workerInferenceMs, 50);
+    assert.equal(d.models[0].audioMs, 100);
+    assert.equal(d.models[0].completed, 1);
+    assert.equal(d.models[0].pcmBytes, 0);
+    assert.equal(d.modelRamBytes, null);
+    assert.equal(d.modelVramBytes, null);
+    assert.equal(d.models[0].modelBytes, model.bytes);
+    assert.equal(d.models[0].cachedBytes, model.bytes);
+    assert.ok(!JSON.stringify(d).includes('PRIVATE TRANSCRIPT'));
+    d.events.splice(0);
+    assert.ok(h.manager.readDiagnostics().events.length > 0);
+    for (let i = 0; i < 55; i++) {
+      const job = h.manager.transcribe(model.key, new Float32Array(16), 'auto');
+      await tick();
+      h.workers[0].reply(i + 2, { text: 'private' });
+      await job;
+    }
+    assert.equal(h.manager.readDiagnostics().events.length, 100);
+    await h.manager.remove(model.key);
+    assert.equal(h.manager.readDiagnostics().models[0].workerActive, false);
+    assert.equal(h.manager.readDiagnostics().models[0].cachedBytes, 0);
+  } finally {
+    h.manager.dispose();
+  }
+});
+
+test('runtime diagnostics never retain arbitrary exception codes', async () => {
+  const h = harness();
+  try {
+    await seed(h.storage);
+    await h.manager.refresh();
+    const load = h.manager.prepare(model.key, 'wasm');
+    const rejected = assert.rejects(load);
+    await tick();
+    h.workers[0].reply(0, { ok: false, code: 'private-user-content' });
+    await rejected;
+    const data = h.manager.readDiagnostics();
+    assert.equal(data.models[0].error, 'inference-failed');
+    assert.ok(!JSON.stringify(data).includes('private-user-content'));
+  } finally {
+    h.manager.dispose();
+  }
+});
+
+test('runtime diagnostics sanitize worker errors and settle cancelled PCM accounting', async () => {
+  const h = harness();
+  try {
+    await seed(h.storage);
+    await h.manager.refresh();
+    const load = h.manager.prepare(model.key, 'wasm');
+    await tick();
+    h.workers[0].reply(0);
+    await load;
+    const abort = new AbortController();
+    const job = h.manager.transcribe(model.key, new Float32Array(80), 'auto', abort.signal);
+    const rejected = assert.rejects(job);
+    await tick();
+    abort.abort();
+    await rejected;
+    const d = h.manager.readDiagnostics();
+    assert.equal(d.models[0].pcmBytes, 0);
+    assert.equal(d.models[0].active, 0);
+    assert.equal(d.models[0].failed, 1);
+    assert.equal(d.models[0].workerActive, false);
+  } finally {
+    h.manager.dispose();
+  }
+});
+
 test('explicit download maps quota, cancellation and HTTP failures without initializing a worker', async () => {
   const h = harness();
   const file = model.files[0];

@@ -8,6 +8,7 @@ import { createInspector } from './inspector.js';
 import type { DebuggerCopy } from './locales.js';
 import { StateTree } from './StateTree.js';
 import { RecordingPanel } from './RecordingPanel.js';
+import { RuntimePanel } from './RuntimePanel.js';
 export function DebuggerPanel({
   copy,
   onClose,
@@ -17,7 +18,7 @@ export function DebuggerPanel({
   onClose(): void;
   target?: any;
 }) {
-  const [tab, setTab] = React.useState<'recordings' | 'states'>('recordings');
+  const [tab, setTab] = React.useState<'recordings' | 'states' | 'runtimes'>('recordings');
   const tabsId = React.useId();
   const [frozen, setFrozen] = React.useState(false);
   const [refreshHz, setRefreshHz] = React.useState(10);
@@ -70,6 +71,14 @@ export function DebuggerPanel({
     return () => clearInterval(timer);
   }, [frozen, refreshHz]);
   const modules = [...new Set(view?.transitions.map((entry) => entry.module) ?? [])].sort();
+  const runtimeData = (view?.state as any)?.runtimes;
+  const hasRuntimes = !!runtimeData?.models?.length;
+  const tabs: ('recordings' | 'states' | 'runtimes')[] = hasRuntimes
+    ? ['recordings', 'states', 'runtimes']
+    : ['recordings', 'states'];
+  React.useEffect(() => {
+    if (tab === 'runtimes' && !hasRuntimes) setTab('states');
+  }, [tab, hasRuntimes]);
   return (
     <aside className="dlvd-panel" aria-label={copy.title}>
       <header>
@@ -80,7 +89,7 @@ export function DebuggerPanel({
         </button>
       </header>
       <div className="dlvd-tabs" role="tablist" aria-label={copy.title}>
-        {(['recordings', 'states'] as const).map((name) => (
+        {tabs.map((name) => (
           <button
             type="button"
             key={name}
@@ -93,14 +102,15 @@ export function DebuggerPanel({
             onKeyDown={(event) => {
               if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
                 event.preventDefault();
+                const index = tabs.indexOf(tab);
                 const next =
                   event.key === 'Home'
-                    ? 'recordings'
+                    ? tabs[0]
                     : event.key === 'End'
-                      ? 'states'
-                      : tab === 'recordings'
-                        ? 'states'
-                        : 'recordings';
+                      ? tabs[tabs.length - 1]
+                      : tabs[
+                          (index + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length
+                        ];
                 setTab(next);
                 event.currentTarget.parentElement
                   ?.querySelector<HTMLButtonElement>('[id="' + tabsId + '-' + next + '-tab"]')
@@ -108,7 +118,11 @@ export function DebuggerPanel({
               }
             }}
           >
-            {name === 'recordings' ? copy.recordingTitle : copy.states}
+            {name === 'recordings'
+              ? copy.recordingTitle
+              : name === 'runtimes'
+                ? copy.runtimeTitle
+                : copy.states}
           </button>
         ))}
       </div>
@@ -121,6 +135,17 @@ export function DebuggerPanel({
       >
         {tab === 'recordings' && <RecordingPanel copy={copy} target={target} />}
       </div>
+      {hasRuntimes && (
+        <div
+          className="dlvd-tab-panel"
+          role="tabpanel"
+          id={tabsId + '-runtimes'}
+          aria-labelledby={tabsId + '-runtimes-tab'}
+          hidden={tab !== 'runtimes'}
+        >
+          {tab === 'runtimes' && <RuntimePanel data={runtimeData} copy={copy} />}
+        </div>
+      )}
       <div
         className="dlvd-tab-panel"
         role="tabpanel"
