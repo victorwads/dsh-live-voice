@@ -88,6 +88,64 @@ function fixture(settings = {}) {
   return { coordinator, recognition, meter, engine, spoken, sessions, log, draft: () => draft };
 }
 
+for (const delay of [0.6, 1.5]) {
+  test('automatic playback waits through the exact quiet boundary: ' + delay, async (t) => {
+    t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
+    const f = fixture({ assistantSpeechDelaySeconds: delay });
+    t.after(() => f.coordinator.dispose());
+    await f.coordinator.startConversation();
+    const input = f.sessions.at(-1);
+    input.onActivity(true);
+    f.coordinator.observeMessage('quiet', 'Wait for my turn.', { complete: true });
+    input.onActivity(false);
+    t.mock.timers.tick(delay * 1000 - 1);
+    await turn();
+    assert.equal(f.spoken.length, 0);
+    input.onActivity(true);
+    input.onActivity(false);
+    t.mock.timers.tick(delay * 1000 - 1);
+    await turn();
+    assert.equal(f.spoken.length, 0);
+    t.mock.timers.tick(1);
+    await turn();
+    assert.equal(f.spoken.length, 1);
+  });
+}
+
+test('recording timeline distinguishes gating from real playback start and ignores stale starts', async () => {
+  const f = fixture();
+  const events = [];
+  f.coordinator.recordingTimeline = () => (kind) => events.push(kind);
+  let options;
+  f.engine.speak = (_text, next) => {
+    options = next;
+    return new Promise((resolve) => {
+      f.done = resolve;
+    });
+  };
+  await f.coordinator.startConversation();
+  const playback = f.coordinator.speak('A diagnostic answer.');
+  await turn();
+  assert.deepEqual(events, ['capture-gated']);
+  assert.equal(f.coordinator.snapshot.listening, false);
+  options.onPlaybackStart();
+  options.onPlaybackStart();
+  await f.coordinator.pauseSpeech();
+  await f.coordinator.resumeSpeech();
+  f.done();
+  await playback;
+  assert.deepEqual(events, [
+    'capture-gated',
+    'assistant-start',
+    'assistant-pause',
+    'assistant-resume',
+    'assistant-end',
+  ]);
+  options.onPlaybackStart();
+  assert.equal(events.filter((e) => e === 'assistant-start').length, 1);
+  await f.coordinator.dispose();
+});
+
 test('overconstrained selected microphone is persisted as system default and retried once', async () => {
   const f = fixture({ inputDeviceId: 'disconnected', recognitionLang: 'pt-BR' });
   const saved = [];
@@ -712,7 +770,7 @@ test('manual playback remains available with automatic speech disabled and uncha
 });
 
 test('turning off automatic assistant speech discards delayed queued phrases', async () => {
-  const f = fixture({ assistantSpeechDelaySeconds: 1 });
+  const f = fixture({ assistantSpeechDelaySeconds: 1.5 });
   await f.coordinator.startConversation();
   const callbacks = f.sessions.at(-1);
   callbacks.onActivity(true);
@@ -931,7 +989,7 @@ test('new speech activity cancels a pending automatic send', async () => {
 });
 
 test('a breathing pause cannot start queued assistant speech and renewed speech restarts delay', async () => {
-  const f = fixture({ assistantSpeechDelaySeconds: 1 });
+  const f = fixture({ assistantSpeechDelaySeconds: 1.5 });
   await f.coordinator.startConversation();
   const callbacks = f.sessions.at(-1);
   callbacks.onActivity(true);
@@ -942,7 +1000,7 @@ test('a breathing pause cannot start queued assistant speech and renewed speech 
   await new Promise((resolve) => setTimeout(resolve, 600));
   assert.equal(f.spoken.length, 0);
   callbacks.onActivity(false);
-  await new Promise((resolve) => setTimeout(resolve, 1100));
+  await new Promise((resolve) => setTimeout(resolve, 1600));
   assert.deepEqual(
     f.spoken.map((item) => item.text),
     ['Wait for me.'],
@@ -976,7 +1034,7 @@ test('speaker mode keeps queued assistant speech behind pending transcription', 
   await new Promise((resolve) => setTimeout(resolve, 2100));
   await turn();
   assert.deepEqual(submitted, ['typed complete my turn']);
-  await new Promise((resolve) => setTimeout(resolve, 1100));
+  await new Promise((resolve) => setTimeout(resolve, 1600));
   assert.equal(f.spoken.length, 1, 'playback starts only after automatic delivery');
   assert.equal(f.spoken[0].text, 'Queued answer.');
   f.spoken[0].resolve();
@@ -1410,7 +1468,7 @@ test('prefetched speech from previous voice settings is disposed and regenerated
 
 test('meeting activity gates queued playback and confirmed participants pause speakers without TTS echo', async (t) => {
   t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
-  const f = fixture({ mode: 'speaker', assistantSpeechDelaySeconds: 1 });
+  const f = fixture({ mode: 'speaker', assistantSpeechDelaySeconds: 1.5 });
   const c = f.coordinator;
   await c.startConversation();
   c.setExternalSpeechActivity(true);
@@ -1418,20 +1476,20 @@ test('meeting activity gates queued playback and confirmed participants pause sp
   await turn();
   assert.equal(f.spoken.length, 0);
   c.setExternalSpeechActivity(false);
-  t.mock.timers.tick(1000);
+  t.mock.timers.tick(1500);
   await turn();
   assert.equal(f.spoken.length, 1);
   c.setExternalSpeechActivity(true);
   assert.equal(c.confirmExternalSpeech('Assistant reply'), false);
-  t.mock.timers.tick(1000);
+  t.mock.timers.tick(1500);
   await turn();
   assert.equal(c.getSnapshot().paused, false);
   c.confirmExternalSpeech('A participant has a different question');
-  t.mock.timers.tick(1000);
+  t.mock.timers.tick(1500);
   await turn();
   assert.equal(c.getSnapshot().paused, true);
   c.setExternalSpeechActivity(false);
-  t.mock.timers.tick(1000);
+  t.mock.timers.tick(1500);
   await turn();
   assert.equal(c.getSnapshot().paused, false);
   await c.pauseSpeech();
@@ -1444,14 +1502,14 @@ test('meeting activity gates queued playback and confirmed participants pause sp
 });
 test('meeting and microphone overlap does not resume playback until both are silent', async (t) => {
   t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
-  const f = fixture({ mode: 'headphones', assistantSpeechDelaySeconds: 1 });
+  const f = fixture({ mode: 'headphones', assistantSpeechDelaySeconds: 1.5 });
   const c = f.coordinator;
   await c.startConversation();
   const speech = c.speak('Assistant reply');
   await turn();
   c.setExternalSpeechActivity(true);
   c.confirmExternalSpeech('Participant talking');
-  t.mock.timers.tick(1000);
+  t.mock.timers.tick(1500);
   await turn();
   assert.equal(c.getSnapshot().paused, true);
   f.sessions.at(-1).onActivity(true);
@@ -1459,7 +1517,7 @@ test('meeting and microphone overlap does not resume playback until both are sil
   await turn();
   assert.equal(c.getSnapshot().paused, true);
   f.sessions.at(-1).onActivity(false);
-  t.mock.timers.tick(1000);
+  t.mock.timers.tick(1500);
   await turn();
   assert.equal(c.getSnapshot().paused, false);
   await c.dispose();
@@ -1468,14 +1526,14 @@ test('meeting and microphone overlap does not resume playback until both are sil
 
 test('final recognition releases automatic pause without activity-end event and renewed speech resets quiet time', async (t) => {
   t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
-  const f = fixture({ mode: 'headphones', assistantSpeechDelaySeconds: 1 });
+  const f = fixture({ mode: 'headphones', assistantSpeechDelaySeconds: 1.5 });
   const c = f.coordinator;
   await c.startConversation();
   const speech = c.speak('Long answer that is preserved');
   await turn();
   f.sessions.at(-1).onActivity(true);
   f.sessions.at(-1).onResult({ interim: 'hello' });
-  t.mock.timers.tick(1000);
+  t.mock.timers.tick(1500);
   await turn();
   assert.equal(c.getSnapshot().paused, true);
   f.sessions.at(-1).onResult({ final: 'hello' });
@@ -1487,7 +1545,7 @@ test('final recognition releases automatic pause without activity-end event and 
   await turn();
   assert.equal(c.getSnapshot().paused, true);
   f.sessions.at(-1).onActivity(false);
-  t.mock.timers.tick(1000);
+  t.mock.timers.tick(1500);
   await turn();
   assert.equal(c.getSnapshot().paused, false);
   assert.equal(f.spoken.length, 1, 'resume does not synthesize or restart text');
@@ -1497,18 +1555,18 @@ test('final recognition releases automatic pause without activity-end event and 
 });
 test('explicit pause during automatic quiet countdown prevents automatic resume', async (t) => {
   t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
-  const f = fixture({ mode: 'headphones', assistantSpeechDelaySeconds: 1 });
+  const f = fixture({ mode: 'headphones', assistantSpeechDelaySeconds: 1.5 });
   const c = f.coordinator;
   await c.startConversation();
   const speech = c.speak('Answer');
   await turn();
   f.sessions.at(-1).onActivity(true);
   f.sessions.at(-1).onResult({ interim: 'interrupt' });
-  t.mock.timers.tick(1000);
+  t.mock.timers.tick(1500);
   await turn();
   f.sessions.at(-1).onActivity(false);
   await c.pauseSpeech();
-  t.mock.timers.tick(1000);
+  t.mock.timers.tick(1500);
   await turn();
   assert.equal(c.getSnapshot().paused, true);
   assert.equal(f.log.includes('resume'), false);
@@ -1524,7 +1582,7 @@ for (const voiceCommandsEnabled of [true, false]) {
       const f = fixture({
         mode: 'headphones',
         voiceCommandsEnabled,
-        assistantSpeechDelaySeconds: 1,
+        assistantSpeechDelaySeconds: 1.5,
         sendingMode: 'automatic',
       });
       const c = f.coordinator;
@@ -1543,14 +1601,14 @@ for (const voiceCommandsEnabled of [true, false]) {
         return true;
       };
       f.sessions.at(-1).onResult({ interim: 'different human request' });
-      t.mock.timers.tick(1000);
+      t.mock.timers.tick(1500);
       await turn();
       assert.equal(c.getSnapshot().paused, true);
       f.sessions.at(-1).onResult({ final: 'different human request' });
       assert.equal(f.draft(), 'typed');
       assert.equal(questionResults, 0);
       assert.equal(c.getSnapshot().autoSendAt, null);
-      t.mock.timers.tick(1000);
+      t.mock.timers.tick(1500);
       await turn();
       assert.equal(c.getSnapshot().paused, false);
       assert.equal(f.spoken.length, 1);
@@ -1595,6 +1653,6 @@ test('silent recording writes preserve the auto-send deadline while speech work 
   cb.onResult({ final: 'late result' });
   assert.equal(f.coordinator.snapshot.autoSendAt, null);
   cb.onProcessingChange({ pending: 1, transcribing: 0, deliveryPending: 0 });
-  t.mock.timers.tick(1000);
+  t.mock.timers.tick(1500);
   assert.equal(sent.length, 2);
 });

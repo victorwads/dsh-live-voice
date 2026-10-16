@@ -1,12 +1,19 @@
 import type {
   RecordingAttempt,
+  RecordingEvent,
   RecordingPin,
   RecordingRepository,
   RecordingSession,
   RecordingWriter,
 } from './types.js';
 import { recordingSegments } from './types.js';
-import { assertCodec, decodePage, encodePage, RecordingRepositoryError, wavBlob } from './codec.js';
+import {
+  assertCodec,
+  decodePage,
+  encodePage,
+  RecordingRepositoryError,
+  wavBlob,
+} from './codec.js';
 import type { AudioPage } from './codec.js';
 import { createMemoryStore, openRecordingStore, storageError } from './storage.js';
 import type { PageStore, StoredSession } from './storage.js';
@@ -72,6 +79,8 @@ export function createRecordingRepository(): RecordingRepository {
       writer: RecordingWriter;
       idle: () => Promise<void>;
       setStarred(value: boolean): Promise<void>;
+      setName(value: string): Promise<void>;
+      event(value: RecordingEvent): Promise<void>;
     }
   >();
   let opening: Promise<PageStore> | undefined;
@@ -398,6 +407,69 @@ export function createRecordingRepository(): RecordingRepository {
         emit();
       });
     },
+    async setName(id, value) {
+      check();
+      if (
+        typeof value !== 'string' ||
+        value.trim().length > 120 ||
+        /[\u0000-\u001f\u007f-\u009f\u2028\u2029]/u.test(value)
+      )
+        throw new RecordingRepositoryError(
+          'invalid-range',
+          'Recording names must be a single line of at most 120 characters.',
+        );
+      const name = value.trim();
+      const active = writers.get(id);
+      if (active) return active.setName(name);
+      await serial(async () => {
+        const { store } = await locate(id);
+        const release = store === memory ? () => {} : await holdLock(id);
+        try {
+          await store.update(id, (current) => {
+            if (!current.starred)
+              throw new RecordingRepositoryError(
+                'invalid-range',
+                'Star a recording before naming it.',
+              );
+            return { ...current, name };
+          });
+        } finally {
+          release();
+        }
+        emit();
+      });
+    },
+    timeline() {
+      // Bind before speaker gating seals microphone capture. Never attach to unrelated later runs.
+      const targets = [...writers.entries()];
+      return async (kind) => {
+        const occurredAt = now();
+        await Promise.all(
+          targets.map(async ([id, active]) => {
+            const value: RecordingEvent = {
+              id: crypto.randomUUID(),
+              kind,
+              occurredAt,
+              atSample: active.writer.session.capturedSamples,
+            };
+            if (writers.get(id) === active) return active.event(value);
+            await serial(async () => {
+              const { store } = await locate(id);
+              const release = store === memory ? () => {} : await holdLock(id);
+              try {
+                await store.update(id, (current) => ({
+                  ...current,
+                  events: [...(current.events ?? []), value],
+                }));
+              } finally {
+                release();
+              }
+              emit();
+            });
+          }),
+        );
+      };
+    },
     async begin(input) {
       check();
       return serial(async () => {
@@ -448,6 +520,9 @@ export function createRecordingRepository(): RecordingRepository {
           configuration: input.configuration,
           pins: [],
           attempts: [],
+          events: [
+            { id: crypto.randomUUID(), kind: 'capture-start', occurredAt: now(), atSample: 0 },
+          ],
           keepPrevious: Math.max(1, Math.floor(policy.keepPrevious)),
         };
         try {
@@ -635,6 +710,15 @@ export function createRecordingRepository(): RecordingRepository {
                   state: fatal ? 'failed' : state,
                   error: fatal?.code ?? error,
                   endedAt: now(),
+                  events: [
+                    ...(current.events ?? []),
+                    {
+                      id: crypto.randomUUID(),
+                      kind: 'capture-end',
+                      occurredAt: now(),
+                      atSample: current.capturedSamples,
+                    },
+                  ],
                 }));
               } finally {
                 pending = new Float32Array(0);
@@ -653,6 +737,27 @@ export function createRecordingRepository(): RecordingRepository {
           setStarred: (value) =>
             enqueue(async () => {
               await update((current) => ({ ...current, starred: value }));
+            }),
+          setName: (name) =>
+            enqueue(async () => {
+              await update((current) => {
+                if (!current.starred)
+                  throw new RecordingRepositoryError(
+                    'invalid-range',
+                    'Star a recording before naming it.',
+                  );
+                return { ...current, name };
+              });
+            }),
+          event: (value) =>
+            enqueue(async () => {
+              await update((current) => ({
+                ...current,
+                events: [
+                  ...(current.events ?? []),
+                  { ...value, atSample: current.capturedSamples },
+                ],
+              }));
             }),
           idle: async () => {
             await tail;

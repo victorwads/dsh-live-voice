@@ -20,11 +20,27 @@ export interface RecordingAttempt {
   text?: string;
   error?: string;
 }
+export type RecordingEventKind =
+  | 'assistant-start'
+  | 'assistant-end'
+  | 'assistant-pause'
+  | 'assistant-resume'
+  | 'capture-gated'
+  | 'capture-start'
+  | 'capture-end';
+export interface RecordingEvent {
+  id: string;
+  kind: RecordingEventKind;
+  occurredAt: string;
+  atSample: number; // Captured sample boundary, not an invented audio position during capture gaps.
+}
 export interface RecordingSession {
   id: string;
   sourceId: string;
   kind: RecordingKind;
   label: string;
+  name?: string;
+  events?: RecordingEvent[];
   startedAt: string;
   endedAt?: string;
   state: 'recording' | 'completed' | 'interrupted' | 'failed';
@@ -76,6 +92,7 @@ export interface RecordingService {
   export(id: string): Promise<Blob>;
   remove(id: string): Promise<void>;
   setStarred(id: string, starred: boolean): Promise<void>;
+  setName?(id: string, name: string): Promise<void>;
   subscribe(listener: () => void): () => void;
 }
 export interface RecordingWriter {
@@ -99,6 +116,7 @@ export interface RecordingRepository extends RecordingService {
     policy: RecordingPolicy;
     configuration?: RecordingSession['configuration'];
   }): Promise<RecordingWriter>;
+  timeline(): (kind: RecordingEventKind) => Promise<void>;
   dispose(): Promise<void>;
 }
 export function recordingSegments(session: RecordingSession): RecordingSegment[] {

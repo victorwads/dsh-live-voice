@@ -29,8 +29,23 @@ function cancellable(promise, signal) {
 
 /** Session-owned policy. Input transitions are serialized; generations invalidate late work. */
 export class VoiceCoordinator {
-  constructor({ recognition, engines, meter, composer, settings = {}, persistSettings }) {
-    Object.assign(this, { recognition, engines, meter, composer, persistSettings });
+  constructor({
+    recognition,
+    engines,
+    meter,
+    composer,
+    settings = {},
+    persistSettings,
+    recordingTimeline,
+  }) {
+    Object.assign(this, {
+      recognition,
+      engines,
+      meter,
+      composer,
+      persistSettings,
+      recordingTimeline,
+    });
     this.listeners = new Set();
     this.transcript = new TranscriptDraft();
     this.epoch = 0;
@@ -1002,6 +1017,7 @@ export class VoiceCoordinator {
     this.queue = [];
   }
   async stopSpeech(resumeListening = true) {
+    this.activeRecordingTimeline = null;
     this._cancelAssistantSpeechTimer();
     this.assistantSpeechNotBefore = 0;
     this._cancelInterruptionResume();
@@ -1121,8 +1137,10 @@ export class VoiceCoordinator {
         control === this.controlEpoch &&
         this.snapshot.speaking &&
         result !== false
-      )
+      ) {
         this.patch({ paused: true });
+        this.activeRecordingTimeline?.('assistant-pause');
+      }
     } catch (error) {
       if (epoch === this.speechEpoch) this.patch({ error: message(error) });
     }
@@ -1163,6 +1181,7 @@ export class VoiceCoordinator {
         await this.engines[this.snapshot.speechEngine || this.snapshot.settings.engine].resume();
       if (epoch === this.speechEpoch && control === this.controlEpoch && result !== false) {
         this.patch({ paused: false });
+        this.activeRecordingTimeline?.('assistant-resume');
         this._prefetchSpeech();
       }
     } catch (error) {
@@ -1209,6 +1228,10 @@ export class VoiceCoordinator {
     const controller = new AbortController();
     this.speechController = controller;
     this.speechLaunchPending = true;
+    const timeline = this.activeRecordingTimeline ?? this.recordingTimeline?.();
+    this.activeRecordingTimeline = timeline;
+    let playbackStarted = false;
+    let playbackFinished = false;
     const engine = this.engines[this.snapshot.settings.engine];
     this._resetStaleSpeechItem(item, this._speechPreparationKey());
     item.engine = engine;
@@ -1234,6 +1257,7 @@ export class VoiceCoordinator {
       if (this.speechStopError) throw this.speechStopError;
       if (epoch !== this.speechEpoch || this.disposed) return;
       if (this.snapshot.settings.mode === 'speaker') {
+        if (this.snapshot.listening) timeline?.('capture-gated');
         await this.stopListening();
         if (this.inputReleaseError) throw this.inputReleaseError;
       }
@@ -1244,7 +1268,16 @@ export class VoiceCoordinator {
       if (queued?.prepareError) throw queued.prepareError;
       const options = {
         onPlaybackStart: () => {
-          if (epoch === this.speechEpoch && !this.disposed) this.patch({ speechLoading: false });
+          if (
+            epoch === this.speechEpoch &&
+            !this.disposed &&
+            !controller.signal.aborted &&
+            !playbackFinished
+          ) {
+            if (!playbackStarted) timeline?.('assistant-start');
+            playbackStarted = true;
+            this.patch({ speechLoading: false });
+          }
         },
         voice: this.snapshot.settings.voice || undefined,
         rate: this.snapshot.settings.rate,
@@ -1277,6 +1310,14 @@ export class VoiceCoordinator {
         if (error.name !== 'AbortError') this.patch({ error: message(error) });
       }
     } finally {
+      playbackFinished = true;
+      if (playbackStarted) timeline?.('assistant-end');
+      if (
+        this.activeRecordingTimeline === timeline &&
+        epoch === this.speechEpoch &&
+        !this.queue.length
+      )
+        this.activeRecordingTimeline = null;
       if (epoch === this.speechEpoch && !this.disposed) {
         this.patch({
           speaking: false,

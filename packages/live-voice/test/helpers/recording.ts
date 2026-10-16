@@ -16,6 +16,7 @@ export function mockRecordingRepository(): RecordingRepository {
   };
   return {
     version: 1,
+    timeline: () => async () => {},
     segments: recordingSegments,
     subscribe: () => () => {},
     list: async () => sessions.map((s) => structuredClone(s)),

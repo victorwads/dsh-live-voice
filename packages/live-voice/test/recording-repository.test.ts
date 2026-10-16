@@ -106,6 +106,60 @@ const input = (sourceId = 'microphone') => ({
   policy: { enabled: false, keepPrevious: 0, bitrate: 24000, preRollMs: 100, postRollMs: 100 },
 });
 
+test('starred names survive audio writes and timeline events survive capture gating', async () => {
+  const codecs = fakeCodecs();
+  const repository = createRecordingRepository();
+  try {
+    const writer = await repository.begin(input());
+    const shared = await repository.begin(input('shared'));
+    const id = writer.session.id;
+    await assert.rejects(repository.setName!(id, 'Needs a star'), { code: 'invalid-range' });
+    await repository.setStarred(id, true);
+    await Promise.all([
+      writer.append(new Float32Array(16000)),
+      repository.setName!(id, '  Cut X / Y / Z  '),
+    ]);
+    assert.equal(writer.session.name, 'Cut X / Y / Z');
+    for (const value of ['a\nb', 'x'.repeat(121), 'a\u0000b'])
+      await assert.rejects(repository.setName!(id, value), { code: 'invalid-range' });
+    const timeline = repository.timeline();
+    await timeline('capture-gated');
+    await writer.finish();
+    await timeline('assistant-start');
+    await timeline('assistant-pause');
+    await timeline('assistant-resume');
+    await timeline('assistant-end');
+    const saved = await repository.get(id);
+    assert.equal(saved?.name, 'Cut X / Y / Z');
+    assert.deepEqual(
+      saved?.events?.map((e) => e.kind),
+      [
+        'capture-start',
+        'capture-gated',
+        'capture-end',
+        'assistant-start',
+        'assistant-pause',
+        'assistant-resume',
+        'assistant-end',
+      ],
+    );
+    assert.ok(
+      saved?.events?.every((e) => Number.isFinite(Date.parse(e.occurredAt)) && e.atSample <= 16000),
+    );
+    assert.equal(saved?.events?.at(-1)?.atSample, 16000);
+    const exported = JSON.parse(await (await repository.export(id)).text());
+    assert.equal(exported.recording.name, saved?.name);
+    assert.deepEqual(exported.recording.events, saved?.events);
+    await repository.setName!(id, 'Renamed after capture');
+    await repository.setName!(id, '');
+    assert.equal((await repository.get(id))?.name, '');
+    await shared.finish();
+  } finally {
+    await repository.dispose();
+    codecs.restore();
+  }
+});
+
 test('repository serializes append, pins, reads and attempt upserts; exports encoded JSON', async () => {
   const codecs = fakeCodecs();
   const repository = createRecordingRepository();

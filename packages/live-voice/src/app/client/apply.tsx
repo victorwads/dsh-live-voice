@@ -70,6 +70,16 @@ export function apply(ctx) {
   const settingsControllers = new Set();
   let disposed = false;
   const recordings = createRecordingRepository();
+  const recordingTimeline = () => {
+    const append = recordings.timeline();
+    return (kind) => {
+      void append(kind).catch(() => {
+        // Metadata failures must be visible without blocking or cancelling playback.
+        for (const entry of controllers.values())
+          entry.controller.patch({ error: t('dsh-live-voice.recording.error.failed') });
+      });
+    };
+  };
   const localModels = new LocalModelManager();
   void localModels.refresh();
   const leaveGuard = createTranscriptionLeaveGuard(window);
@@ -514,6 +524,7 @@ export function apply(ctx) {
     const meter = new MicrophoneMeter();
     const recognition = recognitionFor(settings, meter);
     entry.controller = new VoiceCoordinator({
+      recordingTimeline,
       persistSettings: (next) => savePreferences(entry.controller, next),
       recognition,
       engines: { browser: engineBrowser, say: engineSay, 'qwen-http': engineQwen },
@@ -982,6 +993,7 @@ export function apply(ctx) {
       const meter = new MicrophoneMeter();
       const recognition = recognitionFor(settings, meter);
       const c = new VoiceCoordinator({
+        recordingTimeline,
         persistSettings: (next) => savePreferences(c, next),
         recognition,
         engines: {
