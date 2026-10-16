@@ -4,6 +4,27 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 
 [Product overview](README.md) · [Visão geral em português](README.pt.md) · [简体中文概览](README.zh-CN.md)
 
+## [0.6.2] - Unreleased
+
+### Features
+
+#### Live Voice Debugger
+
+- Name starred recordings in the debugger so important problem sessions can be recognized later; names remain in the saved session and self-contained JSON export.
+- Inspect assistant playback start, end, pause and resume alongside microphone speaker-gating requests and recording start/end events. Saved events retain wall-clock timestamps and captured-audio boundaries without recording assistant audio or inventing audio during capture gaps.
+
+- Zoom the speech/silence timeline to a non-destructive time window using native start/end range controls, with full-session reset.
+- Search segment transcripts with exact phrases and matching words ranked before approximate matches; an active search excludes segments without completed transcription.
+- Show total stored audio and per-session audio size in decimal MB, measured from encoded audio payload rather than browser-wide quota or estimated PCM size. Database overhead and unsaved capture buffers are excluded.
+
+### Improvements
+
+#### Live Voice
+
+- Use a 1.5-second default assistant response delay, with options of 600 ms, 1.5, 2, 3, 4 or 5 seconds. Remove zero-delay playback; unsupported older preferences normalize to the new default while supported saved values remain unchanged.
+- Include at least 800 ms of recorded context before and after each transcription range, including maximum-length splits. Wait for the real post-roll while capture is active, clamp to available audio on finish, and preserve VAD/paragraph boundaries; overlapping words may repeat rather than being dropped. The safety floor is a code constant, not a new setting.
+- Automatically retry failed Silero initialization or live detection up to twice, without switching to energy detection. Successful inference restores the retry budget for later failures in long sessions; stopping or replacing capture cancels recovery. Persistent failures still report an actionable error.
+
 ## [0.6.1] - 2026-10-15
 
 ### Fixes
