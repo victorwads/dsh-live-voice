@@ -66,6 +66,11 @@ function service(records) {
       const i = records.findIndex((s) => s.id === id);
       records.splice(i, 1);
     },
+    setName: async (id, name) => {
+      const i = records.findIndex((s) => s.id === id);
+      records[i] = { ...records[i], name };
+      [...listeners].forEach((f) => f());
+    },
     setStarred: async (id, starred) => {
       const i = records.findIndex((s) => s.id === id);
       records[i] = { ...records[i], starred };
@@ -187,6 +192,25 @@ test('integrated primary recordings tab separates sources, plays silence, export
     target.window.close();
   });
   const records = [session(), session('share-a', 'shared'), session('share-b', 'shared')];
+  records.forEach((record, index) => {
+    record.audioBytes = (index + 1) * 1_000_000;
+  });
+  records[0].pins.push({
+    id: 'second-silence',
+    kind: 'silence-start',
+    atSample: 500,
+    confirmedAtSample: 550,
+    delaySamples: 50,
+  });
+  records[0].starred = true;
+  records[0].events = [
+    {
+      id: 'assistant',
+      kind: 'assistant-start',
+      occurredAt: '2026-10-14T12:00:09.123Z',
+      atSample: 900,
+    },
+  ];
   const current = service(records);
   target.window[RECORDING_KEY] = current;
   const audioCalls = [],
@@ -236,6 +260,79 @@ test('integrated primary recordings tab separates sources, plays silence, export
   const select = document.querySelector('.dlvd-recordings select');
   assert.equal(select.options.length, 4);
   assert.match(document.querySelector('.dlvd-recording-detail').textContent, /test transcript/);
+  assert.ok(
+    document
+      .querySelector('.dlvd-recording-events')
+      .textContent.includes(copy.recordings.assistantStart),
+  );
+  assert.equal(document.querySelectorAll('.dlvd-event-pin').length, 1);
+  assert.ok(document.querySelector('.dlvd-audio-total').textContent.includes('6.000 MB'));
+  assert.ok(document.querySelector('.dlvd-recording-meta').textContent.includes('1.000 MB'));
+  const inputValue = async (field, value) =>
+    act(async () => {
+      Object.getOwnPropertyDescriptor(owner.window.HTMLInputElement.prototype, 'value').set.call(
+        field,
+        String(value),
+      );
+      field.dispatchEvent(new owner.window.Event('input', { bubbles: true }));
+      await flush();
+    });
+  const ranges = [...document.querySelectorAll('.dlvd-timeline-window input[type=range]')];
+  assert.equal(ranges.length, 2);
+  assert.equal(ranges[0].value, '0');
+  assert.equal(ranges[1].value, '900');
+  await inputValue(ranges[0], 300);
+  await inputValue(ranges[1], 450);
+  assert.equal(document.querySelectorAll('.dlvd-timeline button').length, 1);
+  assert.equal(document.querySelector('.dlvd-timeline button').style.width, '100%');
+  assert.equal(document.querySelector('.dlvd-timeline button').style.left, '0%');
+  assert.equal(document.querySelectorAll('.dlvd-event-pin').length, 0);
+  assert.equal(document.querySelectorAll('.dlvd-timeline .dlvd-pin').length, 0);
+  await inputValue(ranges[0], 900);
+  assert.equal(ranges[0].value, '449', 'handles cannot cross');
+  await act(async () => {
+    [...document.querySelectorAll('button')]
+      .find((b) => b.textContent === copy.recordings.windowReset)
+      .click();
+  });
+  assert.equal(ranges[0].value, '0');
+  assert.equal(ranges[1].value, '900');
+  assert.equal(document.querySelectorAll('.dlvd-timeline button').length, 3);
+  const search = document.querySelector('input[type=search]');
+  await inputValue(search, 'test transcript');
+  assert.equal(
+    document.querySelectorAll('.dlvd-segments tbody > tr').length,
+    2,
+    'only transcribed speech remains',
+  );
+  assert.equal(document.querySelector('.dlvd-segments details').open, true);
+  await inputValue(search, 'unrelated text');
+  assert.equal(document.querySelectorAll('.dlvd-segments tbody > tr').length, 0);
+  assert.ok(
+    document
+      .querySelector('.dlvd-recording-detail')
+      .textContent.includes(copy.recordings.searchEmpty),
+  );
+  await inputValue(search, '');
+  assert.equal(document.querySelectorAll('.dlvd-segments tbody > tr').length, 4);
+  await act(async () => {
+    const field = document.querySelector('.dlvd-recording-detail input');
+    Object.getOwnPropertyDescriptor(owner.window.HTMLInputElement.prototype, 'value').set.call(
+      field,
+      'Problem X / Y / Z',
+    );
+    field.dispatchEvent(new owner.window.Event('input', { bubbles: true }));
+    field.dispatchEvent(new owner.window.Event('change', { bubbles: true }));
+    await flush();
+  });
+  await act(async () => {
+    document
+      .querySelector('.dlvd-recording-detail form')
+      .dispatchEvent(new owner.window.Event('submit', { bubbles: true, cancelable: true }));
+    await flush();
+  });
+  assert.equal(records[0].name, 'Problem X / Y / Z');
+  assert.ok(document.querySelector('.dlvd-session-list').textContent.includes('Problem X / Y / Z'));
   const button = (label) =>
     [...document.querySelectorAll('.dlvd-recordings button')].find((b) => b.textContent === label);
   await act(async () => {

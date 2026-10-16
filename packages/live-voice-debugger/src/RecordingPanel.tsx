@@ -1,4 +1,5 @@
 import React from 'react';
+import { searchSegments } from './segmentSearch.js';
 import {
   RECORDING_CHANGED,
   type RecordingSession,
@@ -380,7 +381,22 @@ function RecordingDetail({
       if (token === generation.current) setDeleting(false);
     }
   };
+  const [search, setSearch] = React.useState('');
+  React.useEffect(() => setSearch(''), [session.id, service]);
+  const matchedSegments = React.useMemo(() => searchSegments(segments, search), [segments, search]);
   const length = Math.max(1, session.savedSamples);
+  const [windowStart, setWindowStart] = React.useState(0);
+  // null follows the live right edge until the user explicitly chooses an end.
+  const [windowEnd, setWindowEnd] = React.useState<number | null>(null);
+  React.useEffect(() => {
+    setWindowStart(0);
+    setWindowEnd(null);
+  }, [session.id, service]);
+  const viewEnd = Math.max(1, Math.min(length, windowEnd ?? length));
+  const viewStart = Math.max(0, Math.min(windowStart, viewEnd - 1));
+  const viewLength = viewEnd - viewStart;
+  const inWindow = (sample: number) => sample >= viewStart && sample <= viewEnd;
+  const position = (sample: number) => ((sample - viewStart) / viewLength) * 100 + '%';
   const segmentName = (segment: RecordingSegment) =>
     (segment.kind === 'speech' ? copy.recordings.speech : copy.recordings.silence) +
     ' · ' +
@@ -507,35 +523,87 @@ function RecordingDetail({
         }}
       />
       <h4>{copy.recordings.timeline}</h4>
-      <div className="dlvd-timeline" role="group" aria-label={copy.recordings.timeline}>
-        {segments.map((segment) => (
-          <button
-            key={segment.id}
-            type="button"
-            data-kind={segment.kind}
-            aria-label={segmentName(segment)}
-            title={segmentName(segment)}
-            aria-pressed={selectedSegment === segment.id}
-            style={{
-              left: (segment.startSample / length) * 100 + '%',
-              width: (Math.max(0, segment.endSample - segment.startSample) / length) * 100 + '%',
-            }}
-            onClick={() => {
-              clearPlayback();
-              setPlaying(false);
-              setSelectedSegment(segment.id);
+      <div className="dlvd-timeline-window" role="group" aria-label={copy.recordings.window}>
+        <label>
+          {copy.recordings.windowStart}: {duration(viewStart, session.sampleRate)}
+          <input
+            type="range"
+            min={0}
+            max={session.savedSamples}
+            step={1}
+            value={viewStart}
+            disabled={!session.savedSamples}
+            aria-label={copy.recordings.windowStart}
+            aria-valuetext={duration(viewStart, session.sampleRate)}
+            onInput={(event) =>
+              setWindowStart(Math.min(Number(event.currentTarget.value), viewEnd - 1))
+            }
+          />
+        </label>
+        <label>
+          {copy.recordings.windowEnd}:{' '}
+          {duration(Math.min(viewEnd, session.savedSamples), session.sampleRate)}
+          <input
+            type="range"
+            min={0}
+            max={session.savedSamples}
+            step={1}
+            value={Math.min(viewEnd, session.savedSamples)}
+            disabled={!session.savedSamples}
+            aria-label={copy.recordings.windowEnd}
+            aria-valuetext={duration(Math.min(viewEnd, session.savedSamples), session.sampleRate)}
+            onInput={(event) => {
+              const end = Math.max(viewStart + 1, Number(event.currentTarget.value));
+              setWindowEnd(end >= length ? null : end);
             }}
           />
-        ))}
+        </label>
+        <button
+          type="button"
+          onClick={() => {
+            setWindowStart(0);
+            setWindowEnd(null);
+          }}
+        >
+          {copy.recordings.windowReset}
+        </button>
+      </div>
+      <div className="dlvd-timeline" role="group" aria-label={copy.recordings.timeline}>
+        {segments
+          .filter((segment) => segment.endSample > viewStart && segment.startSample < viewEnd)
+          .map((segment) => (
+            <button
+              key={segment.id}
+              type="button"
+              data-kind={segment.kind}
+              aria-label={segmentName(segment)}
+              title={segmentName(segment)}
+              aria-pressed={selectedSegment === segment.id}
+              style={{
+                left: position(Math.max(viewStart, segment.startSample)),
+                width:
+                  ((Math.min(viewEnd, segment.endSample) -
+                    Math.max(viewStart, segment.startSample)) /
+                    viewLength) *
+                    100 +
+                  '%',
+              }}
+              onClick={() => {
+                clearPlayback();
+                setPlaying(false);
+                setSelectedSegment(segment.id);
+              }}
+            />
+          ))}
         {(session.events ?? [])
-
+          .filter((event) => inWindow(event.atSample))
           .map((event, index) => (
             <span
               key={event.id}
               className="dlvd-event-pin"
               data-event={event.kind}
               style={{
-                left: (Math.min(length, event.atSample) / length) * 100 + '%',
+                left: position(event.atSample),
                 top: (index % 3) * 12,
               }}
               title={eventName(event.kind) + ' · ' + new Date(event.occurredAt).toLocaleString()}
@@ -544,26 +612,29 @@ function RecordingDetail({
               ◆
             </span>
           ))}
-        {session.pins.map((pin) => (
-          <span
-            key={pin.id}
-            className="dlvd-pin"
-            aria-hidden="true"
-            style={{ left: (Math.min(length, pin.atSample) / length) * 100 + '%' }}
-            title={
-              (pin.kind === 'speech-start' ? copy.recordings.speech : copy.recordings.silence) +
-              ' · ' +
-              duration(pin.atSample, session.sampleRate)
-            }
-          />
-        ))}
+        {session.pins
+          .filter((pin) => inWindow(pin.atSample))
+          .map((pin) => (
+            <span
+              key={pin.id}
+              className="dlvd-pin"
+              aria-hidden="true"
+              style={{ left: position(pin.atSample) }}
+              title={
+                (pin.kind === 'speech-start' ? copy.recordings.speech : copy.recordings.silence) +
+                ' · ' +
+                duration(pin.atSample, session.sampleRate)
+              }
+            />
+          ))}
       </div>
       <div className="dlvd-timeline-legend">
         <span data-kind="speech">{copy.recordings.speech}</span>
         {' · '}
         <span data-kind="silence">{copy.recordings.silence}</span>
         {' · '}
-        {duration(session.savedSamples, session.sampleRate)}
+        {duration(viewStart, session.sampleRate)} –{' '}
+        {duration(Math.min(viewEnd, session.savedSamples), session.sampleRate)}
       </div>
       <h4>{copy.recordings.events}</h4>
       <p>{copy.recordings.eventsHelp}</p>
@@ -591,6 +662,19 @@ function RecordingDetail({
         </tbody>
       </table>
       <h4>{copy.recordings.segments}</h4>
+      <label>
+        {copy.recordings.search}
+        <input
+          type="search"
+          value={search}
+          maxLength={160}
+          aria-label={copy.recordings.search}
+          onInput={(event) => setSearch(event.currentTarget.value)}
+        />
+      </label>
+      {search.trim() && matchedSegments.length === 0 && (
+        <p role="status">{copy.recordings.searchEmpty}</p>
+      )}
       <table className="dlvd-segments">
         <thead>
           <tr>
@@ -602,7 +686,7 @@ function RecordingDetail({
           </tr>
         </thead>
         <tbody>
-          {segments.map((segment) => (
+          {matchedSegments.map((segment) => (
             <React.Fragment key={segment.id}>
               <tr data-selected={selectedSegment === segment.id}>
                 <td>
@@ -626,7 +710,7 @@ function RecordingDetail({
               {segment.kind === 'speech' && (
                 <tr>
                   <td colSpan={5}>
-                    <details open={selectedSegment === segment.id || undefined}>
+                    <details open={!!search.trim() || selectedSegment === segment.id || undefined}>
                       <summary>
                         {copy.recordings.attempts} · {segment.attempts.length}
                       </summary>
