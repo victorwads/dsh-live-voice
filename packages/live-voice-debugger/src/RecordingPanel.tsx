@@ -1,4 +1,5 @@
 import React from 'react';
+import { TimelineWindow } from './TimelineWindow.js';
 import { searchSegments } from './segmentSearch.js';
 import {
   RECORDING_CHANGED,
@@ -523,51 +524,22 @@ function RecordingDetail({
         }}
       />
       <h4>{copy.recordings.timeline}</h4>
-      <div className="dlvd-timeline-window" role="group" aria-label={copy.recordings.window}>
-        <label>
-          {copy.recordings.windowStart}: {duration(viewStart, session.sampleRate)}
-          <input
-            type="range"
-            min={0}
-            max={session.savedSamples}
-            step={1}
-            value={viewStart}
-            disabled={!session.savedSamples}
-            aria-label={copy.recordings.windowStart}
-            aria-valuetext={duration(viewStart, session.sampleRate)}
-            onInput={(event) =>
-              setWindowStart(Math.min(Number(event.currentTarget.value), viewEnd - 1))
-            }
-          />
-        </label>
-        <label>
-          {copy.recordings.windowEnd}:{' '}
-          {duration(Math.min(viewEnd, session.savedSamples), session.sampleRate)}
-          <input
-            type="range"
-            min={0}
-            max={session.savedSamples}
-            step={1}
-            value={Math.min(viewEnd, session.savedSamples)}
-            disabled={!session.savedSamples}
-            aria-label={copy.recordings.windowEnd}
-            aria-valuetext={duration(Math.min(viewEnd, session.savedSamples), session.sampleRate)}
-            onInput={(event) => {
-              const end = Math.max(viewStart + 1, Number(event.currentTarget.value));
-              setWindowEnd(end >= length ? null : end);
-            }}
-          />
-        </label>
-        <button
-          type="button"
-          onClick={() => {
-            setWindowStart(0);
-            setWindowEnd(null);
-          }}
-        >
-          {copy.recordings.windowReset}
-        </button>
-      </div>
+      <TimelineWindow
+        key={session.id}
+        total={session.savedSamples}
+        start={viewStart}
+        end={Math.min(viewEnd, session.savedSamples)}
+        copy={copy.recordings}
+        format={(sample) => duration(sample, session.sampleRate)}
+        onChange={(start, end) => {
+          setWindowStart(start);
+          setWindowEnd(end >= length ? null : end);
+        }}
+        onReset={() => {
+          setWindowStart(0);
+          setWindowEnd(null);
+        }}
+      />
       <div className="dlvd-timeline" role="group" aria-label={copy.recordings.timeline}>
         {segments
           .filter((segment) => segment.endSample > viewStart && segment.startSample < viewEnd)

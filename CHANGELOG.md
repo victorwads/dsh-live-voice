@@ -13,7 +13,7 @@ All notable changes to DSH Live Voice are documented here. This English changelo
 - Name starred recordings in the debugger so important problem sessions can be recognized later; names remain in the saved session and self-contained JSON export.
 - Inspect assistant playback start, end, pause and resume alongside microphone speaker-gating requests and recording start/end events. Saved events retain wall-clock timestamps and captured-audio boundaries without recording assistant audio or inventing audio during capture gaps.
 
-- Zoom the speech/silence timeline to a non-destructive time window using native start/end range controls, with full-session reset.
+- Zoom the speech/silence timeline with a single two-handle range selector: drag either edge to resize, or drag the selected band to move the whole window without changing its duration. Support keyboard navigation and restore the full session with a compact, accessible icon button.
 - Search segment transcripts with exact phrases and matching words ranked before approximate matches; an active search excludes segments without completed transcription.
 - Show total stored audio and per-session audio size in decimal MB, measured from encoded audio payload rather than browser-wide quota or estimated PCM size. Database overhead and unsaved capture buffers are excluded.
 

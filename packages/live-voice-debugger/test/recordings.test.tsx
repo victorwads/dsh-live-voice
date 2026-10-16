@@ -277,26 +277,33 @@ test('integrated primary recordings tab separates sources, plays silence, export
       field.dispatchEvent(new owner.window.Event('input', { bubbles: true }));
       await flush();
     });
-  const ranges = [...document.querySelectorAll('.dlvd-timeline-window input[type=range]')];
+  const ranges = [...document.querySelectorAll('.dlvd-window-handle')];
+  assert.equal(document.querySelectorAll('.dlvd-window-track').length, 1);
   assert.equal(ranges.length, 2);
-  assert.equal(ranges[0].value, '0');
-  assert.equal(ranges[1].value, '900');
-  await inputValue(ranges[0], 300);
-  await inputValue(ranges[1], 450);
+  const rangeValue = (field) => field.getAttribute('aria-valuenow');
+  const key = async (field, name) =>
+    act(async () => {
+      field.dispatchEvent(new owner.window.KeyboardEvent('keydown', { key: name, bubbles: true }));
+      await flush();
+    });
+  assert.equal(rangeValue(ranges[0]), '0');
+  assert.equal(rangeValue(ranges[1]), '900');
+  for (let i = 0; i < 3; i++) await key(ranges[0], 'PageUp');
+  for (let i = 0; i < 5; i++) await key(ranges[1], 'PageDown');
   assert.equal(document.querySelectorAll('.dlvd-timeline button').length, 1);
   assert.equal(document.querySelector('.dlvd-timeline button').style.width, '100%');
   assert.equal(document.querySelector('.dlvd-timeline button').style.left, '0%');
   assert.equal(document.querySelectorAll('.dlvd-event-pin').length, 0);
   assert.equal(document.querySelectorAll('.dlvd-timeline .dlvd-pin').length, 0);
-  await inputValue(ranges[0], 900);
-  assert.equal(ranges[0].value, '449', 'handles cannot cross');
-  await act(async () => {
-    [...document.querySelectorAll('button')]
-      .find((b) => b.textContent === copy.recordings.windowReset)
-      .click();
-  });
-  assert.equal(ranges[0].value, '0');
-  assert.equal(ranges[1].value, '900');
+  await key(ranges[0], 'End');
+  assert.equal(rangeValue(ranges[0]), '449', 'handles cannot cross');
+  const reset = document.querySelector('.dlvd-window-reset');
+  assert.equal(reset.title, copy.recordings.windowReset);
+  assert.equal(reset.getAttribute('aria-label'), copy.recordings.windowReset);
+  assert.equal(reset.textContent, '');
+  await act(async () => reset.click());
+  assert.equal(rangeValue(ranges[0]), '0');
+  assert.equal(rangeValue(ranges[1]), '900');
   assert.equal(document.querySelectorAll('.dlvd-timeline button').length, 3);
   const search = document.querySelector('input[type=search]');
   await inputValue(search, 'test transcript');
