@@ -47,6 +47,7 @@ export interface RecordingSession {
   sampleRate: number;
   capturedSamples: number;
   savedSamples: number;
+  audioBytes?: number; // Saved encoded payload, not database overhead or transient PCM.
   storage?: 'indexeddb' | 'memory';
   starred?: boolean; // Protected from automatic retention; manual deletion remains available.
   persistent: boolean; // Browser eviction protection, independent of storage backend.

@@ -45,6 +45,10 @@ export interface AudioPage {
   preSkipSamples: number;
   packets: EncodedPacket[];
 }
+/** Encoded audio payload only; excludes database/metadata overhead and transient PCM. */
+export const audioPageBytes = (page: AudioPage) =>
+  (page.decoderConfig?.description?.byteLength ?? 0) +
+  page.packets.reduce((total, packet) => total + packet.data.byteLength, 0);
 // Audio WebCodecs is not yet declared by every TypeScript DOM version.
 interface CodecFrame {
   timestamp: number;

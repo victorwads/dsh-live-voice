@@ -9,6 +9,7 @@ import type {
 import { recordingSegments } from './types.js';
 import {
   assertCodec,
+  audioPageBytes,
   decodePage,
   encodePage,
   RecordingRepositoryError,
@@ -282,6 +283,17 @@ export function createRecordingRepository(): RecordingRepository {
     }
     return locate(id);
   }
+  const measured = new Map<string, { samples: number; bytes: number }>();
+  async function withAudioBytes(session: RecordingSession) {
+    if (session.audioBytes !== undefined) return session;
+    let cached = measured.get(session.id);
+    if (!cached || cached.samples !== session.savedSamples) {
+      const { store } = await locate(session.id);
+      cached = { samples: session.savedSamples, bytes: await store.audioBytes(session.id) };
+      measured.set(session.id, cached);
+    }
+    return { ...session, audioBytes: cached.bytes };
+  }
   const repository: RecordingRepository = {
     version: 1,
     segments: recordingSegments,
@@ -292,14 +304,21 @@ export function createRecordingRepository(): RecordingRepository {
     },
     async list() {
       check();
-      return (await all()).map(
-        (session) => writers.get(session.id)?.writer.session ?? cloneSession(session),
+      const sessions = await all();
+      const ids = new Set(sessions.map((session) => session.id));
+      for (const id of measured.keys()) if (!ids.has(id)) measured.delete(id);
+      return Promise.all(
+        sessions.map((session) =>
+          withAudioBytes(writers.get(session.id)?.writer.session ?? cloneSession(session)),
+        ),
       );
     },
     async get(id) {
       check();
       try {
-        return writers.get(id)?.writer.session ?? cloneSession((await locate(id)).session);
+        return await withAudioBytes(
+          writers.get(id)?.writer.session ?? cloneSession((await locate(id)).session),
+        );
       } catch (error) {
         if (error instanceof RecordingRepositoryError && error.code === 'not-found') return null;
         throw error;
@@ -514,6 +533,7 @@ export function createRecordingRepository(): RecordingRepository {
           state: 'recording',
           capturedSamples: 0,
           savedSamples: 0,
+          audioBytes: 0,
           persistent,
           codec: 'opus',
           storage: policy.enabled ? 'indexeddb' : 'memory',
@@ -578,7 +598,14 @@ export function createRecordingRepository(): RecordingRepository {
             sampleRate,
             ...encoded,
           };
-          await update((current) => ({ ...current, savedSamples: page.startSample + count }), page);
+          await update(
+            (current) => ({
+              ...current,
+              savedSamples: page.startSample + count,
+              audioBytes: (current.audioBytes ?? 0) + audioPageBytes(page),
+            }),
+            page,
+          );
           pendingCount = 0;
           index++;
         };

@@ -207,6 +207,19 @@ test('repository serializes append, pins, reads and attempt upserts; exports enc
     const exported = JSON.parse(await (await repository.export(writer.session.id)).text());
     assert.equal(exported.version, 1);
     assert.equal(exported.format, 'dsh-live-voice-recording');
+    const bytes = exported.pages.reduce(
+      (sum, page) =>
+        sum +
+        (page.decoderConfig?.description
+          ? Buffer.from(page.decoderConfig.description, 'base64').byteLength
+          : 0) +
+        page.packets.reduce((n, packet) => n + Buffer.from(packet.data, 'base64').byteLength, 0),
+      0,
+    );
+    assert.ok(bytes > 0);
+    assert.equal(saved.audioBytes, bytes);
+    assert.equal((await repository.list())[0].audioBytes, bytes);
+    assert.equal(exported.recording.audioBytes, bytes);
     assert.equal(
       exported.pages.reduce((n: number, page: any) => n + page.sampleCount, 0),
       48057,
@@ -366,6 +379,47 @@ test('memory page commit failure is atomic and does not drop metadata', async ()
   );
   assert.equal((await store.get('memory'))?.savedSamples, 0);
   assert.equal(await store.nextPage('memory', 0, 100), null);
+  store.close();
+});
+
+test('stored audio bytes count packets and decoder data, not metadata or database overhead', async () => {
+  const store = createMemoryStore();
+  const session = {
+    ...input(),
+    id: 'bytes',
+    startedAt: '',
+    state: 'completed' as const,
+    capturedSamples: 100,
+    savedSamples: 0,
+    persistent: false,
+    codec: 'opus',
+    pins: [],
+    attempts: [],
+    keepPrevious: 1,
+  };
+  await store.create(session);
+  const page: AudioPage = {
+    recordingId: 'bytes',
+    index: 0,
+    startSample: 0,
+    sampleCount: 100,
+    sampleRate: 16000,
+    zero: false,
+    preSkipSamples: 0,
+    decoderConfig: {
+      codec: 'opus',
+      sampleRate: 16000,
+      numberOfChannels: 1,
+      description: new Uint8Array(17),
+    },
+    packets: [{ type: 'key', timestamp: 0, data: new Uint8Array(41) }],
+  };
+  await store.update('bytes', (current) => ({ ...current, savedSamples: 100 }), page);
+  assert.equal(await store.audioBytes('bytes'), 58);
+  await store.update('bytes', (current) => ({ ...current, name: 'Metadata does not count' }));
+  assert.equal(await store.audioBytes('bytes'), 58);
+  await store.remove('bytes');
+  assert.equal(await store.audioBytes('bytes'), 0);
   store.close();
 });
 

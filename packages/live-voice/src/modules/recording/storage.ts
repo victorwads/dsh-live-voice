@@ -1,6 +1,6 @@
 import type { RecordingSession } from './types.js';
 import type { AudioPage } from './codec.js';
-import { RecordingRepositoryError } from './codec.js';
+import { RecordingRepositoryError, audioPageBytes } from './codec.js';
 
 export interface StoredSession extends RecordingSession {
   keepPrevious: number;
@@ -16,6 +16,7 @@ export interface PageStore {
     page?: AudioPage,
   ): Promise<StoredSession>;
   nextPage(id: string, start: number, end: number): Promise<AudioPage | null>;
+  audioBytes(id: string): Promise<number>;
   remove(id: string): Promise<void>;
   close(): void;
 }
@@ -129,6 +130,23 @@ export async function openRecordingStore(): Promise<PageStore> {
           }
         };
       }),
+    audioBytes: (id) =>
+      transact('readonly', (tx, result) => {
+        let bytes = 0;
+        const request = tx
+          .objectStore('pages')
+          .index('recordingId')
+          .openCursor(IDBKeyRange.only(id));
+        request.onsuccess = () => {
+          const cursor = request.result;
+          if (!cursor) {
+            result(bytes);
+            return;
+          }
+          bytes += audioPageBytes(cursor.value);
+          cursor.continue();
+        };
+      }),
     nextPage: (id, start, end) =>
       transact('readonly', (tx, result) => {
         if (end <= start) {
@@ -175,6 +193,8 @@ export function createMemoryStore(maxBytes = 32 * 1024 * 1024): PageStore {
     (page.decoderConfig?.description?.byteLength ?? 0) +
     page.packets.reduce((total, packet) => total + packet.data.byteLength + 64, 0);
   return {
+    audioBytes: async (id) =>
+      (pages.get(id) ?? []).reduce((sum, page) => sum + audioPageBytes(page), 0),
     list: async () => structuredClone([...sessions.values()]),
     get: async (id) => structuredClone(sessions.get(id) ?? null),
     create: async (session) => {
