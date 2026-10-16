@@ -56,7 +56,7 @@ async function fixture(
     'dsh-live-voice.settings',
     JSON.stringify({ engine: 'say', mode: 'headphones' }),
   );
-  let serverSettings = initialSettings;
+  let serverSettings = { assistantSpeechDelaySeconds: 0.6, ...initialSettings };
   t.mock.method(globalThis, 'fetch', async (url, options = {}) => {
     if (url === '/api/dsh-live-voice/settings') {
       await settingsReady;
@@ -752,16 +752,19 @@ test('automatic speech follows new chat text with mic off and mic start preserve
     });
   assert.equal(c.snapshot.conversation, false);
   await publish('First.\nPartial');
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
   assert.deepEqual(played, ['First.']);
   await act(async () => c.startConversation());
   await publish('First.\nPartial completed.', 'settled');
   await publish('First.\nPartial completed.', 'settled');
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
   assert.deepEqual(played, ['First.', 'Partial completed.']);
 
   await act(async () => c.updateSettings({ announceAssistantMessages: false }));
   await publish('First.\nPartial completed.\nSkipped.');
   await act(async () => c.updateSettings({ announceAssistantMessages: true }));
   await publish('First.\nPartial completed.\nSkipped.\nNew tail.', 'settled');
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
   assert.deepEqual(played, ['First.', 'Partial completed.', 'New tail.']);
 });
 
@@ -811,6 +814,7 @@ for (const keepAction of [false, true]) {
         f.store('a').getSnapshot().nodes.set('new', reply(2, 'First. Second.\nPartial'));
         f.store('a').listeners.forEach((fn) => fn());
       });
+      await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
       assert.deepEqual(
         played.map((p) => p.text),
         ['First.'],
@@ -832,6 +836,7 @@ for (const keepAction of [false, true]) {
       await act(async () => {
         await new Promise(setImmediate);
       });
+      await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
       assert.deepEqual(
         played.map((p) => p.text),
         ['First.', 'First.'],
@@ -842,6 +847,7 @@ for (const keepAction of [false, true]) {
           await new Promise(setImmediate);
         });
       }
+      await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
       assert.deepEqual(
         played.map((p) => p.text),
         ['First.', 'First.', 'Second.', 'Partial completed.', 'Next answer.'],
@@ -872,6 +878,7 @@ test('off/on in another chat drops parked speech and only admits fresh messages 
     f.store('a').getSnapshot().nodes.set('new', reply(2, 'Spoken.\nPending'));
     f.store('a').listeners.forEach((fn) => fn());
   });
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
   assert.deepEqual(played, ['Spoken.']);
   await f.render(h(f.Buttons, { ...f.props('b'), key: 'b' }));
   const b = f.controllers.at(-1);
@@ -884,6 +891,7 @@ test('off/on in another chat drops parked speech and only admits fresh messages 
     f.store('a').listeners.forEach((fn) => fn());
   });
   await f.render(h(f.Buttons, { ...f.props('a'), key: 'a' }));
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
   assert.deepEqual(played, ['Spoken.']);
   await act(async () => {
     f.store('a')
@@ -891,6 +899,7 @@ test('off/on in another chat drops parked speech and only admits fresh messages 
       .nodes.set('fresh', reply(3, 'Fresh answer.\n', Date.now() + 1));
     f.store('a').listeners.forEach((fn) => fn());
   });
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
   assert.deepEqual(played, ['Spoken.', 'Fresh answer.']);
 });
 
@@ -931,6 +940,7 @@ test('a rapid retained-session return interrupted during release preserves its p
   await act(async () => {
     await new Promise(setImmediate);
   });
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
   assert.deepEqual(played, ['Parked answer.']);
 });
 
@@ -1003,6 +1013,7 @@ test('automatic speech waits for saved preferences instead of using the provisio
   assert.deepEqual(played, []);
   await act(async () => c.updateSettings({ announceAssistantMessages: true }));
   await publish('Before preferences.\nDisabled.\nEnabled.');
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
   assert.deepEqual(played, ['Enabled.']);
 });
 
@@ -1024,6 +1035,7 @@ test('message actions without a committed composer cannot admit automatic speech
     node.data.blocks[0].text += '\nVisible reply.';
     store.listeners.forEach((fn) => fn());
   });
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 650)));
   assert.deepEqual(played, ['Visible reply.']);
 });
 

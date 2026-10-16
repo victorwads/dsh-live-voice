@@ -357,17 +357,17 @@ test('automatic send delay supports 600ms and 800ms with a six second maximum', 
   assert.equal(defaultSettings.autoSendDelaySeconds, 4);
 });
 
-test('assistant response delay defaults to zero and accepts only zero through four seconds', () => {
-  assert.equal(defaultSettings.assistantSpeechDelaySeconds, 0);
-  for (const value of [0, 1, 2, 3, 4])
+test('assistant response delay defaults to 1.5 seconds with a 600 ms minimum', () => {
+  assert.equal(defaultSettings.assistantSpeechDelaySeconds, 1.5);
+  for (const value of [0.6, 1.5, 2, 3, 4, 5])
     assert.equal(
       normalizeSettings({ assistantSpeechDelaySeconds: value }).assistantSpeechDelaySeconds,
       value,
     );
-  for (const value of [-1, 5, 10, 0.5])
+  for (const value of [undefined, null, -1, 0, 0.5, 1, 6, 10, NaN, Infinity, '1.5'])
     assert.equal(
       normalizeSettings({ assistantSpeechDelaySeconds: value }).assistantSpeechDelaySeconds,
-      0,
+      1.5,
     );
 });
 

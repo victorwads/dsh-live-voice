@@ -131,6 +131,18 @@ test('modular settings composes speech, recognition, and conversation tabs', asy
     assert.equal(section.open, true, 'essential sections start expanded');
   }
   const conversation = panels[2];
+  const responseDelay = [...conversation.querySelectorAll('select')].find(
+    (select) => [...select.options].map((option) => option.value).join(',') === '0.6,1.5,2,3,4,5',
+  );
+  assert.ok(responseDelay);
+  assert.equal(responseDelay.value, '1.5');
+  assert.equal(responseDelay.options[1].textContent, '1.5 seconds');
+  await act(async () => {
+    responseDelay.value = '0.6';
+    responseDelay.dispatchEvent(new window.Event('change', { bubbles: true }));
+  });
+  assert.deepEqual(calls.at(-1), { assistantSpeechDelaySeconds: 0.6 });
+  calls.length = 0;
   const shortcuts = conversation
     .querySelector('.dlv-shortcut-field')
     .closest('.dlv-settings-section');

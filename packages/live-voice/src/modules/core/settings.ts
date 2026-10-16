@@ -40,6 +40,8 @@ export const defaultAgentVoiceContext = `Live Voice output is active. Your entir
 Be concise and conversational. Lead with the answer or next action. Avoid unnecessary repetition, long preambles, dense lists, raw code, paths, and verbose status narration.
 Do not narrate routine tool activity by default. If the user explicitly asks you to keep them informed while working, provide brief spoken progress updates only at meaningful milestones.`;
 
+export const assistantSpeechDelayOptions = Object.freeze([0.6, 1.5, 2, 3, 4, 5]);
+
 export const autoSendDelayOptions = Object.freeze([0.6, 0.8, 1, 2, 3, 4, 5, 6]);
 
 export const recordingBitrateOptions = Object.freeze([24000, 32000, 48000, 64000, 96000]);
@@ -77,7 +79,7 @@ export const defaultSettings = Object.freeze({
   sendingMode: 'manual',
   dshBusyEnterBehavior: 'queue',
   autoSendDelaySeconds: 4,
-  assistantSpeechDelaySeconds: 0,
+  assistantSpeechDelaySeconds: 1.5,
   mode: 'speaker',
   lang: 'pt-BR',
   recognitionLang: 'pt-BR',
@@ -294,12 +296,11 @@ export function normalizeSettings(value) {
     autoSendDelaySeconds: autoSendDelayOptions.includes(source.autoSendDelaySeconds)
       ? source.autoSendDelaySeconds
       : defaultSettings.autoSendDelaySeconds,
-    assistantSpeechDelaySeconds:
-      Number.isInteger(source.assistantSpeechDelaySeconds) &&
-      source.assistantSpeechDelaySeconds >= 0 &&
-      source.assistantSpeechDelaySeconds <= 4
-        ? source.assistantSpeechDelaySeconds
-        : defaultSettings.assistantSpeechDelaySeconds,
+    assistantSpeechDelaySeconds: assistantSpeechDelayOptions.includes(
+      source.assistantSpeechDelaySeconds,
+    )
+      ? source.assistantSpeechDelaySeconds
+      : defaultSettings.assistantSpeechDelaySeconds,
     mode: ['speaker', 'headphones'].includes(source.mode) ? source.mode : defaultSettings.mode,
     lang:
       typeof source.lang === 'string' && /^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/.test(source.lang)
