@@ -49,6 +49,12 @@ export class PinDetector {
       }
     } else this.candidate = 0;
   }
+  /** Advance past unclassified saved samples without inventing a speech/silence transition. */
+  skipTo(position: number) {
+    this.at = Math.max(this.at, position);
+    this.candidate = 0;
+    this.quiet = 0;
+  }
   finish() {
     if (this.speaking) {
       this.speaking = false;

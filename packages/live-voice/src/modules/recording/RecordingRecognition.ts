@@ -169,6 +169,7 @@ export async function startRecordingRecognition(
   engine.session = session;
   const valid = () => engine.session === session && !signal?.aborted;
   let stopping = false;
+  let recoveryPending = false;
   let captureFailure: string | undefined;
   const captureValid = () => engine.session === session || stopping;
   const notify = () => {
@@ -183,13 +184,13 @@ export async function startRecordingRecognition(
           session.transcriptionQueue.length +
           (session.activeRequest ? 1 : 0) +
           session.pendingSpeechWrites +
-          (session.finishing ? 1 : 0),
+          (session.finishing || recoveryPending ? 1 : 0),
         // All writes still protect release, playback admission and page leave.
         pending:
           session.transcriptionQueue.length +
           (session.activeRequest ? 1 : 0) +
           session.pendingWrites +
-          (session.finishing ? 1 : 0),
+          (session.finishing || recoveryPending ? 1 : 0),
       });
   };
   const failure = (error: unknown) => {
@@ -396,11 +397,124 @@ export async function startRecordingRecognition(
     const copy = pcm.slice();
     void serialize(() => writer.append(copy), true).catch(() => {});
   };
+  let vadGeneration = 0;
+  let restartAttempts = 0;
+  let recovering: Promise<void> | null = null;
+  let deferredFailure: Error | null = null;
+  const sileroValid = () => valid() && !stopping && !session.finished && !session.finishing;
+  const releaseSilero = () => {
+    ++vadGeneration;
+    const previousCapture = session.capture;
+    const previousVad = session.vad;
+    session.capture = null;
+    session.vad = null;
+    try {
+      previousCapture?.release();
+    } finally {
+      previousVad?.release();
+    }
+  };
+  const terminalVadFailure = (error: unknown) => {
+    if (!valid() || stopping || session.finished) return;
+    captureFailure = asError(error).message;
+    onError?.(new Error(engine.vadErrorMessage(error)));
+    void engine.stop();
+  };
+  const installSilero = async () => {
+    const token = ++vadGeneration;
+    let installing = true;
+    let installationFailure: Error | undefined;
+    const failed = (error: Error) => {
+      if (token !== vadGeneration || !sileroValid()) return;
+      if (installing) installationFailure = error;
+      else recoverSilero(error);
+    };
+    const vad = engine.vadFactory({
+      onProbability: ({ probability, pcm }) => {
+        if (token !== vadGeneration || !captureValid() || session.finished) return;
+        // A successful inference, not merely attachment, restores the retry budget.
+        restartAttempts = 0;
+        detector.frame(probability, pcm.length);
+        checkLiveSplit();
+      },
+      onError: failed,
+      onReset: () => failed(new Error('VAD analysis interrupted.')),
+    });
+    session.vad = vad;
+    try {
+      const attached = await engine.vadCapture(
+        engine.meter.context,
+        engine.meter.source,
+        vad,
+        (pcm, sampleRate) => {
+          if (token === vadGeneration) ingest(pcm, sampleRate);
+        },
+      );
+      if (token !== vadGeneration || !sileroValid()) {
+        attached.release();
+        vad.release();
+        throw Object.assign(new Error('Cancelled'), { name: 'AbortError' });
+      }
+      session.capture = attached;
+      if (installationFailure) throw installationFailure;
+    } finally {
+      installing = false;
+    }
+  };
+  const retrySilero = async (initialError?: unknown) => {
+    let error = initialError;
+    while (sileroValid()) {
+      if (error) {
+        releaseSilero();
+        if (restartAttempts >= 2) throw error;
+        restartAttempts++;
+        // Retain the recorded sample clock and any open speech across analysis loss.
+        // No fabricated silence pin and no automatic switch to energy detection.
+        detector.skipTo(Math.round((session.capturedSamples * 16000) / rate));
+        // Release failed peer streams in the shared pool before reacquiring.
+        await Promise.resolve();
+      }
+      if (!sileroValid()) return;
+      try {
+        await installSilero();
+        return;
+      } catch (failure) {
+        if (!sileroValid() || asError(failure).name === 'AbortError') return;
+        error = failure;
+      }
+    }
+  };
+  const recoverSilero = (error: Error) => {
+    if (!sileroValid()) return;
+    if (recovering) {
+      ++vadGeneration;
+      deferredFailure = error;
+      return;
+    }
+    // Invalidate callbacks immediately; duplicate reset/error callbacks consume one attempt.
+    ++vadGeneration;
+    recoveryPending = true;
+    notify();
+    recovering = Promise.resolve()
+      .then(() => retrySilero(error))
+      .catch(terminalVadFailure)
+      .finally(() => {
+        recovering = null;
+        const pending = deferredFailure;
+        deferredFailure = null;
+        if (pending) recoverSilero(pending);
+        else {
+          recoveryPending = false;
+          notify();
+        }
+      });
+  };
   session.finishRecording = () => {
     if (session.finishPromise) return session.finishPromise;
     session.finishing = true;
     session.finishPromise = Promise.resolve().then(async () => {
       try {
+        await recovering;
         await session.capture?.finish();
         if (!valid()) return;
         session.finished = true;
@@ -422,6 +536,7 @@ export async function startRecordingRecognition(
   };
   session.stopRecording = async () => {
     stopping = true;
+    await recovering;
     session.activeRequest?.abort();
     if (session.finishing) session.capture?.release();
     else {
@@ -451,31 +566,7 @@ export async function startRecordingRecognition(
   signal?.addEventListener('abort', session.abort, { once: true });
   try {
     if (capture.silero) {
-      session.vad = engine.vadFactory({
-        onProbability: ({ probability, pcm }) => {
-          if (captureValid() && !session.finished) {
-            detector.frame(probability, pcm.length);
-            checkLiveSplit();
-          }
-        },
-        onError: (error) => {
-          captureFailure = error.message;
-          if (valid()) onError?.(new Error(engine.vadErrorMessage(error)));
-          void engine.stop();
-        },
-        onReset: () => {
-          captureFailure = 'VAD analysis interrupted.';
-          if (valid())
-            onError?.(new Error(engine.vadErrorMessage(new Error('VAD analysis interrupted.'))));
-          void engine.stop();
-        },
-      });
-      session.capture = await engine.vadCapture(
-        engine.meter.context,
-        engine.meter.source,
-        session.vad,
-        ingest,
-      );
+      await retrySilero();
     } else {
       const processor = engine.meter.context.createScriptProcessor(4096, 1, 1);
       const gain = engine.meter.context.createGain();

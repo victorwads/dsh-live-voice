@@ -114,7 +114,7 @@ test('Silero probabilities accept quiet speech for both engines without RMS gati
     assert.equal(h.counts().processorCalls, 0);
     for (let i = 0; i < 10; i++) h.frame(0.01);
     for (let i = 0; i < 10; i++) h.frame(0.9);
-    for (let i = 0; i < 16; i++) h.frame(0.01);
+    for (let i = 0; i < 25; i++) h.frame(0.01);
     await settle();
     assert.equal(h.requests.length, 1);
     assert.equal(h.requests[0].options.credentials, 'same-origin');
@@ -141,7 +141,7 @@ test('Silero silence stays in the recording without queued PCM and short misfire
     'the engine must not retain legacy PCM buffers',
   );
   h.frame(0.9);
-  for (let i = 0; i < 16; i++) h.frame(0.01);
+  for (let i = 0; i < 25; i++) h.frame(0.01);
   await settle();
   assert.equal(h.requests.length, 0);
   await h.engine.stop();
@@ -161,7 +161,7 @@ test('stopping one source does not affect the other and obsolete callbacks canno
     old.onProbability({ probability: 0.9, pcm: new Float32Array(512) });
     b.frame(0.9);
   }
-  for (let i = 0; i < 16; i++) b.frame(0.01);
+  for (let i = 0; i < 25; i++) b.frame(0.01);
   await settle();
   assert.equal(a.requests.length, 0);
   assert.equal(
@@ -272,7 +272,7 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
         assert.equal(h.engine.session, null);
         assert.equal(h.engine.voiceDetectionEngine, 'silero');
         assert.equal(h.counts().processorCalls, 0);
-        if (phase === 'worklet') assert.equal(h.counts().released, 1);
+        if (phase === 'worklet') assert.equal(h.counts().released, 3);
       },
     );
   }
@@ -311,11 +311,116 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
   });
 }
 
-test('model failure reports an error and never silently falls back to energy', async () => {
-  const h = harness();
-  await h.start();
-  h.callbacks.onError(new Error('model failed'));
-  assert.equal(h.engine.session, null);
-  assert.equal(h.errors.length, 1);
-  assert.equal(h.counts().processorCalls, 0);
-});
+for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) {
+  test(Engine.name + ': transient startup failure retries twice and succeeds', async () => {
+    const h = harness(Engine);
+    const attach = h.engine.vadCapture;
+    let attempts = 0;
+    h.engine.vadCapture = async (...args) => {
+      if (++attempts < 3) throw new Error('temporary worklet failure');
+      return attach(...args);
+    };
+    await h.start();
+    assert.equal(attempts, 3);
+    assert.equal(h.counts().factoryCalls, 3);
+    assert.equal(h.errors.length, 0);
+    await h.engine.stop();
+  });
+  test(
+    Engine.name + ': recovery preserves the sample line, open speech and pending transcription',
+    async () => {
+      const h = harness(Engine);
+      const processing = [];
+      let reply;
+      h.engine.g.fetch = () =>
+        new Promise((resolve) => {
+          reply = resolve;
+        });
+      await h.engine.start({
+        onProcessingChange: (state) => processing.push(state),
+        onResult: (result) => h.results.push(result),
+      });
+      const recording = h.engine.session;
+      for (let i = 0; i < 10; i++) h.frame(0.9);
+      await settle();
+      const pins = recording.writer.session.pins.length;
+      h.callbacks.onError(new Error('intermittent model failure'));
+      assert.ok(processing.at(-1).pending > 0, 'recovery prevents premature playback');
+      assert.ok(
+        processing.at(-1).deliveryPending > 0,
+        'recovery prevents premature automatic sending',
+      );
+      await settle();
+      assert.equal(h.engine.session, recording);
+      assert.equal(
+        recording.writer.session.pins.length,
+        pins,
+        'restart cannot invent a silence pin',
+      );
+      for (let i = 0; i < 10; i++) h.frame(0.9);
+      for (let i = 0; i < 40; i++) h.frame(0);
+      await settle();
+      assert.equal(typeof reply, 'function');
+      reply(Response.json({ ok: true, value: { text: 'preserved speech' } }));
+      await settle();
+      assert.equal(recording.writer.session.capturedSamples, 60 * 1536);
+      assert.equal(h.results[0].final, 'preserved speech');
+      await h.engine.stop();
+    },
+  );
+  test(Engine.name + ': two Silero retries reset only after successful inference', async () => {
+    const h = harness(Engine);
+    await h.start();
+    const original = h.engine.session;
+    for (let cycle = 0; cycle < 3; cycle++) {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const stale = h.callbacks;
+        const stalePcm = h.onPcm;
+        stale.onReset();
+        stale.onError(new Error('same failed generation'));
+        await settle();
+        assert.equal(h.engine.session, original);
+        assert.equal(h.errors.length, 0);
+        const count = original.capturedSamples;
+        stalePcm(new Float32Array(1536), 48000);
+        stale.onProbability({ probability: 0.9, pcm: new Float32Array(512) });
+        assert.equal(original.capturedSamples, count);
+      }
+      h.frame(0);
+      await settle();
+    }
+    assert.equal(h.counts().factoryCalls, 7);
+    assert.equal(h.counts().processorCalls, 0);
+    await h.engine.stop();
+  });
+  test(Engine.name + ': persistent runtime failure reports once after two retries', async () => {
+    const h = harness(Engine);
+    await h.start();
+    for (let attempt = 0; attempt < 3; attempt++) {
+      h.callbacks.onError(new Error('model failed'));
+      await settle();
+    }
+    assert.equal(h.counts().factoryCalls, 3);
+    assert.equal(h.engine.session, null);
+    assert.equal(h.errors.length, 1);
+    assert.equal(h.counts().processorCalls, 0);
+  });
+  test(Engine.name + ': stop cancels a pending Silero reattachment', async () => {
+    const h = harness(Engine);
+    await h.start();
+    let attach;
+    let released = 0;
+    h.engine.vadCapture = () =>
+      new Promise((resolve) => {
+        attach = resolve;
+      });
+    h.callbacks.onError(new Error('restart'));
+    await settle();
+    const stopped = h.engine.stop();
+    attach({ finish: async () => {}, release: () => released++ });
+    await stopped;
+    assert.equal(h.engine.session, null);
+    assert.equal(released, 1);
+    assert.equal(h.errors.length, 0);
+  });
+}
