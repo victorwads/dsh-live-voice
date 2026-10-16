@@ -8,6 +8,7 @@ import {
 import type { DebuggerTranslation } from './i18n/index.js';
 import { createRecordingInspector, type RecordingView } from './recordingInspector.js';
 
+const megabytes = (bytes: number) => (bytes / 1_000_000).toFixed(3) + ' MB';
 function duration(samples: number, rate: number) {
   const milliseconds = Math.max(0, Math.round((samples / Math.max(1, rate)) * 1000));
   const seconds = Math.floor(milliseconds / 1000);
@@ -109,6 +110,12 @@ export function RecordingPanel({ copy, target }: { copy: DebuggerTranslation; ta
       ) : (
         <>
           {view.loading && <p role="status">{copy.recordings.loading}</p>}
+          <p className="dlvd-audio-total">
+            {copy.recordings.storageTotal}:{' '}
+            {view.sessions.every((s) => s.audioBytes !== undefined)
+              ? megabytes(view.sessions.reduce((sum, s) => sum + (s.audioBytes ?? 0), 0))
+              : copy.recordings.storageUnknown}
+          </p>
           <div className="dlvd-recording-columns">
             <div
               className="dlvd-session-list dlvd-scroll"
@@ -150,6 +157,12 @@ export function RecordingPanel({ copy, target }: { copy: DebuggerTranslation; ta
                                       ★
                                     </span>
                                   )}{' '}
+                                  {session.name && (
+                                    <strong>
+                                      {session.name}
+                                      <br />
+                                    </strong>
+                                  )}
                                   <time dateTime={session.startedAt}>
                                     {new Date(session.startedAt).toLocaleString()}
                                   </time>
@@ -217,6 +230,11 @@ function RecordingDetail({
   const [deleting, setDeleting] = React.useState(false);
   const [starring, setStarring] = React.useState(false);
   const [confirmDelete, setConfirmDelete] = React.useState(false);
+  const [name, setName] = React.useState(session.name ?? '');
+  const [naming, setNaming] = React.useState(false);
+  React.useEffect(() => {
+    setName(session.name ?? '');
+  }, [session.id, session.name, service]);
   const [selectedSegment, setSelectedSegment] = React.useState('');
   const clearPlayback = (player = audio.current) => {
     ++playGeneration.current;
@@ -318,6 +336,30 @@ function RecordingDetail({
       if (token === generation.current) setStarring(false);
     }
   };
+  const saveName = async () => {
+    if (!service.setName) return;
+    const token = generation.current;
+    setNaming(true);
+    setError(null);
+    try {
+      await service.setName(session.id, name);
+      if (token === generation.current) refresh();
+    } catch {
+      if (token === generation.current) setError('nameError');
+    } finally {
+      if (token === generation.current) setNaming(false);
+    }
+  };
+  const eventName = (kind: string) =>
+    ({
+      'assistant-start': copy.recordings.assistantStart,
+      'assistant-end': copy.recordings.assistantEnd,
+      'assistant-pause': copy.recordings.assistantPause,
+      'assistant-resume': copy.recordings.assistantResume,
+      'capture-gated': copy.recordings.captureGated,
+      'capture-start': copy.recordings.captureStart,
+      'capture-end': copy.recordings.captureEnd,
+    })[kind] ?? kind;
   const removeSession = async () => {
     const token = ++generation.current;
     setExporting(false);
@@ -347,12 +389,43 @@ function RecordingDetail({
     duration(segment.endSample, session.sampleRate);
   return (
     <section ref={container} aria-label={sourceName(session, copy)}>
-      <h3>{sourceName(session, copy)}</h3>
+      <h3>{session.name || sourceName(session, copy)}</h3>
+      {session.starred && service.setName && (
+        <form
+          className="dlvd-toolbar"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void saveName();
+          }}
+        >
+          <label>
+            {copy.recordings.name}{' '}
+            <input
+              value={name}
+              maxLength={120}
+              disabled={naming || deleting}
+              onInput={(event) => setName(event.currentTarget.value)}
+            />
+          </label>
+          <button
+            type="submit"
+            disabled={naming || deleting || starring || name === (session.name ?? '')}
+          >
+            {copy.recordings.saveName}
+          </button>
+        </form>
+      )}
       <dl className="dlvd-recording-meta">
         <dt>{copy.recordings.date}</dt>
         <dd>{new Date(session.startedAt).toLocaleString()}</dd>
         <dt>{copy.recordings.state}</dt>
         <dd>{stateName(session, copy)}</dd>
+        <dt>{copy.recordings.storageAudio}</dt>
+        <dd>
+          {session.audioBytes === undefined
+            ? copy.recordings.storageUnknown
+            : megabytes(session.audioBytes)}
+        </dd>
         <dt>{copy.recordings.captured}</dt>
         <dd>{duration(session.capturedSamples, session.sampleRate)}</dd>
         <dt>{copy.recordings.saved}</dt>
@@ -380,7 +453,7 @@ function RecordingDetail({
           aria-label={session.starred ? copy.recordings.unstar : copy.recordings.star}
           aria-pressed={!!session.starred}
           title={session.starred ? copy.recordings.unstarHelp : copy.recordings.starHelp}
-          disabled={starring || deleting}
+          disabled={starring || deleting || naming}
           onClick={() => void toggleStarred()}
         >
           {session.starred ? '★' : '☆'}
@@ -397,7 +470,7 @@ function RecordingDetail({
         </button>
         <button
           type="button"
-          disabled={deleting || starring}
+          disabled={deleting || starring || naming}
           onClick={() => setConfirmDelete(true)}
         >
           {copy.recordings.delete}
@@ -412,7 +485,7 @@ function RecordingDetail({
           <p>{copy.recordings.confirmDelete}</p>
           <button
             type="button"
-            disabled={deleting || starring}
+            disabled={deleting || starring || naming}
             onClick={() => void removeSession()}
           >
             {copy.recordings.delete}
@@ -454,6 +527,23 @@ function RecordingDetail({
             }}
           />
         ))}
+        {(session.events ?? [])
+
+          .map((event, index) => (
+            <span
+              key={event.id}
+              className="dlvd-event-pin"
+              data-event={event.kind}
+              style={{
+                left: (Math.min(length, event.atSample) / length) * 100 + '%',
+                top: (index % 3) * 12,
+              }}
+              title={eventName(event.kind) + ' · ' + new Date(event.occurredAt).toLocaleString()}
+              aria-hidden="true"
+            >
+              ◆
+            </span>
+          ))}
         {session.pins.map((pin) => (
           <span
             key={pin.id}
@@ -475,6 +565,31 @@ function RecordingDetail({
         {' · '}
         {duration(session.savedSamples, session.sampleRate)}
       </div>
+      <h4>{copy.recordings.events}</h4>
+      <p>{copy.recordings.eventsHelp}</p>
+      <table className="dlvd-recording-events">
+        <thead>
+          <tr>
+            <th scope="col">{copy.recordings.state}</th>
+            <th scope="col">{copy.recordings.eventTime}</th>
+            <th scope="col">{copy.recordings.captured}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(session.events ?? []).map((event) => (
+            <tr key={event.id}>
+              <td>{eventName(event.kind)}</td>
+              <td>
+                <time dateTime={event.occurredAt}>
+                  {new Date(event.occurredAt).toLocaleString()}.
+                  {new Date(event.occurredAt).getMilliseconds().toString().padStart(3, '0')}
+                </time>
+              </td>
+              <td>{duration(event.atSample, session.sampleRate)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <h4>{copy.recordings.segments}</h4>
       <table className="dlvd-segments">
         <thead>

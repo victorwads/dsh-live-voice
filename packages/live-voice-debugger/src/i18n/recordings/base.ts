@@ -1,10 +1,17 @@
 export type RecordingsTranslation = {
   active: string;
   allSources: string;
+  assistantEnd: string;
+  assistantPause: string;
+  assistantResume: string;
+  assistantStart: string;
   attempts: string;
   audio: string;
   audioError: string;
   cancel: string;
+  captureEnd: string;
+  captureGated: string;
+  captureStart: string;
   captured: string;
   completed: string;
   confirmDelete: string;
@@ -16,6 +23,9 @@ export type RecordingsTranslation = {
   end: string;
   engine: string;
   error: string;
+  eventTime: string;
+  events: string;
+  eventsHelp: string;
   export: string;
   exportError: string;
   failed: string;
@@ -25,6 +35,8 @@ export type RecordingsTranslation = {
   loading: string;
   memory: string;
   microphone: string;
+  name: string;
+  nameError: string;
   noAttempts: string;
   open: string;
   pending: string;
@@ -35,7 +47,10 @@ export type RecordingsTranslation = {
   play: string;
   playSession: string;
   refresh: string;
+  saveName: string;
   saved: string;
+  search: string;
+  searchEmpty: string;
   segments: string;
   selectSession: string;
   shared: string;
@@ -49,10 +64,17 @@ export type RecordingsTranslation = {
   starred: string;
   start: string;
   state: string;
+  storageAudio: string;
+  storageTotal: string;
+  storageUnknown: string;
   success: string;
   timeline: string;
   title: string;
   unavailable: string;
   unstar: string;
   unstarHelp: string;
+  window: string;
+  windowEnd: string;
+  windowReset: string;
+  windowStart: string;
 };

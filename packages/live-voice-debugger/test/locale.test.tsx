@@ -44,7 +44,37 @@ test('all 696 translated messages are preserved exactly in typed per-module per-
   for (const [locale, tree] of Object.entries(dictionaries)) {
     assert.equal(
       createHash('sha256')
-        .update(JSON.stringify(flatten(tree)))
+        .update(
+          JSON.stringify(
+            flatten(tree).filter(
+              ([key]) =>
+                ![
+                  'recordingAssistantEnd',
+                  'recordingAssistantPause',
+                  'recordingAssistantResume',
+                  'recordingAssistantStart',
+                  'recordingCaptureEnd',
+                  'recordingCaptureGated',
+                  'recordingCaptureStart',
+                  'recordingEvents',
+                  'recordingEventsHelp',
+                  'recordingEventTime',
+                  'recordingName',
+                  'recordingNameError',
+                  'recordingSaveName',
+                  'recordingStorageAudio',
+                  'recordingStorageTotal',
+                  'recordingStorageUnknown',
+                  'recordingSearch',
+                  'recordingSearchEmpty',
+                  'recordingWindow',
+                  'recordingWindowEnd',
+                  'recordingWindowReset',
+                  'recordingWindowStart',
+                ].includes(key),
+            ),
+          ),
+        )
         .digest('hex'),
       hashes[locale],
       locale + ' copy changed',
