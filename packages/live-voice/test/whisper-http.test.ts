@@ -169,7 +169,7 @@ test('Whisper voice detection defaults to short pauses and external presets chan
         inputBuffer: { getChannelData: () => new Float32Array(4096).fill(value) },
       });
     emit(0.1);
-    for (let i = 0; i < 3; i++) emit(0);
+    for (let i = 0; i < 4; i++) emit(0);
     await new Promise((resolve) => setImmediate(resolve));
     const sent = requests.length;
     await engine.stop();
@@ -177,7 +177,7 @@ test('Whisper voice detection defaults to short pauses and external presets chan
   };
   assert.equal(new WhisperHttpRecognitionEngine().segmentation.silenceMs, 400);
   assert.equal(await run(undefined), 1, 'default profile sends after a short pause');
-  assert.equal(await run('natural'), 0, '768 ms of silence remains in the same utterance');
+  assert.equal(await run('natural'), 1, 'natural profile confirms the boundary after 1 second');
   assert.equal(await run('short'), 1, 'short profile sends the utterance sooner');
   assert.equal(await run('long'), 0);
   assert.equal(await run('custom', 300), 1);

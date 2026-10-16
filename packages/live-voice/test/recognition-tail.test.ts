@@ -101,7 +101,7 @@ function fixture(Engine, detector = 'silero', delayedFinish = false) {
       mode: 'speaker',
       sendingMode: 'manual',
       recognitionFilterEnabled: false,
-      assistantSpeechDelaySeconds: 0,
+      assistantSpeechDelaySeconds: 0.6,
     },
   });
   return {
@@ -150,10 +150,10 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
         await tick();
         assert.equal(h.coordinator.snapshot.listening, true);
         assert.equal(h.spoken.length, 0);
-        for (let i = 0; i < 15; i++) h.frame(false);
+        for (let i = 0; i < 24; i++) h.frame(false);
         await tick();
         assert.equal(h.requests.length, 1);
-        assert.equal(wavSamples(h.requests[0]).length, 100 * 512 + 5120);
+        assert.equal(wavSamples(h.requests[0]).length, 100 * 512 + 12800);
         assert.ok(
           wavSamples(h.requests[0])
             .subarray(0, 100 * 512)
@@ -163,6 +163,7 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
         await tick();
         h.respond(0);
         await tick();
+        await new Promise((resolve) => setTimeout(resolve, 650));
         assert.match(h.draft(), /synthetic phrase 0/);
         assert.equal(h.spoken.length, 1, 'playback is allowed only after the final is committed');
       },
@@ -176,7 +177,7 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
         t.after(() => h.coordinator.dispose());
         h.recognition.maxUtteranceSeconds = 0.3;
         await h.coordinator.startConversation();
-        for (let i = 0; i < 10; i++) h.frame(true);
+        for (let i = 0; i < 35; i++) h.frame(true);
         await tick();
         assert.equal(h.requests.length, 1);
         queuedReply(h);
@@ -219,18 +220,19 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
     await tick();
     assert.equal(h.coordinator.snapshot.listening, true);
     assert.equal(h.spoken.length, 0);
-    for (let i = 0; i < 15; i++) h.frame(false);
+    for (let i = 0; i < 24; i++) h.frame(false);
     await tick();
     assert.equal(h.requests.length, 3);
-    assert.equal(wavSamples(h.requests[2]).length, 5120 + 100 * 512 + 5120);
+    assert.equal(wavSamples(h.requests[2]).length, 12800 + 100 * 512 + 12800);
     assert.ok(
       wavSamples(h.requests[2])
-        .subarray(5120, 5120 + 100 * 512)
+        .subarray(12800, 12800 + 100 * 512)
         .every((x) => x === 8191),
       'pre/post-roll overlap must not discard any of the new utterance',
     );
     h.respond(2);
     await tick();
+    await new Promise((resolve) => setTimeout(resolve, 650));
     assert.equal(h.draft(), 'synthetic phrase 0 synthetic phrase 1 synthetic phrase 2');
     assert.equal(h.spoken.length, 1);
   });

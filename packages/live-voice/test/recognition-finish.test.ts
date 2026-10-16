@@ -198,7 +198,7 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
       t.after(() => h.coordinator.dispose());
       await h.coordinator.startHoldToTalk();
       for (let i = 0; i < 10; i++) h.frame(true);
-      for (let i = 0; i < 16; i++) h.frame(false);
+      for (let i = 0; i < 25; i++) h.frame(false);
       const releasing = h.coordinator.releaseHoldToTalk();
       await tick();
       h.respond(0);
@@ -222,7 +222,7 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
       t.after(() => h.coordinator.dispose());
       await h.coordinator.startHoldToTalk();
       for (let i = 0; i < 10; i++) h.frame(true);
-      for (let i = 0; i < 16; i++) h.frame(false);
+      for (let i = 0; i < 25; i++) h.frame(false);
       for (let i = 0; i < 10; i++) h.frame(true);
       await tick();
       const old = h.recognition.session;

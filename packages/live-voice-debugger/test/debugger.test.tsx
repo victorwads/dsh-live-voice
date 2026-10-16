@@ -155,8 +155,14 @@ test('PCM chunks expose recording-owned pins, saved samples and range recognitio
   assert.equal(readCoordinatorDiagnostics(controller).recording.savedSamples, 8192);
   emit(0);
   await tick();
+  emit(0);
+  emit(0);
+  await tick();
   assert.equal(readCoordinatorDiagnostics(controller).recognition.activeRequest, true);
   emit(0.1);
+  emit(0);
+  emit(0);
+  await tick();
   emit(0);
   emit(0);
   await tick();

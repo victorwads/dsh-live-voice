@@ -111,7 +111,7 @@ for (const Engine of [WhisperHttpRecognitionEngine, QwenHttpRecognitionEngine]) 
         statuses.every((status) => !status.includes('transcrib')),
         'speech storage alone is not HTTP work',
       );
-      frame(6400, 0);
+      frame(12800, 0);
       assert.ok(
         changes.at(-1).deliveryPending > 0,
         'speech pin serialization blocks delivery before the attempt is queued',

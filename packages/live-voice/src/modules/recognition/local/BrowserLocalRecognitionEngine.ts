@@ -1,5 +1,6 @@
 import { WhisperHttpRecognitionEngine } from '../engines/whisper/WhisperRecognitionEngine.js';
 import { type LocalModelManager } from './LocalModelManager.js';
+import { TRANSCRIPTION_BOUNDARY_MARGIN_MS } from '../../recording/RecordingRecognition.js';
 import { findBrowserAsrModel, type BrowserAsrDevice } from './modelCatalog.js';
 /** Same recorder/VAD/range audit as HTTP, but PCM is sent only to a local worker. */
 export class BrowserLocalRecognitionEngine extends WhisperHttpRecognitionEngine {
@@ -11,7 +12,9 @@ export class BrowserLocalRecognitionEngine extends WhisperHttpRecognitionEngine 
   private release?: () => void;
   constructor({ manager, modelKey, device = 'webgpu', message, ...options }: any) {
     const margins =
-      ((options.recordingPreRollMs ?? 320) + (options.recordingPostRollMs ?? 320)) / 1000;
+      (Math.max(TRANSCRIPTION_BOUNDARY_MARGIN_MS, options.recordingPreRollMs ?? 320) +
+        Math.max(TRANSCRIPTION_BOUNDARY_MARGIN_MS, options.recordingPostRollMs ?? 320)) /
+      1000;
     super({
       ...options,
       maxUtteranceSeconds: Math.max(

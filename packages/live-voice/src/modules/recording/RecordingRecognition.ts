@@ -94,6 +94,8 @@ const asError = (value: unknown): Error =>
   value instanceof Error ? value : new Error(String(value));
 import { PinDetector } from './PinDetector.js';
 import { voiceDetectionSilenceMs, voiceDetectionParagraphMs } from '../core/settings.js';
+/** Minimum context on each transcription boundary; independent of VAD pin positions. */
+export const TRANSCRIPTION_BOUNDARY_MARGIN_MS = 800;
 const uid = () => crypto.randomUUID();
 /** Audio ownership stays with the recording; the queue only holds range references. */
 export async function startRecordingRecognition(
@@ -107,8 +109,8 @@ export async function startRecordingRecognition(
     enabled: engine.recordingEnabled !== false,
     keepPrevious: engine.recordingKeepPrevious ?? 1,
     bitrate: engine.recordingBitrate ?? 48000,
-    preRollMs: engine.recordingPreRollMs ?? 320,
-    postRollMs: engine.recordingPostRollMs ?? 320,
+    preRollMs: Math.max(TRANSCRIPTION_BOUNDARY_MARGIN_MS, engine.recordingPreRollMs ?? 320),
+    postRollMs: Math.max(TRANSCRIPTION_BOUNDARY_MARGIN_MS, engine.recordingPostRollMs ?? 320),
   };
   const generation = engine.startGeneration;
   const writer = await engine.recordings
@@ -168,6 +170,8 @@ export async function startRecordingRecognition(
   };
   engine.session = session;
   const valid = () => engine.session === session && !signal?.aborted;
+  // Range descriptors only: future post-roll must never block serialized PCM writes.
+  const awaitingTail: RecordingAttempt[] = [];
   let stopping = false;
   let recoveryPending = false;
   let captureFailure: string | undefined;
@@ -175,18 +179,21 @@ export async function startRecordingRecognition(
   const notify = () => {
     if (valid())
       session.onProcessingChange?.({
-        queued: session.transcriptionQueue.length,
+        queued: awaitingTail.length + session.transcriptionQueue.length,
         active: !!session.activeRequest,
         // Only queued/running speech attempts belong in the visible transcription status.
-        transcribing: session.transcriptionQueue.length + (session.activeRequest ? 1 : 0),
+        transcribing:
+          awaitingTail.length + session.transcriptionQueue.length + (session.activeRequest ? 1 : 0),
         // Speech-boundary bookkeeping must settle before delivery, but silent PCM writes must not reset it.
         deliveryPending:
+          awaitingTail.length +
           session.transcriptionQueue.length +
           (session.activeRequest ? 1 : 0) +
           session.pendingSpeechWrites +
           (session.finishing || recoveryPending ? 1 : 0),
         // All writes still protect release, playback admission and page leave.
         pending:
+          awaitingTail.length +
           session.transcriptionQueue.length +
           (session.activeRequest ? 1 : 0) +
           session.pendingWrites +
@@ -240,10 +247,7 @@ export async function startRecordingRecognition(
   const queueSpeech = async (pin: RecordingPin, end: number) => {
     for (let at = Math.max(pin.atSample, queuedThrough); at < end; at += max) {
       const requestedStart = Math.max(0, at - (policy.preRollMs * rate) / 1000);
-      const requestedEnd = Math.min(
-        writer.session.capturedSamples,
-        Math.min(end, at + max) + (policy.postRollMs * rate) / 1000,
-      );
+      const requestedEnd = Math.min(end, at + max) + (policy.postRollMs * rate) / 1000;
       const attempt: RecordingAttempt = {
         id: uid(),
         segmentId: pin.id,
@@ -261,13 +265,26 @@ export async function startRecordingRecognition(
         createdAt: new Date().toISOString(),
         status: 'pending',
       };
-      await writer.attempt(attempt);
-      session.transcriptionQueue.push(attempt);
+      awaitingTail.push(attempt);
       notify();
     }
     queuedThrough = Math.max(queuedThrough, end);
-    void drain();
+    await releaseCapturedRanges();
   };
+  async function releaseCapturedRanges() {
+    if (!valid()) return;
+    const captured = writer.session.capturedSamples;
+    while (awaitingTail.length && (session.finished || awaitingTail[0].endSample <= captured)) {
+      const pending = awaitingTail[0];
+      const attempt = { ...pending, endSample: Math.min(pending.endSample, captured) };
+      await writer.attempt(attempt);
+      if (!valid()) return;
+      awaitingTail.shift();
+      session.transcriptionQueue.push(attempt);
+      notify();
+    }
+    void drain();
+  }
   const pin = (kind: RecordingPin['kind'], at: number, confirmed: number) => {
     const startSample = Math.min(
       session.capturedSamples,
@@ -395,7 +412,10 @@ export async function startRecordingRecognition(
       return;
     }
     const copy = pcm.slice();
-    void serialize(() => writer.append(copy), true).catch(() => {});
+    void serialize(async () => {
+      await writer.append(copy);
+      await releaseCapturedRanges();
+    }, true).catch(() => {});
   };
   let vadGeneration = 0;
   let restartAttempts = 0;
@@ -519,6 +539,8 @@ export async function startRecordingRecognition(
         if (!valid()) return;
         session.finished = true;
         detector.finish();
+        // Capture is drained: release remaining ranges using only the real available tail.
+        await serialize(releaseCapturedRanges);
         await session.tail;
         await writer.finish();
         session.vad?.release();
@@ -536,6 +558,7 @@ export async function startRecordingRecognition(
   };
   session.stopRecording = async () => {
     stopping = true;
+    awaitingTail.length = 0;
     await recovering;
     session.activeRequest?.abort();
     if (session.finishing) session.capture?.release();
